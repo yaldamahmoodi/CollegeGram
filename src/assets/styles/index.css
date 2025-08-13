@@ -2,7 +2,9 @@
 html,
 body,
 #root {
+  direction: rtl;
   height: 100%;
+  font-size: 14px;
   margin: 0;
 }
 .layout-container {
