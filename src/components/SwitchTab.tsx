@@ -6,6 +6,6 @@ const SwitchTab = () => {
       <Link to="/login">ورود</Link> | <Link to="/register">ثبت نام</Link>
     </nav>
   );
-};
+};  
 
 export default SwitchTab;

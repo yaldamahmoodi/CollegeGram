@@ -4,7 +4,7 @@ type Variant = "danger" | "info" | "primary" | "success";
 
 interface ButtonProps {
   label: string;
-  onClick: () => void;
+  onClick?: () => void;
   type?: "button" | "submit" | "reset";
   disabled?: boolean;
   className?: string;

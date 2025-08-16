@@ -1,8 +1,9 @@
-import React from "react";
+import React, { useState, type ObjectHTMLAttributes } from "react";
 import { useFormik } from "formik";
 import * as Yup from "yup";
 import Button from "@/components/Button";
 import Input from "@/components/Input";
+import axios from "axios";
 
 interface LoginFormValues {
   username: string;
@@ -11,6 +12,9 @@ interface LoginFormValues {
 }
 
 const LoginForm: React.FC = () => {
+  const [data, setData] = useState({});
+  const [error, setError] = useState("");
+
   const initialValues: LoginFormValues = {
     username: "",
     password: "",
@@ -30,11 +34,32 @@ const LoginForm: React.FC = () => {
       .min(8, "حداقل 8 کاراکتر"),
   });
 
+  const userLoginRequest = async (
+    url: string,
+    body: LoginFormValues,
+    config: object
+  ) => {
+    try {
+      console.log("try");
+      const res = await axios.post(url, body, config);
+      console.log("Success:", res.data);
+      setData(res.data);
+      console.log(data);
+    } catch (err) {
+      //setError(err);
+      console.log(err);
+    }
+  };
+
   const formik = useFormik<LoginFormValues>({
     initialValues,
     validationSchema,
     onSubmit: (values) => {
-      console.log(values);
+      userLoginRequest("https://jsonplaceholder.typicode.com/posts", values, {
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
     },
   });
 
@@ -82,7 +107,6 @@ const LoginForm: React.FC = () => {
         label="ورود"
         variant="danger"
         type="submit"
-        onClick={() => {}}
         disabled={!!Object.keys(formik.errors).length}
       />
 
