@@ -1,6 +1,6 @@
 import mongoose, {Schema, Types} from "mongoose";
 import {UUID} from "node:crypto";
-
+import {Document} from "mongoose";
 
 export interface SessionDocument extends Document {
     _id: Types.ObjectId;
