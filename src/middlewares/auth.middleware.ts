@@ -1,7 +1,7 @@
-import {Request, Response, NextFunction} from "express";
-import * as jwt from "jsonwebtoken";
-import {JwtPayload} from "jsonwebtoken";
-import {UserDocument, UserModel} from "../models/user.model";
+import type {Request, Response, NextFunction} from "express";
+
+import {verify, type JwtPayload} from "jsonwebtoken";
+import {UserModel} from "../db/models/user.model.ts";
 
 export interface Authenticate extends Request {
     user?: {
@@ -31,13 +31,13 @@ export const AuthMiddleware = async (req: Request, res: Response, next: NextFunc
     const jwtSecret = process.env.ACCESS_TOKEN_SECRET as string;
     let payload: JwtPayload;
     try {
-        payload = jwt.verify(token, jwtSecret) as JwtPayload;
+        payload = verify(token, jwtSecret) as JwtPayload;
 
     } catch (error: any) {
         return res.status(401).json({error: 'Token expired or invalid'});
     }
 
-    const loggedInUser = await UserModel.findById(payload.id) as UserDocument | null;
+    const loggedInUser = await UserModel.findById(payload.id);
 
     if (!loggedInUser) {
         return res.status(404).json({error: "User not found"});

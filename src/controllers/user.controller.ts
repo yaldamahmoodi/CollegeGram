@@ -1,10 +1,14 @@
-import {Request, Response, Router} from "express";
-import {UserService} from "../services/user.service";
-import {registerDto} from "../dtos/register.dto";
-import {loginDTO} from "../dtos/login.dto";
+import type {Request, Response} from "express";
+import {authService} from "../services/auth.service.ts";
+import {registerDto} from "../dtos/register.dto.ts";
+import {loginDTO} from "../dtos/login.dto.ts";
 
-export class UserController {
-    constructor(private readonly userService: UserService) {
+export class authController {
+
+    private readonly userService: authService;
+
+    constructor(authService: authService) {
+        this.userService = authService;
     }
 
     async register(req: Request, res: Response) {
@@ -74,22 +78,24 @@ export class UserController {
         }
     }
 
-    async refreshToken(req: Request, res: Response) {{
-        const { refreshToken } = req.cookies.get("refreshToken");
-        const{sessionId} = req.cookies.get("sessionId");
+    async refreshToken(req: Request, res: Response) {
+        {
+            const {refreshToken} = req.cookies.get("refreshToken");
+            const {sessionId} = req.cookies.get("sessionId");
 
-        if (!refreshToken || !sessionId) {
-            return res.status(401).json({error: 'No refresh token or sessionId'});
-        }
-
-        const newAccessToken = await this.userService.refreshToken(sessionId,refreshToken)
-        return res.status(200).json({
-            success: true,
-            message: "Refresh token successfully",
-            data: {
-                accessToken: newAccessToken,
+            if (!refreshToken || !sessionId) {
+                return res.status(401).json({error: 'No refresh token or sessionId'});
             }
-        })
 
-    }}
+            const newAccessToken = await this.authService.refreshToken(sessionId, refreshToken)
+            return res.status(200).json({
+                success: true,
+                message: "Refresh token successfully",
+                data: {
+                    accessToken: newAccessToken,
+                }
+            })
+
+        }
+    }
 }

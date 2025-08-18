@@ -1,11 +1,15 @@
-import {UserRepository} from "../repositories/user.repository";
+import { authRepository } from "../repositories/auth.repository.ts";
 import * as bcrypt from 'bcrypt';
 import * as jwt from "jsonwebtoken";
 import * as crypto from "crypto";
 
 
-export class UserService {
-    constructor(protected userRepo: UserRepository) {
+export class authService {
+
+    private readonly authRepo = authRepository;
+
+    constructor(authRepo: authRepository) {
+        this.authRepo = authRepo;
     }
 
     async register(userData: { username: string, password: string, email: string }) {
@@ -20,12 +24,12 @@ export class UserService {
         }
         const hashedPassword = await bcrypt.hash(userData.password, 10);
 
-        const newUser = await this.userRepo.createUser({
+        return await this.userRepo.createUser({
             ...userData,
             password: hashedPassword,
         });
 
-        return newUser;
+
     }
 
     async login(userData: { username: string, password: string }) {
@@ -70,42 +74,4 @@ export class UserService {
             userId: userDetails.id,
         };
     }
-
-    async refreshToken(sessionId: string, refreshToken: string) {
-        let payload;
-        try {
-            payload = jwt.verify(refreshToken, process.env.REFRESH_TOKEN_SECRET as string) as {
-                sessionId: string,
-                userId: string
-            };
-        } catch (err) {
-            throw new Error('Refresh token is invalid or expired');
-        }
-
-        const userSession = await this.userRepo.findSessionById(sessionId);
-        if (!userSession) {
-            throw new Error('User session not found');
-        }
-        if (payload.sessionId !== sessionId) {
-            throw new Error('Session mismatch');
-        }
-
-        if (userSession.status !== 'active') {
-            throw new Error('Session is no longer active');
-        }
-
-        const isValid = await bcrypt.compare(refreshToken, userSession.refreshTokenHash);
-        if (!isValid) {
-            throw new Error('Refresh token is not valid');
-        }
-
-        const newAccessToken = jwt.sign(
-            {userId: userSession.userId},
-            process.env.ACCESS_TOKEN_SECRET as string,
-            {expiresIn: '15m'}
-        );
-
-        return newAccessToken;
-    }
-
 }

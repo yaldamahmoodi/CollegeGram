@@ -1,15 +1,16 @@
 import mongoose from "mongoose";
-import app from "./server";
+import app from "./server.ts";
+import {connect_db} from "./db/connection.ts";
 
 
-const PORT = process.env.PORT || 3000;
+const PORT = process.env.PORT || 3001;
 
-mongoose.connect(process.env.MONGODB_URI as string)
-    .then(() => {
-        console.log("MongoDB connected");
-
-    })
-    .catch(err => console.log(err));
-
-
-app.listen(PORT, () => console.log(`Server running on ${PORT}`));
+(async () => {
+    try {
+        await connect_db();
+        app.listen(PORT, () => console.log(`Server running on ${PORT}`));
+    } catch (err) {
+        console.error("Failed to start server:", err);
+        process.exit(1);
+    }
+})();

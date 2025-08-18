@@ -15,7 +15,7 @@
     "mongoose",
     "backend"
   ],
-  "author": "Yalda Mahmoodi, Amir Samimi, Mohammad, Nima",
+  "author": "Nima Elahi Manesh, Yalda Mahmoodi, Amir Samimi, Mohammad Asghari. ",
   "license": "MIT",
   "dependencies": {
     "bcrypt": "^6.0.0",
