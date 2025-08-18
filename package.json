@@ -4,20 +4,11 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "start": "ts-node ./src/app.ts",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "start": "ts-node ./src/app.ts"
   },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/yaldamahmoodi/CollegeGram.git"
-  },
-  "keywords": [],
-  "author": "",
-  "license": "ISC",
-  "bugs": {
-    "url": "https://github.com/yaldamahmoodi/CollegeGram/issues"
-  },
-  "homepage": "https://github.com/yaldamahmoodi/CollegeGram#readme",
+  "keywords": ["typescript","Express","mongo","mongoose","backend"],
+  "author": "Yalda Mahmoodi, Amir Samimi, Mohammad, Nima",
+  "license": "MIT",
   "dependencies": {
     "bcrypt": "^6.0.0",
     "dotenv": "^17.2.1",
