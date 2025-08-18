@@ -1,8 +1,8 @@
 import React from "react";
 import { useFormik } from "formik";
 import * as Yup from "yup";
-import Button from "./Button";
-import Input from "./Input";
+import Button from "@/components/Button";
+import Input from "@/components/Input";
 
 interface FormValues {
   username: string;
@@ -27,7 +27,7 @@ const validationSchema = Yup.object({
     .required("تکرار رمز عبور الزامی است."),
 });
 
-const RegisterForm: React.FC = () => {
+const Register: React.FC = () => {
   const formik = useFormik<FormValues>({
     initialValues: {
       username: "",
@@ -106,4 +106,4 @@ const RegisterForm: React.FC = () => {
   );
 };
 
-export default RegisterForm;
+export default Register;

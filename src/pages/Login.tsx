@@ -11,8 +11,9 @@ interface LoginFormValues {
   rememberMe: boolean;
 }
 
-const LoginForm: React.FC = () => {
+const Login: React.FC = () => {
   const [data, setData] = useState({});
+  const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState("");
 
   const initialValues: LoginFormValues = {
@@ -40,10 +41,8 @@ const LoginForm: React.FC = () => {
     config: object
   ) => {
     try {
-      console.log("try");
       const res = await axios.post(url, body, config);
       console.log("Success:", res.data);
-      setData(res.data);
       console.log(data);
     } catch (err) {
       //setError(err);
@@ -119,4 +118,4 @@ const LoginForm: React.FC = () => {
   );
 };
 
-export default LoginForm;
+export default Login;
