@@ -1,11 +1,11 @@
 import {UserRepository} from "../repositories/user.repository";
 import * as bcrypt from 'bcrypt';
 import * as jwt from "jsonwebtoken";
-import * as crypto from "crypto";
-
 
 export class UserService {
+
     constructor(protected userRepo: UserRepository) {
+
     }
 
     async register(userData: { username: string, password: string, email: string }) {
@@ -38,74 +38,53 @@ export class UserService {
         if (!comparePassword) {
             throw new Error('passwords or username do not match');
         }
+        const validPassword = await bcrypt.compare(userData.password, userDetails.password);
+        if (!validPassword) throw new Error("Invalid username or password");
 
-        const accessTokenSecret = process.env.ACCESS_TOKEN_SECRET as string;
-        const refreshTokenSecret = process.env.REFRESH_TOKEN_SECRET as string;
 
-        const sessionId = crypto.randomUUID();
+        const accessToken = this.generateAccessToken({userId: userDetails.id});
+        const refreshToken = this.generateRefreshToken({userId: userDetails.id});
 
-        const accessToken = jwt.sign({
-            id: userDetails.id,
-            username: userDetails.username,
-        }, accessTokenSecret, {expiresIn: '15m'});
 
-        const refreshToken = jwt.sign({
-            id: userDetails.id,
-            username: userDetails.username,
-            sessionId: sessionId,
-        }, refreshTokenSecret, {expiresIn: '7d'});
-
-        const hashedRefreshToken = await bcrypt.hash(refreshToken, 10);
-
-        await this.userRepo.createUserSession(
-            sessionId,
-            hashedRefreshToken,
-            userDetails.id,
-        );
+        await this.userRepo.createUserAuth(refreshToken, userDetails.id);
 
         return {
             accessToken,
             refreshToken,
-            sessionId,
             userId: userDetails.id,
         };
+
     }
 
-    async refreshToken(sessionId: string, refreshToken: string) {
-        let payload;
+    async refreshToken(refreshToken: string) {
+        let payload: { userId: string };
+
         try {
-            payload = jwt.verify(refreshToken, process.env.REFRESH_TOKEN_SECRET as string) as {
-                sessionId: string,
-                userId: string
-            };
-        } catch (err) {
-            throw new Error('Refresh token is invalid or expired');
+            payload = jwt.verify(
+                refreshToken,
+                process.env.REFRESH_TOKEN_SECRET as string
+            ) as { userId: string };
+        } catch {
+            throw new Error("Refresh token is invalid or expired");
         }
 
-        const userSession = await this.userRepo.findSessionById(sessionId);
-        if (!userSession) {
-            throw new Error('User session not found');
-        }
-        if (payload.sessionId !== sessionId) {
-            throw new Error('Session mismatch');
-        }
+        const userAuth = await this.userRepo.findAuthByToken(refreshToken);
 
-        if (userSession.status !== 'active') {
-            throw new Error('Session is no longer active');
-        }
+        if (!userAuth) throw new Error("No active session found");
 
-        const isValid = await bcrypt.compare(refreshToken, userSession.refreshTokenHash);
-        if (!isValid) {
-            throw new Error('Refresh token is not valid');
-        }
+        return this.generateAccessToken({userId: payload.userId});
+    }
 
-        const newAccessToken = jwt.sign(
-            {userId: userSession.userId},
-            process.env.ACCESS_TOKEN_SECRET as string,
-            {expiresIn: '15m'}
-        );
+    private generateAccessToken(payload: { userId: string }) {
+        return jwt.sign(payload, process.env.ACCESS_TOKEN_SECRET as string, {
+            expiresIn: "15m",
+        });
+    }
 
-        return newAccessToken;
+    private generateRefreshToken(payload: { userId: string; }) {
+        return jwt.sign(payload, process.env.REFRESH_TOKEN_SECRET as string, {
+            expiresIn: "7d",
+        });
     }
 
 }
