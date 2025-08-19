@@ -16,6 +16,7 @@ const envSchema = z.object({
     APP_STAGE: z.enum(["development", "production", "test"]),
     NODE_ENV: z.enum(["development", "production", "test"]),
     PORT: z.coerce.number().min(3000).max(65535).default(3001),
+    CORS_ORIGIN: z.string().startsWith("http://") || z.string().startsWith("https://"),
 
     // DB
     MONGODB_URI: z.string().startsWith("mongodb://"),

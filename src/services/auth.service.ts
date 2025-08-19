@@ -1,4 +1,4 @@
-import { authRepository } from "../repositories/auth.repository.ts";
+import {  type authRepository } from "../repositories/auth.repository.ts";
 import * as bcrypt from 'bcrypt';
 import * as jwt from "jsonwebtoken";
 import * as crypto from "crypto";

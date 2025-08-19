@@ -5,13 +5,17 @@ import morgan from 'morgan'
 
 import healthRoute from "./routes/health.route.ts";
 import authRoute from "./routes/v1/auth.route.ts"
+import env from "../env.ts";
 
 const app = express();
 
 
 /* ---- GLOBAL MIDDLE WARES ---- */
 app.use(helmet());
-app.use(cors())
+app.use(cors({
+    origin: env.CORS_ORIGIN,
+    credentials: true,
+}))
 app.use(morgan("combined"))
 app.use(express.json());
 

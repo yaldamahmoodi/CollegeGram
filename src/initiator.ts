@@ -1,27 +1,27 @@
-import {UserService} from "./services/user.service";
-import {UserRepository} from "./repositories/user.repository";
-import {UserController} from "./controllers/user.controller";
+import {authController} from "./controllers/auth.controller.ts";
+import {authRepository} from "./repositories/auth.repository.js";
+import {authService} from "./services/auth.service.js";
 
 export class Initiator {
-    protected userService: UserService;
-    protected userRepository: UserRepository;
-    protected userController: UserController;
+    protected authService: authService;
+    protected authRepo: authRepository;
+    protected authController: authController;
 
     constructor() {
-        this.userRepository = new UserRepository();
-        this.userService = new UserService(this.userRepository);
-        this.userController = new UserController(this.userService);
+        this.authRepo = new authRepository();
+        this.authService = new authService(this.authRepo);
+        this.authController = new authController(this.authService);
     }
 
     public getUserRepository() {
-        return this.userRepository;
+        return this.authRepo;
     }
 
     public getUserService() {
-        return this.userService;
+        return this.authService;
     }
 
     public getUserController() {
-        return this.userController;
+        return this.authController;
     }
 }
