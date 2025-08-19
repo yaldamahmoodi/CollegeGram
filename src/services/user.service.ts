@@ -70,7 +70,7 @@ export class UserService {
 
         const userAuth = await this.userRepo.findAuthByToken(refreshToken);
 
-        if (!userAuth) throw new Error("No active session found");
+        if (!userAuth) throw new Error("No active user auth found");
 
         return this.generateAccessToken({userId: payload.userId});
     }
