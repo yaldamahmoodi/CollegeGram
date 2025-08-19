@@ -1,8 +1,8 @@
 import {authRepository} from "../repositories/auth.repository.ts";
 import bcrypt from 'bcrypt';
 import jwt from "jsonwebtoken";
-import env from "../../env.js";
-import type {insertUserZodSchema} from "../db/models/user.model.js";
+import env from "../../env.ts";
+import type {insertUserZodSchema} from "../db/models/user.model.ts";
 
 
 export class authService {
