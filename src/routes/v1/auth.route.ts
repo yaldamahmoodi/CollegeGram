@@ -1,10 +1,9 @@
 import {Router} from "express";
-import {UserController} from "../../controllers/auth.controller.ts";
-import {UserService} from "../../services/auth.service.ts";
-import {AuthRepository} from "../../repositories/auth.repository.ts";
+import {Initiator} from "../../initiator.ts";
 
 const router = Router();
-const userController = new UserController(new UserService(new AuthRepository()));
+const initiator = new Initiator();
+const userController = initiator.getUserController();
 
 router.post("/register", userController.register);
 router.post("/login", userController.login);

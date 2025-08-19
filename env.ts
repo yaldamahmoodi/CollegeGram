@@ -1,6 +1,8 @@
 import {env as loadEnv} from 'custom-env';
 import {z} from 'zod';
 
+process.env.APP_STAGE = process.env.APP_STAGE || 'development'
+
 const isProduction = process.env.APP_STAGE === "production";
 const isDevelopment = process.env.APP_STAGE === "development";
 const isTest = process.env.APP_STAGE === "test";
@@ -16,7 +18,12 @@ const envSchema = z.object({
     APP_STAGE: z.enum(["development", "production", "test"]),
     NODE_ENV: z.enum(["development", "production", "test"]),
     PORT: z.coerce.number().min(3000).max(65535).default(3001),
-    CORS_ORIGIN: z.string().startsWith("http://") || z.string().startsWith("https://"),
+    CORS_ORIGIN: z.string().refine((value) =>
+            value.startsWith("http://") || value.startsWith("https://"),
+        {
+            message: "CORS_ORIGIN must start with http:// or https://",
+        }
+    ),
 
     // DB
     MONGODB_URI: z.string().startsWith("mongodb://"),

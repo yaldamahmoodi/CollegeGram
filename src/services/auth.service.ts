@@ -1,4 +1,4 @@
-import {  type authRepository } from "../repositories/auth.repository.ts";
+import {authRepository} from "../repositories/auth.repository.ts";
 import * as bcrypt from 'bcrypt';
 import * as jwt from "jsonwebtoken";
 import * as crypto from "crypto";
@@ -13,18 +13,18 @@ export class authService {
     }
 
     async register(userData: { username: string, password: string, email: string }) {
-        const userByUsername = await this.userRepo.findByUsername(userData.username);
+        const userByUsername = await this.authRepo.findByUsername(userData.username);
         if (userByUsername) {
             throw new Error('Username already exists');
         }
 
-        const userByEmail = await this.userRepo.findByEmail(userData.email);
+        const userByEmail = await this.authRepo.findByEmail(userData.email);
         if (userByEmail) {
             throw new Error('Email already exists');
         }
         const hashedPassword = await bcrypt.hash(userData.password, 10);
 
-        return await this.userRepo.createUser({
+        return await this.authRepo.createUser({
             ...userData,
             password: hashedPassword,
         });
@@ -33,7 +33,7 @@ export class authService {
     }
 
     async login(userData: { username: string, password: string }) {
-        const userDetails = await this.userRepo.findByUsername(userData.username);
+        const userDetails = await this.authRepo.findByUsername(userData.username);
         if (!userDetails) {
             throw new Error('User not found');
         }
@@ -61,7 +61,7 @@ export class authService {
 
         const hashedRefreshToken = await bcrypt.hash(refreshToken, 10);
 
-        await this.userRepo.createUserSession(
+        await this.authRepo.createUserSession(
             sessionId,
             hashedRefreshToken,
             userDetails.id,

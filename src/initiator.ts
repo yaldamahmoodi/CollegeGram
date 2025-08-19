@@ -1,6 +1,6 @@
 import {authController} from "./controllers/auth.controller.ts";
-import {authRepository} from "./repositories/auth.repository.js";
-import {authService} from "./services/auth.service.js";
+import {authRepository} from "./repositories/auth.repository.ts";
+import {authService} from "./services/auth.service.ts";
 
 export class Initiator {
     protected authService: authService;

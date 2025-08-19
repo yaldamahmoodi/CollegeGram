@@ -78,24 +78,5 @@ export class authController {
         }
     }
 
-    async refreshToken(req: Request, res: Response) {
-        {
-            const {refreshToken} = req.cookies.get("refreshToken");
-            const {sessionId} = req.cookies.get("sessionId");
 
-            if (!refreshToken || !sessionId) {
-                return res.status(401).json({error: 'No refresh token or sessionId'});
-            }
-
-            const newAccessToken = await this.authService.refreshToken(sessionId, refreshToken)
-            return res.status(200).json({
-                success: true,
-                message: "Refresh token successfully",
-                data: {
-                    accessToken: newAccessToken,
-                }
-            })
-
-        }
-    }
 }
