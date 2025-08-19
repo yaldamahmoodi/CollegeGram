@@ -1,5 +1,5 @@
 import {UserDocument, UserModel} from "../models/user.model";
-import {SessionDocument, SessionModel} from "../models/session.model";
+import {AuthenticationDocument, AuthenticationModel} from "../models/Authentication.model";
 import {Types} from "mongoose";
 
 export interface CreateUserInput {
@@ -22,15 +22,14 @@ export class UserRepository {
         return await UserModel.findOne({email}).exec();
     }
 
-    async createUserSession(sessionId: string, refreshTokenHash: string, userId: string): Promise<SessionDocument> {
-        return await SessionModel.create({
-            sessionId,
-            refreshTokenHash,
+    async createUserAuth(refreshToken: string, userId: string): Promise<AuthenticationDocument> {
+        return await AuthenticationModel.create({
+            refreshToken,
             userId: new Types.ObjectId(userId)
         });
     }
 
-    async findSessionById(sessionId: string): Promise<SessionDocument | null> {
-        return await SessionModel.findOne({sessionId}).exec();
+    async findAuthByToken(refreshToken:string): Promise<AuthenticationDocument | null> {
+        return await AuthenticationModel.findOne({refreshToken:refreshToken,status:'active'}).exec();
     }
 }
