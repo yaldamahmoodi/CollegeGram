@@ -2,9 +2,14 @@ import {Request, Response, Router} from "express";
 import {UserService} from "../services/user.service";
 import {registerDto} from "../dtos/register.dto";
 import {loginDTO} from "../dtos/login.dto";
+import * as console from "node:console";
 
 export class UserController {
-    constructor(private readonly userService: UserService) {
+
+    constructor(protected userService: UserService) {
+        this.register = this.register.bind(this);
+        this.login = this.login.bind(this);
+        this.refreshToken = this.refreshToken.bind(this);
     }
 
     async register(req: Request, res: Response) {
@@ -27,6 +32,7 @@ export class UserController {
                 user: {username: newUser.username, email: newUser.email},
             });
         } catch (error: any) {
+            console.error(error);
             return res.status(400).json({
                 success: false,
                 message: error.message,
@@ -47,26 +53,23 @@ export class UserController {
         const userData = result.data;
 
         try {
-            const loginUser = await this.userService.login(userData);
-            res.cookie('sessionId', loginUser.sessionId, {
+            const { accessToken, refreshToken } = await this.userService.login(userData);
+
+            res.cookie("refreshToken", refreshToken, {
                 httpOnly: true,
-                secure: true,
-                maxAge: 7 * 24 * 60 * 60 * 1000,
-            })
-            res.cookie('refreshToken', loginUser.refreshToken, {
-                httpOnly: true,
-                secure: true,
+                secure: process.env.NODE_ENV === "production",
+                sameSite: "strict",
                 maxAge: 7 * 24 * 60 * 60 * 1000,
             });
 
             return res.status(200).json({
                 success: true,
                 message: "User logged in successfully",
-                data: {
-                    accessToken: loginUser.accessToken,
-                },
+                data: { accessToken },
             });
+
         } catch (error: any) {
+            console.error(error);
             return res.status(400).json({
                 success: false,
                 message: error.message,
@@ -74,22 +77,32 @@ export class UserController {
         }
     }
 
-    async refreshToken(req: Request, res: Response) {{
-        const { refreshToken } = req.cookies.get("refreshToken");
-        const{sessionId} = req.cookies.get("sessionId");
-
-        if (!refreshToken || !sessionId) {
-            return res.status(401).json({error: 'No refresh token or sessionId'});
-        }
-
-        const newAccessToken = await this.userService.refreshToken(sessionId,refreshToken)
-        return res.status(200).json({
-            success: true,
-            message: "Refresh token successfully",
-            data: {
-                accessToken: newAccessToken,
+    async refreshToken(req: Request, res: Response) {
+        try {
+            const refreshToken = req.cookies["refreshToken"];
+            if (!refreshToken) {
+                return res.status(401).json({
+                    success: false,
+                    message: "No refresh token provided",
+                });
             }
-        })
 
-    }}
+            const newAccessToken = await this.userService.refreshToken(refreshToken);
+
+            return res.status(200).json({
+                success: true,
+                message: "Token refreshed successfully",
+                data: { accessToken: newAccessToken },
+            });
+        } catch (error: any) {
+            console.error(error);
+            return res.status(403).json({
+                success: false,
+                message: error.message || "Could not refresh token",
+            });
+        }
+    }
+
+
+
 }
