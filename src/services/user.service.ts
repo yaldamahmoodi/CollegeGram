@@ -38,9 +38,6 @@ export class UserService {
         if (!comparePassword) {
             throw new Error('passwords or username do not match');
         }
-        const validPassword = await bcrypt.compare(userData.password, userDetails.password);
-        if (!validPassword) throw new Error("Invalid username or password");
-
 
         const accessToken = this.generateAccessToken({userId: userDetails.id});
         const refreshToken = this.generateRefreshToken({userId: userDetails.id});
