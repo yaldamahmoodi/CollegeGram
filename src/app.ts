@@ -1,19 +1,15 @@
-import * as process from "node:process";
-
-console.log("HELLO")
-import express from "express";
+import express, {json} from "express";
 import mongoose from "mongoose";
-import {json} from "body-parser";
 import router from "./routes/user.routes";
 
 const app = express();
 app.use(json());
 
-app.use("/api", router);
+app.use("/v1/Auth", router);
 
 const PORT = process.env.PORT || 3000;
 
-mongoose.connect(process.env.MONGODB_URI as string)
+mongoose.connect("mongodb://admin:admin@localhost:27017/collagegram?authSource=admin")
     .then(() => {
         console.log("MongoDB connected");
         app.listen(PORT, () => console.log(`Server running on ${PORT}`));

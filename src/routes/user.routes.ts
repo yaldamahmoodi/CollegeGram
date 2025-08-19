@@ -1,15 +1,14 @@
-import { Router } from "express";
-import { UserController } from "../controllers/user.controller";
-import { UserService } from "../services/user.service";
-import { UserRepository } from "../repositories/user.repository";
+import {Router} from "express";
+import {Initiator} from "../initiator";
 
 const router = Router();
-const userController = new UserController(new UserService(new UserRepository()));
+
+const initiator = new Initiator();
+const userController = initiator.getUserController();
 
 router.post("/register", userController.register);
 router.post("/login", userController.login);
 router.post("/refresh-token", userController.refreshToken);
-
 
 
 export default router;
