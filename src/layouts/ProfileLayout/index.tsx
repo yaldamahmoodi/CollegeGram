@@ -1,11 +1,20 @@
+import ProfileInfo from "./components/ProfileInfo";
+import Button from "@/components/Button";
 const profileLayout = () => {
   return (
     <div className="profile-container h-screen w-full bg-[#f5f5f5] px-10 pb-6 pt-8 flex flex-col">
       <div className="header w-full max-h-[50px] bg-transparent mb-4 flex items-center justify-between px-4 flex-row">
-        <div className="w-1/4 flex justify-center">Button</div>
-        <div className="max-w-[111px] w-full flex items-center justify-end">
-          logo
+        <div className="w-1/4 flex justify-center">
+          <div className="w-3/6 flex flex-end justify-center justify-end">
+            <Button
+              type="button"
+              label="+ افزودن پست جدید"
+              variant="danger"
+              className="text-basis py-1 text-xs rounded-4xl w-[197px] h-[52px]"
+            />
+          </div>
         </div>
+        <div className="logo max-w-[111px] w-full h-[50px] flex items-center justify-end bg-cover bg-center bg-no-repeat" />
       </div>
 
       <div className="flex flex-auto gap-4 flex-row">
@@ -14,17 +23,17 @@ const profileLayout = () => {
         </div>
         <div className=" left-section w-3/4 flex flex-col pr-8">
           <div className="title w-full bg-transparent p-4">
-            <h2 className="text-lg font-medium">Title Section</h2>
+            <h2 className="text-lg font-medium"> صفحه من</h2>
           </div>
 
-          <div className="profile-info w-full max-h-[147px] bg-transparent p-4">
-            <p>Profile Container</p>
+          <div className="profile-info w-full max-h-[147px] bg-transparent">
+            <ProfileInfo />
           </div>
 
           <div className="separator w-full h-px bg-gray-400 my-6"></div>
 
           <div className="profile-posts w-full h-full flex-auto border border-gray-400 p-4 overflow-y-auto rounded-xl">
-            <p>Profile Posts</p>
+            profile posts
           </div>
         </div>
       </div>

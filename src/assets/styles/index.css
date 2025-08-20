@@ -11,3 +11,6 @@ body,
 .layout-container {
   background-image: url("../images/background.jpg");
 }
+.profile-container .header .logo {
+  background-image: url("../images/logo.png");
+}
