@@ -1,64 +1,71 @@
-import React, { useState, type ObjectHTMLAttributes } from "react";
+import React from "react";
 import { useFormik } from "formik";
 import * as Yup from "yup";
 import Button from "@/components/Button";
 import Input from "@/components/Input";
+import { useMutation } from "@tanstack/react-query";
 import axios from "axios";
+import { useNavigate } from "react-router-dom";
 
-interface LoginFormValues {
+interface UserLoginType {
   username: string;
   password: string;
   rememberMe: boolean;
 }
 
-const Login: React.FC = () => {
-  const [data, setData] = useState({});
-  const [isLoading, setIsLoading] = useState(false);
-  const [error, setError] = useState("");
+type userLoginPayload = Omit<UserLoginType, "rememberMe">;
 
-  const initialValues: LoginFormValues = {
-    username: "",
-    password: "",
-    rememberMe: false,
-  };
+const Login: React.FC = () => {
+  const navigate = useNavigate();
 
   const validationSchema = Yup.object({
     username: Yup.string()
       .required("نام کاربری الزامی است")
+      .min(8, "حداقل 8 کاراکتر"),
+    password: Yup.string()
+      .required("رمز ورود الزامی است")
       .min(8, "حداقل 8 کاراکتر")
       .matches(
         /[!@#$%^&*(),.?":{}|<>]/,
         "نام کاربری باید حداقل یک کاراکتر خاص داشته باشد"
       ),
-    password: Yup.string()
-      .required("رمز ورود الزامی است")
-      .min(8, "حداقل 8 کاراکتر"),
   });
 
-  const userLoginRequest = async (
-    url: string,
-    body: LoginFormValues,
-    config: object
-  ) => {
-    try {
-      const res = await axios.post(url, body, config);
-      console.log("Success:", res.data);
-      console.log(data);
-    } catch (err) {
-      //setError(err);
-      console.log(err);
-    }
-  };
-
-  const formik = useFormik<LoginFormValues>({
-    initialValues,
-    validationSchema,
-    onSubmit: (values) => {
-      userLoginRequest("https://jsonplaceholder.typicode.com/posts", values, {
+  const userLoginReguest = async (payload: userLoginPayload) => {
+    const { data } = await axios.post(
+      "http://130.185.75.174:3001/api/v1/auth/login",
+      payload,
+      {
         headers: {
           "Content-Type": "application/json",
         },
-      });
+      }
+    );
+    return data;
+  };
+
+  const mutation = useMutation({
+    mutationFn: userLoginReguest,
+    onSuccess: (data) => {
+      console.log("success: ", data);
+      navigate("/dashboard");
+    },
+    onError: (error) => {
+      console.error("error:", error.message);
+    },
+  });
+
+  const initialValues: UserLoginType = {
+    username: "",
+    password: "",
+    rememberMe: false,
+  };
+
+  const formik = useFormik<UserLoginType>({
+    initialValues,
+    validationSchema,
+    onSubmit: ({ username, password }) => {
+      mutation.mutate({ username, password });
     },
   });
 

@@ -3,41 +3,80 @@ import { useFormik } from "formik";
 import * as Yup from "yup";
 import Button from "@/components/Button";
 import Input from "@/components/Input";
+import { useMutation } from "@tanstack/react-query";
+import axios from "axios";
+import { useNavigate } from "react-router-dom";
 
-interface FormValues {
+interface UserRegisterType {
   username: string;
   email: string;
   password: string;
   confirmPassword: string;
 }
 
-const validationSchema = Yup.object({
-  username: Yup.string().required("نام کاربری الزامی است."),
-  email: Yup.string()
-    .email("ایمیل معتبر وارد کنید.")
-    .required("ایمیل الزامی است."),
-  password: Yup.string()
-    .min(6, "رمز عبور باید حداقل 6 کاراکتر باشد.")
-    .required("رمز عبور الزامی است."),
-  confirmPassword: Yup.string()
-    .oneOf(
-      [Yup.ref("password"), null],
-      "رمز عبور باید با هم مطابقت داشته باشد."
-    )
-    .required("تکرار رمز عبور الزامی است."),
-});
+type userPayloadType = Omit<UserRegisterType, "confirmPassword">;
 
 const Register: React.FC = () => {
-  const formik = useFormik<FormValues>({
-    initialValues: {
-      username: "",
-      email: "",
-      password: "",
-      confirmPassword: "",
-    },
+  const navigate = useNavigate();
+
+  const validationSchema = Yup.object({
+    username: Yup.string()
+      .required("نام کاربری الزامی است.")
+      .min(5, "نام کاربری باید حداقل 5 کاراکتر باشد."),
+    email: Yup.string()
+      .email("ایمیل معتبر وارد کنید.")
+      .required("ایمیل الزامی است."),
+    password: Yup.string()
+      .min(8, "رمز عبور باید حداقل 8 کاراکتر باشد.")
+      .required("رمز عبور الزامی است.")
+      .matches(
+        /[!@#$%^&*(),.?":{}|<>]/,
+        "رمز ورود باید حداقل یک کاراکتر خاص داشته باشد"
+      ),
+    confirmPassword: Yup.string()
+      .oneOf(
+        [Yup.ref("password"), null],
+        "رمز عبور باید با هم مطابقت داشته باشد."
+      )
+      .required("تکرار رمز عبور الزامی است."),
+  });
+
+  const initialValues: UserRegisterType = {
+    username: "",
+    email: "",
+    password: "",
+    confirmPassword: "",
+  };
+
+  const formik = useFormik<UserRegisterType>({
+    initialValues,
     validationSchema,
-    onSubmit: (values) => {
-      console.log(values);
+    onSubmit: ({ username, password, email }) => {
+      mutation.mutate({ username, password, email });
+    },
+  });
+
+  const userRegisterRequest = async (payload: userPayloadType) => {
+    const { data } = await axios.post(
+      "http://130.185.75.174:3001/api/v1/auth/register",
+      payload,
+      {
+        headers: {
+          "Content-Type": "application/json",
+        },
+      }
+    );
+    return data;
+  };
+
+  const mutation = useMutation({
+    mutationFn: userRegisterRequest,
+    onSuccess: (data) => {
+      console.log("success: ", data);
+      navigate("/login");
+    },
+    onError: (error) => {
+      console.error("error:", error.message);
     },
   });
 
@@ -99,8 +138,7 @@ const Register: React.FC = () => {
         type="submit"
         variant="danger"
         label="ثبت نام"
-        onClick={() => {}}
-        disabled={!!Object.keys(formik.errors).length}
+        disabled={!formik.isValid || formik.isSubmitting}
       />
     </form>
   );
