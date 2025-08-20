@@ -1,2 +1,46 @@
 ### HEALTH CHECK
 GET http://localhost:3001/api/health
+
+### SERVER HEALTH
+GET  http://130.185.75.174:3001/api/health
+
+### REGISTER
+POST http://localhost:3001/api/v1/auth/register
+Content-Type: application/json
+
+{
+  "username": "Test1",
+  "email": "Test1@test.com",
+  "password": "Test1234@"
+}
+
+### SERVER REGISTER
+POST http://130.185.75.174:3001/api/v1/auth/register
+Content-Type: application/json
+
+{
+  "username": "Test1",
+  "email": "Test1@test.com",
+  "password": "Test1234@"
+}
+
+
+### LOGIN
+POST http://localhost:3001/api/v1/auth/login
+Content-Type: application/json
+
+{
+  "username": "Test1",
+  "password": "Test1234@"
+}
+
+
+### LOGIN
+POST http://130.185.75.174:3001/api/v1/auth/login
+Content-Type: application/json
+
+{
+  "username": "Test1",
+  "password": "Test1234@"
+}
+

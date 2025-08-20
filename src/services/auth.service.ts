@@ -6,41 +6,40 @@ import type {insertUserZodSchema} from "../db/models/user.model.ts";
 
 
 export class authService {
+    static async register(user: insertUserZodSchema) {
+        try {
+            const userByEmail = await authRepository.findByEmail(user.email);
+            if (userByEmail) {
+                throw new Error('Email already exists');
+            }
+            const hashedPassword = await bcrypt.hash(user.password, 10);
 
-    private readonly authRepo = authRepository;
-
-
-    async register(userData: { username: string, password: string, email: string }) {
-        const userByUsername = await this.authRepo.findByUsername(userData.username);
-        if (userByUsername) {
-            throw new Error('Username already exists');
+            return await authRepository.createUser({
+                ...user,
+                password: hashedPassword,
+            });
+        } catch (error) {
+            if (error instanceof Error) {
+                throw new Error(error.message)
+            }
+            throw new Error(
+                'Internal server error'
+            )
         }
-
-        const userByEmail = await this.authRepo.findByEmail(userData.email);
-        if (userByEmail) {
-            throw new Error('Email already exists');
-        }
-        const hashedPassword = await bcrypt.hash(userData.password, 10);
-
-        return await this.authRepo.createUser({
-            ...userData,
-            password: hashedPassword,
-        });
-
 
     }
 
-    async login(userData: insertUserZodSchema) {
-        const {_id, password, username, email} = await this.authRepo.findByUsername(userData.username);
-        if (_id) {
+    static async login(userData: insertUserZodSchema) {
+        const {_id, password, username, email} = await authRepository.findByUsername(userData.username);
+
+        if (!_id) {
             throw new Error('User not found');
         }
 
-        const comparePassword = await bcrypt.compare(userData.password, password);
+        const comparePassword = bcrypt.compare(userData.password, password);
         if (!comparePassword) {
             throw new Error('passwords or username do not match');
         }
-
 
         const accessToken = jwt.sign({
                 _id,
@@ -50,7 +49,6 @@ export class authService {
             {
                 expiresIn: env.ACCESS_TOKEN_EXPIRES_IN
             });
-
 
         return {
             accessToken,
