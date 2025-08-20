@@ -7,11 +7,13 @@ const ProfileInfo = () => {
         {/* <imag src=""></imag> */}
       </div>
       <div className="flex flex-col w-3/6 overflow-hidden justify-center">
-        <div className="flex flex-row flex-start ">
-          <span className="text-base font-bold ml-2">sepideh shabrang</span>
-          <span>@shabrang70</span>
+        <div className="flex flex-row flex-start items-center pb-2">
+          <span className="text-xl font-bold ml-4">sepideh shabrang</span>
+          <span className="text-base font-light">shabrang70@</span>
         </div>
-        <span>this is a bio text :)</span>
+        <span className="text-[#b5b5b5]">
+          this is a bio text in sepideh shabrang of college geram :)
+        </span>
       </div>
       <div className="w-2/6 flex flex-end justify-center justify-end">
         <Button
