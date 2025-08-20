@@ -2,12 +2,12 @@ import Button from "@/components/Button";
 
 const ProfileInfo = () => {
   return (
-    <div className="profile-info-container flex flex-auto h-[80px] w-full">
-      <div className="profile-image w-1/6 border rounded-full max-h-[80px] max-w-[80px] ml-5 ">
+    <div className="profile-info-container flex flex-auto h-[130px] w-full items-center py-2">
+      <div className="profile-image w-1/6 border rounded-full h-[120px] w-[120px] ml-6 ">
         {/* <imag src=""></imag> */}
       </div>
       <div className="flex flex-col w-3/6 overflow-hidden justify-center">
-        <div className="flex flex-row flex-start items-center pb-2">
+        <div className="flex flex-row flex-start items-center pb-4">
           <span className="text-xl font-bold ml-4">sepideh shabrang</span>
           <span className="text-base font-light">shabrang70@</span>
         </div>
