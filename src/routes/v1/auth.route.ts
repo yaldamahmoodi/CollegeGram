@@ -5,10 +5,10 @@ import {insertUserSchema} from "../../db/models/user.model.ts";
 
 const router = Router();
 const initiator = new Initiator();
-const userController = initiator.getUserController();
+const authController = initiator.getAuthController();
 
-router.post("/register", bodyParser(insertUserSchema), userController.register);
-router.post("/login", userController.login);
+router.post("/register", bodyParser(insertUserSchema), authController.register);
+router.post("/login", authController.login);
 
 export default router;
 
