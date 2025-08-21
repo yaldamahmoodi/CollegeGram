@@ -1,8 +1,7 @@
-import {type IUser, UserModel} from "../db/models/user.model.js";
+import {type IUser, UserModel} from "../db/models/user.model.ts";
 
-export class UserRepositoryYaldoo{
-    async  findByUserId(userId: string): Promise<IUser | null> {
+export class UserRepository{
+   static async findByUserId(userId: string): Promise<IUser | null> {
         return await UserModel.findById(userId);
     }
-
 }
