@@ -1,16 +1,19 @@
 import {authController} from "./controllers/auth.controller.ts";
 import {authRepository} from "./repositories/auth.repository.ts";
 import {authService} from "./services/auth.service.ts";
+import {UserController} from "./controllers/user.controller.ts";
 
 export class Initiator {
     protected authService: authService;
     protected authRepo: authRepository;
     protected authController: authController;
+    protected userController : UserController;
 
     constructor() {
         this.authRepo = new authRepository();
-        this.authService = new authService(this.authRepo);
-        this.authController = new authController(this.authService);
+        this.authService = new authService();
+        this.authController = new authController();
+        this.userController = new UserController()
     }
 
     public getUserRepository() {
@@ -21,7 +24,12 @@ export class Initiator {
         return this.authService;
     }
 
-    public getUserController() {
+    public getAuthController() {
         return this.authController;
     }
+
+    public getUserController() {
+        return this.userController;
+    }
+
 }
