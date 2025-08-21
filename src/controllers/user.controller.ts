@@ -5,12 +5,8 @@ import console from "node:console";
 
 
 export class UserController {
-    constructor(protected userService: UserService) {
-        this.uploadProfile = this.uploadProfile.bind(this);
 
-    }
-
-    async uploadProfile(req: Authenticate, res: Response) {
+   async uploadProfile(req: Authenticate, res: Response) {
         if (!req.user) return res.status(401).json({error: "Unauthorized"});
 
         if (!req.file) return res.status(400).json({error: "No file uploaded"});
@@ -18,7 +14,7 @@ export class UserController {
         const filePath = req.file.path;
 
         try {
-            const profile = await this.userService.uploadProfile(filePath, req.user.id);
+            const profile = await UserService.uploadProfile(filePath, req.user.id);
             return res.status(201).json({
                 success: true,
                 message: "Profile upload success",
