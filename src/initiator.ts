@@ -1,16 +1,19 @@
-import {UserService} from "./services/user.service";
+import { UserService} from "./services/user.service";
 import {UserRepository} from "./repositories/user.repository";
+import {AuthController} from "./controllers/auth.controller";
 import {UserController} from "./controllers/user.controller";
 
 export class Initiator {
-    protected userService: UserService;
+    protected UserService: UserService;
     protected userRepository: UserRepository;
-    protected userController: UserController;
+    protected AuthController: AuthController;
+    protected UserController: UserController;
 
     constructor() {
         this.userRepository = new UserRepository();
-        this.userService = new UserService(this.userRepository);
-        this.userController = new UserController(this.userService);
+        this.UserService = new UserService(this.userRepository);
+        this.AuthController = new AuthController(this.UserService);
+        this.UserController = new UserController(this.UserService)
     }
 
     public getUserRepository() {
@@ -18,10 +21,13 @@ export class Initiator {
     }
 
     public getUserService() {
-        return this.userService;
+        return this.UserService;
     }
 
+    public getAuthController() {
+        return this.AuthController;
+    }
     public getUserController() {
-        return this.userController;
+        return this.UserController;
     }
 }

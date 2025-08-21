@@ -32,4 +32,7 @@ export class UserRepository {
     async findAuthByToken(refreshToken:string): Promise<AuthenticationDocument | null> {
         return await AuthenticationModel.findOne({refreshToken:refreshToken,status:'active'}).exec();
     }
+    async findByUserId(userId: string): Promise<UserDocument | null> {
+        return await UserModel.findById(userId);
+    }
 }

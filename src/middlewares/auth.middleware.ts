@@ -2,6 +2,7 @@ import {Request, Response, NextFunction} from "express";
 import * as jwt from "jsonwebtoken";
 import {JwtPayload} from "jsonwebtoken";
 import {UserDocument, UserModel} from "../models/user.model";
+import console from "node:console";
 
 export interface Authenticate extends Request {
     user?: {
@@ -37,7 +38,7 @@ export const AuthMiddleware = async (req: Request, res: Response, next: NextFunc
         return res.status(401).json({error: 'Token expired or invalid'});
     }
 
-    const loggedInUser = await UserModel.findById(payload.id) as UserDocument | null;
+    const loggedInUser = await UserModel.findById(payload.userId) as UserDocument | null;
 
     if (!loggedInUser) {
         return res.status(404).json({error: "User not found"});

@@ -1,6 +1,10 @@
 import {UserRepository} from "../repositories/user.repository";
 import * as bcrypt from 'bcrypt';
 import * as jwt from "jsonwebtoken";
+import dotenv from "dotenv";
+import {ProfilePhotoModel} from "../models/profile-photo.model";
+dotenv.config();
+
 
 export class UserService {
 
@@ -70,6 +74,23 @@ export class UserService {
         if (!userAuth) throw new Error("No active user auth found");
 
         return this.generateAccessToken({userId: payload.userId});
+    }
+
+    async uploadProfile( filePath: string, userId: string ) {
+
+        const findUserById = await this.userRepo.findByUserId(userId);
+        if (!findUserById) {
+            throw new Error('User not found');
+        }
+
+        const profile = await ProfilePhotoModel.create({
+            path: filePath,
+            user_id: findUserById._id
+        });
+
+
+        return profile;
+
     }
 
     private generateAccessToken(payload: { userId: string }) {

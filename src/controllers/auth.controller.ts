@@ -1,12 +1,12 @@
 import {Request, Response, Router} from "express";
-import {UserService} from "../services/user.service";
 import {registerDto} from "../dtos/register.dto";
 import {loginDTO} from "../dtos/login.dto";
 import * as console from "node:console";
+import {UserService} from "../services/user.service";
 
-export class UserController {
+export class AuthController {
 
-    constructor(protected userService: UserService) {
+    constructor(protected UserService: UserService) {
         this.register = this.register.bind(this);
         this.login = this.login.bind(this);
         this.refreshToken = this.refreshToken.bind(this);
@@ -25,7 +25,7 @@ export class UserController {
         const userData = result.data;
 
         try {
-            const newUser = await this.userService.register(userData);
+            const newUser = await this.UserService.register(userData);
             return res.status(201).json({
                 success: true,
                 message: "User created successfully",
@@ -53,7 +53,7 @@ export class UserController {
         const userData = result.data;
 
         try {
-            const { accessToken, refreshToken } = await this.userService.login(userData);
+            const { accessToken, refreshToken } = await this.UserService.login(userData);
 
             res.cookie("refreshToken", refreshToken, {
                 httpOnly: true,
@@ -87,7 +87,7 @@ export class UserController {
                 });
             }
 
-            const newAccessToken = await this.userService.refreshToken(refreshToken);
+            const newAccessToken = await this.UserService.refreshToken(refreshToken);
 
             return res.status(200).json({
                 success: true,

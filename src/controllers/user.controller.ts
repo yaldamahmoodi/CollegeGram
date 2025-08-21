@@ -1,7 +1,7 @@
 import type {Authenticate} from "../middlewares/auth.middleware.ts";
 import type {Response} from "express";
-import {UserService} from "../services/user.service.ts";
 import console from "node:console";
+import {UserService} from "../services/user.service";
 
 
 export class UserController {

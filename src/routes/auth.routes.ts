@@ -1,5 +1,6 @@
 import {Router} from "express";
 import {Initiator} from "../initiator";
+import * as console from "node:console";
 
 const router = Router();
 
