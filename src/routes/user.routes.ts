@@ -8,7 +8,7 @@ const router = Router();
 const initiator = new Initiator();
 const userController = initiator.getUserController();
 
-router.put(
+router.patch(
     "/profile/upload",
     AuthMiddleware,
     uploadProfilePhotoMiddleware.single("profile"),
