@@ -76,22 +76,27 @@ export class UserService {
         return this.generateAccessToken({userId: payload.userId});
     }
 
-    async uploadProfile( filePath: string, userId: string ) {
-
+    async uploadProfile(filePath: string, userId: string) {
         const findUserById = await this.userRepo.findByUserId(userId);
         if (!findUserById) {
             throw new Error('User not found');
         }
 
-        const profile = await ProfilePhotoModel.create({
-            path: filePath,
-            user_id: findUserById._id
-        });
+        let profile = await ProfilePhotoModel.findOne({ user_id: findUserById._id });
 
+        if (profile) {
+            profile.path = filePath;
+            await profile.save();
+        } else {
+            profile = await ProfilePhotoModel.create({
+                path: filePath,
+                user_id: findUserById._id
+            });
+        }
 
         return profile;
-
     }
+
 
     private generateAccessToken(payload: { userId: string }) {
         return jwt.sign(payload, process.env.ACCESS_TOKEN_SECRET as string, {
