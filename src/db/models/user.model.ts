@@ -2,6 +2,7 @@ import mongoose, {Model, Schema, Types} from "mongoose";
 import {z} from "zod";
 
 export interface IUser {
+    _id: Types.ObjectId
     email: string;
     username: string;
     password: string;

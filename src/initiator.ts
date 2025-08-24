@@ -1,35 +1,33 @@
-// import {authController} from "./controllers/auth.controller.ts";
-// import {authRepository} from "./repositories/auth.repository.ts";
-// import {authService} from "./services/auth.service.ts";
-// import {UserController} from "./controllers/user.controller.ts";
+import {UserService} from "./services/user.service.ts";
+import {UserRepository} from "./repositories/user.repository.ts";
+import {AuthController} from "./controllers/auth.controller.ts";
+import {UserController} from "./controllers/user.controller.ts";
+import {AuthService} from "./services/auth.service.ts";
+import {AuthRepository} from "./repositories/auth.repository.ts";
+
 
 export class Initiator {
-    // protected authService: authService;
-    // protected authRepo: authRepository;
-    // protected authController: authController;
-    // protected userController : UserController;
-    //
-    // constructor() {
-    //     this.authRepo = new authRepository();
-    //     this.authService = new authService();
-    //     this.authController = new authController();
-    //     this.userController = new UserController()
-    // }
-    //
-    // public getUserRepository() {
-    //     return this.authRepo;
-    // }
-    //
-    // public getUserService() {
-    //     return this.authService;
-    // }
-    //
-    // public getAuthController() {
-    //     return this.authController;
-    // }
-    //
-    // public getUserController() {
-    //     return this.userController;
-    // }
+    protected userService: UserService;
+    protected userRepository: UserRepository;
+    protected authController: AuthController;
+    protected authService: AuthService;
+    protected userController: UserController;
+    protected authRepository: AuthRepository;
 
+    constructor() {
+        this.userRepository = new UserRepository();
+        this.authRepository = new AuthRepository();
+        this.authService = new AuthService(this.authRepository);
+        this.userService = new UserService(this.userRepository);
+        this.authController = new AuthController(this.authService);
+        this.userController = new UserController(this.userService)
+    }
+
+    public getAuthController() {
+        return this.authController;
+    }
+
+    public getUserController() {
+        return this.userController;
+    }
 }

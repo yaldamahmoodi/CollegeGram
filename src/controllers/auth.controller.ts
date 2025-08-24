@@ -3,10 +3,12 @@ import type {AuthService} from "../services/auth.service.ts";
 
 
 export class AuthController {
-    private readonly authService: AuthService;
+    protected authService: AuthService;
 
     constructor(authService: AuthService) {
-        this.authService = authService
+        this.authService = authService;
+        this.register = this.register.bind(this);
+        this.login = this.login.bind(this);
     }
 
     async register(req: Request, res: Response) {
