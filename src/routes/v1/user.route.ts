@@ -2,6 +2,7 @@ import {Router} from "express";
 import {Initiator} from "../../initiator.ts";
 import {AuthMiddleware} from "../../middlewares/auth.middleware.ts";
 import {uploadProfilePhotoMiddleware} from "../../middlewares/uploadProfilePhoto.middleware.ts";
+import {errorHandler} from "../../middlewares/error.middleware.ts";
 
 const router = Router();
 
@@ -14,5 +15,7 @@ router.post(
     uploadProfilePhotoMiddleware.single("profile"),
     userController.uploadProfile
 );
+
+app.use(errorHandler);
 
 export default router;
