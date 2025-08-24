@@ -38,13 +38,19 @@ export class AuthService {
     }
 
     async login(userData: insertUserZodSchema) {
+        const user = await this.authRepository.findByUsername(userData.username);
+
+        if (!user) {
+            throw new Error('User not found');
+        }
+
         const {_id, password, username, email} = await this.authRepository.findByUsername(userData.username);
 
         if (!_id) {
             throw new Error('User not found');
         }
 
-        const comparePassword = bcrypt.compare(userData.password, password);
+        const comparePassword =await bcrypt.compare(userData.password, password);
         if (!comparePassword) {
             throw new Error('passwords or username do not match');
         }

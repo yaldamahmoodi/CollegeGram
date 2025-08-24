@@ -9,6 +9,7 @@ export class UserController {
 
     constructor(userService: UserService) {
         this.userService = userService;
+        this.uploadProfile = this.uploadProfile.bind(this);
     }
 
 
