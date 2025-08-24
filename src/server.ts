@@ -5,6 +5,7 @@ import morgan from 'morgan'
 
 import healthRoute from "./routes/health.route.ts";
 import authRoute from "./routes/v1/auth.route.ts"
+import userRoute from "./routes/v1/user.route.ts";
 import env from "../env.ts";
 
 const app = express();
@@ -23,6 +24,7 @@ app.use(express.json());
 /* ---- ROUTES ---- */
 app.use("/api/health", healthRoute)
 app.use("/api/v1/auth", authRoute);
+app.use("/api/v1/users", userRoute);
 
 
 export {app};

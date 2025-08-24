@@ -2,20 +2,37 @@ version: '3.8'
 
 services:
   mongo:
-    image: mongo:6.0
-    container_name: mongogram
+    image: mongo:4.4
+    container_name: collagegram
     restart: unless-stopped
     environment:
       MONGO_INITDB_ROOT_USERNAME: admin
       MONGO_INITDB_ROOT_PASSWORD: admin
       MONGO_INITDB_DATABASE: collagegram
+
     ports:
       - "27017:27017"
     volumes:
       - mongo_data:/data/db
 
+  collegegram:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    restart: unless-stopped
+    ports:
+      - "3001:3001"
+    depends_on:
+      - mongo
+    environment:
+      NODE_ENV: ${NODE_ENV}
+      PORT: ${PORT}
+      MONGODB_URI: ${MONGODB_URI}
+      CORS_ORIGIN: ${CORS_ORIGIN}
+
+
   mongo-express:
-    image: mongo-express:1.0.0-alpha.4
+    image: mongo-express:latest
     container_name: mongo-express
     restart: unless-stopped
     ports:
@@ -28,8 +45,8 @@ services:
       - mongo
 
   mongo-test:
-    image: mongo:6.0
-    container_name: mongogram-test
+    image: mongo:4.4
+    container_name: collagegram-test
     restart: unless-stopped
     environment:
       MONGO_INITDB_ROOT_USERNAME: admin
@@ -41,7 +58,7 @@ services:
       - mongo_test_data:/data/db
 
   mongo-express-test:
-    image: mongo-express:1.0.0-alpha.4
+    image: mongo-express:latest
     container_name: mongo-express-test
     restart: unless-stopped
     ports:
