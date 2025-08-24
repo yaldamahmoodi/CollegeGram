@@ -1,12 +1,18 @@
 import path from 'path';
-import multer, {type StorageEngine } from 'multer';
+import multer, {type StorageEngine} from 'multer';
 import type {Request} from 'express';
 import * as fs from "node:fs";
+import {fileURLToPath} from "node:url";
 
-const uploadPath = path.join(__dirname, '/uploads');
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+
+
+const uploadPath = path.join(__dirname, 'uploads');
 
 if (!fs.existsSync(uploadPath)) {
-    fs.mkdirSync(uploadPath, { recursive: true });
+    fs.mkdirSync(uploadPath, {recursive: true});
 }
 const storage: StorageEngine = multer.diskStorage({
     destination: (req: Request, file: Express.Multer.File, cb) => {
@@ -19,4 +25,4 @@ const storage: StorageEngine = multer.diskStorage({
     },
 });
 
-export const uploadProfilePhotoMiddleware = multer({ storage });
+export const uploadProfilePhotoMiddleware = multer({storage});

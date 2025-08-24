@@ -1,6 +1,6 @@
 import type {Request, Response, NextFunction} from "express";
 
-import {verify, type JwtPayload} from "jsonwebtoken";
+import jwt, {type JwtPayload} from "jsonwebtoken";
 import {UserModel} from "../db/models/user.model.ts";
 
 export interface Authenticate extends Request {
@@ -31,7 +31,7 @@ export const AuthMiddleware = async (req: Request, res: Response, next: NextFunc
     const jwtSecret = process.env.ACCESS_TOKEN_SECRET as string;
     let payload: JwtPayload;
     try {
-        payload = verify(token, jwtSecret) as JwtPayload;
+        payload = jwt.verify(token, jwtSecret) as JwtPayload;
 
     } catch (error: any) {
         return res.status(401).json({error: 'Token expired or invalid'});
