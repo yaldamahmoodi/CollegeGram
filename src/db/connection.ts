@@ -49,7 +49,7 @@ export class Database {
     static async getInstance(): Promise<Database> {
         if (!Database.instance) {
             Database.instance = new Database();
-            await this.connect_db()
+            await this.instance.connect_db()
         }
         return Database.instance;
     }

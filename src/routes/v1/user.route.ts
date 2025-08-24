@@ -9,7 +9,7 @@ const router = Router();
 const initiator = new Initiator();
 const userController = initiator.getUserController();
 
-app.use(authMiddleware)
+router.use(authMiddleware)
 
 router.post(
     "/profile/upload",
@@ -17,6 +17,6 @@ router.post(
     userController.uploadProfile
 );
 
-app.use(errorHandler);
+router.use(errorHandler);
 
 export default router;

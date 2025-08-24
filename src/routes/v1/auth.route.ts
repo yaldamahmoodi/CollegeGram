@@ -12,7 +12,7 @@ const authController = initiator.getAuthController();
 router.post("/register", bodyParser(insertUserSchema), authController.register);
 router.post("/login", authController.login);
 
-app.use(errorHandler);
+router.use(errorHandler);
 
 export default router;
 

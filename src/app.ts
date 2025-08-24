@@ -1,6 +1,6 @@
 import mongoose from "mongoose";
 import app from "./server.ts";
-import {connect_db, Database} from "./db/connection.ts";
+import {Database} from "./db/connection.ts";
 import env from "../env.ts";
 
 (async () => {
