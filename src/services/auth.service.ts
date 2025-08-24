@@ -1,20 +1,28 @@
-import {authRepository} from "../repositories/auth.repository.ts";
+import {AuthRepository} from "../repositories/auth.repository.ts";
 import bcrypt from 'bcrypt';
 import jwt from "jsonwebtoken";
 import env from "../../env.ts";
 import type {insertUserZodSchema} from "../db/models/user.model.ts";
 
 
-export class authService {
-    static async register(user: insertUserZodSchema) {
+export class AuthService {
+
+    private readonly authRepository: AuthRepository;
+
+    constructor(authRepository: AuthRepository) {
+        this.authRepository = authRepository;
+    }
+
+
+    async register(user: insertUserZodSchema) {
         try {
-            const userByEmail = await authRepository.findByEmail(user.email);
+            const userByEmail = await this.authRepository.findByEmail(user.email);
             if (userByEmail) {
                 throw new Error('Email already exists');
             }
             const hashedPassword = await bcrypt.hash(user.password, 10);
 
-            return await authRepository.createUser({
+            return await this.authRepository.createUser({
                 ...user,
                 password: hashedPassword,
             });
@@ -29,8 +37,8 @@ export class authService {
 
     }
 
-    static async login(userData: insertUserZodSchema) {
-        const {_id, password, username, email} = await authRepository.findByUsername(userData.username);
+    async login(userData: insertUserZodSchema) {
+        const {_id, password, username, email} = await this.authRepository.findByUsername(userData.username);
 
         if (!_id) {
             throw new Error('User not found');
@@ -55,4 +63,10 @@ export class authService {
             _id
         };
     }
+
+
+    async logout() {
+
+    }
+
 }

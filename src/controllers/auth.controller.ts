@@ -1,12 +1,17 @@
 import type {Request, Response} from "express";
-import {authService} from "../services/auth.service.ts";
+import type {AuthService} from "../services/auth.service.ts";
 
 
-export class authController {
+export class AuthController {
+    private readonly authService: AuthService;
+
+    constructor(authService: AuthService) {
+        this.authService = authService
+    }
 
     async register(req: Request, res: Response) {
         try {
-            await authService.register(req.body);
+            await this.authService.register(req.body);
             return res.status(201).json({
                 success: true,
                 message: "User created successfully"
@@ -21,7 +26,7 @@ export class authController {
 
     async login(req: Request, res: Response) {
         try {
-            const token = await authService.login(req.body);
+            const token = await this.authService.login(req.body);
             res.cookie('accessToken', token, {
                 httpOnly: true,
                 secure: true,

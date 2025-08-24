@@ -1,23 +1,25 @@
 import {ProfilePhotoModel} from "../db/models/profile-photo.model.ts";
-import {UserRepository} from "../repositories/user.repository.ts";
+import type {UserRepository} from "../repositories/user.repository.ts";
 
 export class UserService {
 
-    static async uploadProfile( filePath: string, userId: string ) {
+    private readonly userRepository: UserRepository;
 
-        const findUserById = await UserRepository.findByUserId(userId);
+    constructor(userRepository: UserRepository) {
+        this.userRepository = userRepository;
+    }
+
+    async uploadProfile(filePath: string, userId: string) {
+
+        const findUserById = await this.userRepository.findByUserId(userId);
         if (!findUserById) {
             throw new Error('User not found');
         }
 
-        const profile = await ProfilePhotoModel.create({
+        return await ProfilePhotoModel.create({
             path: filePath,
             user_id: findUserById._id
         });
-
-
-        return profile;
-
     }
 
 }
