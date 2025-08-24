@@ -1,18 +1,22 @@
 import {Router} from "express";
 import {Initiator} from "../../initiator.ts";
-import {AuthMiddleware} from "../../middlewares/auth.middleware.ts";
+import {authMiddleware} from "../../middlewares/auth.middleware.ts";
 import {uploadProfilePhotoMiddleware} from "../../middlewares/uploadProfilePhoto.middleware.ts";
+import {errorHandler} from "../../middlewares/error.middleware.ts";
 
 const router = Router();
 
 const initiator = new Initiator();
 const userController = initiator.getUserController();
 
+router.use(authMiddleware)
+
 router.post(
     "/profile/upload",
-    AuthMiddleware,
     uploadProfilePhotoMiddleware.single("profile"),
     userController.uploadProfile
 );
+
+router.use(errorHandler);
 
 export default router;

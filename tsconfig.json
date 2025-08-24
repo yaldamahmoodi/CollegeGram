@@ -3,6 +3,7 @@
     "noEmit": true,
     "target": "esnext",
     "module": "NodeNext",
+    "useDefineForClassFields": true,
     "rewriteRelativeImportExtensions": true,
     "erasableSyntaxOnly": false,
     "verbatimModuleSyntax": true,
