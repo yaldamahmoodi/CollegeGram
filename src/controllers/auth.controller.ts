@@ -28,20 +28,18 @@ export class AuthController {
 
     async login(req: Request, res: Response) {
         try {
-            const token = await this.authService.login(req.body);
-            res.cookie('accessToken', token, {
+            const {accessToken} = await this.authService.login(req.body);
+            return res.status(200).cookie('accessToken', accessToken, {
                 httpOnly: true,
                 secure: true,
+                sameSite: "strict",
+                signed: true,
                 maxAge: 7 * 24 * 60 * 60 * 1000,
-            });
-
-            return res.status(200).json({
+            }).json({
                 success: true,
                 message: "User logged in successfully",
-                data: {
-                    accessToken: token.accessToken,
-                },
             });
+
         } catch (error: any) {
             return res.status(400).json({
                 success: false,

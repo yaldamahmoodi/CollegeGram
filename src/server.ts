@@ -2,6 +2,7 @@ import express from "express";
 import helmet from "helmet";
 import cors from 'cors'
 import morgan from 'morgan'
+import cookieParser from "cookie-parser";
 
 import healthRoute from "./routes/health.route.ts";
 import authRoute from "./routes/v1/auth.route.ts"
@@ -9,6 +10,7 @@ import userRoute from "./routes/v1/user.route.ts";
 import env from "../env.ts";
 
 const app = express();
+app.use(cookieParser(process.env.COOKIE_SECRET));
 
 
 /* ---- GLOBAL MIDDLE WARES ---- */
