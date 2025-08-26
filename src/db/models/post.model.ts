@@ -1,6 +1,5 @@
 import mongoose, {Schema, Types} from "mongoose";
 import {z} from "zod"
-import type {Document} from "bson";
 
 export interface IPostSchema extends Document {
     _id: string;
