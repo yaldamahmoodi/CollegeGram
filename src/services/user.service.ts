@@ -25,7 +25,7 @@ export class UserService {
             throw new Error('User not found');
         }
 
-        return await this.profilePhotoRepository.createProfilePhoto(findUserById._id, filePath);
+        return await this.profilePhotoRepository.upsertProfilePhoto(findUserById._id, filePath);
     }
 
     async getUserDetails(userId: string) {
