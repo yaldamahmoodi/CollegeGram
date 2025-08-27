@@ -10,7 +10,7 @@ import userRoute from "./routes/v1/user.route.ts";
 import env from "../env.ts";
 
 const app = express();
-app.use(cookieParser(process.env.COOKIE_SECRET));
+app.use(cookieParser(env.COOKIE_SECRET));
 
 
 /* ---- GLOBAL MIDDLE WARES ---- */

@@ -7,7 +7,7 @@ import {errorHandler} from "../../middlewares/error.middleware.ts"
 
 const router = Router();
 const initiator = new Initiator();
-const authController = initiator.getAuthController();
+const authController = initiator.getAuthController;
 
 router.post("/register", bodyParser(insertUserSchema), authController.register);
 router.post("/login", authController.login);

@@ -1,4 +1,6 @@
 import mongoose from "mongoose";
+import type {Request, Response, NextFunction} from 'express';
+import env from "../../env.ts";
 
 process.on('SIGINT', async () => {
     await mongoose.connection.close();
@@ -12,8 +14,6 @@ process.on("SIGTERM", async () => {
     process.exit(0);
 });
 
-import type {Request, Response, NextFunction} from 'express';
-import env from "../../env.ts";
 
 /**
  * Error handling utilities for the CollageGram application.
@@ -120,11 +120,16 @@ const errorHandler = (err: APIError, req: Request, res: Response, next: NextFunc
         message = err.message
     }
 
+    if (err.name === "NotFoundError") {
+        status = 404
+        message = err.message
+    }
+
     // Send JSON response with appropriate status code
     // Include stack trace and details only in development mode
     res.status(status).json({
         error: message,
-        ...(env.APP_STAGE === 'dev' && {stack: err.stack, details: err.message})
+        ...(env.APP_STAGE === 'development' && {stack: err.stack, details: err.message})
     })
 }
 

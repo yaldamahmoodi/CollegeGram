@@ -20,3 +20,22 @@ export const bodyParser = (schema: ZodSchema) => {
 
     }
 }
+
+
+export const paramsParser = (schema: ZodSchema) => {
+    return (req: Request, res: Response, next: NextFunction) => {
+        try {
+            schema.parse(req.params)
+            next()
+        } catch (err) {
+            if (err instanceof ZodError) {
+                res.status(400).json({
+                    error: 'invalid parameters', details: err.issues.map((err) => ({
+                        field: err.path.join('.'),
+                        message: err.message
+                    }))
+                })
+            }
+        }
+    }
+}

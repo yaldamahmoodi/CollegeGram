@@ -1,3 +1,5 @@
+import {type IUser, UserModel} from "../db/models/user.model.ts";
+import {type IPostSchema, postModel} from "../db/models/posts.model.ts"
 import {type IUser, UserModel,  type insertUserZodSchema} from "../db/models/user.model.ts";
 
 export class UserRepository {
