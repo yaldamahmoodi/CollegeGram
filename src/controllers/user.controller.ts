@@ -13,6 +13,8 @@ export class UserController {
         this.uploadProfile = this.uploadProfile.bind(this);
         this.createPost = this.createPost.bind(this);
         this.getUserDetails = this.getUserDetails.bind(this);
+        this.profileUpdater = this.profileUpdater.bind(this);
+
     }
 
 
@@ -90,5 +92,23 @@ export class UserController {
         } catch (error: any) {
             return res.status(400).json({success: false, message: error.message});
         }
+    }
+
+    async profileUpdater(req: Authenticate, res: Response) {
+
+        try {
+            await this.userService.profileUpdater(req.user.username,req.body);
+            return res.status(201).json({
+                success: true,
+                message: "User successfully Updated"
+            });
+
+        } catch (error: any) {
+            return res.status(400).json({
+                success: false,
+                message: error.message,
+            });
+        }
+
     }
 }

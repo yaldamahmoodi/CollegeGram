@@ -3,7 +3,8 @@ import type {UserRepository} from "../repositories/user.repository.ts";
 import type {ProfileRepository} from "../repositories/profile.repository.ts";
 import {PostRepository} from "../repositories/post.repository.ts";
 import {type InsertPostDto} from "../db/models/post.model.ts";
-
+import type {insertUserZodSchema} from "../db/models/user.model.ts";
+import bcrypt from 'bcrypt';
 export class UserService {
 
     private readonly userRepository: UserRepository;
@@ -43,5 +44,25 @@ export class UserService {
         }
 
         return await this.postRepository.createPost(postData.user_id, postData.urls, postData.caption);
+    }
+
+
+    async profileUpdater(userName:string, userData: insertUserZodSchema){
+    
+        try {
+    
+            if(userData.password) {
+                const hashedPassword = await bcrypt.hash(userData.password, 10);
+            }
+                
+        return await this.userRepository.updateUser(userName, userData);
+            
+        } catch (error) {
+            if (error instanceof Error) {
+                throw new Error(error.message)
+            }
+            throw new Error('Internal server error')
+        }
+    
     }
 }
