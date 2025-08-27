@@ -17,6 +17,12 @@ router.post(
     userController.uploadProfile
 );
 
+router.get(
+    "/profile",
+    uploadProfilePhotoMiddleware.single("profile"),
+    userController.getUserDetails
+);
+
 router.use(errorHandler);
 
 export default router;

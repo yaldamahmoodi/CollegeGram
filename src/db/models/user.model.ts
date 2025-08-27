@@ -9,6 +9,11 @@ export interface IUser {
     firstName?: string | null;
     lastName?: string | null;
     biography?: string | null;
+    ProfilePhoto?: {
+        _id: Types.ObjectId;
+        path: string;
+        user_id: Types.ObjectId;
+    };
     createdAt: Date;
     updatedAt: Date;
 }
@@ -26,6 +31,18 @@ const UserSchema: Schema<IUser> = new Schema(
         timestamps: {createdAt: 'createdAt', updatedAt: 'updatedAt'},
     }
 );
+
+
+UserSchema.virtual("ProfilePhoto", {
+    ref: "ProfilePhoto",
+    localField: "_id",
+    foreignField: "user_id",
+    justOne: true
+})
+
+UserSchema.set("toObject", {virtuals: true});
+UserSchema.set("toJSON", {virtuals: true});
+
 
 export const UserModel: Model<IUser> = mongoose.model<IUser>('User', UserSchema);
 

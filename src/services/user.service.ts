@@ -22,4 +22,15 @@ export class UserService {
         });
     }
 
+    async getUserDetails(userId: string) {
+
+        const userDetails = await this.userRepository.findUserDetails(userId);
+        if (!userDetails) {
+            throw new Error('User not found');
+        }
+        return userDetails;
+
+    }
+
+
 }
