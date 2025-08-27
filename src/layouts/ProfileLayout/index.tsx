@@ -1,6 +1,35 @@
+import { useEffect } from "react";
 import ProfileInfo from "./components/ProfileInfo";
 import Button from "@/components/Button";
-const profileLayout = () => {
+import { useQuery } from "@tanstack/react-query";
+
+import axios from "axios";
+const ProfileLayout = () => {
+  useEffect(() => {}, []);
+
+  const getUserRequest = async () => {
+    const { data } = await axios.get(
+      "http://130.185.75.174:3001/api/v1/auth/user",
+      {
+        headers: {
+          "Content-Type": "application/json",
+        },
+      }
+    );
+    return data;
+  };
+
+  const { data, isLoading, isError, error } = useQuery({
+    queryKey: ["profile"],
+    queryFn: getUserRequest,
+    onSuccess: (data) => {
+      console.log(data);
+    },
+    onError: (err) => {
+      console.error(err);
+    },
+  });
+
   return (
     <div className="profile-container h-screen w-full bg-[#f5f5f5] px-10 pb-6 pt-8 flex flex-col">
       <div className="header w-full max-h-[50px] bg-transparent mb-4 flex items-center justify-between px-4 flex-row">
@@ -41,4 +70,4 @@ const profileLayout = () => {
   );
 };
 
-export default profileLayout;
+export default ProfileLayout;
