@@ -17,8 +17,10 @@ export class AuthService {
     async register(user: insertUserZodSchema) {
         try {
             const userByEmail = await this.authRepository.findByEmail(user.email);
-            if (userByEmail) {
-                throw new Error('Email already exists');
+            const userByUsername = await this.authRepository.findByUsername(user.username);
+            // I dont know how to resolve this warning , wil check with amin
+            if (userByEmail || userByUsername) {
+                throw new Error('Email or username already exists');
             }
             const hashedPassword = await bcrypt.hash(user.password, 10);
 
@@ -68,11 +70,6 @@ export class AuthService {
             accessToken,
             _id
         };
-    }
-
-
-    async logout() {
-
     }
 
 }
