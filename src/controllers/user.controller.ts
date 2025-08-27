@@ -1,7 +1,7 @@
 import type {Authenticate} from "../middlewares/auth.middleware.ts";
 import type {Response} from "express";
-import console from "node:console";
 import type {UserService} from "../services/user.service.ts";
+import type {InsertPostDto} from "../db/models/post.model.ts";
 import fs from "fs";
 
 export class UserController {
@@ -11,6 +11,7 @@ export class UserController {
     constructor(userService: UserService) {
         this.userService = userService;
         this.uploadProfile = this.uploadProfile.bind(this);
+        this.createPost = this.createPost.bind(this);
         this.getUserDetails = this.getUserDetails.bind(this);
     }
 
@@ -30,7 +31,6 @@ export class UserController {
                 data: profile
             });
         } catch (error: any) {
-            console.error(error);
             return res.status(400).json({success: false, message: error.message});
         }
     }
@@ -64,5 +64,31 @@ export class UserController {
             });
         }
     }
+    async createPost(req: Authenticate, res: Response) {
+        if (!req.user) return res.status(401).json({error: "Unauthorized"});
 
+        if (!req.files) return res.status(400).json({error: "No file uploaded"});
+
+        try {
+            const files = req.files as Express.Multer.File[];
+            const caption = req.body.caption;
+
+            const filePaths: string[] = files.map(file => file.path);
+
+            const postData: InsertPostDto = {
+                user_id: req.user.id,
+                urls: filePaths,
+                caption: caption
+            }
+
+            await this.userService.createPost(postData)
+
+            return res.status(201).json({
+                success: true,
+                message: "Post success",
+            })
+        } catch (error: any) {
+            return res.status(400).json({success: false, message: error.message});
+        }
+    }
 }
