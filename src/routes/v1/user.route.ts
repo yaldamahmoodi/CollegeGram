@@ -23,6 +23,12 @@ router.get(
     userController.getUserDetails
 );
 
+router.post(
+    "/upload/post",
+    uploadProfilePhotoMiddleware.array("photos",10),
+    userController.createPost
+);
+
 router.use(errorHandler);
 
 export default router;

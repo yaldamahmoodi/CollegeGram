@@ -96,6 +96,7 @@ temp/
 .tmp/
 *.tmp
 *.temp
+src/middlewares/uploads
 
 # Package manager files
 package-lock.json
