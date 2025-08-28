@@ -3,9 +3,9 @@ import { useFormik } from "formik";
 import * as Yup from "yup";
 import Button from "@/components/Button";
 import Input from "@/components/Input";
-import passwordIcon from "@/assets/images/passwordIcon.svg";
-import userNameIcon from "@/assets/images/userNameIcon.svg";
-import emailIcon from "@/assets/images/emailIcon.svg";
+import passwordIcon from "@/assets/icons/passwordIcon.svg";
+import userNameIcon from "@/assets/icons/userNameIcon.svg";
+import emailIcon from "@/assets/icons/emailIcon.svg";
 
 interface FormValues {
   username: string;
@@ -57,8 +57,8 @@ const Register: React.FC = () => {
         value={formik.values.username}
         onChange={formik.handleChange}
         onBlur={formik.handleBlur}
-        icon = {<img src={userNameIcon}/> }
-        iconPosition = "left"
+        icon={<img src={userNameIcon} />}
+        iconPosition="left"
       />
       {formik.touched.username && formik.errors.username && (
         <div style={{ color: "red" }}>{formik.errors.username}</div>
@@ -71,8 +71,8 @@ const Register: React.FC = () => {
         value={formik.values.email}
         onChange={formik.handleChange}
         onBlur={formik.handleBlur}
-        icon = {<img src={emailIcon}/> }
-        iconPosition = "left"
+        icon={<img src={emailIcon} />}
+        iconPosition="left"
       />
       {formik.touched.email && formik.errors.email && (
         <div style={{ color: "red" }}>{formik.errors.email}</div>
@@ -85,8 +85,8 @@ const Register: React.FC = () => {
         value={formik.values.password}
         onChange={formik.handleChange}
         onBlur={formik.handleBlur}
-        icon = {<img src={passwordIcon}/> }
-        iconPosition = "left"
+        icon={<img src={passwordIcon} />}
+        iconPosition="left"
       />
       {formik.touched.password && formik.errors.password && (
         <div style={{ color: "red" }}>{formik.errors.password}</div>
@@ -99,8 +99,8 @@ const Register: React.FC = () => {
         value={formik.values.confirmPassword}
         onChange={formik.handleChange}
         onBlur={formik.handleBlur}
-        icon = {<img src={passwordIcon}/> }
-        iconPosition = "left"
+        icon={<img src={passwordIcon} />}
+        iconPosition="left"
       />
       {formik.touched.confirmPassword && formik.errors.confirmPassword && (
         <div style={{ color: "red" }}>{formik.errors.confirmPassword}</div>

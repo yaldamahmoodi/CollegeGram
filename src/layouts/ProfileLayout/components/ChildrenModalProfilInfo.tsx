@@ -3,9 +3,9 @@ import { useFormik } from "formik";
 import Modal from "@/components/Modal";
 import Input from "@/components/Input";
 import Button from "@/components/Button";
-import userNameIcon from "@/assets/images/userNameIcon.svg";
-import emailIcon from "@/assets/images/emailIcon.svg";
-import passwordIcon from "@/assets/images/passwordIcon.svg";
+import userNameIcon from "@/assets/icons/userNameIcon.svg";
+import emailIcon from "@/assets/icons/emailIcon.svg";
+import passwordIcon from "@/assets/icons/passwordIcon.svg";
 import uploadImageIcon from "@/assets/images/uploadImageIcon.svg";
 
 interface Props {
@@ -35,9 +35,8 @@ const ChildrenModalProfilInfo: React.FC<Props> = ({ isOpen, onClose }) => {
 
   return (
     <Modal isOpen={isOpen} onClose={onClose}>
-        <h2 className="text-2xl flex self-center">ویرایش حساب</h2>
+      <h2 className="text-2xl flex self-center">ویرایش حساب</h2>
       <form onSubmit={formik.handleSubmit} className="flex flex-col gap-4">
-
         <div className="flex flex-col items-center gap-2 mb-4">
           <div className="relative w-32 h-32">
             {preview ? (
@@ -74,8 +73,7 @@ const ChildrenModalProfilInfo: React.FC<Props> = ({ isOpen, onClose }) => {
                 setImage(null);
                 setPreview(null);
               }}
-              className="text-red-500 text-sm underline"
-            >
+              className="text-red-500 text-sm underline">
               حذف عکس
             </button>
           )}
@@ -160,20 +158,19 @@ const ChildrenModalProfilInfo: React.FC<Props> = ({ isOpen, onClose }) => {
           onBlur={formik.handleBlur}
         />
 
-<div className="flex justify-end gap-2 mt-4">
-    <Button
-    label="پشیمون شدم"
-    type="button"
-    onClick={onClose}
-    className="!bg-transparent !text-black border border-gray-300 px-4 py-2 rounded-2xl"
-    />
-    <Button
-    label="ثبت تغییرات"
-    type="submit"
-    className="!bg-[#E7000B] !text-white px-4 py-2 rounded-2xl"
-    />
-</div>
-
+        <div className="flex justify-end gap-2 mt-4">
+          <Button
+            label="پشیمون شدم"
+            type="button"
+            onClick={onClose}
+            className="!bg-transparent !text-black border border-gray-300 px-4 py-2 rounded-2xl"
+          />
+          <Button
+            label="ثبت تغییرات"
+            type="submit"
+            className="!bg-[#E7000B] !text-white px-4 py-2 rounded-2xl"
+          />
+        </div>
       </form>
     </Modal>
   );

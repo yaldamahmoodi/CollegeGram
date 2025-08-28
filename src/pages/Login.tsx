@@ -1,8 +1,8 @@
-import React, { useState, type ObjectHTMLAttributes } from "react";
+import React, { useState } from "react";
 import { useFormik } from "formik";
 import * as Yup from "yup";
-import userNameIcon from "../assets/images/userNameIcon.svg"
-import passwordIcon from "../assets/images/passwordIcon.svg"
+import userNameIcon from "../assets/icons/userNameIcon.svg";
+import passwordIcon from "../assets/icons/passwordIcon.svg";
 import Button from "@/components/Button";
 import Input from "@/components/Input";
 import axios from "axios";
@@ -78,8 +78,8 @@ const Login: React.FC = () => {
         placeholder="نام کاربری"
         onChange={formik.handleChange}
         onBlur={formik.handleBlur}
-        icon = {<img src={userNameIcon}/> }
-        iconPosition = "left"
+        icon={<img src={userNameIcon} />}
+        iconPosition="left"
       />
       {formik.touched.username && formik.errors.username && (
         <div style={{ color: "red" }}>{formik.errors.username}</div>
@@ -92,9 +92,8 @@ const Login: React.FC = () => {
         placeholder="رمز ورود"
         onChange={formik.handleChange}
         onBlur={formik.handleBlur}
-        icon = {<img src={passwordIcon}/> }
-        iconPosition = "left"
-
+        icon={<img src={passwordIcon} />}
+        iconPosition="left"
       />
 
       {formik.touched.password && formik.errors.password && (
@@ -102,17 +101,19 @@ const Login: React.FC = () => {
       )}
 
       <div className="flex items-center gap-2">
-            <input
-                type="checkbox"
-                name="rememberMe"
-                id="rememberMe"
-                checked={formik.values.rememberMe}
-                onChange={formik.handleChange}
-                className="w-4 h-4 cursor-pointer accent-red-600"
-            />
-            <label htmlFor="rememberMe" className="text-sm text-gray-700 cursor-pointer">
-                من را به خاطر بس‍پر
-            </label>
+        <input
+          type="checkbox"
+          name="rememberMe"
+          id="rememberMe"
+          checked={formik.values.rememberMe}
+          onChange={formik.handleChange}
+          className="w-4 h-4 cursor-pointer accent-red-600"
+        />
+        <label
+          htmlFor="rememberMe"
+          className="text-sm text-gray-700 cursor-pointer">
+          من را به خاطر بس‍پر
+        </label>
       </div>
 
       <Button
@@ -121,7 +122,6 @@ const Login: React.FC = () => {
         type="submit"
         disabled={!!Object.keys(formik.errors).length}
         className="h-9 w-21 self-end"
-
       />
 
       <div style={{ marginTop: "10px" }}>
