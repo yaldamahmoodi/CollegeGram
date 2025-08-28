@@ -14,3 +14,6 @@ body,
 .profile-container .header .logo {
   background-image: url("../images/logo.png");
 }
+.uploader {
+  background-image: url("../images/image-upload.png");
+}

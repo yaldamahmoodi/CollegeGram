@@ -2,7 +2,7 @@ import { useEffect } from "react";
 import ProfileInfo from "./components/ProfileInfo";
 import Button from "@/components/Button";
 import { useQuery } from "@tanstack/react-query";
-
+import UserPostUploader from "./components/UserPostUploader";
 import axios from "axios";
 const ProfileLayout = () => {
   useEffect(() => {}, []);
