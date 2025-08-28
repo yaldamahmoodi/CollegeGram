@@ -112,6 +112,7 @@ const Register: React.FC = () => {
         label="ثبت نام"
         onClick={() => {}}
         disabled={!!Object.keys(formik.errors).length}
+        className="h-9 w-21 self-end"
       />
     </form>
   );

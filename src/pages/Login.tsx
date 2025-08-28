@@ -101,13 +101,19 @@ const Login: React.FC = () => {
         <div style={{ color: "red" }}>{formik.errors.password}</div>
       )}
 
-      <Input
-        label="من را به خاطر بس‍پر"
-        type="checkbox"
-        name="rememberMe"
-        checked={formik.values.rememberMe}
-        onChange={formik.handleChange}
-      />
+      <div className="flex items-center gap-2">
+            <input
+                type="checkbox"
+                name="rememberMe"
+                id="rememberMe"
+                checked={formik.values.rememberMe}
+                onChange={formik.handleChange}
+                className="w-4 h-4 cursor-pointer accent-red-600"
+            />
+            <label htmlFor="rememberMe" className="text-sm text-gray-700 cursor-pointer">
+                من را به خاطر بس‍پر
+            </label>
+      </div>
 
       <Button
         label="ورود"

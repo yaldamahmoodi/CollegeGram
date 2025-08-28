@@ -41,7 +41,7 @@ const classNameInput = className
                 <label className="text-sm font-medium text-gray-700">{label}</label>
             )}
 
-            <div className="flex items-center border border-gray-400 rounded-2xl px-3 py-2 focus-within:ring-2 focus-within:ring-blue-500">
+            <div className="flex items-center border border-gray-400 rounded-2xl px-2 focus-within:ring-2 focus-within:ring-blue-500">
                 {icon && iconPosition === "left" && (
                     <span className="mr-2 text-gray-500">{icon}</span>
                 )}
