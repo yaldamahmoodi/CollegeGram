@@ -8,7 +8,7 @@ interface AuthContainerProps {
 
 const AuthContainer = ({ children }: AuthContainerProps) => {
   return (
-    <div className="bg-[#F5F5F5] lg:w-[30rem] w-[23rem] lg:h-[40rem] h-[50rem] flex items-center flex-col rounded-lg gap-4 p-16">
+    <div className="bg-[#F5F5F5] lg:w-[30rem] w-[23rem] lg:h-[46rem] h-[50rem] flex items-center flex-col rounded-lg gap-11 p-16">
       <img
         src={Logo}
         alt="logo rahnama"
