@@ -3,6 +3,7 @@ import type {Response} from "express";
 import type {UserService} from "../services/user.service.ts";
 import type {InsertPostDto} from "../db/models/post.model.ts";
 import fs from "fs";
+import {APIError} from "../middlewares/error.middleware.js";
 
 export class UserController {
 
@@ -111,4 +112,17 @@ export class UserController {
         }
 
     }
+
+    getPosts = async (req: Authenticate, res: Response) => {
+        try {
+            const posts = await this.userService.getUserPosts(req.user.id);
+            return res.status(200).json({success: true, data: posts})
+        } catch (error) {
+            if (error instanceof APIError) {
+                console.log(error, "getPosts Controller")
+                res.status(500).json({error: error.message});
+            }
+        }
+    }
+
 }
