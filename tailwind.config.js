@@ -2,7 +2,7 @@ module.exports = {
   theme: {
     extend: {
       fontFamily: {
-        iranyekan: ["iranyekan", "sans-serif"],
+        peyda: ["peyda", "sans-serif"],
       },
     },
   },
