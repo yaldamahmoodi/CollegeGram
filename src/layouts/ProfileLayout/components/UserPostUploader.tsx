@@ -1,7 +1,11 @@
 import Button from "@/components/Button";
 import React, { useState } from "react";
 
-const ImageUploader: React.FC = () => {
+interface ImageUploaderProps {
+  onClose: () => void;
+}
+
+const ImageUploader: React.FC<ImageUploaderProps> = ({ onClose }) => {
   const [images, setImages] = useState<string[]>([]);
 
   const handleUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -22,11 +26,13 @@ const ImageUploader: React.FC = () => {
     <div className="flex flex-col items-center space-y-4 p-4 rounded-lg w-full">
       <span className="font-medium mb-8">عکس‌های مورد نظرت رو آپلود کن:</span>
       <div
-        className={`flex flex-col-3 max-w-[340px] max-h-[258px] gap-4 flex-wrap ${
-          images.length === 0 ? "justify-center" : "justify-start"
-        }`}>
+        className={`flex flex-col-3 max-w-[406px] max-h-[258px] gap-4 flex-wrap overflow-y-auto justify-center`}>
         <label className="w-28 h-28 rounded-2xl flex justify-center items-center cursor-pointer hover:bg-orange-50 transition">
-          <div className="uploader w-[111px] h-[80px] flex items-center justify-end bg-cover bg-center bg-no-repeat" />
+          <div
+            className={`uploader w-[111px] h-[80px] flex items-center justify-end bg-cover bg-center bg-no-repeat ${
+              images.length === 0 ? "self-center" : "self-start"
+            }`}
+          />
           <input
             type="file"
             accept="image/*"
@@ -54,7 +60,9 @@ const ImageUploader: React.FC = () => {
       </div>
 
       <div className="flex justify-end w-full mt-4 gap-4">
-        <a className="text-gray-700 cursor-pointer">پشیمون شدم</a>
+        <a className="text-gray-700 cursor-pointer" onClick={onClose}>
+          پشیمون شدم
+        </a>
         <Button label="بعدی" variant="danger" />
       </div>
     </div>
