@@ -1,76 +1,71 @@
-import React from "react";
+import React, { useState, type ObjectHTMLAttributes } from "react";
 import { useFormik } from "formik";
 import * as Yup from "yup";
+import userNameIcon from "../assets/images/userNameIcon.svg"
+import passwordIcon from "../assets/images/passwordIcon.svg"
 import Button from "@/components/Button";
 import Input from "@/components/Input";
-import { useMutation } from "@tanstack/react-query";
 import axios from "axios";
-import { useNavigate } from "react-router-dom";
 
-interface UserLoginType {
+interface LoginFormValues {
   username: string;
   password: string;
   rememberMe: boolean;
 }
 
-type userLoginPayload = Omit<UserLoginType, "rememberMe">;
-
 const Login: React.FC = () => {
-  const navigate = useNavigate();
+  const [data, setData] = useState({});
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState("");
 
-  const validationSchema = Yup.object({
-    username: Yup.string()
-      .required("نام کاربری الزامی است")
-      .min(8, "حداقل 8 کاراکتر"),
-    password: Yup.string()
-      .required("رمز ورود الزامی است")
-      .min(8, "حداقل 8 کاراکتر")
-      .matches(
-        /[!@#$%^&*(),.?":{}|<>]/,
-        "نام کاربری باید حداقل یک کاراکتر خاص داشته باشد"
-      ),
-  });
-
-  const userLoginReguest = async (payload: userLoginPayload) => {
-    const { data } = await axios.post(
-      "http://130.185.75.174:3001/api/v1/auth/login",
-      payload,
-      {
-        headers: {
-          "Content-Type": "application/json",
-        },
-      }
-    );
-    return data;
-  };
-
-  const mutation = useMutation({
-    mutationFn: userLoginReguest,
-    onSuccess: (data) => {
-      console.log("success: ", data);
-      navigate("/dashboard");
-    },
-    onError: (error) => {
-      console.error("error:", error.message);
-    },
-  });
-
-  const initialValues: UserLoginType = {
+  const initialValues: LoginFormValues = {
     username: "",
     password: "",
     rememberMe: false,
   };
 
-  const formik = useFormik<UserLoginType>({
+  const validationSchema = Yup.object({
+    username: Yup.string()
+      .required("نام کاربری الزامی است")
+      .min(8, "حداقل 8 کاراکتر")
+      .matches(
+        /[!@#$%^&*(),.?":{}|<>]/,
+        "نام کاربری باید حداقل یک کاراکتر خاص داشته باشد"
+      ),
+    password: Yup.string()
+      .required("رمز ورود الزامی است")
+      .min(8, "حداقل 8 کاراکتر"),
+  });
+
+  const userLoginRequest = async (
+    url: string,
+    body: LoginFormValues,
+    config: object
+  ) => {
+    try {
+      const res = await axios.post(url, body, config);
+      console.log("Success:", res.data);
+      console.log(data);
+    } catch (err) {
+      //setError(err);
+      console.log(err);
+    }
+  };
+
+  const formik = useFormik<LoginFormValues>({
     initialValues,
     validationSchema,
-    onSubmit: ({ username, password }) => {
-      mutation.mutate({ username, password });
+    onSubmit: (values) => {
+      userLoginRequest("https://jsonplaceholder.typicode.com/posts", values, {
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
     },
   });
 
   return (
-    <form onSubmit={formik.handleSubmit}>
+    <form onSubmit={formik.handleSubmit} className="flex flex-col gap-6">
       <label>
         به کالج گرام خوش آمدید. برای ورود کافیه نام کاربری/ایمیل و رمز عبور
         خودتون رو وارد کنید:
@@ -83,6 +78,8 @@ const Login: React.FC = () => {
         placeholder="نام کاربری"
         onChange={formik.handleChange}
         onBlur={formik.handleBlur}
+        icon = {<img src={userNameIcon}/> }
+        iconPosition = "left"
       />
       {formik.touched.username && formik.errors.username && (
         <div style={{ color: "red" }}>{formik.errors.username}</div>
@@ -95,6 +92,9 @@ const Login: React.FC = () => {
         placeholder="رمز ورود"
         onChange={formik.handleChange}
         onBlur={formik.handleBlur}
+        icon = {<img src={passwordIcon}/> }
+        iconPosition = "left"
+
       />
 
       {formik.touched.password && formik.errors.password && (
@@ -114,6 +114,8 @@ const Login: React.FC = () => {
         variant="danger"
         type="submit"
         disabled={!!Object.keys(formik.errors).length}
+        className="h-9 w-21 self-end"
+
       />
 
       <div style={{ marginTop: "10px" }}>
