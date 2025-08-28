@@ -1,4 +1,3 @@
-import {ProfilePhotoModel} from "../db/models/profile-photo.model.ts";
 import type {UserRepository} from "../repositories/user.repository.ts";
 import {APIError} from "../middlewares/error.middleware.ts";
 import type {ProfileRepository} from "../repositories/profile.repository.ts";
@@ -47,7 +46,6 @@ export class UserService {
         return await this.postRepository.createPost(postData.user_id, postData.urls, postData.caption);
     }
 
-
     async profileUpdater(userName:string, userData: insertUserZodSchema){
     
         try {
@@ -65,5 +63,14 @@ export class UserService {
             throw new Error('Internal server error')
         }
     
+    }
+    async getUserPosts(userId: string) {
+        const userPosts = await this.userRepository.findUserPosts(userId);
+        if (userPosts.length < 0) {
+            throw new APIError("No Post Found", 404, "NotFound")
+        }
+
+        return userPosts;
+
     }
 }

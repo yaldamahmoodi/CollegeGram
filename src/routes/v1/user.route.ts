@@ -31,26 +31,11 @@ router.get(
     userController.getPosts
 )
 
-//
-// const uuidSchema = z.object({
-//     id: z.uuid(),
-// })
-// router.get(
-//     "/post/:id",
-//     paramsParser(uuidSchema),
-//     userController.getPosts
-// )
 
 router.post(
     "/upload/post",
     uploadProfilePhotoMiddleware.array("photos",10),
     userController.createPost
-);
-
-router.patch(
-    "/profile/update", 
-    bodyParser(optionalUserSchema), 
-    userController.profileUpdater
 );
 
 
@@ -60,21 +45,6 @@ router.patch(
     userController.profileUpdater
 );
 
-
-router.get(
-    "/profile/posts",
-    userController.getPosts
-)
-
-//
-// const uuidSchema = z.object({
-//     id: z.uuid(),
-// })
-// router.get(
-//     "/post/:id",
-//     paramsParser(uuidSchema),
-//     userController.getPosts
-// )
 
 router.use(errorHandler);
 
