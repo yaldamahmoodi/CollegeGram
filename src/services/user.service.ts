@@ -1,5 +1,6 @@
 import {ProfilePhotoModel} from "../db/models/profile-photo.model.ts";
 import type {UserRepository} from "../repositories/user.repository.ts";
+import {APIError} from "../middlewares/error.middleware.ts";
 import type {ProfileRepository} from "../repositories/profile.repository.ts";
 import {PostRepository} from "../repositories/post.repository.ts";
 import {type InsertPostDto} from "../db/models/post.model.ts";

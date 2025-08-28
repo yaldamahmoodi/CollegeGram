@@ -2,7 +2,7 @@ import {AuthRepository} from "../repositories/auth.repository.ts";
 import bcrypt from 'bcrypt';
 import jwt from "jsonwebtoken";
 import env from "../../env.ts";
-import type {insertUserZodSchema} from "../db/models/user.model.ts";
+import type {insertUserZodSchema, selectUserZodSchema} from "../db/models/user.model.ts";
 
 
 export class AuthService {
@@ -52,12 +52,12 @@ export class AuthService {
             throw new Error('User not found');
         }
 
-        const comparePassword =await bcrypt.compare(userData.password, password);
+        const comparePassword = await bcrypt.compare(userData.password, password);
         if (!comparePassword) {
             throw new Error('passwords or username do not match');
         }
 
-        const accessToken = jwt.sign({
+        return jwt.sign({
                 _id,
                 username,
                 email,
@@ -66,10 +66,12 @@ export class AuthService {
                 expiresIn: env.ACCESS_TOKEN_EXPIRES_IN
             });
 
-        return {
-            accessToken,
-            _id
-        };
+
+    }
+
+
+    async logout() {
+
     }
 
 }

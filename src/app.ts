@@ -1,7 +1,7 @@
-import mongoose from "mongoose";
 import app from "./server.ts";
 import {Database} from "./db/connection.ts";
 import env from "../env.ts";
+import process from "node:process";
 
 (async () => {
     try {

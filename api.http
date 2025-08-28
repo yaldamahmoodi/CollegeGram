@@ -44,3 +44,5 @@ Content-Type: application/json
   "password": "Test1234@"
 }
 
+### CHECK USER POSTS
+GET http://localhost:3001/api/v1/users/profile/posts

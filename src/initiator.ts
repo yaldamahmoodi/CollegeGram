@@ -30,11 +30,15 @@ export class Initiator {
         this.userController = new UserController(this.userService)
     }
 
-    public getAuthController() {
+    public get getAuthController() {
         return this.authController;
     }
 
     public getUserController() {
         return this.userController;
+    }
+
+    public get userRepo() {
+        return this.userRepository;
     }
 }

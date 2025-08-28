@@ -1,5 +1,3 @@
-version: '3.8'
-
 services:
   mongo:
     image: mongo:4.4
@@ -14,21 +12,21 @@ services:
       - "27017:27017"
     volumes:
       - mongo_data:/data/db
-
-  collegegram:
-    build:
-      context: .
-      dockerfile: Dockerfile
-    restart: unless-stopped
-    ports:
-      - "3001:3001"
-    depends_on:
-      - mongo
-    environment:
-      NODE_ENV: ${NODE_ENV}
-      PORT: ${PORT}
-      MONGODB_URI: ${MONGODB_URI}
-      CORS_ORIGIN: ${CORS_ORIGIN}
+#
+#  collegegram:
+#    build:
+#      context: .
+#      dockerfile: Dockerfile
+#    restart: unless-stopped
+#    ports:
+#      - "3001:3001"
+#    depends_on:
+#      - mongo
+#    environment:
+#      NODE_ENV: ${NODE_ENV}
+#      PORT: ${PORT}
+#      MONGODB_URI: ${MONGODB_URI}
+#      CORS_ORIGIN: ${CORS_ORIGIN}
 
 
   mongo-express:

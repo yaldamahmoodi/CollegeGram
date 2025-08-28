@@ -33,6 +33,7 @@ const envSchema = z.object({
     // SECURITY
     ACCESS_TOKEN_SECRET: z.string().default("secret"),
     ACCESS_TOKEN_EXPIRES_IN: z.coerce.number().default(54000),
+    COOKIE_SECRET: z.string().default("secret"),
 })
 
 export type Env = z.infer<typeof envSchema>;
