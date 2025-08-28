@@ -13,7 +13,7 @@ interface Props {
   onClose: () => void;
 }
 
-const ChildrenModalProfilInfo: React.FC<Props> = ({ isOpen, onClose }) => {
+const EditProfileModal: React.FC<Props> = ({ isOpen, onClose }) => {
   const [image, setImage] = useState<File | null>(null);
   const [preview, setPreview] = useState<string | null>(null);
 
@@ -176,4 +176,4 @@ const ChildrenModalProfilInfo: React.FC<Props> = ({ isOpen, onClose }) => {
   );
 };
 
-export default ChildrenModalProfilInfo;
+export default EditProfileModal;

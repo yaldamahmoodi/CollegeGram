@@ -1,5 +1,5 @@
 import Button from "@/components/Button";
-import ChildrenModalProfilInfo from "@/layouts/ProfileLayout/components/ChildrenModalProfilInfo";
+import EditProfileModal from "@/layouts/ProfileLayout/components/EditProfileModal";
 import { useState } from "react";
 
 const ProfileInfo = () => {
@@ -29,7 +29,7 @@ const ProfileInfo = () => {
       </div>
 
       {/* Children Modal */}
-      <ChildrenModalProfilInfo
+      <EditProfileModal
         isOpen={isModalOpen}
         onClose={() => setIsModalOpen(false)}
       />
