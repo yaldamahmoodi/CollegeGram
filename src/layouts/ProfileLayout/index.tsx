@@ -4,6 +4,7 @@ import Button from "@/components/Button";
 import { useQuery } from "@tanstack/react-query";
 import axios from "axios";
 import CraetePostModal from "./components/CraetePostModal";
+import SideBar from "./components/SideBar";
 
 const ProfileLayout = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -41,11 +42,9 @@ const ProfileLayout = () => {
         <div className="logo w-[90px] sm:w-[111px] h-[40px] sm:h-[50px] flex items-center justify-center bg-cover bg-center bg-no-repeat" />
       </div>
 
-      {/* Main layout */}
-      <div className="flex flex-col lg:flex-row gap-6 flex-auto">
-        {/* Sidebar */}
-        <div className="right-sidebar w-full lg:w-1/4 p-4 border border-gray-300 rounded-3xl">
-          sidebar
+      <div className="flex flex-auto gap-4 flex-row">
+        <div className="right-sidebar w-1/4 p-4 border border-gray-400 rounded-4xl">
+          <SideBar />
         </div>
 
         {/* Left Section */}
