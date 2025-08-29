@@ -1,11 +1,6 @@
-import Button from "@/components/Button";
 import React, { useState } from "react";
 
-interface ImageUploaderProps {
-  onClose: () => void;
-}
-
-const ImageUploader: React.FC<ImageUploaderProps> = ({ onClose }) => {
+const ImageUploader: React.FC = () => {
   const [images, setImages] = useState<string[]>([]);
 
   const handleUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -57,13 +52,6 @@ const ImageUploader: React.FC<ImageUploaderProps> = ({ onClose }) => {
             </button>
           </div>
         ))}
-      </div>
-
-      <div className="flex justify-end w-full mt-4 gap-4">
-        <a className="text-gray-700 cursor-pointer" onClick={onClose}>
-          پشیمون شدم
-        </a>
-        <Button label="بعدی" variant="danger" />
       </div>
     </div>
   );

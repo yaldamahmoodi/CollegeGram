@@ -8,17 +8,11 @@ import CraetePostModal from "./components/CraetePostModal";
 const ProfileLayout = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
 
-  useEffect(() => {}, []);
-
   const getUserRequest = async () => {
-    const [posts, setPosts] = useState([]);
-
     const { data } = await axios.get(
       "http://130.185.75.174:3001/api/v1/auth/user",
       {
-        headers: {
-          "Content-Type": "application/json",
-        },
+        headers: { "Content-Type": "application/json" },
       }
     );
     return data;
@@ -27,58 +21,61 @@ const ProfileLayout = () => {
   const { data, isLoading, isError, error } = useQuery({
     queryKey: ["profile"],
     queryFn: getUserRequest,
-    onSuccess: (data) => {
-      console.log(data);
-    },
-    onError: (err) => {
-      console.error(err);
-    },
+    onSuccess: (data) => console.log(data),
+    onError: (err) => console.error(err),
   });
 
   return (
-    <div className="profile-container h-screen w-full bg-[#f5f5f5] px-10 pb-6 pt-8 flex flex-col">
-      <div className="header w-full max-h-[50px] bg-transparent mb-4 flex items-center justify-between px-4 flex-row">
-        <div className="w-1/4 flex justify-center">
-          <div className="flex justify-center items-center">
-            <Button
-              type="button"
-              label="+  پست جدید"
-              variant="danger"
-              className="flex justify-center items-center text-md rounded-4xl w-[264px] h-[52px] gap-8 px-16 py-8"
-              onClick={() => setIsModalOpen(true)}
-            />
-          </div>
+    <div className="profile-container min-h-screen w-full bg-[#f5f5f5] px-4 sm:px-6 lg:px-10 py-6 flex flex-col">
+      {/* Header */}
+      <div className="header w-full max-h-[60px] bg-transparent mb-6 flex flex-col sm:flex-row items-center justify-between gap-4 px-2 sm:px-4">
+        <div className="flex justify-center sm:justify-start">
+          <Button
+            type="button"
+            label="+  پست جدید"
+            variant="danger"
+            className="flex justify-center items-center text-sm sm:text-md rounded-3xl w-full sm:w-[220px] lg:w-[264px] h-[46px] sm:h-[52px] px-6 sm:px-8"
+            onClick={() => setIsModalOpen(true)}
+          />
         </div>
-        <div className="logo w-[111px] h-[50px] flex items-center justify-end bg-cover bg-center bg-no-repeat" />
+        <div className="logo w-[90px] sm:w-[111px] h-[40px] sm:h-[50px] flex items-center justify-center bg-cover bg-center bg-no-repeat" />
       </div>
 
-      <div className="flex flex-auto gap-4 flex-row">
-        <div className="right-sidebar w-1/4 p-4 border border-gray-400 rounded-4xl">
+      {/* Main layout */}
+      <div className="flex flex-col lg:flex-row gap-6 flex-auto">
+        {/* Sidebar */}
+        <div className="right-sidebar w-full lg:w-1/4 p-4 border border-gray-300 rounded-3xl">
           sidebar
         </div>
-        <div className=" left-section w-3/4 flex flex-col pr-8">
-          <div className="title w-full bg-transparent pb-10">
-            <h2 className="text-2xl font-bold "> صفحه من</h2>
+
+        {/* Left Section */}
+        <div className="left-section w-full lg:w-3/4 flex flex-col lg:pr-8">
+          <div className="title w-full bg-transparent pb-6">
+            <h2 className="text-xl sm:text-2xl font-bold">صفحه من</h2>
           </div>
 
-          <div className="profile-info w-full max-h-[147px] bg-transparent my-2">
+          {/* Profile Info */}
+          <div className="profile-info w-full bg-transparent mb-6">
             <ProfileInfo />
           </div>
 
-          <div className="separator w-full h-px bg-gray-400 my-6"></div>
+          <div className="separator w-full h-px bg-gray-300 mb-6"></div>
 
-          <div className="profile-posts w-full h-full flex-auto border border-gray-400 p-4 overflow-y-auto rounded-4xl">
+          {/* Posts */}
+          <div className="profile-posts w-full flex-auto border border-gray-300 p-4 overflow-y-auto rounded-3xl">
             {0 ? (
               ""
             ) : (
-              <div className="flex flex-col justify-center items-center gap-2 w-full h-full">
-                <span>هنوز هیچ پستی توی صفحه ات نذاشتی!</span>
-                <span>بجنب تا دیر نشده</span>
+              <div className="flex flex-col justify-center items-center gap-2 w-full h-full text-center">
+                <span className="text-sm sm:text-base">
+                  هنوز هیچ پستی توی صفحه‌ات نذاشتی!
+                </span>
+                <span className="text-xs sm:text-sm">بجنب تا دیر نشده</span>
                 <Button
                   type="button"
                   label="+  ایجاد پست جدید"
                   variant="danger"
-                  className="text-basis py-1 text-xs rounded-4xl w-[197px] h-[52px] mt-5"
+                  className="text-xs sm:text-sm py-2 rounded-3xl w-full sm:w-[197px] h-[44px] sm:h-[52px] mt-5"
                   onClick={() => setIsModalOpen(true)}
                 />
               </div>
@@ -86,6 +83,7 @@ const ProfileLayout = () => {
           </div>
         </div>
       </div>
+
       <CraetePostModal
         isOpen={isModalOpen}
         onClose={() => setIsModalOpen(false)}
