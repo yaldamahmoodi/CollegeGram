@@ -3,7 +3,7 @@ import type {Response} from "express";
 import type {UserService} from "../services/user.service.ts";
 import type {InsertPostDto} from "../db/models/post.model.ts";
 import fs from "fs";
-import {APIError} from "../middlewares/error.middleware.js";
+import {APIError} from "../middlewares/error.middleware.ts";
 
 export class UserController {
 
