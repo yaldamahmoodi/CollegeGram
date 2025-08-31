@@ -1,11 +1,10 @@
-import React, { useState } from "react";
+import React from "react";
 import { useFormik } from "formik";
 import * as Yup from "yup";
 import userNameIcon from "../assets/icons/userNameIcon.svg";
 import passwordIcon from "../assets/icons/passwordIcon.svg";
 import Button from "@/components/Button";
 import Input from "@/components/Input";
-import axios from "axios";
 
 interface LoginFormValues {
   username: string;
@@ -14,10 +13,6 @@ interface LoginFormValues {
 }
 
 const Login: React.FC = () => {
-  const [data, setData] = useState({});
-  const [isLoading, setIsLoading] = useState(false);
-  const [error, setError] = useState("");
-
   const initialValues: LoginFormValues = {
     username: "",
     password: "",
@@ -37,30 +32,11 @@ const Login: React.FC = () => {
       .min(8, "حداقل 8 کاراکتر"),
   });
 
-  const userLoginRequest = async (
-    url: string,
-    body: LoginFormValues,
-    config: object
-  ) => {
-    try {
-      const res = await axios.post(url, body, config);
-      console.log("Success:", res.data);
-      console.log(data);
-    } catch (err) {
-      //setError(err);
-      console.log(err);
-    }
-  };
-
   const formik = useFormik<LoginFormValues>({
     initialValues,
     validationSchema,
     onSubmit: (values) => {
-      userLoginRequest("https://jsonplaceholder.typicode.com/posts", values, {
-        headers: {
-          "Content-Type": "application/json",
-        },
-      });
+      console.log(values);
     },
   });
 

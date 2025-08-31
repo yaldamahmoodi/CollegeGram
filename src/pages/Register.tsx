@@ -24,7 +24,7 @@ const validationSchema = Yup.object({
     .required("رمز عبور الزامی است."),
   confirmPassword: Yup.string()
     .oneOf(
-      [Yup.ref("password"), null],
+      [Yup.ref("password"), undefined],
       "رمز عبور باید با هم مطابقت داشته باشد."
     )
     .required("تکرار رمز عبور الزامی است."),

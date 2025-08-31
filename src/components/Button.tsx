@@ -1,5 +1,3 @@
-import React from "react";
-
 type Variant = "danger" | "info" | "primary" | "success";
 
 interface ButtonProps {

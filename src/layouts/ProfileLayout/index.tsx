@@ -1,40 +1,11 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import ProfileInfo from "./components/ProfileInfo";
 import Button from "@/components/Button";
-import { useQuery } from "@tanstack/react-query";
-import axios from "axios";
 import CraetePostModal from "./components/CraetePostModal";
 import ProfileSidebarMenu from "./components/ProfileSidebarMenu";
 
 const ProfileLayout = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
-
-  useEffect(() => {}, []);
-
-  const getUserRequest = async () => {
-    const [posts, setPosts] = useState([]);
-
-    const { data } = await axios.get(
-      "http://130.185.75.174:3001/api/v1/auth/user",
-      {
-        headers: {
-          "Content-Type": "application/json",
-        },
-      }
-    );
-    return data;
-  };
-
-  const { data, isLoading, isError, error } = useQuery({
-    queryKey: ["profile"],
-    queryFn: getUserRequest,
-    onSuccess: (data) => {
-      console.log(data);
-    },
-    onError: (err) => {
-      console.error(err);
-    },
-  });
 
   return (
     <div className="profile-container h-screen w-full bg-[#f5f5f5] px-10 pb-6 pt-8 flex flex-col">
