@@ -1,7 +1,7 @@
 import React, { useState } from "react";
-import CheckIcon from "@/assets/icons/check.svg";
-import StepIcon from "@/assets/icons/step.svg";
-import Button from "@/components/Button";
+import CheckIcon from "@assets/icons/check.svg";
+import StepIcon from "@assets/icons/step.svg";
+import Button from "@components/Button";
 
 type Step = {
   title: string;

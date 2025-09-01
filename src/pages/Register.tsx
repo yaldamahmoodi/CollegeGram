@@ -3,9 +3,9 @@ import { useFormik } from "formik";
 import * as Yup from "yup";
 import Button from "@/components/Button";
 import Input from "@/components/Input";
-import passwordIcon from "@/assets/icons/passwordIcon.svg";
-import userNameIcon from "@/assets/icons/userNameIcon.svg";
-import emailIcon from "@/assets/icons/emailIcon.svg";
+import passwordIcon from "@assets/icons/passwordIcon.svg";
+import userNameIcon from "@assets/icons/userNameIcon.svg";
+import emailIcon from "@assets/icons/emailIcon.svg";
 
 interface FormValues {
   username: string;

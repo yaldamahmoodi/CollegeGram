@@ -1,4 +1,4 @@
-import Modal from "@/components/Modal";
+import Modal from "@components/Modal";
 import UserPostUploader from "./UserPostUploader";
 import type React from "react";
 import Stepper from "./Stepper";

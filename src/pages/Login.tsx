@@ -1,10 +1,10 @@
 import React from "react";
 import { useFormik } from "formik";
 import * as Yup from "yup";
-import userNameIcon from "../assets/icons/userNameIcon.svg";
-import passwordIcon from "../assets/icons/passwordIcon.svg";
-import Button from "@/components/Button";
-import Input from "@/components/Input";
+import userNameIcon from "@assets/icons/userNameIcon.svg";
+import passwordIcon from "@assets/icons/passwordIcon.svg";
+import Button from "@components/Button";
+import Input from "@components/Input";
 
 interface LoginFormValues {
   username: string;

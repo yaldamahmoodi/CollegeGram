@@ -1,5 +1,5 @@
-import Button from "@/components/Button";
-import EditProfileModal from "@/layouts/ProfileLayout/components/EditProfileModal";
+import Button from "@components/Button";
+import EditProfileModal from "./EditProfileModal";
 import { useState } from "react";
 
 const ProfileInfo = () => {

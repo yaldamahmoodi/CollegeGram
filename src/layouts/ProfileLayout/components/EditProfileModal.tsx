@@ -1,12 +1,12 @@
 import React, { useState } from "react";
 import { useFormik } from "formik";
-import Modal from "@/components/Modal";
-import Input from "@/components/Input";
-import Button from "@/components/Button";
-import userNameIcon from "@/assets/icons/userNameIcon.svg";
-import emailIcon from "@/assets/icons/emailIcon.svg";
-import passwordIcon from "@/assets/icons/passwordIcon.svg";
-import uploadImageIcon from "@/assets/images/uploadImageIcon.svg";
+import Modal from "@components/Modal";
+import Input from "@components/Input";
+import Button from "@components/Button";
+import userNameIcon from "@assets/icons/userNameIcon.svg";
+import emailIcon from "@assets/icons/emailIcon.svg";
+import passwordIcon from "@assets/icons/passwordIcon.svg";
+import uploadImageIcon from "@assets/images/uploadImageIcon.svg";
 
 interface Props {
   isOpen: boolean;
