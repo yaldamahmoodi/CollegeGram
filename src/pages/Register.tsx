@@ -45,8 +45,8 @@ const Register: React.FC = () => {
   });
 
   return (
-    <form onSubmit={formik.handleSubmit} className="flex flex-col gap-6">
-      <label>
+    <form onSubmit={formik.handleSubmit} className="flex flex-col">
+      <label className="mb-5">
         برای ثبت نام کافیه نام کاربری َو ایمیل و رمز عبور رو وارد کنید:{" "}
       </label>
 
@@ -58,11 +58,9 @@ const Register: React.FC = () => {
         onChange={formik.handleChange}
         onBlur={formik.handleBlur}
         icon={<img src={userNameIcon} />}
-        iconPosition="left"
+        haveError={!!(formik.touched.username && formik.errors.username)}
+        errorMessage={formik.errors.username}
       />
-      {formik.touched.username && formik.errors.username && (
-        <div style={{ color: "red" }}>{formik.errors.username}</div>
-      )}
 
       <Input
         type="text"
@@ -72,47 +70,40 @@ const Register: React.FC = () => {
         onChange={formik.handleChange}
         onBlur={formik.handleBlur}
         icon={<img src={emailIcon} />}
-        iconPosition="left"
+        haveError={!!(formik.touched.email && formik.errors.email)}
+        errorMessage={formik.errors.email}
       />
-      {formik.touched.email && formik.errors.email && (
-        <div style={{ color: "red" }}>{formik.errors.email}</div>
-      )}
 
       <Input
         type="password"
-        placeholder="رمز ورود"
+        placeholder="رمز عبور"
         name="password"
         value={formik.values.password}
         onChange={formik.handleChange}
         onBlur={formik.handleBlur}
         icon={<img src={passwordIcon} />}
-        iconPosition="left"
+        haveError={!!(formik.touched.password && formik.errors.password)}
+        errorMessage={formik.errors.password}
       />
-      {formik.touched.password && formik.errors.password && (
-        <div style={{ color: "red" }}>{formik.errors.password}</div>
-      )}
 
       <Input
         type="password"
-        placeholder="تکرار رمز ورود"
+        placeholder="تکرار رمز عبور"
         name="confirmPassword"
         value={formik.values.confirmPassword}
         onChange={formik.handleChange}
         onBlur={formik.handleBlur}
         icon={<img src={passwordIcon} />}
-        iconPosition="left"
+        haveError={
+          !!(formik.touched.confirmPassword && formik.errors.confirmPassword)
+        }
+        errorMessage={formik.errors.confirmPassword}
       />
-      {formik.touched.confirmPassword && formik.errors.confirmPassword && (
-        <div style={{ color: "red" }}>{formik.errors.confirmPassword}</div>
-      )}
 
       <Button
-        type="submit"
-        variant="danger"
         label="ثبت نام"
-        onClick={() => {}}
         disabled={!!Object.keys(formik.errors).length}
-        className="h-9 w-21 self-end"
+        className={"mt-8"}
       />
     </form>
   );
