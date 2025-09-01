@@ -1,0 +1,28 @@
+
+export const CatalogueErrors = {
+    DUPLICATE_FIELD: {code: "DUPLICATE_FIELD", message: "Field already exists"},
+    DUPLICATE_CREDENTIALS: {code: "DUPLICATE_CREDENTIALS", message: "Credentials already exists"},
+    DUPLICATE_EMAIL: {code: "DUPLICATE_EMAIL", message: "Email already exists"},
+    DUPLICATE_USERNAME: {code: "DUPLICATE_USERNAME", message: "Username already exists"},
+    FORBIDDEN: {code: "FORBIDDEN", message: "Forbidden"},
+    INTERNAL_SERVER_ERROR: {code: "INTERNAL_SERVER_ERROR", message: "Internal server error"},
+    INVALID_CREDENTIALS: {code: "INVALID_CREDENTIALS", message: "Invalid credentials"},
+    INVALID_TOKEN: {code: "INVALID_TOKEN", message: "Invalid token"},
+    INVALID_EMAIL: {code: "INVALID_EMAIL", message: "Invalid email"},
+    INVALID_PASSWORD: {code: "INVALID_PASSWORD", message: "Invalid password"},
+    INVALID_USERNAME: {code: "INVALID_USERNAME", message: "Invalid username"},
+    NOT_FOUND: {code: "NOT_FOUND", message: "Resource not found"},
+    NOT_FOUND_USER: {code: "NOT_FOUND_USER", message: "User not found"},
+    TOKEN_NOT_PROVIDED: {code: "TOKEN_NOT_PROVIDED", message: "Token not provided"},
+    TOKEN_EXPIRED: {code: "TOKEN_EXPIRED", message: "Token expired"},
+    UNAUTHORIZED: {code: "UNAUTHORIZED", message: "Unauthorized"},
+} as const;
+
+export type ErrorCode = keyof typeof CatalogueErrors;
+
+
+
+
+
+
+
