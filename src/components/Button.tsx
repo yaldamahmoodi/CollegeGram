@@ -1,11 +1,7 @@
 type Variant = "danger" | "info" | "primary" | "success";
 
-interface ButtonProps {
+interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
   label: string;
-  onClick?: () => void;
-  type?: "button" | "submit" | "reset";
-  disabled?: boolean;
-  className?: string;
   variant?: Variant;
 }
 
@@ -16,24 +12,16 @@ const variantClasses: Record<Variant, string> = {
   danger: "bg-red-500 hover:bg-red-600 text-white",
 };
 
-function Button({
-  label,
-  onClick,
-  type = "button",
-  disabled = false,
-  className = "",
-  variant = "primary",
-}: ButtonProps) {
+const Button = (props: ButtonProps) => {
+  const { variant = "danger", label, className } = props;
+  const defaultClassname =
+    "text-sm rounded-3xl px-8 py-3  w-auto self-end min-w-[84px]";
   return (
     <button
-      type={type}
-      onClick={onClick}
-      disabled={disabled}
-      className={`px-4 py-2 rounded-2xl disabled:bg-gray-400 
-      ${variantClasses[variant]} ${className}`}>
+      className={`${defaultClassname} ${className} ${variantClasses[variant]}`}>
       {label}
     </button>
   );
-}
+};
 
 export default Button;
