@@ -1,6 +1,9 @@
-import type { Request, Response, NextFunction } from "express";
+import type {NextFunction, Request, Response} from "express";
 import {UserModel} from "../db/models/user.model.ts";
 import jwt, {type JwtPayload} from "jsonwebtoken";
+import {NotFoundError} from "../utils/errors/notFound.errors.ts";
+import {ValidationError} from "../utils/errors/validation.errors.ts";
+
 
 interface CustomJwtPayload extends JwtPayload {
     id: string;
@@ -15,42 +18,28 @@ export interface Authenticate extends Request {
 }
 
 export const authMiddleware = async (req: Authenticate, res: Response, next: NextFunction) => {
-    
-    const token = req.signedCookies.accessToken;
-    
-    if (!token) {
-        return res.status(401)
-        .json({ error: "Token not valid" });
-    }
-
-    const jwtSecret = process.env.ACCESS_TOKEN_SECRET as string;
-
-    let payload: CustomJwtPayload;
-
     try {
-
+        const token = req.signedCookies.accessToken;
+        if (!token) {
+            next(new ValidationError("TOKEN_NOT_PROVIDED"))
+        }
+        const jwtSecret = process.env.ACCESS_TOKEN_SECRET as string;
+        let payload: CustomJwtPayload;
         payload = jwt.verify(token, jwtSecret) as CustomJwtPayload;
+        if (!payload._id) {
+            next(new ValidationError("TOKEN_NOT_PROVIDED"))
+        }
+        const loggedInUser = await UserModel.findById(payload._id);
 
+        if (!loggedInUser) {
+            next(new NotFoundError("NOT_FOUND"))
+        }
+        req.user = {
+            id: payload._id,
+            username: payload.username,
+        };
+        next();
     } catch (error: any) {
-
-        return res.status(401)
-        .json({ error: "Token expired or invalid" });
-
-    } if (!payload._id) {
-    return res.status(400).json({ error: "Token does not contain user ID" });
-}
-
-
-    const loggedInUser = await UserModel.findById(payload._id);
-    
-    if (!loggedInUser) {
-        return res.status(404).json({error: "User not found"});
+        next(new ValidationError("TOKEN_EXPIRED"))
     }
-
-    req.user = {
-        id: payload._id, 
-        username: payload.username,
-    };
-
-    next();
 };

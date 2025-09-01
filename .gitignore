@@ -98,8 +98,6 @@ temp/
 *.temp
 
 # Package manager files
-package-lock.json
-yarn.lock
 pnpm-lock.yaml
 shrinkwrap.yaml
 
@@ -167,3 +165,9 @@ $RECYCLE.BIN/
 .directory
 .Trash-*
 .nfs*
+
+
+
+
+# Docker
+mongo-init.js

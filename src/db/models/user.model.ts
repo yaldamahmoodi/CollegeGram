@@ -55,6 +55,8 @@ export const insertUserSchema = z.object({
     biography: z.string().max(1500).nullable().optional(),
 });
 
+
+
 export const selectUserSchema = z.object({
     _id: z.string(),
     email: z.email(),

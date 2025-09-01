@@ -1,5 +1,7 @@
 import mongoose from "mongoose";
 import env from "../../env.ts";
+import {InternalErrors} from "../utils/errors/internal.errors.ts";
+
 
 
 export class Database {
@@ -11,9 +13,9 @@ export class Database {
 
 
     private timeoutPromise(timeoutMs: number) {
-        return new Promise((_, reject) => {
+        return new Promise<never>((_, reject) => {
             setTimeout(() => {
-                reject(new Error(`Database connection timed out after ${timeoutMs}ms`));
+                reject(new InternalErrors("INTERNAL_SERVER_ERROR", `Database connection timed out after ${timeoutMs}ms`));
             }, timeoutMs);
         })
     }
@@ -28,13 +30,12 @@ export class Database {
                 this.timeoutPromise(timeoutMs)
             ]);
             if (mongoose.connection.readyState !== 1) {
-                throw new Error("Failed to connect to MongoDB.");
+                throw new InternalErrors("INTERNAL_SERVER_ERROR", "Failed to connect to MongoDB.");
             }
             console.log("Successfully connected to MongoDB!");
         } catch (error) {
             attempts++;
             console.error(`DB connection attempt ${attempts} failed: `, error);
-
             if (attempts >= maxRetries) {
                 console.error("Max retries reached, exiting application...");
                 process.exit(1);

@@ -1,9 +1,11 @@
 import type {Authenticate} from "../middlewares/auth.middleware.ts";
-import type {Response} from "express";
+import type {NextFunction, Response} from "express";
 import type {UserService} from "../services/user.service.ts";
 import type {InsertPostDto} from "../db/models/post.model.ts";
 import fs from "fs";
-import {APIError} from "../middlewares/error.middleware.ts";
+import { UnauthorizedError } from "../utils/errors/unauthorized.errors.ts";
+import {ValidationError} from "../utils/errors/validation.errors.ts";
+import {APIError} from "../utils/errors/api.errors.ts";
 
 export class UserController {
 
@@ -19,10 +21,10 @@ export class UserController {
     }
 
 
-    async uploadProfile(req: Authenticate, res: Response) {
-        if (!req.user) return res.status(401).json({error: "Unauthorized"});
+    async uploadProfile(req: Authenticate, res: Response, next: NextFunction) {
+        if (!req.user) return next(new UnauthorizedError("UNAUTHORIZED"))
 
-        if (!req.file) return res.status(400).json({error: "No file uploaded"});
+        if (!req.file) return next(new ValidationError("INVALID_CREDENTIALS"))
 
         const filePath = req.file.path;
 
@@ -33,14 +35,13 @@ export class UserController {
                 message: "Profile upload success",
                 data: profile
             });
-        } catch (error: any) {
-            return res.status(400).json({success: false, message: error.message});
+        } catch (error: unknown) {
+            if (error instanceof APIError) return next(error)
         }
     }
 
-    async getUserDetails(req: Authenticate, res: Response) {
-        if (!req.user) return res.status(401).json({error: "Unauthorized"});
-
+    async getUserDetails(req: Authenticate, res: Response, next: NextFunction) {
+        if (!req.user) return next(new UnauthorizedError("UNAUTHORIZED"))
         try {
             const userDetails = await this.userService.getUserDetails(req.user.id);
             const profilePhotoPath = userDetails.ProfilePhoto?.path;
@@ -60,17 +61,15 @@ export class UserController {
                     profilePhotoUrl: profilePhotoBase64
                 }
             })
-        } catch (error: any) {
-            return res.status(400).json({
-                success: false,
-                message: error instanceof Error ? error.message : "Unknown error"
-            });
+        } catch (error: unknown) {
+            if (error instanceof APIError) return next(error)
         }
     }
-    async createPost(req: Authenticate, res: Response) {
-        if (!req.user) return res.status(401).json({error: "Unauthorized"});
 
-        if (!req.files) return res.status(400).json({error: "No file uploaded"});
+    async createPost(req: Authenticate, res: Response, next: NextFunction) {
+        if (!req.user) return next(new UnauthorizedError("UNAUTHORIZED"))
+
+        if (!req.file) return next(new ValidationError("INVALID_CREDENTIALS"))
 
         try {
             const files = req.files as Express.Multer.File[];
@@ -90,39 +89,35 @@ export class UserController {
                 success: true,
                 message: "Post success",
             })
-        } catch (error: any) {
-            return res.status(400).json({success: false, message: error.message});
+        } catch (error: unknown) {
+            if (error instanceof APIError) return next(error)
         }
     }
 
-    async profileUpdater(req: Authenticate, res: Response) {
+    async profileUpdater(req: Authenticate, res: Response, next: NextFunction) {
 
         try {
-            await this.userService.profileUpdater(req.user.username,req.body);
+            await this.userService.profileUpdater(req.user.username, req.body);
             return res.status(201).json({
                 success: true,
                 message: "User successfully Updated"
             });
 
-        } catch (error: any) {
-            return res.status(400).json({
-                success: false,
-                message: error.message,
-            });
+        } catch (error: unknown) {
+            if (error instanceof APIError) return next(error)
         }
 
     }
 
-    getPosts = async (req: Authenticate, res: Response) => {
+    getPosts = async (req: Authenticate, res: Response, next: NextFunction) => {
         try {
             const posts = await this.userService.getUserPosts(req.user.id);
             return res.status(200).json({success: true, data: posts})
-        } catch (error) {
-            if (error instanceof APIError) {
-                console.log(error, "getPosts Controller")
-                res.status(500).json({error: error.message});
-            }
+
+        } catch (error: unknown) {
+            if (error instanceof APIError) return next(error)
         }
+
     }
 
 }

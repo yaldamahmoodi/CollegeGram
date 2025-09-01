@@ -34,7 +34,7 @@ importers:
         version: 9.0.2
       mongoose:
         specifier: ^8.17.1
-        version: 8.17.1
+        version: 8.18.0
       morgan:
         specifier: ^1.10.1
         version: 1.10.1
@@ -46,7 +46,7 @@ importers:
         version: 11.1.0
       zod:
         specifier: ^4.0.17
-        version: 4.0.17
+        version: 4.1.5
     devDependencies:
       '@types/bcrypt':
         specifier: ^6.0.0
@@ -561,8 +561,8 @@ packages:
       socks:
         optional: true
 
-  mongoose@8.17.1:
-    resolution: {integrity: sha512-aodS4cacux5caoxB5ErEwRmrafIUsVRJxHnvP7URnSUnTenr32j1qBVV+KjYxryyLSisQkxglAFF69TNLeZTLg==}
+  mongoose@8.18.0:
+    resolution: {integrity: sha512-3TixPihQKBdyaYDeJqRjzgb86KbilEH07JmzV8SoSjgoskNTpa6oTBmDxeoF9p8YnWQoz7shnCyPkSV/48y3yw==}
     engines: {node: '>=16.20.1'}
 
   morgan@1.10.1:
@@ -837,8 +837,8 @@ packages:
     resolution: {integrity: sha512-Ux4ygGWsu2c7isFWe8Yu1YluJmqVhxqK2cLXNQA5AcC3QfbGNpM7fu0Y8b/z16pXLnFxZYvWhd3fhBY9DLmC6Q==}
     engines: {node: '>=6'}
 
-  zod@4.0.17:
-    resolution: {integrity: sha512-1PHjlYRevNxxdy2JZ8JcNAw7rX8V9P1AKkP+x/xZfxB0K5FYfuV+Ug6P/6NVSR2jHQ+FzDDoDHS04nYUsOIyLQ==}
+  zod@4.1.5:
+    resolution: {integrity: sha512-rcUUZqlLJgBC33IT3PNMgsCq6TzLQEG/Ei/KTCU0PedSWRMAXoOUN+4t/0H+Q8bdnLPdqUYnvboJT0bn/229qg==}
 
 snapshots:
 
@@ -1320,7 +1320,7 @@ snapshots:
       bson: 6.10.4
       mongodb-connection-string-url: 3.0.2
 
-  mongoose@8.17.1:
+  mongoose@8.18.0:
     dependencies:
       bson: 6.10.4
       kareem: 2.6.3
@@ -1617,4 +1617,4 @@ snapshots:
 
   yn@3.1.1: {}
 
-  zod@4.0.17: {}
+  zod@4.1.5: {}

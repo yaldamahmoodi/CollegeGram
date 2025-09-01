@@ -1,5 +1,6 @@
-import type {Request, Response} from "express";
+import type {NextFunction, Request, Response} from "express";
 import type {AuthService} from "../services/auth.service.ts";
+import {APIError} from "../utils/errors/api.errors.ts";
 
 
 export class AuthController {
@@ -11,22 +12,19 @@ export class AuthController {
         this.login = this.login.bind(this);
     }
 
-    async register(req: Request, res: Response) {
+    async register(req: Request, res: Response, next: NextFunction) {
         try {
             await this.authService.register(req.body);
             return res.status(201).json({
                 success: true,
                 message: "User created successfully"
             });
-        } catch (error: any) {
-            return res.status(400).json({
-                success: false,
-                message: error.message,
-            });
+        } catch (error: unknown) {
+            if (error instanceof APIError) return next(error)
         }
     }
 
-    async login(req: Request, res: Response) {
+    async login(req: Request, res: Response, next: NextFunction) {
         try {
             const accessToken = await this.authService.login(req.body);
             return res.status(200).cookie('accessToken', accessToken, {
@@ -40,11 +38,8 @@ export class AuthController {
                 message: "User logged in successfully",
             });
 
-        } catch (error: any) {
-            return res.status(400).json({
-                success: false,
-                message: error.message,
-            });
+        } catch (error: unknown) {
+            if (error instanceof APIError) return next(error)
         }
     }
 }

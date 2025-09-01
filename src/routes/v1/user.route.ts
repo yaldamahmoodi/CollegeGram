@@ -10,7 +10,6 @@ const router = Router();
 
 const initiator = new Initiator();
 const userController = initiator.getUserController();
-const optionalUserSchema = insertUserSchema.partial();
 
 router.use(authMiddleware)
 
@@ -34,14 +33,14 @@ router.get(
 
 router.post(
     "/upload/post",
-    uploadProfilePhotoMiddleware.array("photos",10),
+    uploadProfilePhotoMiddleware.array("photos", 10),
     userController.createPost
 );
 
 
 router.patch(
     "/profile/update",
-    bodyParser(optionalUserSchema),
+    bodyParser(insertUserSchema),
     userController.profileUpdater
 );
 

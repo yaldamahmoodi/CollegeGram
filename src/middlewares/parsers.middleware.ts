@@ -1,5 +1,8 @@
 import {type ZodSchema, ZodError} from "zod";
 import type {Request, Response, NextFunction} from "express";
+import {ZodValidationError} from "../utils/errors/zod.errors.ts";
+import {InternalErrors} from "../utils/errors/internal.errors.ts";
+
 
 export const bodyParser = (schema: ZodSchema) => {
     return (req: Request, res: Response, next: NextFunction) => {
@@ -8,14 +11,9 @@ export const bodyParser = (schema: ZodSchema) => {
             next()
         } catch (error) {
             if (error instanceof ZodError) {
-                return res.status(400).json({
-                    error: error.message,
-                })
+                return next(new ZodValidationError(error))
             }
-            return res.status(500).json({
-                    error: "Internal server error",
-                }
-            )
+            next(new InternalErrors())
         }
 
     }
@@ -27,15 +25,11 @@ export const paramsParser = (schema: ZodSchema) => {
         try {
             schema.parse(req.params)
             next()
-        } catch (err) {
-            if (err instanceof ZodError) {
-                res.status(400).json({
-                    error: 'invalid parameters', details: err.issues.map((err) => ({
-                        field: err.path.join('.'),
-                        message: err.message
-                    }))
-                })
+        } catch (error) {
+            if (error instanceof ZodError) {
+               return next(new ZodValidationError(error))
             }
+            next(new InternalErrors())
         }
     }
 }
