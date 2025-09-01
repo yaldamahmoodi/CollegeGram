@@ -1,4 +1,5 @@
-import {Types} from "mongoose";
+import mongoose, {type Model, Schema, Types} from "mongoose";
+
 
 export interface ISave {
     _id: Types.ObjectId,
