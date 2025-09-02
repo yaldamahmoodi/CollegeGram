@@ -41,7 +41,7 @@ router.post(
 router.patch(
     "/profile/update",
     bodyParser(updateProfileUserSchema),
-    userController.profileUpdater
+    userController.updateProfile
 );
 
 
