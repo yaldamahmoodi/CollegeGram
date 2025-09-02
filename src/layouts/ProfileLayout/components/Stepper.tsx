@@ -89,29 +89,6 @@ const Stepper: React.FC<StepperProps> = ({
       </div>
 
       <div className="mt-6 min-h-[250px]">{steps[currentStep].content}</div>
-      {controlledStep === undefined && (
-        <div className="flex justify-between mt-6">
-          <div className="flex justify-between w-full mt-4 gap-4">
-            <a
-              className="text-gray-700 cursor-pointer self-end"
-              onClick={() => {}}>
-              پشیمون شدم
-            </a>
-          </div>
-          <Button
-            onClick={() => setStep(Math.max(0, currentStep - 1))}
-            disabled={currentStep === 0}
-            label="قبلی"
-          />
-
-          <Button
-            variant="danger"
-            label="بعدی"
-            onClick={() => setStep(Math.min(steps.length - 1, currentStep + 1))}
-            disabled={currentStep === steps.length - 1}
-          />
-        </div>
-      )}
     </div>
   );
 };
