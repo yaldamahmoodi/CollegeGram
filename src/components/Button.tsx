@@ -13,12 +13,13 @@ const variantClasses: Record<Variant, string> = {
 };
 
 const Button = (props: ButtonProps) => {
-  const { variant = "danger", label, className } = props;
+  const { variant = "danger", label, className, ...rest } = props;
   const defaultClassname =
     "text-sm rounded-3xl px-8 py-3  w-auto self-end min-w-[84px]";
   return (
     <button
-      className={`${defaultClassname} ${className} ${variantClasses[variant]}`}>
+      className={`${defaultClassname} ${className} ${variantClasses[variant]}`}
+      {...rest}>
       {label}
     </button>
   );
