@@ -71,7 +71,7 @@ export const selectUserSchema = z.object({
 
 export const updateProfileUserSchema = z.object({
     email: z.email().max(255).optional(),
-    password: z.string().min(6).max(255).optional(),
+    password: z.string().regex(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[\W_]).{8,}$/).max(20),
     firstname: z.string().max(255).nullable().optional(),
     lastname: z.string().max(255).nullable().optional(),
     biography: z.string().max(1500).nullable().optional(),
