@@ -17,6 +17,7 @@ export class UserController {
         this.createPost = this.createPost.bind(this);
         this.getUserDetails = this.getUserDetails.bind(this);
         this.profileUpdater = this.profileUpdater.bind(this);
+        this.getPostByID = this.getPostByID.bind(this);
 
     }
 
@@ -120,4 +121,16 @@ export class UserController {
 
     }
 
+    async getPostByID(req: Authenticate, res: Response, next: NextFunction) {
+        try {
+            const post = await this.userService.getPostByID(req.body);
+            return res.status(200).json({success: true, data: post})
+
+        } catch (error: unknown) {
+            if (error instanceof APIError) return next(error)
+        }
+    }
+
+
+        
 }
