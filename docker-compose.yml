@@ -1,0 +1,73 @@
+services:
+  mongo:
+    image: mongo:4.4
+    container_name: collagegram
+    restart: unless-stopped
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: admin
+      MONGO_INITDB_ROOT_PASSWORD: admin
+      MONGO_INITDB_DATABASE: collagegram
+
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongo_data:/data/db
+#
+#  collegegram:
+#    build:
+#      context: .
+#      dockerfile: Dockerfile
+#    restart: unless-stopped
+#    ports:
+#      - "3001:3001"
+#    depends_on:
+#      - mongo
+#    environment:
+#      NODE_ENV: ${NODE_ENV}
+#      PORT: ${PORT}
+#      MONGODB_URI: ${MONGODB_URI}
+#      CORS_ORIGIN: ${CORS_ORIGIN}
+
+
+  mongo-express:
+    image: mongo-express:latest
+    container_name: mongo-express
+    restart: unless-stopped
+    ports:
+      - "8081:8081"
+    environment:
+      ME_CONFIG_MONGODB_SERVER: mongo
+      ME_CONFIG_MONGODB_ADMINUSERNAME: admin
+      ME_CONFIG_MONGODB_ADMINPASSWORD: admin
+    depends_on:
+      - mongo
+
+  mongo-test:
+    image: mongo:4.4
+    container_name: collagegram-test
+    restart: unless-stopped
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: admin
+      MONGO_INITDB_ROOT_PASSWORD: admin
+      MONGO_INITDB_DATABASE: collagegram-test
+    ports:
+      - "27018:27017"
+    volumes:
+      - mongo_test_data:/data/db
+
+  mongo-express-test:
+    image: mongo-express:latest
+    container_name: mongo-express-test
+    restart: unless-stopped
+    ports:
+      - "8082:8081"
+    environment:
+      ME_CONFIG_MONGODB_SERVER: mongo-test
+      ME_CONFIG_MONGODB_ADMINUSERNAME: admin
+      ME_CONFIG_MONGODB_ADMINPASSWORD: admin
+    depends_on:
+      - mongo-test
+
+volumes:
+  mongo_data:
+  mongo_test_data:
