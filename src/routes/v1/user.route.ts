@@ -44,6 +44,10 @@ router.patch(
     userController.profileUpdater
 );
 
+router.get(
+    "/post",
+    userController.getPostByID
+)
 
 router.use(errorHandler);
 
