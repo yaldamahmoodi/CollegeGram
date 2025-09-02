@@ -68,5 +68,16 @@ export const selectUserSchema = z.object({
     updatedAt: z.date(),
 });
 
+
+export const updateProfileUserSchema = z.object({
+    email: z.email().max(255).optional(),
+    password: z.string().min(6).max(255).optional(),
+    firstname: z.string().max(255).nullable().optional(),
+    lastname: z.string().max(255).nullable().optional(),
+    biography: z.string().max(1500).nullable().optional(),
+});
+
+
 export type insertUserZodSchema = z.infer<typeof insertUserSchema>;
 export type selectUserZodSchema = z.infer<typeof selectUserSchema>;
+export type updateProfileUserSchema = z.infer<typeof updateProfileUserSchema>;
