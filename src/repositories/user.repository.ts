@@ -18,10 +18,13 @@ export class UserRepository {
             {$set: userData},
         ).exec();
     }
-// This is Amir's code
- // The query related to the posts model must be in the corresponding repository
+    // This is Amir's code
+    // The query related to the posts model must be in the corresponding repository
     async findUserPosts(userId: string): Promise<Post[]> {
         return postModel.find({user_id: userId}, {urls: {$slice: 1}, photo_length: 1});
     }
 
+    async findPost(postId: string): Promise<Post | null> {
+    return postModel.findById(postId);
+    }
 }
