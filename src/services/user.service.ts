@@ -56,4 +56,13 @@ export class UserService {
     async getUserPosts(userId: string) {
         return await this.userRepository.findUserPosts(userId);
     }
+
+    async getPostByID(postId: string) {
+        const post = await this.userRepository.findPost(postId);
+        if (!post) {
+            throw new NotFoundError("NOT_FOUND");
+        }
+        return post;
+        
+    }
 }
