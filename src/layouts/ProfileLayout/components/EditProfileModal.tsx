@@ -2,10 +2,9 @@ import React, { useState } from "react";
 import { useFormik } from "formik";
 import Modal from "@components/Modal";
 import Input from "@components/Input";
-import Button from "@components/Button";
-import userNameIcon from "@assets/icons/userNameIcon.svg";
-import emailIcon from "@assets/icons/emailIcon.svg";
-import passwordIcon from "@assets/icons/passwordIcon.svg";
+import passwordIcon from "@assets/icons/password.svg";
+import userNameIcon from "@assets/icons/username.svg";
+import emailIcon from "@assets/icons/email.svg";
 import uploadImageIcon from "@assets/images/uploadImageIcon.svg";
 
 interface Props {
@@ -34,7 +33,16 @@ const EditProfileModal: React.FC<Props> = ({ isOpen, onClose }) => {
   });
 
   return (
-    <Modal isOpen={isOpen} onClose={onClose}>
+    <Modal
+        isOpen={isOpen}
+        onClose={onClose}
+        onPrimaryClick={formik.handleSubmit}
+        primaryLabel="ثبت تغیرات"
+        secondaryLabel="پشیمون شدم"
+        primaryActive={true}
+        secondaryActive={true}
+        className="w-96"
+    >
       <h2 className="text-2xl flex self-center">ویرایش حساب</h2>
       <form onSubmit={formik.handleSubmit} className="flex flex-col gap-4">
         <div className="flex flex-col items-center gap-2 mb-4">
@@ -87,7 +95,6 @@ const EditProfileModal: React.FC<Props> = ({ isOpen, onClose }) => {
           onChange={formik.handleChange}
           onBlur={formik.handleBlur}
           icon={<img src={userNameIcon} />}
-          iconPosition="left"
         />
         {formik.touched.firstname && formik.errors.firstname && (
           <div style={{ color: "red" }}>{formik.errors.firstname}</div>
@@ -101,7 +108,6 @@ const EditProfileModal: React.FC<Props> = ({ isOpen, onClose }) => {
           onChange={formik.handleChange}
           onBlur={formik.handleBlur}
           icon={<img src={userNameIcon} />}
-          iconPosition="left"
         />
         {formik.touched.lastname && formik.errors.lastname && (
           <div style={{ color: "red" }}>{formik.errors.lastname}</div>
@@ -115,7 +121,6 @@ const EditProfileModal: React.FC<Props> = ({ isOpen, onClose }) => {
           onChange={formik.handleChange}
           onBlur={formik.handleBlur}
           icon={<img src={emailIcon} />}
-          iconPosition="left"
         />
         {formik.touched.email && formik.errors.email && (
           <div style={{ color: "red" }}>{formik.errors.email}</div>
@@ -129,7 +134,6 @@ const EditProfileModal: React.FC<Props> = ({ isOpen, onClose }) => {
           onChange={formik.handleChange}
           onBlur={formik.handleBlur}
           icon={<img src={passwordIcon} />}
-          iconPosition="left"
         />
         {formik.touched.password && formik.errors.password && (
           <div style={{ color: "red" }}>{formik.errors.password}</div>
@@ -143,7 +147,6 @@ const EditProfileModal: React.FC<Props> = ({ isOpen, onClose }) => {
           onChange={formik.handleChange}
           onBlur={formik.handleBlur}
           icon={<img src={passwordIcon} />}
-          iconPosition="left"
         />
         {formik.touched.confirmPassword && formik.errors.confirmPassword && (
           <div style={{ color: "red" }}>{formik.errors.confirmPassword}</div>
@@ -157,20 +160,6 @@ const EditProfileModal: React.FC<Props> = ({ isOpen, onClose }) => {
           onChange={formik.handleChange}
           onBlur={formik.handleBlur}
         />
-
-        <div className="flex justify-end gap-2 mt-4">
-          <Button
-            label="پشیمون شدم"
-            type="button"
-            onClick={onClose}
-            className="!bg-transparent !text-black border border-gray-300 px-4 py-2 rounded-2xl"
-          />
-          <Button
-            label="ثبت تغییرات"
-            type="submit"
-            className="!bg-[#E7000B] !text-white px-4 py-2 rounded-2xl"
-          />
-        </div>
       </form>
     </Modal>
   );

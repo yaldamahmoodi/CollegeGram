@@ -1,13 +1,28 @@
 @import "tailwindcss";
-html,
-body,
-#root {
-  direction: rtl;
-  height: 100%;
-  font-size: 14px;
-  margin: 0;
-  font-family: "peyda", sans-serif;
+
+@font-face {
+    font-family: "Peyda";
+    src: url("../fonts/Peyda/PeydaWebFaNum-Regular.woff2") format("woff2"),
+    url("../fonts/Peyda/PeydaWebFaNum-Regular.woff") format("woff"),
+    url("../fonts/Peyda/PeydaFaNum-Regular.ttf") format("truetype");
+    font-weight: normal;
+    font-style: normal;
+    font-display: swap;
 }
+
+body{
+    font-family: "Peyda";
+    direction: rtl;
+}
+
+/*html,*/
+/*body,*/
+/*#root {*/
+/*  direction: rtl;*/
+/*  height: 100%;*/
+/*  font-size: 14px;*/
+/*  margin: 0;*/
+/*}*/
 .layout-container {
   background-image: url("../images/background.jpg");
 }

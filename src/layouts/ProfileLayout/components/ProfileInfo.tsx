@@ -28,7 +28,6 @@ const ProfileInfo = () => {
         />
       </div>
 
-      {/* Children Modal */}
       <EditProfileModal
         isOpen={isModalOpen}
         onClose={() => setIsModalOpen(false)}
