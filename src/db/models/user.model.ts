@@ -49,7 +49,7 @@ export const UserModel: Model<IUser> = mongoose.model<IUser>('User', UserSchema)
 export const insertUserSchema = z.object({
     email: z.email().max(255),
     username: z.string().min(1).max(255),
-    password: z.string().min(6).max(255),
+    password: z.string().regex(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[\W_]).{8,}$/).max(20),
     firstname: z.string().max(255).nullable().optional(),
     lastname: z.string().max(255).nullable().optional(),
     biography: z.string().max(1500).nullable().optional(),
