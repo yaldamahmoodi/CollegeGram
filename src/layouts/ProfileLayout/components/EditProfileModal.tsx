@@ -34,15 +34,14 @@ const EditProfileModal: React.FC<Props> = ({ isOpen, onClose }) => {
 
   return (
     <Modal
-        isOpen={isOpen}
-        onClose={onClose}
-        onPrimaryClick={formik.handleSubmit}
-        primaryLabel="ثبت تغیرات"
-        secondaryLabel="پشیمون شدم"
-        primaryActive={true}
-        secondaryActive={true}
-        className="w-96"
-    >
+      isOpen={isOpen}
+      onClose={onClose}
+      onPrimaryClick={formik.handleSubmit}
+      primaryLabel="ثبت تغیرات"
+      secondaryLabel="پشیمون شدم"
+      primaryActive={true}
+      secondaryActive={true}
+      className="w-96">
       <h2 className="text-2xl flex self-center">ویرایش حساب</h2>
       <form onSubmit={formik.handleSubmit} className="flex flex-col gap-4">
         <div className="flex flex-col items-center gap-2 mb-4">
@@ -95,10 +94,9 @@ const EditProfileModal: React.FC<Props> = ({ isOpen, onClose }) => {
           onChange={formik.handleChange}
           onBlur={formik.handleBlur}
           icon={<img src={userNameIcon} />}
+          haveError={!!(formik.touched.firstname && formik.errors.firstname)}
+          errorMessage={formik.errors.firstname}
         />
-        {formik.touched.firstname && formik.errors.firstname && (
-          <div style={{ color: "red" }}>{formik.errors.firstname}</div>
-        )}
 
         <Input
           type="text"
@@ -108,10 +106,9 @@ const EditProfileModal: React.FC<Props> = ({ isOpen, onClose }) => {
           onChange={formik.handleChange}
           onBlur={formik.handleBlur}
           icon={<img src={userNameIcon} />}
+          haveError={!!(formik.touched.lastname && formik.errors.lastname)}
+          errorMessage={formik.errors.lastname}
         />
-        {formik.touched.lastname && formik.errors.lastname && (
-          <div style={{ color: "red" }}>{formik.errors.lastname}</div>
-        )}
 
         <Input
           type="text"
@@ -121,10 +118,9 @@ const EditProfileModal: React.FC<Props> = ({ isOpen, onClose }) => {
           onChange={formik.handleChange}
           onBlur={formik.handleBlur}
           icon={<img src={emailIcon} />}
+          haveError={!!(formik.touched.email && formik.errors.email)}
+          errorMessage={formik.errors.email}
         />
-        {formik.touched.email && formik.errors.email && (
-          <div style={{ color: "red" }}>{formik.errors.email}</div>
-        )}
 
         <Input
           type="password"
@@ -134,10 +130,9 @@ const EditProfileModal: React.FC<Props> = ({ isOpen, onClose }) => {
           onChange={formik.handleChange}
           onBlur={formik.handleBlur}
           icon={<img src={passwordIcon} />}
+          haveError={!!(formik.touched.password && formik.errors.password)}
+          errorMessage={formik.errors.password}
         />
-        {formik.touched.password && formik.errors.password && (
-          <div style={{ color: "red" }}>{formik.errors.password}</div>
-        )}
 
         <Input
           type="password"
@@ -147,10 +142,11 @@ const EditProfileModal: React.FC<Props> = ({ isOpen, onClose }) => {
           onChange={formik.handleChange}
           onBlur={formik.handleBlur}
           icon={<img src={passwordIcon} />}
+          haveError={
+            !!(formik.touched.confirmPassword && formik.errors.confirmPassword)
+          }
+          errorMessage={formik.errors.confirmPassword}
         />
-        {formik.touched.confirmPassword && formik.errors.confirmPassword && (
-          <div style={{ color: "red" }}>{formik.errors.confirmPassword}</div>
-        )}
 
         <Input
           type="text"
