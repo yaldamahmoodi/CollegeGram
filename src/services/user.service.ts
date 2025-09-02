@@ -48,9 +48,7 @@ export class UserService {
 
     async updateProfile(userName: string, userData: updateProfileUserSchema) {
         if (userData.password) {
-            const hashedPassword = await bcrypt.hash(userData.password, 10);
-            userData.password = hashedPassword;
-            
+            userData.password = await bcrypt.hash(userData.password, 10);
         }
         return await this.userRepository.updateUser(userName, userData);
     }
