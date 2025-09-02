@@ -46,9 +46,11 @@ export class UserService {
         return await this.postRepository.createPost(postData.user_id, postData.urls, postData.caption);
     }
 
-    async profileUpdater(userName: string, userData: updateProfileUserSchema) {
+    async updateProfile(userName: string, userData: updateProfileUserSchema) {
         if (userData.password) {
             const hashedPassword = await bcrypt.hash(userData.password, 10);
+            userData.password = hashedPassword;
+            
         }
         return await this.userRepository.updateUser(userName, userData);
     }

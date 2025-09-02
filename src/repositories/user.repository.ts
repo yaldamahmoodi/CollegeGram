@@ -1,4 +1,4 @@
-import {type IUser, UserModel, type insertUserZodSchema} from "../db/models/user.model.ts";
+import {type IUser, UserModel, type updateProfileUserSchema} from "../db/models/user.model.ts";
 import {type Post, postModel} from "../db/models/post.model.ts";
 
 export class UserRepository {
@@ -12,7 +12,7 @@ export class UserRepository {
             .populate("ProfilePhoto", "path");
     }
 
-    async updateUser(username: string, userData: Partial<insertUserZodSchema>) {
+    async updateUser(username: string, userData: updateProfileUserSchema) {
         return await UserModel.updateOne(
             {username},
             {$set: userData},
