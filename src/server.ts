@@ -10,10 +10,10 @@ import userRoute from "./routes/v1/user.route.ts";
 import env from "../env.ts";
 
 const app = express();
-app.use(cookieParser(env.COOKIE_SECRET));
 
 
 /* ---- GLOBAL MIDDLE WARES ---- */
+app.use(cookieParser(env.COOKIE_SECRET));
 app.use(helmet());
 app.use(cors({
     origin: env.CORS_ORIGIN,
