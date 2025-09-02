@@ -4,7 +4,7 @@ import {authMiddleware} from "../../middlewares/auth.middleware.ts";
 import {uploadProfilePhotoMiddleware} from "../../middlewares/uploadProfilePhoto.middleware.ts";
 import {errorHandler} from "../../middlewares/error.middleware.ts";
 import {bodyParser} from "../../middlewares/parsers.middleware.ts";
-import {insertUserSchema} from "../../db/models/user.model.ts";
+import {updateProfileUserSchema} from "../../db/models/user.model.ts";
 
 const router = Router();
 
@@ -40,7 +40,7 @@ router.post(
 
 router.patch(
     "/profile/update",
-    bodyParser(insertUserSchema),
+    bodyParser(updateProfileUserSchema),
     userController.profileUpdater
 );
 
