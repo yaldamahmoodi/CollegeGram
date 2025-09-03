@@ -9,12 +9,12 @@ export class PostController {
 
     constructor(postService: PostService) {
         this.postService = postService;
-        this.getPostByID = this.getPostByID.bind(this);
+        this.getPost = this.getPost.bind(this);
 
     }
 
 
-    async getPostByID(req: Authenticate, res: Response, next: NextFunction) {
+    async getPost(req: Authenticate, res: Response, next: NextFunction) {
         try {
             const post = await this.postService.getPostByID(req.body);
             return res.status(200).json({success: true, data: post})

@@ -12,7 +12,7 @@ router.use(authMiddleware)
 
 router.get(
     "/upload",
-    postController.getPostByID
+    postController.getPost
 )
 
 
