@@ -2,11 +2,10 @@ import type {Authenticate} from "../middlewares/auth.middleware.ts";
 import type {NextFunction, Response, Request} from "express";
 import type {UserService} from "../services/user.service.ts";
 import type {InsertPostDto} from "../db/models/post.model.ts";
-import fs from "fs";
 import {UnauthorizedError} from "../utils/errors/unauthorized.errors.ts";
 import {ValidationError} from "../utils/errors/validation.errors.ts";
 import {APIError} from "../utils/errors/api.errors.ts";
-import type {UserParams} from "../utils/types.js";
+import {type userParamSchema} from "../utils/types.ts";
 
 export class UserController {
 
@@ -41,7 +40,7 @@ export class UserController {
         }
     }
 
-    async getUserDetails(req: Authenticate & Request<UserParams>, res: Response, next: NextFunction) {
+    async getUserDetails(req: Authenticate & Request<userParamSchema>, res: Response, next: NextFunction) {
 
         let userId = req.params.id;
         if (!userId) {
@@ -61,33 +60,6 @@ export class UserController {
                     following_count: userDetails.following_count,
                     post_count: userDetails.post_count,
                     profilePhotoUrl: profilePhotoPath
-                }
-            })
-        } catch (error: unknown) {
-            if (error instanceof APIError) return next(error)
-        }
-
-    }
-
-    async getUserDetailssss(req: Authenticate, res: Response, next: NextFunction) {
-        if (!req.user) return next(new UnauthorizedError("UNAUTHORIZED"))
-        try {
-            const userDetails = await this.userService.getUserDetails(req.user.id);
-            const profilePhotoPath = userDetails.ProfilePhoto?.path;
-
-            let profilePhotoBase64: string | null = null;
-
-            if (profilePhotoPath && fs.existsSync(profilePhotoPath)) {
-                const fileBuffer = fs.readFileSync(profilePhotoPath);
-                profilePhotoBase64 = fileBuffer.toString("base64");
-            }
-
-            return res.status(200).json({
-                success: true,
-                data: {
-                    username: userDetails.username,
-                    email: userDetails.email,
-                    profilePhotoUrl: profilePhotoBase64
                 }
             })
         } catch (error: unknown) {
