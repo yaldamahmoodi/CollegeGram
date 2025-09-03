@@ -3,7 +3,7 @@ import type {NextFunction, Response} from "express";
 import type {UserService} from "../services/user.service.ts";
 import type {InsertPostDto} from "../db/models/post.model.ts";
 import fs from "fs";
-import { UnauthorizedError } from "../utils/errors/unauthorized.errors.ts";
+import {UnauthorizedError} from "../utils/errors/unauthorized.errors.ts";
 import {ValidationError} from "../utils/errors/validation.errors.ts";
 import {APIError} from "../utils/errors/api.errors.ts";
 
@@ -69,8 +69,9 @@ export class UserController {
     async createPost(req: Authenticate, res: Response, next: NextFunction) {
         if (!req.user) return next(new UnauthorizedError("UNAUTHORIZED"))
 
-        if (!req.file) return next(new ValidationError("INVALID_CREDENTIALS"))
-
+        if (!req.files || (req.files as Express.Multer.File[]).length === 0) {
+            return next(new ValidationError("NO_FILES_UPLOADED"));
+        }
         try {
             const files = req.files as Express.Multer.File[];
             const caption = req.body.caption;
