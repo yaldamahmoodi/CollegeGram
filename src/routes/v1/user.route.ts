@@ -21,7 +21,6 @@ router.post(
 
 router.get(
     "/profile",
-    uploadProfilePhotoMiddleware.single("profile"),
     userController.getUserDetails
 );
 

@@ -1,5 +1,5 @@
 ### HEALTH CHECK
-GET http://localhost/api/health
+GET http://localhost:3001/api/health
 
 ### SERVER HEALTH
 GET  http://130.185.75.174:3001/api/health

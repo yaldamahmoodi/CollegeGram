@@ -31,10 +31,15 @@ export class AuthService {
     }
 
     async login(inputUsername: string, inputPassword: string) {
-        const {_id, password, username, email} = await this.authRepository.findByUsername(inputUsername);
-        if (!_id) {
+
+        const user = await this.authRepository.findByUsername(inputUsername);
+
+        if (!user) {
             throw new NotFoundError("NOT_FOUND_USER");
         }
+
+        const {_id, password, username, email} = user;
+
         const comparePassword = await bcrypt.compare(inputPassword, password);
         if (!comparePassword) {
             throw new ValidationError("INVALID_CREDENTIALS");
