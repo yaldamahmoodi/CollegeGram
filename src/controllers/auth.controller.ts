@@ -1,6 +1,8 @@
 import type {NextFunction, Request, Response} from "express";
 import type {AuthService} from "../services/auth.service.ts";
 import {APIError} from "../utils/errors/api.errors.ts";
+import type {insertUserZodSchema} from "../db/models/user.model.ts";
+import {type LoginDTO} from "../dtos/login.dto.ts";
 
 
 export class AuthController {
@@ -12,7 +14,7 @@ export class AuthController {
         this.login = this.login.bind(this);
     }
 
-    async register(req: Request, res: Response, next: NextFunction) {
+    async register(req: Request<{}, {}, insertUserZodSchema>, res: Response, next: NextFunction) {
         try {
             await this.authService.register(req.body);
             return res.status(201).json({
@@ -24,9 +26,10 @@ export class AuthController {
         }
     }
 
-    async login(req: Request, res: Response, next: NextFunction) {
+    async login(req: Request<{}, {}, LoginDTO>, res: Response, next: NextFunction) {
         try {
-            const accessToken = await this.authService.login(req.body);
+            const accessToken = await this.authService.login(req.body.username, req.body.password);
+            console.log(accessToken);
             return res.status(200).cookie('accessToken', accessToken, {
                 httpOnly: true,
                 secure: true,
