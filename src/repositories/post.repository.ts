@@ -1,4 +1,4 @@
-import {postModel} from "../db/models/post.model.ts";
+import {type Post, postModel} from "../db/models/post.model.ts";
 
 export class PostRepository {
 
@@ -9,5 +9,9 @@ export class PostRepository {
             caption,
         });
         return await post.save();
+    }
+
+    async findPost(postId: string): Promise<Post | null> {
+    return postModel.findById(postId);
     }
 }
