@@ -44,7 +44,7 @@ export class AuthService {
         if (!comparePassword) {
             throw new ValidationError("INVALID_CREDENTIALS");
         }
-        return jwt.sign({
+        const accessToken = jwt.sign({
                 _id,
                 username,
                 email,
@@ -53,7 +53,7 @@ export class AuthService {
                 expiresIn: env.ACCESS_TOKEN_EXPIRES_IN
             });
 
-
+        return {accessToken, userId: _id};
     }
 
 

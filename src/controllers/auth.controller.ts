@@ -28,7 +28,7 @@ export class AuthController {
 
     async login(req: Request<{}, {}, LoginDTO>, res: Response, next: NextFunction) {
         try {
-            const accessToken = await this.authService.login(req.body.username, req.body.password);
+            const {accessToken, userId} = await this.authService.login(req.body.username, req.body.password);
             return res.status(200).cookie('accessToken', accessToken, {
                 httpOnly: true,
                 secure: true,
@@ -38,6 +38,8 @@ export class AuthController {
             }).json({
                 success: true,
                 message: "User logged in successfully",
+                accessToken: accessToken,
+                userId: userId,
             });
 
         } catch (error: unknown) {
