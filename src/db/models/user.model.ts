@@ -14,6 +14,9 @@ export interface IUser {
         path: string;
         user_id: Types.ObjectId;
     };
+    follower_count: number;
+    following_count: number;
+    post_count: number;
     createdAt: Date;
     updatedAt: Date;
 }
@@ -54,7 +57,6 @@ export const insertUserSchema = z.object({
     lastname: z.string().max(255).nullable().optional(),
     biography: z.string().max(1500).nullable().optional(),
 });
-
 
 
 export const selectUserSchema = z.object({
