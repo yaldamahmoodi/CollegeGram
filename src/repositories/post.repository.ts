@@ -12,6 +12,6 @@ export class PostRepository {
     }
 
     async getPostById(postId: string): Promise<Post | null> {
-    return postModel.findById(postId);
+    return postModel.findById(postId).exec();
     }
 }
