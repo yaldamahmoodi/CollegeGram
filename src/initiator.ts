@@ -6,7 +6,8 @@ import {AuthService} from "./services/auth.service.ts";
 import {AuthRepository} from "./repositories/auth.repository.ts";
 import {PostRepository} from "./repositories/post.repository.ts";
 import {ProfileRepository} from "./repositories/profile.repository.ts";
-
+import {PostController} from "./controllers/post.controller.ts";
+import {PostService} from "./services/post.service.ts";
 
 export class Initiator {
     protected userService: UserService;
@@ -17,6 +18,8 @@ export class Initiator {
     protected authRepository: AuthRepository;
     protected postRepository: PostRepository;
     protected profileRepository: ProfileRepository
+    protected postService: PostService;
+    protected postController: PostController;
 
 
     constructor() {
@@ -26,8 +29,11 @@ export class Initiator {
         this.profileRepository = new ProfileRepository();
         this.authService = new AuthService(this.authRepository);
         this.userService = new UserService(this.userRepository, this.profileRepository, this.postRepository);
+        this.postService = new PostService(this.postRepository);
         this.authController = new AuthController(this.authService);
-        this.userController = new UserController(this.userService)
+        this.userController = new UserController(this.userService);
+        this.postController = new PostController(this.postService);
+
     }
 
     public get getAuthController() {
@@ -40,5 +46,9 @@ export class Initiator {
 
     public get userRepo() {
         return this.userRepository;
+    }
+
+    public getPostController() {
+        return this.postController;
     }
 }
