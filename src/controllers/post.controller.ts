@@ -16,7 +16,7 @@ export class PostController {
 
     async getPost(req: Authenticate, res: Response, next: NextFunction) {
         try {
-            const post = await this.postService.getPostByID(req.body);
+            const post = await this.postService.getPost(req.body);
             return res.status(200).json({success: true, data: post})
 
         } catch (error: unknown) {
