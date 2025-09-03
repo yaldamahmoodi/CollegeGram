@@ -11,8 +11,8 @@ export class PostService {
     }
 
 
-    async getPostByID(postId: string) {
-        const post = await this.postRepository.findPost(postId);
+    async getPost(postId: string) {
+        const post = await this.postRepository.getPostById(postId);
         if (!post) {
             throw new NotFoundError("NOT_FOUND");
         }

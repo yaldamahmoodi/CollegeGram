@@ -11,7 +11,7 @@ export class PostRepository {
         return await post.save();
     }
 
-    async findPost(postId: string): Promise<Post | null> {
+    async getPostById(postId: string): Promise<Post | null> {
     return postModel.findById(postId);
     }
 }
