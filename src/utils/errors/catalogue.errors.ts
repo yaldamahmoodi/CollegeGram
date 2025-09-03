@@ -16,6 +16,7 @@ export const CatalogueErrors = {
     TOKEN_NOT_PROVIDED: {code: "TOKEN_NOT_PROVIDED", message: "Token not provided"},
     TOKEN_EXPIRED: {code: "TOKEN_EXPIRED", message: "Token expired"},
     UNAUTHORIZED: {code: "UNAUTHORIZED", message: "Unauthorized"},
+    NO_FILES_UPLOADED:{code:"NO_FILES_UPLOADED", message: "No files uploaded"},
 } as const;
 
 export type ErrorCode = keyof typeof CatalogueErrors;
