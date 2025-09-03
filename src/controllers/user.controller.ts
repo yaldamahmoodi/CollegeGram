@@ -16,7 +16,7 @@ export class UserController {
         this.uploadProfile = this.uploadProfile.bind(this);
         this.createPost = this.createPost.bind(this);
         this.getUserDetails = this.getUserDetails.bind(this);
-        this.profileUpdater = this.profileUpdater.bind(this);
+        this.updateProfile = this.updateProfile.bind(this);
 
     }
 
@@ -94,10 +94,10 @@ export class UserController {
         }
     }
 
-    async profileUpdater(req: Authenticate, res: Response, next: NextFunction) {
+    async updateProfile(req: Authenticate, res: Response, next: NextFunction) {
 
         try {
-            await this.userService.profileUpdater(req.user.username, req.body);
+            await this.userService.updateProfile(req.user.username, req.body);
             return res.status(201).json({
                 success: true,
                 message: "User successfully Updated"
