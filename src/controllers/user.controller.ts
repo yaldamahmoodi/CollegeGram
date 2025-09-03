@@ -40,12 +40,13 @@ export class UserController {
         }
     }
 
-    async getUserDetails(req: Authenticate & Request<userParamSchema>, res: Response, next: NextFunction) {
+    async getUserDetails(req: Authenticate & Request<{},{},{},userParamSchema>, res: Response, next: NextFunction) {
 
-        let userId = req.params.id;
+        let userId = req.query.id;
         if (!userId) {
             userId = req.user.id;
         }
+
         try {
             const userDetails = await this.userService.getUserDetails(userId);
             const profilePhotoPath = userDetails.ProfilePhoto?.path;
