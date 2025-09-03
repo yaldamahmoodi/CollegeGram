@@ -8,11 +8,11 @@ export interface ProfilePhoto extends Document {
 
 const ProfilePhotoSchema: Schema<ProfilePhoto> = new Schema(
     {
-        path: { type: String, required: true },
-        user_id: { type: Schema.Types.ObjectId, required: true, ref: 'User' },
+        path: {type: String, required: true},
+        user_id: {type: Schema.Types.ObjectId, required: true, ref: 'User'},
     },
     {
-        timestamps: { createdAt: 'uploadedAt', updatedAt: false }
+        timestamps: {createdAt: 'uploadedAt', updatedAt: false}
     }
 );
 

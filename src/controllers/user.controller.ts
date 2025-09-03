@@ -98,8 +98,9 @@ export class UserController {
     async createPost(req: Authenticate, res: Response, next: NextFunction) {
         if (!req.user) return next(new UnauthorizedError("UNAUTHORIZED"))
 
-        if (!req.file) return next(new ValidationError("INVALID_CREDENTIALS"))
-
+        if (!req.files || (req.files as Express.Multer.File[]).length === 0) {
+            return next(new ValidationError("NO_FILES_UPLOADED"));
+        }
         try {
             const files = req.files as Express.Multer.File[];
             const caption = req.body.caption;

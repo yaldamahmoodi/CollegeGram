@@ -3,7 +3,7 @@ import bcrypt from 'bcrypt';
 import jwt from "jsonwebtoken";
 import env from "../../env.ts";
 import type {insertUserZodSchema, selectUserZodSchema} from "../db/models/user.model.ts";
-import { ValidationError } from "../utils/errors/validation.errors.ts";
+import {ValidationError} from "../utils/errors/validation.errors.ts";
 import {NotFoundError} from "../utils/errors/notFound.errors.ts";
 
 
@@ -19,7 +19,7 @@ export class AuthService {
     async register(user: insertUserZodSchema) {
         const userByEmail = await this.authRepository.findByEmail(user.email);
         const userByUsername = await this.authRepository.findByUsername(user.username);
-        // I dont know how to resolve this warning , wil check with amin
+
         if (userByEmail || userByUsername) {
             throw new ValidationError("DUPLICATE_CREDENTIALS");
         }
@@ -30,12 +30,17 @@ export class AuthService {
         });
     }
 
-    async login(userData: insertUserZodSchema) {
-        const {_id, password, username, email} = await this.authRepository.findByUsername(userData.username);
-        if (!_id) {
+    async login(inputUsername: string, inputPassword: string) {
+
+        const user = await this.authRepository.findByUsername(inputUsername);
+
+        if (!user) {
             throw new NotFoundError("NOT_FOUND_USER");
         }
-        const comparePassword = await bcrypt.compare(userData.password, password);
+
+        const {_id, password, username, email} = user;
+
+        const comparePassword = await bcrypt.compare(inputPassword, password);
         if (!comparePassword) {
             throw new ValidationError("INVALID_CREDENTIALS");
         }
