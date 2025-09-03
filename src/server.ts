@@ -7,13 +7,14 @@ import cookieParser from "cookie-parser";
 import healthRoute from "./routes/health.route.ts";
 import authRoute from "./routes/v1/auth.route.ts"
 import userRoute from "./routes/v1/user.route.ts";
+import postRoute from "./routes/v1/post.route.ts";
 import env from "../env.ts";
 
 const app = express();
-app.use(cookieParser(env.COOKIE_SECRET));
 
 
 /* ---- GLOBAL MIDDLE WARES ---- */
+app.use(cookieParser(env.COOKIE_SECRET));
 app.use(helmet());
 app.use(cors({
     origin: env.CORS_ORIGIN,
@@ -27,6 +28,8 @@ app.use(express.json());
 app.use("/api/health", healthRoute)
 app.use("/api/v1/auth", authRoute);
 app.use("/api/v1/users", userRoute);
+app.use("/api/v1/posts", postRoute);
+
 
 
 export {app};
