@@ -11,7 +11,7 @@ const postController = initiator.getPostController();
 router.use(authMiddleware)
 
 router.get(
-    "/upload",
+    "/getPost",
     postController.getPost
 )
 
