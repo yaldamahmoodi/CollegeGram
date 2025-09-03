@@ -29,6 +29,7 @@ export class AuthController {
     async login(req: Request<{}, {}, LoginDTO>, res: Response, next: NextFunction) {
         try {
             const accessToken = await this.authService.login(req.body.username, req.body.password);
+            console.log(accessToken);
             return res.status(200).cookie('accessToken', accessToken, {
                 httpOnly: true,
                 secure: true,
