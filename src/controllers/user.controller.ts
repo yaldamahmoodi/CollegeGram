@@ -79,6 +79,7 @@ export class UserController {
 
             const filePaths: string[] = files.map(file => file.path);
 
+            // inja chera tuye body baraye sakhtan post like_count o save_count mikhay?
             const like_count = Number(req.body.like_count) || 0;
             const save_count = Number(req.body.save_count) || 0;
             const mentions = req.body.mentions? JSON.parse(req.body.mentions): [];
