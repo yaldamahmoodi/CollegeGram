@@ -1,4 +1,4 @@
-import type {ErrorCode} from "./catalogue.errors.js";
+import type {ErrorCode} from "./catalogue.errors.ts";
 
 export class APIError extends Error {
     status: number;

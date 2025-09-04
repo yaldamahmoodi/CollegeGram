@@ -10,11 +10,16 @@ interface CustomJwtPayload extends JwtPayload {
     username: string;
 }
 
-export interface Authenticate extends Request {
-    user?: {
+export interface Authenticate<
+    P = Request["params"],
+    ResBody = any,
+    ReqBody = any,
+    ReqQuery = Request["query"]
+> extends Request<P, ResBody, ReqBody, ReqQuery> {
+    user: {
         id: string;
-        username: string;
-    }
+        username?: string;
+    };
 }
 
 export const authMiddleware = async (req: Authenticate, res: Response, next: NextFunction) => {
