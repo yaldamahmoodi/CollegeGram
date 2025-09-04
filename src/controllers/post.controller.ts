@@ -2,6 +2,7 @@ import type {Authenticate} from "../middlewares/auth.middleware.ts";
 import type {NextFunction, Response, Request} from "express";
 import type {PostService} from "../services/post.service.ts";
 import {APIError} from "../utils/errors/api.errors.ts";
+import type {savePostDTO} from "../db/models/save.model.ts";
 import {asyncHandler} from "../utils/asyncHandler.utils.ts";
 
 
@@ -15,7 +16,6 @@ export class PostController {
 
     }
 
-
     async getPost(req: Authenticate, res: Response, next: NextFunction) {
         try {
             const post = await this.postService.getPost(req.body);
@@ -24,6 +24,21 @@ export class PostController {
         } catch (error: unknown) {
             if (error instanceof APIError) return next(error)
         }
+    }
+
+    async savePost(req: Authenticate & Request<{}, {}, savePostDTO>, res: Response, next: NextFunction) {
+        try {
+            const savePostDetails = await this.postService.savePost(req.body.user_id, req.body.post_id)
+
+            return res.status(200).json({success: true, data: savePostDetails})
+
+        } catch (error: unknown) {
+            if (error instanceof APIError) return next(error)
+        }
+    }
+
+    async unsavePost(req: Authenticate & Request<{}, {}, savePostDTO>, res: Response, next: NextFunction) {
+
     }
 
     likePost = asyncHandler(async (req: Authenticate<string>, res: Response) => {
