@@ -18,6 +18,13 @@ export class PostRepository {
         return postModel.findById(postId).exec();
     }
 
+    async updatePostSaveCount(postId: string) {
+        return postModel.findOneAndUpdate(
+            {post_id: postId},
+            {$inc: {count: 1}}
+        )
+    }
+
     async likePost(userId: string, postId: string) {
         const session = await mongoose.startSession();
         session.startTransaction();
