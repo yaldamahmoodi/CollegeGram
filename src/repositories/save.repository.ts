@@ -10,10 +10,15 @@ export class SaveRepository {
         });
         return save.save();
     }
+
     async unsavePost(userId: string, postId: string): Promise<ISave | null> {
         return SaveModel.findOneAndDelete({
             post_id: postId,
             user_id: userId
         })
+    }
+
+    async findSave(postId: string, userId: string): Promise<ISave | null> {
+        return SaveModel.findOne({post_id: postId, user_id: userId});
     }
 }
