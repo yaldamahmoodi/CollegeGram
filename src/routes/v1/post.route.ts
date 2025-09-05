@@ -28,8 +28,16 @@ router.post(
     postController.unLikePost
 )
 
-router.get
-
+router.post(
+    "/:post_id/savePost",
+    paramParser(postIdSchema),
+    postController.savePost
+)
+router.post(
+    "/:post_id/unsavePost",
+    paramParser(postIdSchema),
+    postController.unsavePost
+)
 
 router.use(errorHandler);
 
