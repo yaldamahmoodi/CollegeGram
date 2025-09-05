@@ -37,10 +37,31 @@ export class UserService {
         return userDetails;
     }
 
+    async checkUserExists(userId: string) {
+        const userDetails = await this.userRepository.findUserDetails(userId);
+        if (!userDetails) {
+            throw new NotFoundError("NOT_FOUND_USER");
+        }
+    }
+
+    async searchUser(username: string) {
+        const userDetails = await this.userRepository.findUserDetails(username);
+        if (!userDetails) {
+            throw new NotFoundError("NOT_FOUND_USER");
+        }
+    }
+
     async createPost(postData: InsertPostDto) {
 
         if (postData.urls.length < 1) {
             throw new ValidationError("INVALID_CREDENTIALS");
+        }
+        const allExist = postData.mentions.every( async (mention) => {
+         return await this.checkUserExists(mention.user_id)
+       })
+
+        if(!allExist) {
+            throw new ValidationError("INVALID_USERNAME");
         }
 
         return await this.postRepository.createPost(postData.user_id, postData.urls, postData.caption);
