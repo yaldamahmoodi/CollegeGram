@@ -1,4 +1,3 @@
-import React from "react";
 import { useFormik } from "formik";
 import * as Yup from "yup";
 import Button from "@/components/Button";
@@ -6,53 +5,50 @@ import Input from "@/components/Input";
 import passwordIcon from "@assets/icons/password.svg";
 import userNameIcon from "@assets/icons/username.svg";
 import emailIcon from "@assets/icons/email.svg";
-
-interface FormValues {
-  username: string;
-  email: string;
-  password: string;
-  confirmPassword: string;
-}
+import { useRegister } from "@/hooks/user.hook";
+import type { UserRegisterFormValues } from "@app-types/user";
+import { MESSAGES } from "@/const/message";
 
 const validationSchema = Yup.object({
-  username: Yup.string().required("نام کاربری الزامی است."),
+  username: Yup.string().required(MESSAGES.usernameRequired),
   email: Yup.string()
-    .email("ایمیل معتبر وارد کنید.")
-    .required("ایمیل الزامی است."),
+    .email(MESSAGES.emailInvalid)
+    .required(MESSAGES.emailRequired),
   password: Yup.string()
-    .min(6, "رمز عبور باید حداقل 6 کاراکتر باشد.")
-    .required("رمز عبور الزامی است."),
+    .min(6, MESSAGES.passwordMinLength)
+    .required(MESSAGES.passwordRequired)
+    .matches(/[!@#$%^&*(),.?":{}|<>]/, MESSAGES.passwordSpecialChar),
   confirmPassword: Yup.string()
-    .oneOf(
-      [Yup.ref("password"), undefined],
-      "رمز عبور باید با هم مطابقت داشته باشد."
-    )
-    .required("تکرار رمز عبور الزامی است."),
+    .oneOf([Yup.ref("password"), undefined], MESSAGES.confirmPasswordMatch)
+    .required(MESSAGES.confirmPasswordRequired),
 });
 
-const Register: React.FC = () => {
-  const formik = useFormik<FormValues>({
-    initialValues: {
-      username: "",
-      email: "",
-      password: "",
-      confirmPassword: "",
-    },
+const Register = () => {
+  const registerMutation = useRegister();
+
+  const initialValues: UserRegisterFormValues = {
+    username: "",
+    email: "",
+    password: "",
+    confirmPassword: "",
+  };
+
+  const formik = useFormik<UserRegisterFormValues>({
+    initialValues,
     validationSchema,
     onSubmit: (values) => {
-      console.log(values);
+      const { confirmPassword, ...payload } = values;
+      registerMutation.mutate(payload);
     },
   });
 
   return (
     <form onSubmit={formik.handleSubmit} className="flex flex-col">
-      <label className="mb-5">
-        برای ثبت نام کافیه نام کاربری َو ایمیل و رمز عبور رو وارد کنید:{" "}
-      </label>
+      <label className="text-sm mb-5">{MESSAGES.registerTitleMessage}</label>
 
       <Input
         type="text"
-        placeholder="نام کاربری"
+        placeholder={MESSAGES.username}
         name="username"
         value={formik.values.username}
         onChange={formik.handleChange}
@@ -64,7 +60,7 @@ const Register: React.FC = () => {
 
       <Input
         type="text"
-        placeholder="ایمیل"
+        placeholder={MESSAGES.email}
         name="email"
         value={formik.values.email}
         onChange={formik.handleChange}
@@ -76,7 +72,7 @@ const Register: React.FC = () => {
 
       <Input
         type="password"
-        placeholder="رمز عبور"
+        placeholder={MESSAGES.password}
         name="password"
         value={formik.values.password}
         onChange={formik.handleChange}
@@ -88,7 +84,7 @@ const Register: React.FC = () => {
 
       <Input
         type="password"
-        placeholder="تکرار رمز عبور"
+        placeholder={MESSAGES.confirmPassword}
         name="confirmPassword"
         value={formik.values.confirmPassword}
         onChange={formik.handleChange}
@@ -101,7 +97,7 @@ const Register: React.FC = () => {
       />
 
       <Button
-        label="ثبت نام"
+        label={MESSAGES.registerSubmitButton}
         disabled={!!Object.keys(formik.errors).length}
         className={"mt-8"}
       />

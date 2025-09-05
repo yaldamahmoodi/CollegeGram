@@ -1,9 +1,12 @@
 import Button from "@components/Button";
 import EditProfileModal from "@/layouts/ProfileLayout/components/EditProfileModal";
 import { useState } from "react";
+import { useUserInfo } from "@hooks/user.hook";
 
 const ProfileInfo = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
+
+  const { data } = useUserInfo();
 
   return (
     <div className="profile-info-container flex flex-auto h-[130px] w-full items-center py-2">

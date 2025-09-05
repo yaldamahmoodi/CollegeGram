@@ -3,6 +3,7 @@ import ProfileInfo from "./components/ProfileInfo";
 import Button from "@/components/Button";
 import CraetePostModal from "./components/CraetePostModal";
 import ProfileSidebarMenu from "./components/ProfileSidebarMenu";
+import UserPosts from "./components/UserPosts";
 
 const ProfileLayout = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -39,23 +40,7 @@ const ProfileLayout = () => {
 
           <div className="separator w-full h-px bg-gray-400 my-6"></div>
 
-          <div className="profile-posts w-full h-full flex-auto border border-gray-400 p-4 overflow-y-auto rounded-4xl">
-            {0 ? (
-              ""
-            ) : (
-              <div className="flex flex-col justify-center items-center gap-2 w-full h-full">
-                <span>هنوز هیچ پستی توی صفحه ات نذاشتی!</span>
-                <span>بجنب تا دیر نشده</span>
-                <Button
-                  type="button"
-                  label="+  ایجاد پست جدید"
-                  variant="danger"
-                  className="text-basis py-1 text-xs rounded-4xl w-[197px] h-[52px] mt-5"
-                  onClick={() => setIsModalOpen(true)}
-                />
-              </div>
-            )}
-          </div>
+          <UserPosts onChangeModal={() => setIsModalOpen(true)} />
         </div>
       </div>
       <CraetePostModal
