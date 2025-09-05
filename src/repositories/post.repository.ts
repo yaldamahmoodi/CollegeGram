@@ -18,10 +18,10 @@ export class PostRepository {
         return postModel.findById(postId).exec();
     }
 
-    async updatePostSaveCount(postId: string) {
-        return postModel.findOneAndUpdate(
+    async updatePostSaveCount(postId: string ,count: number) {
+        return await postModel.findOneAndUpdate(
             {post_id: postId},
-            {$inc: {count: 1}}
+            {$inc: {count: count}}
         )
     }
 
@@ -58,14 +58,14 @@ export class PostRepository {
         session.startTransaction();
         try {
             const result = await LikeModel.deleteOne(
-                { post_id: postId, user_id: userId },
-                { session }
+                {post_id: postId, user_id: userId},
+                {session}
             );
             if (result.deletedCount > 0) {
                 await postModel.updateOne(
-                    { _id: postId },
-                    { $inc: { likeCount: -1 } },
-                    { session }
+                    {_id: postId},
+                    {$inc: {likeCount: -1}},
+                    {session}
                 );
             }
 
