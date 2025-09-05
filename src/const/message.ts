@@ -21,5 +21,7 @@ export const MESSAGES = {
   registerInCollegeGeram: " ثبت نام در کالج گرام",
   loginTitleMessage:
     " به کالج گرام خوش آمدید. برای ورود کافیه نام کاربری/ایمیل و رمز عبور خودتون رو وارد کنید:",
- 
+  following: "دنبال کننده",
+  follower: "دنبال شونده",
+  post: "پست",
 };

@@ -2,6 +2,7 @@ import Button from "@components/Button";
 import EditProfileModal from "@/layouts/ProfileLayout/components/EditProfileModal";
 import { useState } from "react";
 import { useUserInfo } from "@hooks/user.hook";
+import { MESSAGES } from "@/const/message";
 
 const ProfileInfo = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -16,6 +17,20 @@ const ProfileInfo = () => {
         <div className="flex flex-row items-center pb-4">
           <span className="text-xl font-bold ml-4"> مهشید منزه</span>
           <span className="text-base font-light">@mahnaz</span>
+        </div>
+        <div className="follower-following-info flex flex-row justify-start items-center pb-4">
+          <div className="followings border-l border-gray-900 pl-4 text-orange-500">
+            <span className="px-2">13</span>
+            <span>{MESSAGES.following}</span>
+          </div>
+          <div className="followers border-l border-gray-900 px-4 text-orange-500">
+            <span className="px-2">44</span>
+            <span>{MESSAGES.follower}</span>
+          </div>
+          <div className="posts px-4">
+            <span className="px-2">35</span>
+            <span>{MESSAGES.post}</span>
+          </div>
         </div>
         <span className="text-[#b5b5b5]">
           Lover ,not a tighter , spreading ok. all over the world
