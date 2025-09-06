@@ -50,7 +50,7 @@ const UserPosts = (props: UserPostsProps) => {
                 <PostDetailsModal
                     isOpen={!!selectedPost}
                     onClose={() => setSelectedPost(null)}
-                    images={[selectedPost.url]}
+                    images={["https://picsum.photos/400/300?random=1","https://picsum.photos/400/300?random=2","https://picsum.photos/400/300?random=3"]}
                 />
             )}
         </div>

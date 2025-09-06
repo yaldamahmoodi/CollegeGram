@@ -32,13 +32,13 @@ const ImageSlider: React.FC<Props> = ({ images }) => {
 
             <Button
                 onClick={prevSlide}
-                className="absolute top-1/2 left-2 -translate-y-1/2 bg-black/50"
-            label="‹"
+                className="absolute  bg-transparent  text-black top-1/2 left-2 -translate-y-1/2  !text-lg"
+            label="›"
             />
             <Button
                 onClick={nextSlide}
-                className="absolute top-1/2 right-2 -translate-y-1/2 bg-black/50"
-            label="›"
+                className="absolute top-1/2 right-2 -translate-y-1/2  bg-transparent !text-lg"
+            label="‹"
             />
         </div>
     );
