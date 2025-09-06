@@ -1,92 +1,97 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import ProfileInfo from "./components/ProfileInfo";
 import Button from "@/components/Button";
-import { useQuery } from "@tanstack/react-query";
-import axios from "axios";
 import CraetePostModal from "./components/CraetePostModal";
 import ProfileSidebarMenu from "./components/ProfileSidebarMenu";
+import UserPosts from "./components/UserPosts";
+import profilePhoto from "@/assets/images/avatar.png";
+import searchIcon from "@assets/icons/Mobile/Search.svg";
+import gridMenuIcon from "@assets/icons/Mobile/gridMenu.svg";
+import hamburgerMenuIcon from "@assets/icons/Mobile/hamburgerMenu.svg";
+import plusIcon from "@assets/icons/plus.svg";
 
 const ProfileLayout = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
-
-  useEffect(() => {}, []);
-
-  const getUserRequest = async () => {
-    const [posts, setPosts] = useState([]);
-
-    const { data } = await axios.get(
-      "http://130.185.75.174:3001/api/v1/auth/user",
-      {
-        headers: {
-          "Content-Type": "application/json",
-        },
-      }
-    );
-    return data;
-  };
-
-  const { data, isLoading, isError, error } = useQuery({
-    queryKey: ["profile"],
-    queryFn: getUserRequest,
-    onSuccess: (data) => {
-      console.log(data);
-    },
-    onError: (err) => {
-      console.error(err);
-    },
-  });
+  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
 
   return (
-    <div className="profile-container h-screen w-full bg-[#f5f5f5] px-10 pb-6 pt-8 flex flex-col">
-      <div className="header w-full max-h-[50px] bg-transparent mb-4 flex items-center justify-between px-4 flex-row">
-        <div className="w-1/4 flex justify-center">
-          <div className="flex justify-center items-center">
-            <Button
-              type="button"
-              label="+  پست جدید"
-              variant="danger"
-              className="flex justify-center items-center text-md rounded-4xl w-[264px] h-[52px] gap-8 px-16 py-8"
-              onClick={() => setIsModalOpen(true)}
-            />
-          </div>
+    <div className="profile-container h-screen w-full bg-[#f5f5f5] flex flex-col lg:p-10">
+      <div className="header w-full h-[60px] bg-transparent mb-4 flex items-center justify-between px-4">
+        <div className="lg:hidden flex items-center justify-center">
+          <img
+            src={profilePhoto}
+            alt="profile"
+            className="w-9 h-9 rounded-full border"
+          />
         </div>
-        <div className="logo w-[111px] h-[50px] flex items-center justify-end bg-cover bg-center bg-no-repeat" />
-      </div>
 
+        <button
+          className="lg:hidden flex items-center justify-center"
+          onClick={() => setIsSidebarOpen(true)}>
+          <img src={hamburgerMenuIcon} className="h-7" />
+        </button>
+
+        <div className="hidden lg:flex w-1/4 justify-center">
+          <Button
+            type="button"
+            label=" پست جدید"
+            icon={<img src={plusIcon} />}
+            variant="danger"
+            className="flex justify-center items-center text-sm rounded-4xl lg:w-[300px] lg:h-[44px] gap-4"
+            onClick={() => setIsModalOpen(true)}
+          />
+        </div>
+        <div className="hidden lg:block logo w-[111px] h-[50px] bg-cover bg-center bg-no-repeat" />
+      </div>
       <div className="flex flex-auto gap-4 flex-row">
-        <div className="right-sidebar w-1/4 p-4 border border-gray-400 rounded-4xl">
+        <div className="hidden lg:block bg-white right-sidebar w-1/4 p-4 border border-gray-400 rounded-4xl">
           <ProfileSidebarMenu />
         </div>
-        <div className=" left-section w-3/4 flex flex-col pr-8">
-          <div className="title w-full bg-transparent pb-10">
-            <h2 className="text-2xl font-bold "> صفحه من</h2>
+        <div className="left-section w-full lg:w-3/4 flex flex-col px-4 lg:pr-8">
+          <div className="title w-full bg-transparent pb-6">
+            <h2 className="text-xl lg:text-2xl font-bold">صفحه من</h2>
           </div>
 
-          <div className="profile-info w-full max-h-[147px] bg-transparent my-2">
+          <div className="profile-info w-full bg-transparent my-2">
             <ProfileInfo />
           </div>
 
           <div className="separator w-full h-px bg-gray-400 my-6"></div>
 
-          <div className="profile-posts w-full h-full flex-auto border border-gray-400 p-4 overflow-y-auto rounded-4xl">
-            {0 ? (
-              ""
-            ) : (
-              <div className="flex flex-col justify-center items-center gap-2 w-full h-full">
-                <span>هنوز هیچ پستی توی صفحه ات نذاشتی!</span>
-                <span>بجنب تا دیر نشده</span>
-                <Button
-                  type="button"
-                  label="+  ایجاد پست جدید"
-                  variant="danger"
-                  className="text-basis py-1 text-xs rounded-4xl w-[197px] h-[52px] mt-5"
-                  onClick={() => setIsModalOpen(true)}
-                />
-              </div>
-            )}
-          </div>
+          <UserPosts onChangeModal={() => setIsModalOpen(true)} />
         </div>
       </div>
+
+      <div className="lg:hidden fixed bottom-0 left-0 w-full h-[60px] bg-white border-t border-gray-300 flex justify-around items-center z-30">
+        <button className="flex flex-col items-center">
+          <img src={searchIcon} className="h-5" />
+        </button>
+        <button
+          onClick={() => setIsModalOpen(true)}
+          className="flex flex-col text-xs items-center justify-center text-red-500  border bg-red-500 w-10 h-10 rounded-full text-white">
+          ＋
+        </button>
+        <button className="flex flex-col items-center">
+          <img src={gridMenuIcon} className="h-5" />
+        </button>
+      </div>
+
+      {isSidebarOpen && (
+        <div className="fixed inset-0 z-40 flex">
+          <div
+            className="fixed inset-0 bg-black opacity-40"
+            onClick={() => setIsSidebarOpen(false)}></div>
+          <div className="relative bg-white w-64 h-full shadow-lg p-4 z-50">
+            <button
+              className="absolute top-4 right-4 text-gray-600"
+              onClick={() => setIsSidebarOpen(false)}>
+              ✕
+            </button>
+            <ProfileSidebarMenu />
+          </div>
+        </div>
+      )}
+
       <CraetePostModal
         isOpen={isModalOpen}
         onClose={() => setIsModalOpen(false)}

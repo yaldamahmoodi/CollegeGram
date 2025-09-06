@@ -1,22 +1,16 @@
-import React, { useState } from "react";
 import { useFormik } from "formik";
 import * as Yup from "yup";
-import userNameIcon from "../assets/icons/userNameIcon.svg";
-import passwordIcon from "../assets/icons/passwordIcon.svg";
-import Button from "@/components/Button";
-import Input from "@/components/Input";
-import axios from "axios";
+import usernameIcon from "@assets/icons/username.svg";
+import passwordIcon from "@assets/icons/password.svg";
+import Button from "@components/Button";
+import Input from "@components/Input";
+import { Link } from "react-router-dom";
+import type { LoginFormValues } from "@app-types/user";
+import { useLogin } from "@/hooks/user.hook";
+import { MESSAGES } from "@/const/message";
 
-interface LoginFormValues {
-  username: string;
-  password: string;
-  rememberMe: boolean;
-}
-
-const Login: React.FC = () => {
-  const [data, setData] = useState({});
-  const [isLoading, setIsLoading] = useState(false);
-  const [error, setError] = useState("");
+const Login = () => {
+  const registerMutation = useLogin();
 
   const initialValues: LoginFormValues = {
     username: "",
@@ -25,109 +19,73 @@ const Login: React.FC = () => {
   };
 
   const validationSchema = Yup.object({
-    username: Yup.string()
-      .required("نام کاربری الزامی است")
-      .min(8, "حداقل 8 کاراکتر")
-      .matches(
-        /[!@#$%^&*(),.?":{}|<>]/,
-        "نام کاربری باید حداقل یک کاراکتر خاص داشته باشد"
-      ),
+    username: Yup.string().required(MESSAGES.usernameRequired),
     password: Yup.string()
-      .required("رمز ورود الزامی است")
-      .min(8, "حداقل 8 کاراکتر"),
+      .required(MESSAGES.passwordRequired)
+      .min(6, MESSAGES.passwordMinLength)
+      .matches(/[!@#$%^&*(),.?":{}|<>]/, MESSAGES.passwordSpecialChar),
   });
-
-  const userLoginRequest = async (
-    url: string,
-    body: LoginFormValues,
-    config: object
-  ) => {
-    try {
-      const res = await axios.post(url, body, config);
-      console.log("Success:", res.data);
-      console.log(data);
-    } catch (err) {
-      //setError(err);
-      console.log(err);
-    }
-  };
 
   const formik = useFormik<LoginFormValues>({
     initialValues,
     validationSchema,
     onSubmit: (values) => {
-      userLoginRequest("https://jsonplaceholder.typicode.com/posts", values, {
-        headers: {
-          "Content-Type": "application/json",
-        },
-      });
+      const { rememberMe, ...payload } = values;
+      registerMutation.mutate(payload);
     },
   });
 
   return (
-    <form onSubmit={formik.handleSubmit} className="flex flex-col gap-6">
-      <label>
-        به کالج گرام خوش آمدید. برای ورود کافیه نام کاربری/ایمیل و رمز عبور
-        خودتون رو وارد کنید:
-      </label>
+    <form onSubmit={formik.handleSubmit} className="flex flex-col">
+      <label className="text-sm mb-5">{MESSAGES.loginTitleMessage}</label>
 
       <Input
         type="text"
         name="username"
         value={formik.values.username}
-        placeholder="نام کاربری"
+        placeholder={MESSAGES.username}
         onChange={formik.handleChange}
         onBlur={formik.handleBlur}
-        icon={<img src={userNameIcon} />}
-        iconPosition="left"
+        haveError={!!(formik.touched.username && formik.errors.username)}
+        errorMessage={formik.errors.username}
+        icon={<img src={usernameIcon} />}
       />
-      {formik.touched.username && formik.errors.username && (
-        <div style={{ color: "red" }}>{formik.errors.username}</div>
-      )}
 
       <Input
         type="password"
         name="password"
         value={formik.values.password}
-        placeholder="رمز ورود"
+        placeholder={MESSAGES.password}
         onChange={formik.handleChange}
         onBlur={formik.handleBlur}
+        haveError={!!(formik.touched.password && formik.errors.password)}
+        errorMessage={formik.errors.password}
         icon={<img src={passwordIcon} />}
-        iconPosition="left"
       />
 
-      {formik.touched.password && formik.errors.password && (
-        <div style={{ color: "red" }}>{formik.errors.password}</div>
-      )}
-
-      <div className="flex items-center gap-2">
-        <input
+      <div className="flex flex-row-reverse justify-end items-center mt-5">
+        <Input
           type="checkbox"
-          name="rememberMe"
-          id="rememberMe"
+          label={MESSAGES.rememberMe}
+          className="text-sm text-gray-700 cursor-pointer mr-2 flex flex-row items-center"
           checked={formik.values.rememberMe}
           onChange={formik.handleChange}
-          className="w-4 h-4 cursor-pointer accent-red-600"
         />
-        <label
-          htmlFor="rememberMe"
-          className="text-sm text-gray-700 cursor-pointer">
-          من را به خاطر بس‍پر
-        </label>
       </div>
 
       <Button
         label="ورود"
-        variant="danger"
-        type="submit"
         disabled={!!Object.keys(formik.errors).length}
-        className="h-9 w-21 self-end"
+        className="mt-8"
       />
 
-      <div style={{ marginTop: "10px" }}>
-        <a href="#">فراموشی رمز ورود</a>
-        <br />
-        <a href="#">ثبت نام در کالج گرام</a>
+      <div className="flex flex-col mt-8 gap-3">
+        <Link className="text-sm text-red-400" to="/">
+          {MESSAGES.forgetPassword}
+        </Link>
+        <Link className="text-sm text-red-400" to="/register">
+          {MESSAGES.registerInCollegeGeram}
+        </Link>
       </div>
     </form>
   );

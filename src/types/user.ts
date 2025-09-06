@@ -1,21 +1,25 @@
-export interface UserType {
-  userId: number;
+//Register
+
+export interface UserRegisterFormValues {
+  username: string;
+  email: string;
+  password: string;
+  confirmPassword: string;
   firstname?: string;
   lastname?: string;
-  username?: string;
-  password?: string;
-  email?: string;
-  profileImage?: string;
-  bio?: string;
+  biography?: string;
 }
 
-export type GetUserResponseType = Omit<UserType, "userId">;
-
-export type UserDataType = Partial<GetUserResponseType>;
-
-export type loginPayloadType = Pick<UserType, "username" | "password">;
-
-export type RegisterPayloadType = Pick<
-  UserType,
-  "username" | "email" | "password"
+export type UserRegisterPayload = Omit<
+  UserRegisterFormValues,
+  "confirmPassword"
 >;
+
+//login
+export interface LoginFormValues {
+  username: string;
+  password: string;
+  rememberMe?: boolean;
+}
+
+export type UserLoginPayload = Omit<LoginFormValues, "rememberMe">;

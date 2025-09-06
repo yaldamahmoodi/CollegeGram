@@ -1,118 +1,105 @@
-import React from "react";
 import { useFormik } from "formik";
 import * as Yup from "yup";
 import Button from "@/components/Button";
 import Input from "@/components/Input";
-import passwordIcon from "@/assets/icons/passwordIcon.svg";
-import userNameIcon from "@/assets/icons/userNameIcon.svg";
-import emailIcon from "@/assets/icons/emailIcon.svg";
-
-interface FormValues {
-  username: string;
-  email: string;
-  password: string;
-  confirmPassword: string;
-}
+import passwordIcon from "@assets/icons/password.svg";
+import userNameIcon from "@assets/icons/username.svg";
+import emailIcon from "@assets/icons/email.svg";
+import { useRegister } from "@/hooks/user.hook";
+import type { UserRegisterFormValues } from "@app-types/user";
+import { MESSAGES } from "@/const/message";
 
 const validationSchema = Yup.object({
-  username: Yup.string().required("نام کاربری الزامی است."),
+  username: Yup.string().required(MESSAGES.usernameRequired),
   email: Yup.string()
-    .email("ایمیل معتبر وارد کنید.")
-    .required("ایمیل الزامی است."),
+    .email(MESSAGES.emailInvalid)
+    .required(MESSAGES.emailRequired),
   password: Yup.string()
-    .min(6, "رمز عبور باید حداقل 6 کاراکتر باشد.")
-    .required("رمز عبور الزامی است."),
+    .min(6, MESSAGES.passwordMinLength)
+    .required(MESSAGES.passwordRequired)
+    .matches(/[!@#$%^&*(),.?":{}|<>]/, MESSAGES.passwordSpecialChar),
   confirmPassword: Yup.string()
-    .oneOf(
-      [Yup.ref("password"), null],
-      "رمز عبور باید با هم مطابقت داشته باشد."
-    )
-    .required("تکرار رمز عبور الزامی است."),
+    .oneOf([Yup.ref("password"), undefined], MESSAGES.confirmPasswordMatch)
+    .required(MESSAGES.confirmPasswordRequired),
 });
 
-const Register: React.FC = () => {
-  const formik = useFormik<FormValues>({
-    initialValues: {
-      username: "",
-      email: "",
-      password: "",
-      confirmPassword: "",
-    },
+const Register = () => {
+  const registerMutation = useRegister();
+
+  const initialValues: UserRegisterFormValues = {
+    username: "",
+    email: "",
+    password: "",
+    confirmPassword: "",
+  };
+
+  const formik = useFormik<UserRegisterFormValues>({
+    initialValues,
     validationSchema,
     onSubmit: (values) => {
-      console.log(values);
+      const { confirmPassword, ...payload } = values;
+      registerMutation.mutate(payload);
     },
   });
 
   return (
-    <form onSubmit={formik.handleSubmit} className="flex flex-col gap-6">
-      <label>
-        برای ثبت نام کافیه نام کاربری َو ایمیل و رمز عبور رو وارد کنید:{" "}
-      </label>
+    <form onSubmit={formik.handleSubmit} className="flex flex-col">
+      <label className="text-sm mb-5">{MESSAGES.registerTitleMessage}</label>
 
       <Input
         type="text"
-        placeholder="نام کاربری"
+        placeholder={MESSAGES.username}
         name="username"
         value={formik.values.username}
         onChange={formik.handleChange}
         onBlur={formik.handleBlur}
         icon={<img src={userNameIcon} />}
-        iconPosition="left"
+        haveError={!!(formik.touched.username && formik.errors.username)}
+        errorMessage={formik.errors.username}
       />
-      {formik.touched.username && formik.errors.username && (
-        <div style={{ color: "red" }}>{formik.errors.username}</div>
-      )}
 
       <Input
         type="text"
-        placeholder="ایمیل"
+        placeholder={MESSAGES.email}
         name="email"
         value={formik.values.email}
         onChange={formik.handleChange}
         onBlur={formik.handleBlur}
         icon={<img src={emailIcon} />}
-        iconPosition="left"
+        haveError={!!(formik.touched.email && formik.errors.email)}
+        errorMessage={formik.errors.email}
       />
-      {formik.touched.email && formik.errors.email && (
-        <div style={{ color: "red" }}>{formik.errors.email}</div>
-      )}
 
       <Input
         type="password"
-        placeholder="رمز ورود"
+        placeholder={MESSAGES.password}
         name="password"
         value={formik.values.password}
         onChange={formik.handleChange}
         onBlur={formik.handleBlur}
         icon={<img src={passwordIcon} />}
-        iconPosition="left"
+        haveError={!!(formik.touched.password && formik.errors.password)}
+        errorMessage={formik.errors.password}
       />
-      {formik.touched.password && formik.errors.password && (
-        <div style={{ color: "red" }}>{formik.errors.password}</div>
-      )}
 
       <Input
         type="password"
-        placeholder="تکرار رمز ورود"
+        placeholder={MESSAGES.confirmPassword}
         name="confirmPassword"
         value={formik.values.confirmPassword}
         onChange={formik.handleChange}
         onBlur={formik.handleBlur}
         icon={<img src={passwordIcon} />}
-        iconPosition="left"
+        haveError={
+          !!(formik.touched.confirmPassword && formik.errors.confirmPassword)
+        }
+        errorMessage={formik.errors.confirmPassword}
       />
-      {formik.touched.confirmPassword && formik.errors.confirmPassword && (
-        <div style={{ color: "red" }}>{formik.errors.confirmPassword}</div>
-      )}
 
       <Button
-        type="submit"
-        variant="danger"
-        label="ثبت نام"
-        onClick={() => {}}
+        label={MESSAGES.registerSubmitButton}
         disabled={!!Object.keys(formik.errors).length}
-        className="h-9 w-21 self-end"
+        className={"mt-8"}
       />
     </form>
   );

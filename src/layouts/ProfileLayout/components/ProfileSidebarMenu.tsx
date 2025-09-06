@@ -1,5 +1,5 @@
-import avatar from "@/assets/images/avatar.png";
-import account from "@/assets/icons/account.svg";
+import avatar from "@assets/images/avatar.png";
+import account from "@assets/icons/account.svg";
 
 const ProfileSidebarMenu = () => {
   return (

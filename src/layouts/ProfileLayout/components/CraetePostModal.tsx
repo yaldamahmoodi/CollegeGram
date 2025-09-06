@@ -1,25 +1,18 @@
-import Modal from "@/components/Modal";
-import UserPostUploader from "./UserPostUploader";
-import type React from "react";
+import Modal from "@components/Modal";
 import Stepper from "./Stepper";
-import CaptionWithEmojis from "./CaptionWithEmojis";
+import { steps } from "../consts/steps";
+
 interface CraetePostModalProps {
   isOpen: boolean;
   onClose: () => void;
 }
 
-const CraetePostModal: React.FC<CraetePostModalProps> = ({
-  isOpen = false,
-  onClose,
-}) => {
-  const steps = [
-    { title: "عکس", content: <UserPostUploader /> },
-    { title: "متن", content: <CaptionWithEmojis /> },
-    { title: "تنظیمات", content: <>setting component</> },
-  ];
+const CraetePostModal = (props: CraetePostModalProps) => {
+  const { isOpen = false, onClose } = props;
+
   return (
-    <Modal isOpen={isOpen} onClose={onClose}>
-      <Stepper steps={steps} />
+    <Modal isOpen={isOpen} className="w-[500px]">
+      <Stepper steps={steps} callbackHandler={onClose} />
     </Modal>
   );
 };

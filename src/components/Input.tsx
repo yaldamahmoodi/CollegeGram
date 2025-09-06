@@ -1,69 +1,51 @@
 import React from "react";
+import ValidationErrorIcon from "@assets/icons/validationError.svg";
 
-interface InputProps {
+interface InputProps extends React.InputHTMLAttributes<HTMLInputElement> {
   label?: string;
-  name: string;
-  placeholder?: string;
-  value?: string;
-  type?: "text" | "email" | "password" | "number" | "checkbox";
-  disabled?: boolean;
-  checked?: boolean;
-  className?: string;
-  style?: object;
   icon?: React.ReactNode;
-  iconPosition?: "right" | "left";
-  onChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
-  onBlur?: (e: React.FocusEvent<HTMLInputElement>) => void;
+  haveError?: boolean;
+  errorMessage?: string;
 }
 
-const Input: React.FC<InputProps> = ({
-  label,
-  name,
-  placeholder = "",
-  value,
-  type = "text",
-  disabled = false,
-  className = "",
-  checked = false,
-  style,
-  icon,
-  iconPosition = "right",
-  onChange,
-  onBlur,
-}) => {
+const Input = (props: InputProps) => {
+  const {
+    label,
+    icon,
+    className,
+    haveError = false,
+    errorMessage,
+    ...rest
+  } = props;
+
   const classNameInput = className
     ? className
-    : "flex-1 bg-transparent outline-none px-3 py-2 disabled:bg-gray-100 disabled:text-gray-500";
+    : "flex items-center bg-white border rounded-3xl px-3 py-2 mt-4 mb-1 disabled:bg-gray-100 disabled:text-gray-500";
 
   return (
-    <div className={`flex flex-col gap-1 ${className}`} style={style}>
+    <>
       {label && (
-        <label className="text-sm font-medium text-gray-700">{label}</label>
+        <span className="flex flex-col text-sm text-gray-700 mr-2">
+          {label}
+        </span>
       )}
-
-      <div className="flex items-center border border-gray-400 rounded-2xl px-2 focus-within:ring-2 focus-within:ring-blue-500">
-        {icon && iconPosition === "left" && (
-          <span className="mr-2 text-gray-500">{icon}</span>
-        )}
-
+      <div
+        className={`${classNameInput} ${
+          haveError ? "border-red-400" : "border-gray-400"
+        }`}>
+        {icon && <span className="mx-2 text-gray-500">{icon}</span>}
         <input
-          name={name}
-          type={type}
-          placeholder={placeholder}
-          value={type === "checkbox" ? undefined : value}
-          checked={type === "checkbox" ? checked : undefined}
-          disabled={disabled}
-          className={classNameInput}
-          style={style}
-          onChange={onChange}
-          onBlur={onBlur}
+          {...rest}
+          className="focus:outline-none focuse:border-0 w-full pl-5 pr-1"
         />
-
-        {icon && iconPosition === "right" && (
-          <span className="ml-2 text-gray-500">{icon}</span>
-        )}
       </div>
-    </div>
+      {haveError && errorMessage && (
+        <div className="flex flex-row items-center mx-5">
+          <img src={ValidationErrorIcon} />
+          <span className="text-sm text-red-500 mr-2">{errorMessage}</span>
+        </div>
+      )}
+    </>
   );
 };
 

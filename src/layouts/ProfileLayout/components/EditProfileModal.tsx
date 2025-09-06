@@ -1,13 +1,12 @@
 import React, { useState } from "react";
 import { useFormik } from "formik";
-import Modal from "@/components/Modal";
-import Input from "@/components/Input";
-import Button from "@/components/Button";
-import userNameIcon from "@/assets/icons/userNameIcon.svg";
-import emailIcon from "@/assets/icons/emailIcon.svg";
-import passwordIcon from "@/assets/icons/passwordIcon.svg";
-import uploadImageIcon from "@/assets/images/uploadImageIcon.svg";
-
+import Modal from "@components/Modal";
+import Input from "@components/Input";
+import passwordIcon from "@assets/icons/password.svg";
+import userNameIcon from "@assets/icons/username.svg";
+import emailIcon from "@assets/icons/email.svg";
+import uploadImageIcon from "@assets/images/uploadImageIcon.svg";
+import refreshIcon from "@assets/icons/refresh.svg";
 interface Props {
   isOpen: boolean;
   onClose: () => void;
@@ -34,50 +33,53 @@ const EditProfileModal: React.FC<Props> = ({ isOpen, onClose }) => {
   });
 
   return (
-    <Modal isOpen={isOpen} onClose={onClose}>
+    <Modal
+      isOpen={isOpen}
+      onClose={onClose}
+      onPrimaryClick={formik.handleSubmit}
+      primaryLabel="ثبت تغیرات"
+      secondaryLabel="پشیمون شدم"
+      primaryActive={true}
+      secondaryActive={true}
+      className="w-96">
       <h2 className="text-2xl flex self-center">ویرایش حساب</h2>
       <form onSubmit={formik.handleSubmit} className="flex flex-col gap-4">
-        <div className="flex flex-col items-center gap-2 mb-4">
-          <div className="relative w-32 h-32">
-            {preview ? (
-              <img
-                src={preview}
-                alt="Profile Preview"
-                className="w-32 h-32 rounded-full object-cover border"
-              />
-            ) : (
-              <div className="w-32 h-32 rounded-full bg-gray-200 flex items-center justify-center border">
-                <span className="text-gray-500">آپلود عکس</span>
-              </div>
-            )}
-            <label className="absolute bottom-0 right-0 bg-blue-500 p-2 rounded-full cursor-pointer">
-              <img src={uploadImageIcon} alt="Upload" className="w-5 h-5" />
-              <input
-                type="file"
-                accept="image/*"
-                className="hidden"
-                onChange={(e) => {
-                  const file = e.target.files?.[0];
-                  if (file) {
-                    setImage(file);
-                    setPreview(URL.createObjectURL(file));
-                  }
-                }}
-              />
-            </label>
+          <div className="relative flex flex-col self-center items-center gap-2 mb-4 rounded-full overflow-hidden w-32 h-32  cursor-pointer justify-center hover:bg-orange-50 transition">
+              <label>
+                  {!preview && (
+                      <img
+                          src={uploadImageIcon}
+                          alt="Upload"
+                      />
+                  )}
+
+                  {preview && (
+                      <img
+                          src={preview}
+                          alt="Profile Preview"
+                          className="absolute inset-0 w-full h-full object-cover"
+                      />
+                  )}
+
+                  <input
+                      type="file"
+                      accept="image/*"
+                      className="hidden"
+                      onChange={(e) => {
+                          const file = e.target.files?.[0];
+                          if (file) {
+                              setImage(file);
+                              setPreview(URL.createObjectURL(file));
+                          }
+                      }}
+                  />
+              </label>
+
+              {preview && (
+                    <img src={refreshIcon} className="absolute top-1/2"/>
+              )}
           </div>
-          {preview && (
-            <button
-              type="button"
-              onClick={() => {
-                setImage(null);
-                setPreview(null);
-              }}
-              className="text-red-500 text-sm underline">
-              حذف عکس
-            </button>
-          )}
-        </div>
+
 
         <Input
           type="text"
@@ -87,11 +89,9 @@ const EditProfileModal: React.FC<Props> = ({ isOpen, onClose }) => {
           onChange={formik.handleChange}
           onBlur={formik.handleBlur}
           icon={<img src={userNameIcon} />}
-          iconPosition="left"
+          haveError={!!(formik.touched.firstname && formik.errors.firstname)}
+          errorMessage={formik.errors.firstname}
         />
-        {formik.touched.firstname && formik.errors.firstname && (
-          <div style={{ color: "red" }}>{formik.errors.firstname}</div>
-        )}
 
         <Input
           type="text"
@@ -101,11 +101,9 @@ const EditProfileModal: React.FC<Props> = ({ isOpen, onClose }) => {
           onChange={formik.handleChange}
           onBlur={formik.handleBlur}
           icon={<img src={userNameIcon} />}
-          iconPosition="left"
+          haveError={!!(formik.touched.lastname && formik.errors.lastname)}
+          errorMessage={formik.errors.lastname}
         />
-        {formik.touched.lastname && formik.errors.lastname && (
-          <div style={{ color: "red" }}>{formik.errors.lastname}</div>
-        )}
 
         <Input
           type="text"
@@ -115,11 +113,9 @@ const EditProfileModal: React.FC<Props> = ({ isOpen, onClose }) => {
           onChange={formik.handleChange}
           onBlur={formik.handleBlur}
           icon={<img src={emailIcon} />}
-          iconPosition="left"
+          haveError={!!(formik.touched.email && formik.errors.email)}
+          errorMessage={formik.errors.email}
         />
-        {formik.touched.email && formik.errors.email && (
-          <div style={{ color: "red" }}>{formik.errors.email}</div>
-        )}
 
         <Input
           type="password"
@@ -129,11 +125,9 @@ const EditProfileModal: React.FC<Props> = ({ isOpen, onClose }) => {
           onChange={formik.handleChange}
           onBlur={formik.handleBlur}
           icon={<img src={passwordIcon} />}
-          iconPosition="left"
+          haveError={!!(formik.touched.password && formik.errors.password)}
+          errorMessage={formik.errors.password}
         />
-        {formik.touched.password && formik.errors.password && (
-          <div style={{ color: "red" }}>{formik.errors.password}</div>
-        )}
 
         <Input
           type="password"
@@ -143,33 +137,23 @@ const EditProfileModal: React.FC<Props> = ({ isOpen, onClose }) => {
           onChange={formik.handleChange}
           onBlur={formik.handleBlur}
           icon={<img src={passwordIcon} />}
-          iconPosition="left"
+          haveError={
+            !!(formik.touched.confirmPassword && formik.errors.confirmPassword)
+          }
+          errorMessage={formik.errors.confirmPassword}
         />
-        {formik.touched.confirmPassword && formik.errors.confirmPassword && (
-          <div style={{ color: "red" }}>{formik.errors.confirmPassword}</div>
-        )}
-
+        <div className="flex flex-col gap-2">
+            <p>بایو</p>
         <Input
           type="text"
-          placeholder="بیو"
+          multiple
+          // placeholder="بایو"
           name="bio"
           value={formik.values.bio}
           onChange={formik.handleChange}
           onBlur={formik.handleBlur}
+          className="w-full h-20 bg-white rounded-lg border border-gray-300 p-3 resize-none"
         />
-
-        <div className="flex justify-end gap-2 mt-4">
-          <Button
-            label="پشیمون شدم"
-            type="button"
-            onClick={onClose}
-            className="!bg-transparent !text-black border border-gray-300 px-4 py-2 rounded-2xl"
-          />
-          <Button
-            label="ثبت تغییرات"
-            type="submit"
-            className="!bg-[#E7000B] !text-white px-4 py-2 rounded-2xl"
-          />
         </div>
       </form>
     </Modal>

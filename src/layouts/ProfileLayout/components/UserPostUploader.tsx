@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 
-const ImageUploader: React.FC = () => {
+const ImageUploader = () => {
   const [images, setImages] = useState<string[]>([]);
 
   const handleUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -18,13 +18,13 @@ const ImageUploader: React.FC = () => {
   };
 
   return (
-    <div className="flex flex-col items-center space-y-4 p-4 rounded-lg w-full">
+    <div className="flex flex-col items-center space-y-4 p-4 rounded-lg w-full mt-8">
       <span className="font-medium mb-8">عکس‌های مورد نظرت رو آپلود کن:</span>
       <div
         className={`flex flex-col-3 max-w-[406px] max-h-[258px] gap-4 flex-wrap overflow-y-auto justify-center`}>
         <label className="w-28 h-28 rounded-2xl flex justify-center items-center cursor-pointer hover:bg-orange-50 transition">
           <div
-            className={`uploader w-[111px] h-[80px] flex items-center justify-end bg-cover bg-center bg-no-repeat ${
+            className={`uploader w-[121px] h-[100px] flex items-center justify-end bg-cover bg-center bg-no-repeat ${
               images.length === 0 ? "self-center" : "self-start"
             }`}
           />
