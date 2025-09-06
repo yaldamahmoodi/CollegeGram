@@ -64,7 +64,6 @@ const ProfileInfo = () => {
           </div>
         </div>
 
-        {/* ردیف فالو/فالوئر/پست + دکمه */}
         <div className="flex flex-row justify-center lg:justify-start items-center mt-4 text-sm w-full ">
           <div className="flex flex-row justify-start items-center lg:w-5/6">
             <div
@@ -95,7 +94,6 @@ const ProfileInfo = () => {
           </div>
         </div>
 
-        {/* بیو */}
         <div className="mt-4 text-center lg:text-right text-xs lg:text-sm text-[#b5b5b5]">
           Lover ,not a tighter , spreading ok. all over the world
         </div>
@@ -110,8 +108,7 @@ const ProfileInfo = () => {
           />
         </div>
       </div>
-
-      {/* مودال‌ها */}
+      
       <EditProfileModal
         isOpen={isModalOpen}
         onClose={() => setIsModalOpen(false)}
