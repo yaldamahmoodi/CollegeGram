@@ -3,6 +3,7 @@ type Variant = "danger" | "info" | "primary" | "success";
 interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
   label?: string;
   variant?: Variant;
+  icon?: React.ReactNode;
 }
 
 const variantClasses: Record<Variant, string> = {
@@ -13,13 +14,13 @@ const variantClasses: Record<Variant, string> = {
 };
 
 const Button = (props: ButtonProps) => {
-  const { variant = "danger", label = "", className, ...rest } = props;
-  const defaultClassname =
-    "text-sm rounded-3xl px-8 py-3  w-auto self-end min-w-[84px]";
+  const { variant = "danger", label = "", className, icon, ...rest } = props;
+  const defaultClassname = "text-sm rounded-3xl px-8 py-3 w-auto min-w-[84px]";
   return (
     <button
       className={`${defaultClassname} ${className} ${variantClasses[variant]}`}
       {...rest}>
+      {icon && icon}
       {label}
     </button>
   );

@@ -11,12 +11,8 @@ const CraetePostModal = (props: CraetePostModalProps) => {
   const { isOpen = false, onClose } = props;
 
   return (
-    <Modal
-      isOpen={isOpen}
-      onClose={onClose}
-      onClickHandler={() => console.log("test")}
-      labelHandler="بعدی">
-      <Stepper steps={steps} />
+    <Modal isOpen={isOpen} className="w-[500px]">
+      <Stepper steps={steps} callbackHandler={onClose} />
     </Modal>
   );
 };
