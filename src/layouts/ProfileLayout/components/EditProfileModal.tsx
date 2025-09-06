@@ -6,7 +6,7 @@ import passwordIcon from "@assets/icons/password.svg";
 import userNameIcon from "@assets/icons/username.svg";
 import emailIcon from "@assets/icons/email.svg";
 import uploadImageIcon from "@assets/images/uploadImageIcon.svg";
-
+import refreshIcon from "@assets/icons/refresh.svg";
 interface Props {
   isOpen: boolean;
   onClose: () => void;
@@ -44,47 +44,42 @@ const EditProfileModal: React.FC<Props> = ({ isOpen, onClose }) => {
       className="w-96">
       <h2 className="text-2xl flex self-center">ویرایش حساب</h2>
       <form onSubmit={formik.handleSubmit} className="flex flex-col gap-4">
-        <div className="flex flex-col items-center gap-2 mb-4">
-          <div className="relative w-32 h-32">
-            {preview ? (
-              <img
-                src={preview}
-                alt="Profile Preview"
-                className="w-32 h-32 rounded-full object-cover border"
-              />
-            ) : (
-              <div className="w-32 h-32 rounded-full bg-gray-200 flex items-center justify-center border">
-                <span className="text-gray-500">آپلود عکس</span>
-              </div>
-            )}
-            <label className="absolute bottom-0 right-0 bg-blue-500 p-2 rounded-full cursor-pointer">
-              <img src={uploadImageIcon} alt="Upload" className="w-5 h-5" />
-              <input
-                type="file"
-                accept="image/*"
-                className="hidden"
-                onChange={(e) => {
-                  const file = e.target.files?.[0];
-                  if (file) {
-                    setImage(file);
-                    setPreview(URL.createObjectURL(file));
-                  }
-                }}
-              />
-            </label>
+          <div className="relative flex flex-col self-center items-center gap-2 mb-4 rounded-full overflow-hidden w-32 h-32  cursor-pointer justify-center hover:bg-orange-50 transition">
+              <label>
+                  {!preview && (
+                      <img
+                          src={uploadImageIcon}
+                          alt="Upload"
+                      />
+                  )}
+
+                  {preview && (
+                      <img
+                          src={preview}
+                          alt="Profile Preview"
+                          className="absolute inset-0 w-full h-full object-cover"
+                      />
+                  )}
+
+                  <input
+                      type="file"
+                      accept="image/*"
+                      className="hidden"
+                      onChange={(e) => {
+                          const file = e.target.files?.[0];
+                          if (file) {
+                              setImage(file);
+                              setPreview(URL.createObjectURL(file));
+                          }
+                      }}
+                  />
+              </label>
+
+              {preview && (
+                    <img src={refreshIcon} className="absolute top-1/2"/>
+              )}
           </div>
-          {preview && (
-            <button
-              type="button"
-              onClick={() => {
-                setImage(null);
-                setPreview(null);
-              }}
-              className="text-red-500 text-sm underline">
-              حذف عکس
-            </button>
-          )}
-        </div>
+
 
         <Input
           type="text"
@@ -147,15 +142,19 @@ const EditProfileModal: React.FC<Props> = ({ isOpen, onClose }) => {
           }
           errorMessage={formik.errors.confirmPassword}
         />
-
+        <div className="flex flex-col gap-2">
+            <p>بایو</p>
         <Input
           type="text"
-          placeholder="بیو"
+          multiple
+          // placeholder="بایو"
           name="bio"
           value={formik.values.bio}
           onChange={formik.handleChange}
           onBlur={formik.handleBlur}
+          className="w-full h-20 bg-white rounded-lg border border-gray-300 p-3 resize-none"
         />
+        </div>
       </form>
     </Modal>
   );
