@@ -135,7 +135,7 @@ export class UserController {
 
         const {followedUserId} = req.body;
 
-        if (followedUserId === req.user.id) return next(new ValidationError("NOT_FOUND_USER"))
+        if (followedUserId === req.user.id) return next(new ValidationError("YOU_CANNOT_FOLLOW_YOURSELF"))
 
         try {
 
@@ -154,7 +154,7 @@ export class UserController {
 
         const {unfollowedUserId} = req.body;
 
-        if (unfollowedUserId === req.user.id) return next(new ValidationError("NOT_FOUND_USER"))
+        if (unfollowedUserId === req.user.id) return next(new ValidationError("YOU_CANNOT_UNFOLLOW_YOURSELF"))
 
         try {
 
