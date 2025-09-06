@@ -8,35 +8,43 @@ import {PostRepository} from "./repositories/post.repository.ts";
 import {ProfileRepository} from "./repositories/profile.repository.ts";
 import {PostController} from "./controllers/post.controller.ts";
 import {PostService} from "./services/post.service.ts";
+import {SaveRepository} from "./repositories/save.repository.ts";
 
 export class Initiator {
-    protected userService: UserService;
-    protected userRepository: UserRepository;
-    protected authController: AuthController;
-    protected authService: AuthService;
-    protected userController: UserController;
-    protected authRepository: AuthRepository;
-    protected postRepository: PostRepository;
-    protected profileRepository: ProfileRepository
-    protected postService: PostService;
-    protected postController: PostController;
+    public userService: UserService;
+    public userRepository: UserRepository;
+    public authController: AuthController;
+    public authService: AuthService;
+    public userController: UserController;
+    public authRepository: AuthRepository;
+    public postRepository: PostRepository;
+    public profileRepository: ProfileRepository
+    public postService: PostService;
+    public postController: PostController;
+    public saveRepository: SaveRepository;
 
 
     constructor() {
         this.userRepository = new UserRepository();
         this.authRepository = new AuthRepository();
         this.postRepository = new PostRepository();
+        this.saveRepository = new SaveRepository();
         this.profileRepository = new ProfileRepository();
+    }
+
+    public setupServices(): void {
         this.authService = new AuthService(this.authRepository);
         this.userService = new UserService(this.userRepository, this.profileRepository, this.postRepository);
-        this.postService = new PostService(this.postRepository);
+        this.postService = new PostService(this.postRepository, this.saveRepository);
+    }
+
+    public setupControllers(): void {
         this.authController = new AuthController(this.authService);
         this.userController = new UserController(this.userService);
         this.postController = new PostController(this.postService);
-
     }
 
-    public get getAuthController() {
+    public getAuthController() {
         return this.authController;
     }
 
@@ -44,9 +52,6 @@ export class Initiator {
         return this.userController;
     }
 
-    public get userRepo() {
-        return this.userRepository;
-    }
 
     public getPostController() {
         return this.postController;

@@ -1,36 +1,33 @@
-import express from "express";
-import helmet from "helmet";
-import cors from 'cors'
-import morgan from 'morgan'
-import cookieParser from "cookie-parser";
-
-import healthRoute from "./routes/health.route.ts";
-import authRoute from "./routes/v1/auth.route.ts"
-import userRoute from "./routes/v1/user.route.ts";
-import postRoute from "./routes/v1/post.route.ts";
+import app from "./app.ts";
+import {Database} from "./db/connection.ts";
 import env from "../env.ts";
+import process from "node:process";
+import mongoose from "mongoose";
+import {Initiator} from "./initiator.ts";
 
-const app = express();
+export const initiator = new Initiator();
+initiator.setupServices();
+initiator.setupControllers();
 
+(async () => {
+    try {
+        await Database.getInstance();
+        app.listen(env.PORT, () => console.log(`Server running on ${env.PORT}`));
+    } catch (err) {
+        console.error("Failed to start server:", err);
+        process.exit(1);
+    }
+})();
 
-/* ---- GLOBAL MIDDLE WARES ---- */
-app.use(cookieParser(env.COOKIE_SECRET));
-app.use(helmet());
-app.use(cors({
-    origin: env.CORS_ORIGIN,
-    credentials: true,
-}))
-app.use(morgan("combined"))
-app.use(express.json());
+/* ---- PROCESS ERRORS ---- */
+process.on('SIGINT', async () => {
+    await mongoose.connection.close();
+    console.log('MongoDB connection closed due to app termination');
+    process.exit(0);
+});
 
-
-/* ---- ROUTES ---- */
-app.use("/api/health", healthRoute)
-app.use("/api/v1/auth", authRoute);
-app.use("/api/v1/users", userRoute);
-app.use("/api/v1/posts", postRoute);
-
-
-
-export {app};
-export default app;
+process.on("SIGTERM", async () => {
+    await mongoose.connection.close();
+    console.log("MongoDB disconnected due to SIGTERM");
+    process.exit(0);
+});
