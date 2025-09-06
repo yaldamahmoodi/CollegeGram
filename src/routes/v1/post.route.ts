@@ -4,10 +4,10 @@ import {authMiddleware} from "../../middlewares/auth.middleware.ts";
 import {errorHandler} from "../../middlewares/error.middleware.ts";
 import { paramParser} from "../../middlewares/parsers.middleware.ts";
 import {postIdSchema} from "../../dtos/posts.dto.ts";
+import {initiator} from "../../server.ts";
 
 const router = Router();
 
-const initiator = new Initiator();
 const postController = initiator.getPostController();
 
 router.use(authMiddleware)
