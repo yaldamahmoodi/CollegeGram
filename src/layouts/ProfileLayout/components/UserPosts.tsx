@@ -26,9 +26,9 @@ const UserPosts = (props: UserPostsProps) => {
   return (
     <div className="profile-posts w-full h-full flex-auto border border-gray-400 p-4 overflow-y-auto rounded-4xl">
       {mockPosts ? (
-        <div className="flex flex-col-3 gap-4">
+        <div className="flex flex-col-3 gap-10  justify-evenly">
           {mockPosts.map((item) => {
-            return <img src={item.url} className="W-60 h-60  rounded-2xl" />;
+            return <img src={item.url} className="w-80 h-80  rounded-2xl" />;
           })}
         </div>
       ) : (
