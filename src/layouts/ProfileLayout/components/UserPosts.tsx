@@ -1,5 +1,6 @@
 import { usePosts } from "@hooks/post.hook";
 import Button from "@components/Button";
+import {useState} from "react";
 
 interface UserPostsProps {
   onChangeModal: () => void;
@@ -7,6 +8,7 @@ interface UserPostsProps {
 
 const UserPosts = (props: UserPostsProps) => {
   const { onChangeModal } = props;
+  const [isModalOpen, setIsModalOpen] = useState(false);
 
   const { data } = usePosts();
   const mockPosts = [
@@ -28,7 +30,7 @@ const UserPosts = (props: UserPostsProps) => {
       {mockPosts ? (
         <div className="flex flex-col-3 gap-10  justify-evenly">
           {mockPosts.map((item) => {
-            return <img src={item.url} className="w-80 h-80  rounded-2xl" />;
+            return <img src={item.url} className="w-80 h-80  rounded-2xl" onClick= {()=>{setIsModalOpen(true)}}/>;
           })}
         </div>
       ) : (
