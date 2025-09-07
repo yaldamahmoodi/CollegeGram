@@ -7,7 +7,7 @@ type StepType = { title: string; content: React.ReactNode };
 
 export const steps: StepType[] = [
   { title: "عکس", content: <UserPostUploader /> },
-  { title: "متن", content: <CaptionWithEmojis /> },
+  { title: "متن", content: <CaptionWithEmojis/> },
   {
     title: "تنظیمات",
     content: (

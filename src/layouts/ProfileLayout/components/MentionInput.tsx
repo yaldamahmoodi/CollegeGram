@@ -58,7 +58,11 @@ const MentionInput = ({ users, handlePostSubmit }: MentionInputProps) => {
           ))}
         </ul>
       )}
-      <Button onClick={handlePostSubmit} label=" ثبت و انتشار پست" />
+      <Button
+        onClick={handlePostSubmit}
+        label=" ثبت و انتشار پست"
+        className="absolute top-65 right-0"
+      />
     </div>
   );
 };

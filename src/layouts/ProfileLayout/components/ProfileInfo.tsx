@@ -1,16 +1,21 @@
 import Button from "@components/Button";
 import EditProfileModal from "@/layouts/ProfileLayout/components/EditProfileModal";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useUserInfo } from "@hooks/user.hook";
 import { MESSAGES } from "@/const/message";
 import UserListModal from "./UserListModal";
+import UsernameIcon from "@assets/images/username.png";
 
 const ProfileInfo = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [openFollowers, setOpenFollowers] = useState(false);
   const [openFollowing, setOpenFollowing] = useState(false);
 
-  const { data } = useUserInfo();
+  const { data: user } = useUserInfo();
+
+  useEffect(() => {
+    console.log("****", user?.data?.username);
+  }, [user]);
 
   const mockUsers = [
     {
@@ -51,36 +56,47 @@ const ProfileInfo = () => {
   ];
 
   return (
-    <div className="profile-info-container w-full flex flex-col lg:flex-row lg:items-start gap-6 py-4">
+    <div className="profile-info-container w-full flex flex-col lg:flex-row lg:items-start gap-6 py-4  flex flex-justify">
       <div className="flex justify-center lg:justify-start">
-        <div className="profile-image bg-cover bg-center bg-no-repeat border rounded-full h-[80px] w-[80px] lg:h-[150px] lg:w-[150px]" />
+        <div className="bg-white rounded-full bg-cover object-cover ">
+          <img
+            src={UsernameIcon}
+            className="h-[134px] w-[134px] bg-cover no-repeat"
+          />
+        </div>
       </div>
 
-      <div className="flex flex-col flex-1">
+      <div className="flex flex-col flex-1 mt-4">
         <div className="flex flex-col lg:flex-row lg:items-center lg:gap-6">
           <div className="flex flex-row items-center gap-2">
-            <span className="text-lg lg:text-2xl font-bold">مهشید منزه</span>
-            <span className="text-sm lg:text-base font-light">@mahnaz</span>
+            <span className="text-lg lg:text-2xl font-bold mb-1">
+              {user?.data?.firstname || "مهشید"}{" "}
+              {user?.data?.lastname || "منزه"}
+            </span>
+            <span className="text-sm lg:text-base font-light">
+              {user?.username || "@mahshid"}
+            </span>
           </div>
         </div>
 
-        <div className="flex flex-row justify-center lg:justify-start items-center mt-4 text-sm w-full ">
+        <div className="flex flex-row justify-center lg:justify-start items-center  text-md w-full ">
           <div className="flex flex-row justify-start items-center lg:w-5/6">
             <div
-              className="cursor-pointer text-orange-500 px-3 border-l border-gray-500"
+              className="cursor-pointer text-orange-500 pl-4 border-l border-gray-500"
               onClick={() => setOpenFollowing(true)}>
-              <span className="px-1">13</span>
+              <span className="px-1">{user?.data?.followingCount || 0}</span>
               <span>{MESSAGES.following}</span>
             </div>
             <div
-              className="cursor-pointer text-orange-500 px-3 border-l border-gray-500 "
+              className="cursor-pointer text-orange-500 px-4 border-l border-gray-500 "
               onClick={() => setOpenFollowers(true)}>
-              <span className="px-1">44</span>
+              <span className="px-1">{user?.data?.followersCount || 0} </span>
               <span>{MESSAGES.follower}</span>
             </div>
-            <div className="cursor-pointer px-3">
-              <span className="px-1">35</span>
-              <span>{MESSAGES.post}</span>
+            <div className="cursor-pointer px-4">
+              <span className="px-1"> </span>
+              <span>{user?.data?.postCount || 0}</span>
+              <span>{MESSAGES.post} </span>
             </div>
           </div>
           <div className="hidden lg:block lg:w-1/6 flex justify-end">
@@ -94,8 +110,9 @@ const ProfileInfo = () => {
           </div>
         </div>
 
-        <div className="mt-4 text-center lg:text-right text-xs lg:text-sm text-[#b5b5b5]">
-          Lover ,not a tighter , spreading ok. all over the world
+        <div className="text-center lg:text-right text-xs lg:text-sm text-[#b5b5b5] mt-2">
+          {user?.data?.biography ||
+            "Lover ,not a tighter , spreading ok. all over the world"}
         </div>
 
         <div className="lg:hidden mt-4">
@@ -108,7 +125,7 @@ const ProfileInfo = () => {
           />
         </div>
       </div>
-      
+
       <EditProfileModal
         isOpen={isModalOpen}
         onClose={() => setIsModalOpen(false)}

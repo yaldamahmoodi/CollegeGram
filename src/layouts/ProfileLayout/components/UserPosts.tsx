@@ -11,8 +11,8 @@ const UserPosts = (props: UserPostsProps) => {
   const { data } = usePosts();
   return (
     <div className="profile-posts w-full h-full flex-auto border border-gray-400 p-4 overflow-y-auto rounded-4xl">
-      {data ? (
-        ""
+      {data?.length ? (
+        posts
       ) : (
         <div className="flex flex-col justify-center items-center gap-2 w-full h-full">
           <span>هنوز هیچ پستی توی صفحه ات نذاشتی!</span>

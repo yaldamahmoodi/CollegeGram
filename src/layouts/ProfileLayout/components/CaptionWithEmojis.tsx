@@ -26,6 +26,7 @@ const CaptionWithEmojis = () => {
     return () => document.removeEventListener("mousedown", onDown);
   }, [open]);
 
+
   const rememberCaret = () => {
     const el = taRef.current;
     if (!el) return;
