@@ -1,0 +1,190 @@
+openapi: 3.0.0
+info:
+  title: Rahnema
+  version: 1.0.0
+  description: API documentation for Auth, Users, and Posts
+servers:
+  - url: http://localhost:3001
+
+paths:
+  /api/health:
+    get:
+      summary: Health Check
+      responses:
+        '200':
+          description: OK
+
+  /api/v1/auth/register:
+    post:
+      summary: Register user
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RegisterDto'
+      responses:
+        '201':
+          description: User registered
+
+  /api/v1/auth/login:
+    post:
+      summary: Login user
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/LoginDto'
+      responses:
+        '200':
+          description: Login successful, cookie set
+
+  /api/v1/auth/logout:
+    post:
+      summary: Logout user
+      responses:
+        '200':
+          description: User logged out
+
+  /api/v1/users/profile:
+    get:
+      summary: Get user profile
+      security:
+        - cookieAuth: []
+      responses:
+        '200':
+          description: User profile returned
+    patch:
+      summary: Update user profile
+      security:
+        - cookieAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateProfileDto'
+      responses:
+        '200':
+          description: Profile updated
+
+  /api/v1/users/profile/upload:
+    post:
+      summary: Upload profile photo
+      security:
+        - cookieAuth: []
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                profile:
+                  type: string
+                  format: binary
+      responses:
+        '200':
+          description: Profile photo uploaded
+
+  /api/v1/users/profile/posts:
+    get:
+      summary: Get user posts
+      security:
+        - cookieAuth: []
+      responses:
+        '200':
+          description: List of user posts
+
+  /api/v1/users/upload/post:
+    post:
+      summary: Create post with photos
+      security:
+        - cookieAuth: []
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                photos:
+                  type: array
+                  items:
+                    type: string
+                    format: binary
+                caption:
+                  type: string
+      responses:
+        '201':
+          description: Post created
+
+  /api/v1/posts/getPost:
+    get:
+      summary: Get post by ID
+      security:
+        - cookieAuth: []
+      parameters:
+        - name: postId
+          in: query
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Post returned
+
+components:
+  securitySchemes:
+    cookieAuth:
+      type: apiKey
+      in: cookie
+      name: accessToken
+
+  schemas:
+    RegisterDto:
+      type: object
+      required: [email, username, password]
+      properties:
+        email:
+          type: string
+          format: email
+        username:
+          type: string
+          minLength: 5
+        password:
+          type: string
+          minLength: 8
+        firstname:
+          type: string
+        lastname:
+          type: string
+        biography:
+          type: string
+
+    LoginDto:
+      type: object
+      required: [username, password]
+      properties:
+        username:
+          type: string
+          minLength: 5
+        password:
+          type: string
+          minLength: 8
+
+    UpdateProfileDto:
+      type: object
+      properties:
+        email:
+          type: string
+          format: email
+        password:
+          type: string
+        firstname:
+          type: string
+        lastname:
+          type: string
+        biography:
+          type: string
