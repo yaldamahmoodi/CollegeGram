@@ -18,6 +18,9 @@
   "author": "Nima Elahi Manesh, Yalda Mahmoodi, Amir Samimi, Mohammad Asghari. ",
   "license": "MIT",
   "dependencies": {
+    "@types/cookie-parser": "^1.4.9",
+    "@types/swagger-ui-express": "^4.1.8",
+    "@types/yamljs": "^0.2.34",
     "bcrypt": "^6.0.0",
     "cookie-parser": "^1.4.7",
     "cors": "^2.8.5",
@@ -29,7 +32,9 @@
     "mongoose": "^8.17.1",
     "morgan": "^1.10.1",
     "multer": "^2.0.2",
+    "swagger-ui-express": "^5.0.1",
     "uuid": "^11.1.0",
+    "yamljs": "^0.3.0",
     "zod": "^4.0.17"
   },
   "devDependencies": {
