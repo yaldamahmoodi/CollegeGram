@@ -37,13 +37,21 @@ export class UserService {
         return userDetails;
     }
 
+
     async createPost(postData: InsertPostDto) {
 
         if (postData.urls.length < 1) {
             throw new ValidationError("INVALID_CREDENTIALS");
         }
+        const allExist = postData.mentions.every(async (mention) => {
+            return await this.getUserDetails(mention.user_id)
+        })
 
-        return await this.postRepository.createPost(postData.user_id, postData.urls, postData.caption);
+        if (!allExist) {
+            throw new ValidationError("INVALID_USERNAME");
+        }
+
+        return await this.postRepository.createPost(postData.user_id, postData.urls, postData.caption, postData.mentions);
     }
 
     async updateProfile(userName: string, userData: updateProfileUserSchema) {

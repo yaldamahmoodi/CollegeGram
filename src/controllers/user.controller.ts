@@ -81,7 +81,7 @@ export class UserController {
 
             const like_count = Number(req.body.like_count) || 0;
             const save_count = Number(req.body.save_count) || 0;
-            const mentions = req.body.mentions? JSON.parse(req.body.mentions): [];
+            const mentions =  req.body.mentions
             const hashtag_array: string[] = req.body.hashtag_array || [];
 
             const postData: InsertPostDto = {
