@@ -1,5 +1,8 @@
 import ImageSlider from "@components/Image.tsx";
 import Modal from "@components/Modal.tsx";
+import avatar from "@assets/images/avatar.png";
+import Button from "@components/Button.tsx";
+import edit from "@assets/icons/edit.svg"
 
 interface PostDetailsModalProps {
     isOpen: boolean;
@@ -21,37 +24,35 @@ const PostDetailsModal = ({
             size="medium"
             labelClose="✕"
         >
-            <div className="flex flex-col md:flex-row gap-6">
+            <div className="flex flex-col md:flex-row gap-14 pt-12">
 
-                {/* اسلایدر تصاویر */}
                 <div className="flex-1">
                     <ImageSlider images={images} />
                 </div>
 
-                {/* اطلاعات پست */}
-                <div className="flex-1 flex flex-col gap-4">
-
-                    {/* عنوان لورم */}
-                    <h2 className="text-2xl font-bold text-right">
-mhmz                    </h2>
-
-                    {/* کاربر لورمی */}
-                    <div className="flex items-center gap-2 self-end">
-                        <span className="text-sm text-gray-600"></span>
-                        <img
-                            src="https://i.pravatar.cc/150?img=12"
-                            alt="mahmz"
-                            className="w-8 h-8 rounded-full"
+                <div className="flex flex-col gap-12">
+                    <div className="flex items-center gap-2 justify-between">
+                        <div className="flex items-center gap-2 ">
+                            <img
+                                src={avatar}
+                                alt="mahmz"
+                                className="w-10 h-10 rounded-full"
+                            />
+                            <span className="text-2xl font-bold text-right"> mhmz </span>
+                        </div>
+                        <Button
+                            label="ویرایش پست"
+                            type="button"
+                            icon={<img src={edit} />}
+                            className="flex items-center justify-center gap-4"
                         />
                     </div>
 
-                    {/* توضیحات لورمی */}
                     <p className="text-gray-700 text-right leading-relaxed">
                         لورم ایپسوم متن ساختگی با تولید سادگی نامفهوم از صنعت چاپ است. طراحان گرافیک از این متن به عنوان عنصری از ترکیب‌بندی برای پر کردن صفحات استفاده می‌کنند. چاپگرها و متون بلکه روزنامه و مجله در ستون و سطر آنچنان که لازم است.
                     </p>
 
-                    {/* تگ‌های فرضی */}
-                    <div className="flex flex-wrap gap-2 mt-2 self-end">
+                    <div className="flex flex-wrap gap-2 mt-2">
                         {["قدرت", "جامعه", "ترس"].map((tag, index) => (
                             <span
                                 key={index}
