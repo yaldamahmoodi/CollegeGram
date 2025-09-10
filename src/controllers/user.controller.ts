@@ -131,6 +131,42 @@ export class UserController {
 
     }
 
+    async followUser(req: Authenticate, res: Response, next: NextFunction) {
 
+        const {followedUserId} = req.body;
 
+        if (followedUserId === req.user.id) return next(new ValidationError("YOU_CANNOT_FOLLOW_YOURSELF"))
+
+        try {
+
+            await this.userService.followUser(req.user.id, followedUserId);
+            return res.status(201).json({
+                success: true,
+                message: "User successfully Followed"
+            });
+
+        } catch (error: unknown) {
+            if (error instanceof APIError) return next(error)
+        }
+    } 
+
+    async unfollowUser(req: Authenticate, res: Response, next: NextFunction) {
+
+        const {unfollowedUserId} = req.body;
+
+        if (unfollowedUserId === req.user.id) return next(new ValidationError("YOU_CANNOT_UNFOLLOW_YOURSELF"))
+
+        try {
+
+            await this.userService.unfollowUser(req.user.id, unfollowedUserId);
+            return res.status(201).json({
+                success: true,
+                message: "User successfully Unfollowed"
+            });
+
+        } catch (error: unknown) {
+            if (error instanceof APIError) return next(error)
+        }
+        
+    }
 }

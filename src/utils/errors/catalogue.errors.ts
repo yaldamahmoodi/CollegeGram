@@ -17,6 +17,8 @@ export const CatalogueErrors = {
     TOKEN_EXPIRED: {code: "TOKEN_EXPIRED", message: "Token expired"},
     UNAUTHORIZED: {code: "UNAUTHORIZED", message: "Unauthorized"},
     NO_FILES_UPLOADED:{code:"NO_FILES_UPLOADED", message: "No files uploaded"},
+    YOU_CANNOT_FOLLOW_YOURSELF:{code:"YOU_CANNOT_FOLLOW_YOURSELF", message:"YOU_CANNOT_FOLLOW_YOURSELF"},
+    YOU_CANNOT_UNFOLLOW_YOURSELF:{code:"YOU_CANNOT_UNFOLLOW_YOURSELF", message:"YOU_CANNOT_UNFOLLOW_YOURSELF"},
 } as const;
 
 export type ErrorCode = keyof typeof CatalogueErrors;

@@ -45,6 +45,15 @@ router.patch(
     userController.updateProfile
 );
 
+router.post(
+    "/follow",
+    userController.followUser
+);
+
+router.post(
+    "/unfollow",
+    userController.unfollowUser
+);
 
 router.use(errorHandler);
 

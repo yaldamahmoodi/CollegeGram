@@ -64,4 +64,13 @@ export class UserService {
     async getUserPosts(userId: string) {
         return await this.userRepository.findUserPosts(userId);
     }
+
+    async followUser(userId: string, followedUserId: string) {
+        return await this.userRepository.followUser(userId, followedUserId);
+    }
+
+    async unfollowUser(userId: string, unfollowedUserId: string) {
+        return await this.userRepository.unfollowUser(userId, unfollowedUserId);
+    }
+
 }
