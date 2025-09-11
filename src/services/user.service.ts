@@ -51,7 +51,7 @@ export class UserService {
             throw new ValidationError("INVALID_USERNAME");
         }
 
-        return await this.postRepository.createPost(postData.user_id, postData.urls, postData.caption, postData.mentions);
+        return await this.postRepository.createPost(postData.user_id, postData.urls, postData.caption, postData.mentions, postData.hashtag_array);
     }
 
     async updateProfile(userName: string, userData: updateProfileUserSchema) {
