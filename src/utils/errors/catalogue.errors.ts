@@ -1,3 +1,4 @@
+
 export const CatalogueErrors = {
     DUPLICATE_FIELD: {code: "DUPLICATE_FIELD", message: "Field already exists"},
     DUPLICATE_CREDENTIALS: {code: "DUPLICATE_CREDENTIALS", message: "Credentials already exists"},
@@ -19,6 +20,8 @@ export const CatalogueErrors = {
     ALREADY_DONE: {code: "ALREADY_DONE", message: "Already done"},
     NOT_SAVED: {code: "NOT_SAVED", message: "Not saved"},
     ALREADY_SAVED: {code: "ALREADY_SAVED", message: "Already saved"},
+    YOU_CANNOT_FOLLOW_YOURSELF:{code:"YOU_CANNOT_FOLLOW_YOURSELF", message:"YOU_CANNOT_FOLLOW_YOURSELF"},
+    YOU_CANNOT_UNFOLLOW_YOURSELF:{code:"YOU_CANNOT_UNFOLLOW_YOURSELF", message:"YOU_CANNOT_UNFOLLOW_YOURSELF"},
 } as const;
 
 export type ErrorCode = keyof typeof CatalogueErrors;

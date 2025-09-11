@@ -37,13 +37,21 @@ export class UserService {
         return userDetails;
     }
 
+
     async createPost(postData: InsertPostDto) {
 
         if (postData.urls.length < 1) {
             throw new ValidationError("INVALID_CREDENTIALS");
         }
+        const allExist = postData.mentions.every(async (mention) => {
+            return await this.getUserDetails(mention.user_id)
+        })
 
-        return await this.postRepository.createPost(postData.user_id, postData.urls, postData.caption);
+        if (!allExist) {
+            throw new ValidationError("INVALID_USERNAME");
+        }
+
+        return await this.postRepository.createPost(postData.user_id, postData.urls, postData.caption, postData.mentions, postData.hashtag_array);
     }
 
     async updateProfile(userName: string, userData: updateProfileUserSchema) {
@@ -56,4 +64,13 @@ export class UserService {
     async getUserPosts(userId: string) {
         return await this.userRepository.findUserPosts(userId);
     }
+
+    async followUser(userId: string, followedUserId: string) {
+        return await this.userRepository.followUser(userId, followedUserId);
+    }
+
+    async unfollowUser(userId: string, unfollowedUserId: string) {
+        return await this.userRepository.unfollowUser(userId, unfollowedUserId);
+    }
+
 }

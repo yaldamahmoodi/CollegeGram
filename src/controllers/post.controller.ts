@@ -15,6 +15,7 @@ export class PostController {
 
     }
 
+
     async getPost(req: Authenticate, res: Response, next: NextFunction) {
         try {
             const post = await this.postService.getPost(req.body);
@@ -61,5 +62,6 @@ export class PostController {
             "message": `post ${req.params['post_id']}unliked successfully.`, data: []
         })
     })
+
 
 }
