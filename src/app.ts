@@ -27,12 +27,21 @@ app.use(cookieParser(env.COOKIE_SECRET));
 
 
 /* ---- GLOBAL MIDDLE WARES ---- */
-app.use(cookieParser(env.COOKIE_SECRET));
 app.use(helmet());
+
+const allowedOrigins = env.CORS_ORIGIN.split(",");
 app.use(cors({
-    origin: env.CORS_ORIGIN,
+    origin: function(origin, callback) {
+        if (!origin) return callback(null, true); // برای Postman یا سرور بدون origin
+        if (allowedOrigins.includes(origin)) {
+            callback(null, true);
+        } else {
+            callback(new Error('Not allowed by CORS'));
+        }
+    },
     credentials: true,
-}))
+}));
+
 app.use(morgan("combined"))
 app.use(express.json());
 
