@@ -2,12 +2,13 @@ import {type Post, postModel} from "../db/models/post.model.ts";
 
 export class PostRepository {
 
-    async createPost(userId: string, urls: string[], caption?: string, mentions?: object[]) {
+    async createPost(userId: string, urls: string[], caption?: string, mentions?: object[], hashtag_array?: string[]) {
         const post = new postModel({
             user_id: userId,
             urls,
             caption,
-            mentions
+            mentions,
+            hashtag_array,
         });
         return await post.save();
     }

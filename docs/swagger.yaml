@@ -4,7 +4,7 @@ info:
   version: 1.0.0
   description: API documentation for Auth, Users, and Posts
 servers:
-  - url: http://localhost:3001
+  - url: http://188.121.102.156
 
 paths:
   /api/health:

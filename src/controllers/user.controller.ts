@@ -6,6 +6,8 @@ import {UnauthorizedError} from "../utils/errors/unauthorized.errors.ts";
 import {ValidationError} from "../utils/errors/validation.errors.ts";
 import {APIError} from "../utils/errors/api.errors.ts";
 import {type userParamSchema} from "../utils/types.ts";
+import {extractHashtags} from "../helpers/hashtag.extractor.ts";
+
 
 export class UserController {
 
@@ -82,8 +84,7 @@ export class UserController {
             const like_count = Number(req.body.like_count) || 0;
             const save_count = Number(req.body.save_count) || 0;
             const mentions =  req.body.mentions
-            const hashtag_array: string[] = req.body.hashtag_array || [];
-
+            const hashtag_array: string[] = extractHashtags(req.body.caption);
             const postData: InsertPostDto = {
                 user_id: req.user.id,
                 urls: filePaths,
