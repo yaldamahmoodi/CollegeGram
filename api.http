@@ -2,7 +2,9 @@
 GET http://localhost:3001/api/health
 
 ### SERVER HEALTH
-GET  http://130.185.75.174:3001/api/health
+GET http://130.185.75.174:3001/api/health
+
+### AUTHENTICATION ENDPOINTS ###
 
 ### REGISTER
 POST http://localhost:3001/api/v1/auth/register
@@ -24,7 +26,6 @@ Content-Type: application/json
   "password": "Test1234@"
 }
 
-
 ### LOGIN
 POST http://localhost:3001/api/v1/auth/login
 Content-Type: application/json
@@ -34,8 +35,7 @@ Content-Type: application/json
   "password": "Test1234@"
 }
 
-
-### LOGIN
+### SERVER LOGIN
 POST http://130.185.75.174:3001/api/v1/auth/login
 Content-Type: application/json
 
@@ -44,5 +44,72 @@ Content-Type: application/json
   "password": "Test1234@"
 }
 
-### CHECK USER POSTS
+### USER ENDPOINTS ###
+# Authentication is handled via cookies that are automatically set after login
+# No need to manually set Authorization headers
+
+### GET USER PROFILE
+GET http://localhost:3001/api/v1/users/profile
+
+### SERVER GET USER PROFILE
+GET http://130.185.75.174:3001/api/v1/users/profile
+
+### GET USER POSTS
 GET http://localhost:3001/api/v1/users/profile/posts
+
+### SERVER GET USER POSTS
+GET http://130.185.75.174:3001/api/v1/users/profile/posts
+
+### UPDATE USER PROFILE
+PATCH http://localhost:3001/api/v1/users/profile/update
+Content-Type: application/json
+
+{
+  "fullName": "Updated Name",
+  "bio": "Updated bio information"
+}
+
+### SERVER UPDATE USER PROFILE
+PATCH http://130.185.75.174:3001/api/v1/users/profile/update
+Content-Type: application/json
+
+{
+  "fullName": "Updated Name",
+  "bio": "Updated bio information"
+}
+
+### UPLOAD PROFILE PHOTO
+# Note: This requires multipart/form-data which is not well supported in .http files
+# Use a tool like Postman for testing file uploads
+POST http://localhost:3001/api/v1/users/profile/upload
+
+### SERVER UPLOAD PROFILE PHOTO
+POST http://130.185.75.174:3001/api/v1/users/profile/upload
+
+### CREATE POST WITH PHOTOS
+# Note: This requires multipart/form-data which is not well supported in .http files
+# Use a tool like Postman for testing file uploads
+POST http://localhost:3001/api/v1/users/upload/post
+
+### SERVER CREATE POST WITH PHOTOS
+POST http://130.185.75.174:3001/api/v1/users/upload/post
+
+### POST ENDPOINTS ###
+
+### GET POST
+GET http://localhost:3001/api/v1/posts/getPost
+
+### SERVER GET POST
+GET http://130.185.75.174:3001/api/v1/posts/getPost
+
+### LIKE POST
+POST http://localhost:3001/api/v1/posts/123456/Like
+
+### SERVER LIKE POST
+POST http://130.185.75.174:3001/api/v1/posts/123456/Like
+
+### UNLIKE POST
+POST http://localhost:3001/api/v1/posts/123456/unLike
+
+### SERVER UNLIKE POST
+POST http://130.185.75.174:3001/api/v1/posts/123456/unLike

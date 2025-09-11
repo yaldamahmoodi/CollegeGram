@@ -14,4 +14,4 @@ const LikeSchema: Schema<ILike> = new Schema({
     {
         timestamps: {createdAt: 'createdAt'}
     });
-const LikeModel: Model<ILike> = mongoose.model<ILike>('Likes', LikeSchema);
+export const LikeModel: Model<ILike> = mongoose.model<ILike>('Likes', LikeSchema);

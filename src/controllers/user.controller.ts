@@ -32,7 +32,7 @@ export class UserController {
         try {
             const profile = await this.userService.uploadProfile(filePath, req.user.id);
             return res.status(201).json({
-                success: true,
+                code: "UPLOADED",
                 message: "Profile upload success",
                 data: profile
             });
@@ -53,7 +53,7 @@ export class UserController {
             const profilePhotoPath = userDetails.ProfilePhoto?.path;
 
             return res.status(200).json({
-                success: true,
+                code: "GET_USER_SUCCESSFULLY",
                 data: {
                     username: userDetails.username,
                     email: userDetails.email,
@@ -81,6 +81,7 @@ export class UserController {
 
             const filePaths: string[] = files.map(file => file.path);
 
+            // inja chera tuye body baraye sakhtan post like_count o save_count mikhay?
             const like_count = Number(req.body.like_count) || 0;
             const save_count = Number(req.body.save_count) || 0;
             const mentions =  req.body.mentions
@@ -98,7 +99,7 @@ export class UserController {
             await this.userService.createPost(postData)
 
             return res.status(201).json({
-                success: true,
+                coed: "POST_CREATED_SUCCESS",
                 message: "Post success",
             })
         } catch (error: unknown) {
@@ -124,7 +125,7 @@ export class UserController {
     getPosts = async (req: Authenticate, res: Response, next: NextFunction) => {
         try {
             const posts = await this.userService.getUserPosts(req.user.id);
-            return res.status(200).json({success: true, data: posts})
+            return res.status(200).json({code: 'GET_POST_SUCCESSFULLY', data: posts})
 
         } catch (error: unknown) {
             if (error instanceof APIError) return next(error)

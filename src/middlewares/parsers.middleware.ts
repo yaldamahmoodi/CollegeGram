@@ -30,7 +30,7 @@ export const paramParser =
             next: NextFunction
         ) => {
             try {
-                schema.parse(req.params)
+                req.params = schema.parse(req.params)
                 next()
             } catch (err) {
                 if (err instanceof ZodError) {

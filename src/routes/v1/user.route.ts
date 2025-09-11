@@ -5,11 +5,11 @@ import {uploadProfilePhotoMiddleware} from "../../middlewares/uploadProfilePhoto
 import {errorHandler} from "../../middlewares/error.middleware.ts";
 import {bodyParser} from "../../middlewares/parsers.middleware.ts";
 import {updateProfileUserSchema} from "../../db/models/user.model.ts";
+import {initiator} from "../../server.ts";
 import {insertPostSchema} from "../../db/models/post.model.ts";
 
 const router = Router();
 
-const initiator = new Initiator();
 const userController = initiator.getUserController();
 
 router.use(authMiddleware)
@@ -33,7 +33,6 @@ router.get(
 
 router.post(
     "/upload/post",
-    bodyParser(insertPostSchema),
     uploadProfilePhotoMiddleware.array("photos", 10),
     userController.createPost
 );
