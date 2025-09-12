@@ -12,11 +12,6 @@ const postController = initiator.getPostController();
 
 router.use(authMiddleware)
 
-router.post(
-    "/upload/post",
-    uploadProfilePhotoMiddleware.array("photos", 10),
-    postController.createPost
-);
 
 router.get(
     "/:post_id/getPost",
