@@ -1,23 +1,21 @@
 import type {UserRepository} from "../repositories/user.repository.ts";
 import type {ProfileRepository} from "../repositories/profile.repository.ts";
-import {PostRepository} from "../repositories/post.repository.ts";
-import {type InsertPostDto} from "../db/models/post.model.ts";
+import type {FollowUnfollowRepository} from "../repositories/followUnfollow.repository.ts";
 import bcrypt from 'bcrypt';
 import type {updateProfileUserSchema} from "../db/models/user.model.ts";
 import {NotFoundError} from "../utils/errors/notFound.errors.ts";
-import {ValidationError} from "../utils/errors/validation.errors.ts";
 
 export class UserService {
 
     private readonly userRepository: UserRepository;
     private readonly profilePhotoRepository: ProfileRepository;
-    private readonly postRepository: PostRepository;
+    private readonly followUnfollowRepository: FollowUnfollowRepository;
 
 
-    constructor(userRepository: UserRepository, profilePhotoRepository: ProfileRepository, postRepository: PostRepository) {
+    constructor(userRepository: UserRepository, profilePhotoRepository: ProfileRepository, followUnfollowRepository: FollowUnfollowRepository) {
         this.userRepository = userRepository;
         this.profilePhotoRepository = profilePhotoRepository;
-        this.postRepository = postRepository;
+        this.followUnfollowRepository = followUnfollowRepository;
     }
 
     async uploadProfile(filePath: string, userId: string) {
@@ -37,23 +35,6 @@ export class UserService {
         return userDetails;
     }
 
-
-    async createPost(postData: InsertPostDto) {
-
-        if (postData.urls.length < 1) {
-            throw new ValidationError("INVALID_CREDENTIALS");
-        }
-        const allExist = postData.mentions.every(async (mention) => {
-            return await this.getUserDetails(mention.user_id)
-        })
-
-        if (!allExist) {
-            throw new ValidationError("INVALID_USERNAME");
-        }
-
-        return await this.postRepository.createPost(postData.user_id, postData.urls, postData.caption, postData.mentions, postData.hashtag_array);
-    }
-
     async updateProfile(userName: string, userData: updateProfileUserSchema) {
         if (userData.password) {
             userData.password = await bcrypt.hash(userData.password, 10);
@@ -61,16 +42,12 @@ export class UserService {
         return await this.userRepository.updateUser(userName, userData);
     }
 
-    async getUserPosts(userId: string) {
-        return await this.userRepository.findUserPosts(userId);
-    }
-
     async followUser(userId: string, followedUserId: string) {
-        return await this.userRepository.followUser(userId, followedUserId);
+        return await this.followUnfollowRepository.followUser(userId, followedUserId);
     }
 
     async unfollowUser(userId: string, unfollowedUserId: string) {
-        return await this.userRepository.unfollowUser(userId, unfollowedUserId);
+        return await this.followUnfollowRepository.unfollowUser(userId, unfollowedUserId);
     }
 
 }

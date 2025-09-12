@@ -3,6 +3,8 @@ import {NotFoundError} from "../utils/errors/notFound.errors.ts";
 import type {SaveRepository} from "../repositories/save.repository.ts";
 import {AlreadyDoneError} from "../utils/errors/alreadyDone.errors.ts";
 import {BadRequestErrors} from "../utils/errors/badRequest.errors.ts";
+import {type InsertPostDto} from "../db/models/post.model.ts";
+import {ValidationError} from "../utils/errors/validation.errors.ts";
 
 export class PostService {
 
@@ -12,6 +14,34 @@ export class PostService {
     constructor(postRepository: PostRepository, saveRepository: SaveRepository) {
         this.postRepository = postRepository;
         this.saveRepository = saveRepository;
+
+    }
+
+    async createPost(postData: InsertPostDto) {
+        if (postData.urls.length < 1) {
+            throw new ValidationError("INVALID_CREDENTIALS");
+        }
+        const allExist = postData.mentions.every(async (mention) => {
+            return await this.getUserDetails(mention.user_id)
+        })
+
+        if (!allExist) {
+            throw new ValidationError("INVALID_USERNAME");
+        }
+
+        return await this.postRepository.createPost(postData);
+    }
+
+    async getUserDetails(userId: string) {
+        const userDetails = await this.postRepository.findUserDetails(userId);
+        if (!userDetails) {
+            throw new NotFoundError("NOT_FOUND_USER");
+        }
+        return userDetails;
+    }
+
+    async getPosts(userId: string) {
+        return await this.postRepository.findUserPosts(userId);
     }
 
     async getPost(postId: string) {
@@ -33,7 +63,7 @@ export class PostService {
         await this.postRepository.unLikePost(userId, postId)
     }
 
-//: Promise<Post | null>
+    //: Promise<Post | null>
     async savePost(userId: string, postId: string) {
         const postExistence = await this.postRepository.getPostById(postId)
         if (!postExistence) {

@@ -1,7 +1,6 @@
 import type {Authenticate} from "../middlewares/auth.middleware.ts";
 import type {NextFunction, Response, Request} from "express";
 import type {UserService} from "../services/user.service.ts";
-import type {InsertPostDto} from "../db/models/post.model.ts";
 import {UnauthorizedError} from "../utils/errors/unauthorized.errors.ts";
 import {ValidationError} from "../utils/errors/validation.errors.ts";
 import {APIError} from "../utils/errors/api.errors.ts";
@@ -24,6 +23,9 @@ export class UserController {
         this.createPost = this.createPost.bind(this);
         this.getUserDetails = this.getUserDetails.bind(this);
         this.updateProfile = this.updateProfile.bind(this);
+        this.followUser = this.followUser.bind(this);
+        this.unfollowUser = this.unfollowUser.bind(this);
+
         this.getPosts = this.getPosts.bind(this);
     }
 
@@ -57,17 +59,18 @@ export class UserController {
         try {
             const userDetails = await this.userService.getUserDetails(userId);
             const profilePhotoPath = userDetails.ProfilePhoto?.path;
-
             return res.status(200).json({
                 code: "GET_USER_SUCCESSFULLY",
                 data: {
                     username: userDetails.username,
                     email: userDetails.email,
+                    firstname: userDetails.firstname,
+                    lastname: userDetails.lastname,
                     biography: userDetails.biography,
                     follower_count: userDetails.follower_count,
                     following_count: userDetails.following_count,
                     post_count: userDetails.post_count,
-                    profilePhotoUrl: profilePhotoPath
+                    profilePhotoUrl: profilePhotoPath,
                 }
             })
         } catch (error: unknown) {
@@ -133,6 +136,7 @@ export class UserController {
         } catch (error: unknown) {
             if (error instanceof APIError) return next(error);
         }
+
     }
 
     async followUser(req: Authenticate, res: Response, next: NextFunction) {

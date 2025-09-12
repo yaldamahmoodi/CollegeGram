@@ -1,10 +1,10 @@
 import {Router} from "express";
-import {Initiator} from "../../initiator.ts";
 import {authMiddleware} from "../../middlewares/auth.middleware.ts";
 import {errorHandler} from "../../middlewares/error.middleware.ts";
 import { paramParser} from "../../middlewares/parsers.middleware.ts";
 import {postIdSchema} from "../../dtos/posts.dto.ts";
 import {initiator} from "../../server.ts";
+import {uploadProfilePhotoMiddleware} from "../../middlewares/uploadProfilePhoto.middleware.ts";
 
 const router = Router();
 
@@ -12,9 +12,20 @@ const postController = initiator.getPostController();
 
 router.use(authMiddleware)
 
+router.post(
+    "/upload/post",
+    uploadProfilePhotoMiddleware.array("photos", 10),
+    postController.createPost
+);
+
 router.get(
-    "/getPost",
+    "/:post_id/getPost",
     postController.getPost
+)
+
+router.get(
+    "/getPosts",
+    postController.getPosts
 )
 
 router.post(

@@ -46,10 +46,13 @@ export const postModel = mongoose.model<Post>('Posts', postSchema)
 
 export const insertPostSchema = z.object({
     user_id: z.string(),
-    urls: z.array(z.string()),
-    caption: z.string().nullable().optional(),
+    urls: z.array(z.string()).min(1, "At least one URL required"),
+    caption: z.string().max(500).optional(),
     mentions: z.array(
-        z.object({ user_id: z.string(), username: z.string() })
+    z.object({
+      user_id: z.string().regex(/^[0-9a-fA-F]{24}$/),
+      username: z.string(),
+    })
     ).optional().default([]),
     hashtag_array: z.array(z.string()).optional().default([]),
 })

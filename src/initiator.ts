@@ -9,7 +9,7 @@ import {ProfileRepository} from "./repositories/profile.repository.ts";
 import {PostController} from "./controllers/post.controller.ts";
 import {PostService} from "./services/post.service.ts";
 import {SaveRepository} from "./repositories/save.repository.ts";
-
+import {FollowUnfollowRepository} from "./repositories/followUnfollow.repository.ts";
 export class Initiator {
     public userService: UserService;
     public userRepository: UserRepository;
@@ -22,6 +22,7 @@ export class Initiator {
     public postService: PostService;
     public postController: PostController;
     public saveRepository: SaveRepository;
+    public followUnfollowRepository: FollowUnfollowRepository;
 
 
     constructor() {
@@ -30,11 +31,12 @@ export class Initiator {
         this.postRepository = new PostRepository();
         this.saveRepository = new SaveRepository();
         this.profileRepository = new ProfileRepository();
+        this.followUnfollowRepository = new FollowUnfollowRepository()
     }
 
     public setupServices(): void {
         this.authService = new AuthService(this.authRepository);
-        this.userService = new UserService(this.userRepository, this.profileRepository, this.postRepository);
+        this.userService = new UserService(this.userRepository, this.profileRepository, this.followUnfollowRepository);
         this.postService = new PostService(this.postRepository, this.saveRepository);
     }
 
