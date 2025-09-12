@@ -396,6 +396,117 @@ paths:
         '500':
           description: Internal server error
 
+  /api/v1/users/profile/update:
+    patch:
+      summary: Update user profile
+      description: Update profile fields such as email, password, firstname, lastname, and biography.
+      security:
+        - cookieAuth: [ ]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                email:
+                  type: string
+                  format: email
+                  maxLength: 255
+                  example: "newemail@example.com"
+                password:
+                  type: string
+                  description: >
+                    Password must include at least one lowercase letter, one uppercase letter,
+                    one digit, and one special character. Maximum length: 20.
+                  maxLength: 20
+                  example: "NewP@ssword1"
+                firstname:
+                  type: string
+                  maxLength: 255
+                  nullable: true
+                  example: "Yalda"
+                lastname:
+                  type: string
+                  maxLength: 255
+                  nullable: true
+                  example: "Mahmoodi"
+                biography:
+                  type: string
+                  maxLength: 1500
+                  nullable: true
+                  example: "This is my new bio"
+      responses:
+        '200':
+          description: User profile updated successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  code:
+                    type: string
+                    example: USER_UPDATED_SUCCESS
+                  message:
+                    type: string
+                    example: User successfully Updated
+                  data:
+                    type: object
+                    properties:
+                      userId:
+                        type: string
+                        example: 68c2b1db8d9f319250cd0f8c
+                      username:
+                        type: string
+                        example: yaldoo1234
+                      firstname:
+                        type: string
+                        nullable: true
+                        example: yaldoo
+                      lastname:
+                        type: string
+                        nullable: true
+                        example: null
+                      email:
+                        type: string
+                        example: yaldoomaldoo@gamil.com
+                      biography:
+                        type: string
+                        nullable: true
+                        example: null
+        '400':
+          description: Invalid input data
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  code:
+                    type: string
+                    example: INVALID_CREDENTIALS
+                  details:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        path:
+                          type: string
+                          example: ""
+                        message:
+                          type: string
+                          example: "Invalid input: expected object, received undefined"
+        '404':
+          description: User not found
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  code:
+                    type: string
+                    example: NOT_FOUND_USER
+
+
 components:
   securitySchemes:
     cookieAuth:
