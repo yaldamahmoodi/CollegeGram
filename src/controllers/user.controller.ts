@@ -79,8 +79,8 @@ export class UserController {
         }
     }
 
-    // TODO: bug dare inja
-    async createPost(req: Authenticate, res: Response, next: NextFunction) {
+
+    async createPost(req: Authenticate<{}, {}, InsertPostDto>, res: Response, next: NextFunction) {
         if (!req.user) return next(new UnauthorizedError("UNAUTHORIZED"))
 
         if (!req.files || (req.files as Express.Multer.File[]).length === 0) {
@@ -92,7 +92,8 @@ export class UserController {
             const caption = req.body.caption;
             const filePaths: string[] = files.map(file => file.path);
             const mentions = Array.isArray(req.body.mentions) ? req.body.mentions : [];
-            const hashtag_array: string[] = extractHashtags(req.body.caption);
+            const hashtag_array: string[] = caption ? extractHashtags(caption) : [];
+
             const postData: InsertPostDto = {
                 user_id: req.user.id,
                 urls: filePaths,
