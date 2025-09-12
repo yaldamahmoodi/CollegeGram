@@ -23,16 +23,17 @@ app.use("/api/docs", swaggerUi.serve, swaggerUi.setup(swaggerDocument));
 
 
 
-app.use(cookieParser(env.COOKIE_SECRET));
 
 
 /* ---- GLOBAL MIDDLE WARES ---- */
+app.use(express.json());
 app.use(helmet());
+app.use(cookieParser(env.COOKIE_SECRET));
 
 const allowedOrigins = env.CORS_ORIGIN.split(",");
 app.use(cors({
     origin: function(origin, callback) {
-        if (!origin) return callback(null, true); // برای Postman یا سرور بدون origin
+        if (!origin) return callback(null, true);
         if (allowedOrigins.includes(origin)) {
             callback(null, true);
         } else {
@@ -43,7 +44,6 @@ app.use(cors({
 }));
 
 app.use(morgan("combined"))
-app.use(express.json());
 
 
 /* ---- ROUTES ---- */
