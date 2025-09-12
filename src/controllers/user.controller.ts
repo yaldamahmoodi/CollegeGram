@@ -27,7 +27,6 @@ export class UserController {
         this.followUser = this.followUser.bind(this);
         this.unfollowUser = this.unfollowUser.bind(this);
 
-        this.getPosts = this.getPosts.bind(this);
     }
 
 
@@ -128,18 +127,6 @@ export class UserController {
 
     }
 
-    async getPosts(req: Authenticate, res: Response, next: NextFunction) {
-        try {
-            const posts = await this.postService.getPosts(req.user.id);
-            return res.status(200).json({
-                code: 'GET_POST_SUCCESSFULLY',
-                data: posts
-            });
-        } catch (error: unknown) {
-            if (error instanceof APIError) return next(error);
-        }
-
-    }
 
     async followUser(req: Authenticate, res: Response, next: NextFunction) {
 
