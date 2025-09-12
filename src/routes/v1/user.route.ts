@@ -25,12 +25,6 @@ router.get(
     userController.getUserDetails
 );
 
-router.get(
-    "/profile/posts",
-    userController.getPosts
-)
-
-
 router.post(
     "/upload/post",
     uploadPostPhotosMiddleware.array("photos", 10),
