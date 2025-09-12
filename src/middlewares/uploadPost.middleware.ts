@@ -15,7 +15,7 @@ if (!fs.existsSync(postUploadPath)) {
 
 const postStorage: StorageEngine = multer.diskStorage({
     destination: (req: Request, file: Express.Multer.File, cb) => {
-        cb(null, postUploadPath);
+        cb(null, path.join(__dirname, "uploads/posts"));
     },
     filename: (req: Request, file: Express.Multer.File, cb) => {
         const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1e9);

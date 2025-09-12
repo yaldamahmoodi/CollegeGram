@@ -117,7 +117,7 @@ paths:
       summary: Upload profile photo
       description: Upload or update the authenticated user's profile photo.
       security:
-        - cookieAuth: [ ]
+        - cookieAuth: []
       requestBody:
         required: true
         content:
@@ -151,13 +151,20 @@ paths:
                     properties:
                       _id:
                         type: string
-                        example: 64f2a7b9e0c0f123456789ab
+                        example: 68c3e674d504d2ecea9e341f
                       user_id:
                         type: string
-                        example: 64f2a7b9e0c0f123456789ab
+                        example: 68c2b1db8d9f319250cd0f8c
                       path:
                         type: string
-                        example: uploads/profile-1694546352000-123456789.png
+                        example: /Users/yaldamahmoodi/Desktop/Git/Yaldoo/backmani/src/middlewares/uploads/profile-1757668980932-77093819.png
+                      uploadedAt:
+                        type: string
+                        format: date-time
+                        example: "2025-09-12T09:23:00.939Z"
+                      __v:
+                        type: integer
+                        example: 0
 
   /api/v1/users/profile/posts:
     get:
