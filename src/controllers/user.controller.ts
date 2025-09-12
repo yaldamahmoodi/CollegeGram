@@ -7,6 +7,7 @@ import {APIError} from "../utils/errors/api.errors.ts";
 import {type userParamSchema} from "../utils/types.ts";
 import {extractHashtags} from "../helpers/hashtag.extractor.ts";
 import type {PostService} from "../services/post.service.ts";
+import type {InsertPostDto} from "../db/models/post.model.ts";
 
 
 export class UserController {
@@ -100,7 +101,7 @@ export class UserController {
                 hashtag_array
             }
 
-            await this.userService.createPost(postData)
+            await this.postService.createPost(postData)
 
             return res.status(201).json({
                 coed: "POST_CREATED_SUCCESS",
@@ -128,7 +129,7 @@ export class UserController {
 
     async getPosts(req: Authenticate, res: Response, next: NextFunction) {
         try {
-            const posts = await this.userService.getUserPosts(req.user.id);
+            const posts = await this.postService.getPosts(req.user.id);
             return res.status(200).json({
                 code: 'GET_POST_SUCCESSFULLY',
                 data: posts
