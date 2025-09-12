@@ -12,12 +12,12 @@ export class UserRepository {
             .populate("ProfilePhoto", "path");
     }
 
-    async updateUser(username: string, userData: updateProfileUserSchema) {
-        return await UserModel.updateOne(
-            {username},
-            {$set: userData},
-        ).exec();
-    }
-    
+    // async updateUser(username: string, userData: updateProfileUserSchema) {
+    //     return await UserModel.updateOne(
+    //         {username},
+    //         {$set: userData},
+    //     ).exec();
+    // }
+
 
 }

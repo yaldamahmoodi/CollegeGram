@@ -35,12 +35,12 @@ export class UserService {
         return userDetails;
     }
 
-    async updateProfile(userName: string, userData: updateProfileUserSchema) {
-        if (userData.password) {
-            userData.password = await bcrypt.hash(userData.password, 10);
-        }
-        return await this.userRepository.updateUser(userName, userData);
-    }
+    // async updateProfile(userName: string, userData: updateProfileUserSchema) {
+    //     if (userData.password) {
+    //         userData.password = await bcrypt.hash(userData.password, 10);
+    //     }
+    //     return await this.userRepository.updateUser(userName, userData);
+    // }
 
     async followUser(userId: string, followedUserId: string) {
         return await this.followUnfollowRepository.followUser(userId, followedUserId);
