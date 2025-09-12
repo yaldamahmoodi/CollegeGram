@@ -112,9 +112,6 @@ paths:
                         nullable: true
                         example: /uploads/profile/johndoe.png
 
-
-
-
   /api/v1/users/profile/upload:
     post:
       summary: Upload profile photo
@@ -183,54 +180,7 @@ paths:
                     items:
                       $ref: '#/components/schemas/Post'
 
-  components:
-    schemas:
-      Post:
-        type: object
-        properties:
-          _id:
-            type: string
-            example: "64bfc67e2b3c5a001e9e8c21"
-          user_id:
-            type: string
-            description: ID of the user who created the post
-            example: "64bfc67e2b3c5a001e9e8c11"
-          urls:
-            type: array
-            items:
-              type: string
-            example: [ "uploads/photo-1694582321.png" ]
-          caption:
-            type: string
-            example: "My first post 🎉"
-          photo_length:
-            type: integer
-            example: 3
-          like_count:
-            type: integer
-            example: 10
-          save_count:
-            type: integer
-            example: 5
-          mentions:
-            type: array
-            items:
-              type: object
-              properties:
-                user_id:
-                  type: string
-                  example: "64bfc67e2b3c5a001e9e8c77"
-                username:
-                  type: string
-                  example: "ali123"
-          hashtag_array:
-            type: array
-            items:
-              type: string
-            example: [ "#fun", "#travel" ]
-    
-
-    /api/v1/users/upload/post:
+  /api/v1/users/upload/post:
     post:
       summary: Create post with photos
       security:
@@ -267,6 +217,10 @@ paths:
       responses:
         '200':
           description: Post returned
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Post'
 
   /api/v1/posts/{post_id}/savePost:
     post:
@@ -297,6 +251,7 @@ paths:
                   data:
                     type: object
                     description: Details of the saved post
+
   /api/v1/posts/{post_id}/unsavePost:
     post:
       summary: Unsave a post for the authenticated user
@@ -326,6 +281,7 @@ paths:
                   data:
                     type: object
                     description: Details of the unsaved post
+
 components:
   securitySchemes:
     cookieAuth:
@@ -379,3 +335,47 @@ components:
           type: string
         biography:
           type: string
+
+    Post:
+      type: object
+      properties:
+        _id:
+          type: string
+          example: "64bfc67e2b3c5a001e9e8c21"
+        user_id:
+          type: string
+          description: ID of the user who created the post
+          example: "64bfc67e2b3c5a001e9e8c11"
+        urls:
+          type: array
+          items:
+            type: string
+          example: [ "uploads/photo-1694582321.png" ]
+        caption:
+          type: string
+          example: "My first post 🎉"
+        photo_length:
+          type: integer
+          example: 3
+        like_count:
+          type: integer
+          example: 10
+        save_count:
+          type: integer
+          example: 5
+        mentions:
+          type: array
+          items:
+            type: object
+            properties:
+              user_id:
+                type: string
+                example: "64bfc67e2b3c5a001e9e8c77"
+              username:
+                type: string
+                example: "ali123"
+        hashtag_array:
+          type: array
+          items:
+            type: string
+          example: [ "#fun", "#travel" ]
