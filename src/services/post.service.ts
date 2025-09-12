@@ -40,8 +40,8 @@ export class PostService {
         return userDetails;
     }
 
-    async getPosts(userId: string) {
-        return await this.postRepository.findUserPosts(userId);
+    async getPosts(userId: string, page: number, pageSize: number) {
+        return await this.postRepository.findUserPosts(userId, page, pageSize);
     }
 
     async getPost(postId: string) {
