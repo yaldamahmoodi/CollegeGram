@@ -7,6 +7,7 @@ import type {InsertPostDto} from "../db/models/post.model.ts";
 import {extractHashtags} from "../helpers/hashtag.extractor.ts";
 import {UnauthorizedError} from "../utils/errors/unauthorized.errors.ts";
 import {ValidationError} from "../utils/errors/validation.errors.ts";
+import {type userParamSchema, UserParamsSchema} from "../utils/types.js";
 
 export class PostController {
 
@@ -15,56 +16,34 @@ export class PostController {
     constructor(postService: PostService) {
         this.postService = postService;
         this.getPost = this.getPost.bind(this);
-        this.createPost = this.createPost.bind(this);
-
+        this.getPosts = this.getPosts.bind(this);
     }
-
-    async createPost(req: Authenticate, res: Response, next: NextFunction) {
-        if (!req.user) return next(new UnauthorizedError("UNAUTHORIZED"))
-
-        if (!req.files || (req.files as Express.Multer.File[]).length === 0) {
-            return next(new ValidationError("NO_FILES_UPLOADED"));
-        }
-        try {
-
-            const files = req.files as Express.Multer.File[];
-            const caption = req.body.caption;
-            const filePaths: string[] = files.map(file => file.path);
-            const mentions = Array.isArray(req.body.mentions) ? req.body.mentions : [];
-            const hashtag_array: string[] = extractHashtags(req.body.caption);
-            const postData: InsertPostDto = {
-                user_id: req.user.id,
-                urls: filePaths,
-                caption,
-                mentions,
-                hashtag_array
-            }
-
-            await this.postService.createPost(postData)
-
-            return res.status(201).json({
-                coed: "POST_CREATED_SUCCESS",
-                message: "Post success",
-            })
-        } catch (error: unknown) {
-            if (error instanceof APIError) return next(error)
-        }
-    }
-    
 
     getPost = asyncHandler(async (req: Authenticate<string>, res: Response) => {
 
-            const post = await this.postService.getPost(req.params['post_id']);
-            return res.status(200).json({code: 'GET_POST_SUCCESSFULLY', data: post})
+        const post = await this.postService.getPost(req.params['post_id']);
+        return res.status(200).json({code: 'GET_POST_SUCCESSFULLY', data: post})
 
     });
 
-    getPosts = asyncHandler(async (req: Authenticate<string>, res: Response) => {
+    async getPosts(req: Authenticate<{},{},{},userParamSchema>, res: Response, next: NextFunction) {
 
-            const posts = await this.postService.getPosts(req.user.id);
-            return res.status(200).json({code: 'GET_POST_SUCCESSFULLY', data: posts});
- 
-    });  
+        let userId = req.query.id;
+        if (!userId) {
+            userId = req.user.id;
+        }
+
+        try {
+            const posts = await this.postService.getPosts(userId);
+            return res.status(200).json({
+                code: 'GET_POST_SUCCESSFULLY',
+                data: posts
+            });
+        } catch (error: unknown) {
+            if (error instanceof APIError) return next(error);
+        }
+
+    }
 
     savePost = asyncHandler(async (req: Authenticate<string>, res: Response) => {
         const savePostDetails = await this.postService.savePost(req.user.id, req.params['post_id']);
