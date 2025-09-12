@@ -242,6 +242,8 @@ paths:
   /api/v1/users/upload/post:
     post:
       summary: Create post with photos
+      tags:
+        - Posts
       security:
         - cookieAuth: [ ]
       requestBody:
@@ -250,17 +252,54 @@ paths:
           multipart/form-data:
             schema:
               type: object
+              required:
+                - photos
               properties:
                 photos:
                   type: array
                   items:
                     type: string
                     format: binary
+                  description: "Array of photo files (at least one required)"
                 caption:
                   type: string
+                  description: "Optional caption for the post"
+                mentions:
+                  type: array
+                  items:
+                    type: object
+                    properties:
+                      user_id:
+                        type: string
+                        description: "MongoDB ObjectId of mentioned user"
+                      username:
+                        type: string
+                        description: "Username of mentioned user"
+                  description: "Optional mentions"
+                hashtag_array:
+                  type: array
+                  items:
+                    type: string
+                  description: "Optional extracted hashtags"
       responses:
         '201':
-          description: Post created
+          description: Post created successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  code:
+                    type: string
+                    example: POST_CREATED_SUCCESS
+                  message:
+                    type: string
+                    example: Post success
+        '400':
+          description: Validation error (e.g. no files uploaded)
+        '401':
+          description: Unauthorized
+
 
   /api/v1/posts/getPost:
     get:
