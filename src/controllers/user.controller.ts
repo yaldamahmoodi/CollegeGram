@@ -23,7 +23,7 @@ export class UserController {
         this.uploadProfile = this.uploadProfile.bind(this);
         this.createPost = this.createPost.bind(this);
         this.getUserDetails = this.getUserDetails.bind(this);
-        this.updateProfile = this.updateProfile.bind(this);
+        // this.updateProfile = this.updateProfile.bind(this);
         this.followUser = this.followUser.bind(this);
         this.unfollowUser = this.unfollowUser.bind(this);
 
@@ -112,20 +112,20 @@ export class UserController {
         }
     }
 
-    async updateProfile(req: Authenticate, res: Response, next: NextFunction) {
-
-        try {
-            await this.userService.updateProfile(req.user.username, req.body);
-            return res.status(201).json({
-                success: true,
-                message: "User successfully Updated"
-            });
-
-        } catch (error: unknown) {
-            if (error instanceof APIError) return next(error)
-        }
-
-    }
+    // async updateProfile(req: Authenticate, res: Response, next: NextFunction) {
+    //
+    //     try {
+    //         await this.userService.updateProfile(req.user.username, req.body);
+    //         return res.status(201).json({
+    //             success: true,
+    //             message: "User successfully Updated"
+    //         });
+    //
+    //     } catch (error: unknown) {
+    //         if (error instanceof APIError) return next(error)
+    //     }
+    //
+    // }
 
 
     async followUser(req: Authenticate, res: Response, next: NextFunction) {
