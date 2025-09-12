@@ -6,7 +6,7 @@ import {errorHandler} from "../../middlewares/error.middleware.ts";
 import {bodyParser} from "../../middlewares/parsers.middleware.ts";
 import {updateProfileUserSchema} from "../../db/models/user.model.ts";
 import {initiator} from "../../server.ts";
-import {insertPostSchema} from "../../db/models/post.model.ts";
+import {uploadPostPhotosMiddleware} from "../../middlewares/uploadPost.middleware.ts";
 
 const router = Router();
 
@@ -33,7 +33,7 @@ router.get(
 
 router.post(
     "/upload/post",
-    uploadProfilePhotoMiddleware.array("photos", 10),
+    uploadPostPhotosMiddleware.array("photos", 10),
     userController.createPost
 );
 
