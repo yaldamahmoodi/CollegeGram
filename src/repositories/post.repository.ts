@@ -1,17 +1,31 @@
-import {type Post, postModel} from "../db/models/post.model.ts";
+import {type InsertPostDto, type Post, postModel} from "../db/models/post.model.ts";
 import {LikeModel} from "../db/models/like.model.ts";
 import mongoose from "mongoose";
 import {InternalErrors} from "../utils/errors/internal.errors.ts";
+import { UserModel, type IUser } from "../db/models/user.model.ts";
 
 export class PostRepository {
 
-    async createPost(userId: string, urls: string[], caption?: string, mentions?: object[], hashtag_array?: string[]) {
+
+
+    // This is Amir's code
+    // The query related to the posts model must be in the corresponding repository
+    async findUserPosts(userId: string): Promise<Post[]> {
+        return postModel.find({user_id: userId}, {urls: {$slice: 1}, photo_length: 1});
+    }
+
+    async findUserDetails(userId: string): Promise<IUser | null> {
+        return await UserModel.findById(userId)
+            .populate("ProfilePhoto", "path");
+    }
+
+    async createPost(postData: InsertPostDto) {
         const post = new postModel({
-            user_id: userId,
-            urls,
-            caption,
-            mentions,
-            hashtag_array,
+            user_id: postData.user_id,
+            urls: postData.urls,
+            caption: postData.caption,
+            mentions: postData.mentions,
+            hashtag_array: postData.hashtag_array,
         });
         return await post.save();
     }
