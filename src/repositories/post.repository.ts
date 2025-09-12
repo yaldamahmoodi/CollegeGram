@@ -2,17 +2,26 @@ import {type InsertPostDto, type Post, postModel} from "../db/models/post.model.
 import {LikeModel} from "../db/models/like.model.ts";
 import mongoose from "mongoose";
 import {InternalErrors} from "../utils/errors/internal.errors.ts";
-import { UserModel, type IUser } from "../db/models/user.model.ts";
+import {UserModel, type IUser} from "../db/models/user.model.ts";
 
 export class PostRepository {
 
+    async findUserPosts(userId: string, page: number, pageSize: number) {
+        const totalCount = await postModel.countDocuments({ user_id: userId });
+        const data = await postModel
+            .find({ user_id: userId })
+            .sort({ createdAt: -1 })
+            .skip((page - 1) * pageSize)
+            .limit(pageSize)
+            .lean();
 
-
-    // This is Amir's code
-    // The query related to the posts model must be in the corresponding repository
-    async findUserPosts(userId: string): Promise<Post[]> {
-        return postModel.find({user_id: userId}, {urls: {$slice: 1}, photo_length: 1});
+        return {
+            totalCount,
+            data
+        };
     }
+
+
 
     async findUserDetails(userId: string): Promise<IUser | null> {
         return await UserModel.findById(userId)
@@ -34,7 +43,7 @@ export class PostRepository {
         return postModel.findById(postId).exec();
     }
 
-    async updatePostSaveCount(postId: string ,count: number) {
+    async updatePostSaveCount(postId: string, count: number) {
         return await postModel.findOneAndUpdate(
             {post_id: postId},
             {$inc: {count: count}}
