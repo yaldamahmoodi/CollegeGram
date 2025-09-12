@@ -7,7 +7,7 @@ import type {InsertPostDto} from "../db/models/post.model.ts";
 import {extractHashtags} from "../helpers/hashtag.extractor.ts";
 import {UnauthorizedError} from "../utils/errors/unauthorized.errors.ts";
 import {ValidationError} from "../utils/errors/validation.errors.ts";
-import {type userParamSchema, UserParamsSchema} from "../utils/types.js";
+import {type userParamSchema, UserParamsSchema} from "../utils/types.ts";
 
 export class PostController {
 
@@ -19,14 +19,30 @@ export class PostController {
         this.getPosts = this.getPosts.bind(this);
     }
 
-    getPost = asyncHandler(async (req: Authenticate<string>, res: Response) => {
-
+    async getPost(req: Authenticate, res: Response) {
         const post = await this.postService.getPost(req.params['post_id']);
-        return res.status(200).json({code: 'GET_POST_SUCCESSFULLY', data: post})
 
-    });
+        const output = {
+            _id: post._id,
+            user_id: post.user_id,
+            urls: post.urls,
+            caption: post.caption,
+            like_count: post.like_count,
+            save_count: post.save_count,
+            mentions: post.mentions,
+            hashtag_array: post.hashtag_array,
+            photo_length: post.photo_length,
+        }
+        return res.status(200).json({
+            code: 'GET_POST_SUCCESSFULLY',
+            data: output
+        });
+    }
 
-    async getPosts(req: Authenticate<{},{},{},userParamSchema>, res: Response, next: NextFunction) {
+    async getPosts(req: Authenticate<{}, {}, {}, userParamSchema>, res: Response, next: NextFunction) {
+
+        const page = Number(req.query.page) || 1;
+        const pageSize = Number(req.query.pageSize) || 10;
 
         let userId = req.query.id;
         if (!userId) {
@@ -34,10 +50,24 @@ export class PostController {
         }
 
         try {
-            const posts = await this.postService.getPosts(userId);
+            const posts = await this.postService.getPosts(userId, page, pageSize);
+
+            const output = posts.data.map(post => ({
+                _id: post._id,
+                user_id: post.user_id,
+                urls: post.urls,
+                caption: post.caption,
+                like_count: post.like_count,
+                save_count: post.save_count,
+                mentions: post.mentions,
+                hashtag_array: post.hashtag_array,
+                photo_length: post.photo_length,
+            }));
+
             return res.status(200).json({
                 code: 'GET_POST_SUCCESSFULLY',
-                data: posts
+                totalCount: posts.totalCount,
+                data: output,
             });
         } catch (error: unknown) {
             if (error instanceof APIError) return next(error);
