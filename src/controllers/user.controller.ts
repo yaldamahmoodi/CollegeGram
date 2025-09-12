@@ -105,7 +105,7 @@ export class UserController {
             await this.postService.createPost(postData)
 
             return res.status(201).json({
-                coed: "POST_CREATED_SUCCESS",
+                code: "POST_CREATED_SUCCESS",
                 message: "Post success",
             })
         } catch (error: unknown) {
