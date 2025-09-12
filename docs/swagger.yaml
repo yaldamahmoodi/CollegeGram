@@ -218,11 +218,36 @@ paths:
                         type: integer
                         example: 0
 
-  /api/v1/users/profile/posts:
+  /api/v1/posts/getPosts:
     get:
-      summary: Get user posts
+      summary: Get user posts with pagination
+      description: Retrieve paginated posts for a user. Optional query parameters `page` and `pageSize` control pagination.
       security:
-        - cookieAuth: [ ]
+        - cookieAuth: []
+      parameters:
+        - in: query
+          name: id
+          schema:
+            type: string
+          required: false
+          description: "Optional user ID. Defaults to the authenticated user if not provided."
+        - in: query
+          name: page
+          schema:
+            type: integer
+            default: 1
+            minimum: 1
+          required: false
+          description: "Page number for pagination (default 1)."
+        - in: query
+          name: pageSize
+          schema:
+            type: integer
+            default: 10
+            minimum: 1
+            maximum: 50
+          required: false
+          description: "Number of posts per page (default 10, max 50)."
       responses:
         '200':
           description: List of user posts
@@ -234,10 +259,16 @@ paths:
                   code:
                     type: string
                     example: GET_POST_SUCCESSFULLY
+                  totalCount:
+                    type: integer
+                    example: 42
                   data:
                     type: array
                     items:
                       $ref: '#/components/schemas/Post'
+        '500':
+          description: Internal server error
+
 
   /api/v1/users/upload/post:
     post:
@@ -301,40 +332,21 @@ paths:
           description: Unauthorized
 
 
-  /api/v1/posts/getPost:
+  /api/v1/posts/:post_id/getPost:
     get:
-      summary: Get post by ID
+      summary: Get a single post by ID
       security:
         - cookieAuth: [ ]
       parameters:
-        - name: postId
-          in: query
-          required: true
+        - in: path
+          name: post_id
           schema:
             type: string
-      responses:
-        '200':
-          description: Post returned
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Post'
-
-  /api/v1/posts/{post_id}/savePost:
-    post:
-      summary: Save a post for the authenticated user
-      security:
-        - cookieAuth: [ ]
-      parameters:
-        - name: post_id
-          in: path
           required: true
-          schema:
-            type: string
-          description: ID of the post to save
+          description: "ID of the post to retrieve"
       responses:
         '200':
-          description: Post saved successfully
+          description: Post retrieved successfully
           content:
             application/json:
               schema:
@@ -342,43 +354,47 @@ paths:
                 properties:
                   code:
                     type: string
-                    example: SAVED_SUCCESSFULLY
-                  message:
-                    type: string
-                    example: Post 123 saved successfully.
+                    example: GET_POST_SUCCESSFULLY
                   data:
                     type: object
-                    description: Details of the saved post
-
-  /api/v1/posts/{post_id}/unsavePost:
-    post:
-      summary: Unsave a post for the authenticated user
-      security:
-        - cookieAuth: [ ]
-      parameters:
-        - name: post_id
-          in: path
-          required: true
-          schema:
-            type: string
-          description: ID of the post to unsave
-      responses:
-        '200':
-          description: Post unsaved successfully
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  code:
-                    type: string
-                    example: UNSAVED_SUCCESSFULLY
-                  message:
-                    type: string
-                    example: Post 123 unsaved successfully.
-                  data:
-                    type: object
-                    description: Details of the unsaved post
+                    properties:
+                      _id:
+                        type: string
+                        example: "68c4153c7187a49aafe14e71"
+                      user_id:
+                        type: string
+                        example: "68c2b1db8d9f319250cd0f8c"
+                      urls:
+                        type: array
+                        items:
+                          type: string
+                          example: "/uploads/posts/photos-1757680956872-723233089.png"
+                      caption:
+                        type: string
+                        example: "jhdskjfhljds"
+                      like_count:
+                        type: integer
+                        example: 0
+                      save_count:
+                        type: integer
+                        example: 0
+                      mentions:
+                        type: array
+                        items:
+                          type: string
+                        example: [ ]
+                      hashtag_array:
+                        type: array
+                        items:
+                          type: string
+                        example: [ ]
+                      photo_length:
+                        type: integer
+                        example: 2
+        '404':
+          description: Post not found
+        '500':
+          description: Internal server error
 
 components:
   securitySchemes:
