@@ -48,8 +48,6 @@ export const insertPostSchema = z.object({
     user_id: z.string(),
     urls: z.array(z.string()).min(1, "At least one URL required"),
     caption: z.string().max(500).optional(),
-    like_count: z.number().optional().default(0),
-    save_count: z.number().optional().default(0),
     mentions: z.array(
     z.object({
       user_id: z.string().regex(/^[0-9a-fA-F]{24}$/),
