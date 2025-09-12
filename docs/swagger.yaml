@@ -22,10 +22,61 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/RegisterDto'
+              type: object
+              properties:
+                email:
+                  type: string
+                  format: email
+                  maxLength: 255
+                  example: "user@example.com"
+                username:
+                  type: string
+                  minLength: 1
+                  maxLength: 255
+                  example: "username123"
+                password:
+                  type: string
+                  minLength: 8
+                  maxLength: 20
+                  pattern: "^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)(?=.*[\\W_]).{8,}$"
+                  example: "StrongP@ssw0rd"
+                firstname:
+                  type: string
+                  maxLength: 255
+                  nullable: true
+                  example: "John"
+                lastname:
+                  type: string
+                  maxLength: 255
+                  nullable: true
+                  example: "Doe"
+                biography:
+                  type: string
+                  maxLength: 1500
+                  nullable: true
+                  example: "I am a software developer."
+              required:
+                - email
+                - username
+                - password
       responses:
         '201':
-          description: User registered
+          description: User registered successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  code:
+                    type: string
+                    example: "USER_REGISTERED"
+                  message:
+                    type: string
+                    example: "User created successfully"
+        '400':
+          description: Bad Request – Invalid input
+        '500':
+          description: Internal Server Error
 
   /api/v1/auth/login:
     post:

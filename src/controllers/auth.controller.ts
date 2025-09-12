@@ -18,7 +18,7 @@ export class AuthController {
         try {
             await this.authService.register(req.body);
             return res.status(201).json({
-                success: true,
+                code: "USER_REGISTERED",
                 message: "User created successfully"
             });
         } catch (error: unknown) {
