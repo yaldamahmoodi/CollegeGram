@@ -30,6 +30,7 @@ paths:
   /api/v1/auth/login:
     post:
       summary: Login user
+      description: Authenticate user and return access token in a HttpOnly cookie
       requestBody:
         required: true
         content:
@@ -38,70 +39,202 @@ paths:
               $ref: '#/components/schemas/LoginDto'
       responses:
         '200':
-          description: Login successful, cookie set
-
-  /api/v1/auth/logout:
-    post:
-      summary: Logout user
-      responses:
-        '200':
-          description: User logged out
+          description: Login successful
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                  message:
+                    type: string
+                    example: User logged in successfully
+                  accessToken:
+                    type: string
+                    example: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
+                  userId:
+                    type: string
+                    example: 64f2a7b9e0c0f123456789ab
 
   /api/v1/users/profile:
     get:
       summary: Get user profile
+      description: |
+        برمی‌گردونه اطلاعات پروفایل کاربر.
+        - اگر query param `id` ارسال بشه، پروفایل اون کاربر خاص رو برمی‌گردونه.
+        - اگر ارسال نشه، پروفایل کاربر لاگین‌شده برگردونده میشه.
       security:
-        - cookieAuth: []
+        - cookieAuth: [ ]
+      parameters:
+        - name: id
+          in: query
+          required: false
+          schema:
+            type: string
+          description: ID of the user (optional)
       responses:
         '200':
-          description: User profile returned
-    patch:
-      summary: Update user profile
-      security:
-        - cookieAuth: []
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/UpdateProfileDto'
-      responses:
-        '200':
-          description: Profile updated
+          description: User profile returned successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  code:
+                    type: string
+                    example: GET_USER_SUCCESSFULLY
+                  data:
+                    type: object
+                    properties:
+                      username:
+                        type: string
+                        example: johndoe
+                      email:
+                        type: string
+                        format: email
+                        example: johndoe@example.com
+                      biography:
+                        type: string
+                        example: Software engineer and photographer
+                      follower_count:
+                        type: integer
+                        example: 120
+                      following_count:
+                        type: integer
+                        example: 85
+                      post_count:
+                        type: integer
+                        example: 45
+                      profilePhotoUrl:
+                        type: string
+                        nullable: true
+                        example: /uploads/profile/johndoe.png
+
+
+
 
   /api/v1/users/profile/upload:
     post:
       summary: Upload profile photo
+      description: Upload or update the authenticated user's profile photo.
       security:
-        - cookieAuth: []
+        - cookieAuth: [ ]
       requestBody:
         required: true
         content:
           multipart/form-data:
             schema:
               type: object
+              required:
+                - profile
               properties:
                 profile:
                   type: string
                   format: binary
+                  description: The profile photo file to upload
       responses:
-        '200':
-          description: Profile photo uploaded
+        '201':
+          description: Profile photo uploaded successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  code:
+                    type: string
+                    example: UPLOADED
+                  message:
+                    type: string
+                    example: Profile upload success
+                  data:
+                    type: object
+                    description: Details of the uploaded profile photo
+                    properties:
+                      _id:
+                        type: string
+                        example: 64f2a7b9e0c0f123456789ab
+                      user_id:
+                        type: string
+                        example: 64f2a7b9e0c0f123456789ab
+                      path:
+                        type: string
+                        example: uploads/profile-1694546352000-123456789.png
 
   /api/v1/users/profile/posts:
     get:
       summary: Get user posts
       security:
-        - cookieAuth: []
+        - cookieAuth: [ ]
       responses:
         '200':
           description: List of user posts
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  code:
+                    type: string
+                    example: GET_POST_SUCCESSFULLY
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Post'
 
-  /api/v1/users/upload/post:
+  components:
+    schemas:
+      Post:
+        type: object
+        properties:
+          _id:
+            type: string
+            example: "64bfc67e2b3c5a001e9e8c21"
+          user_id:
+            type: string
+            description: ID of the user who created the post
+            example: "64bfc67e2b3c5a001e9e8c11"
+          urls:
+            type: array
+            items:
+              type: string
+            example: [ "uploads/photo-1694582321.png" ]
+          caption:
+            type: string
+            example: "My first post 🎉"
+          photo_length:
+            type: integer
+            example: 3
+          like_count:
+            type: integer
+            example: 10
+          save_count:
+            type: integer
+            example: 5
+          mentions:
+            type: array
+            items:
+              type: object
+              properties:
+                user_id:
+                  type: string
+                  example: "64bfc67e2b3c5a001e9e8c77"
+                username:
+                  type: string
+                  example: "ali123"
+          hashtag_array:
+            type: array
+            items:
+              type: string
+            example: [ "#fun", "#travel" ]
+    
+
+    /api/v1/users/upload/post:
     post:
       summary: Create post with photos
       security:
-        - cookieAuth: []
+        - cookieAuth: [ ]
       requestBody:
         required: true
         content:
@@ -124,7 +257,7 @@ paths:
     get:
       summary: Get post by ID
       security:
-        - cookieAuth: []
+        - cookieAuth: [ ]
       parameters:
         - name: postId
           in: query
@@ -135,6 +268,64 @@ paths:
         '200':
           description: Post returned
 
+  /api/v1/posts/{post_id}/savePost:
+    post:
+      summary: Save a post for the authenticated user
+      security:
+        - cookieAuth: [ ]
+      parameters:
+        - name: post_id
+          in: path
+          required: true
+          schema:
+            type: string
+          description: ID of the post to save
+      responses:
+        '200':
+          description: Post saved successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  code:
+                    type: string
+                    example: SAVED_SUCCESSFULLY
+                  message:
+                    type: string
+                    example: Post 123 saved successfully.
+                  data:
+                    type: object
+                    description: Details of the saved post
+  /api/v1/posts/{post_id}/unsavePost:
+    post:
+      summary: Unsave a post for the authenticated user
+      security:
+        - cookieAuth: [ ]
+      parameters:
+        - name: post_id
+          in: path
+          required: true
+          schema:
+            type: string
+          description: ID of the post to unsave
+      responses:
+        '200':
+          description: Post unsaved successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  code:
+                    type: string
+                    example: UNSAVED_SUCCESSFULLY
+                  message:
+                    type: string
+                    example: Post 123 unsaved successfully.
+                  data:
+                    type: object
+                    description: Details of the unsaved post
 components:
   securitySchemes:
     cookieAuth:
@@ -145,7 +336,7 @@ components:
   schemas:
     RegisterDto:
       type: object
-      required: [email, username, password]
+      required: [ email, username, password ]
       properties:
         email:
           type: string
@@ -165,7 +356,7 @@ components:
 
     LoginDto:
       type: object
-      required: [username, password]
+      required: [ username, password ]
       properties:
         username:
           type: string
