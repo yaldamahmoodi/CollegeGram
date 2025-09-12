@@ -40,7 +40,7 @@ export class Initiator {
 
     public setupControllers(): void {
         this.authController = new AuthController(this.authService);
-        this.userController = new UserController(this.userService);
+        this.userController = new UserController(this.userService, this.postService);
         this.postController = new PostController(this.postService);
     }
 

@@ -81,5 +81,5 @@ export const updateProfileUserSchema = z.object({
 
 
 export type insertUserZodSchema = z.infer<typeof insertUserSchema>;
-export type selectUserZodSchema = z.infer<typeof selectUserSchema>;
-export type updateProfileUserSchema = z.infer<typeof updateProfileUserSchema>;
+// export type selectUserZodSchema = z.infer<typeof selectUserSchema>;
+// export type updateProfileUserSchema = z.infer<typeof updateProfileUserSchema>;

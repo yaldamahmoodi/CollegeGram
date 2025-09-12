@@ -7,18 +7,24 @@ import {ValidationError} from "../utils/errors/validation.errors.ts";
 import {APIError} from "../utils/errors/api.errors.ts";
 import {type userParamSchema} from "../utils/types.ts";
 import {extractHashtags} from "../helpers/hashtag.extractor.ts";
+import type {PostService} from "../services/post.service.ts";
 
 
 export class UserController {
 
     private readonly userService: UserService;
+    private readonly postService: PostService;
 
-    constructor(userService: UserService) {
+
+    constructor(userService: UserService, postService: PostService) {
         this.userService = userService;
+        this.postService = postService;
+
         this.uploadProfile = this.uploadProfile.bind(this);
         this.createPost = this.createPost.bind(this);
         this.getUserDetails = this.getUserDetails.bind(this);
         this.updateProfile = this.updateProfile.bind(this);
+        this.getPosts = this.getPosts.bind(this);
     }
 
 
@@ -41,7 +47,7 @@ export class UserController {
         }
     }
 
-    async getUserDetails(req: Authenticate & Request<{},{},{},userParamSchema>, res: Response, next: NextFunction) {
+    async getUserDetails(req: Authenticate & Request<{}, {}, {}, userParamSchema>, res: Response, next: NextFunction) {
 
         let userId = req.query.id;
         if (!userId) {
@@ -69,6 +75,7 @@ export class UserController {
         }
     }
 
+    // TODO: bug dare inja
     async createPost(req: Authenticate, res: Response, next: NextFunction) {
         if (!req.user) return next(new UnauthorizedError("UNAUTHORIZED"))
 
@@ -76,22 +83,16 @@ export class UserController {
             return next(new ValidationError("NO_FILES_UPLOADED"));
         }
         try {
+
             const files = req.files as Express.Multer.File[];
             const caption = req.body.caption;
-
             const filePaths: string[] = files.map(file => file.path);
-
-            // inja chera tuye body baraye sakhtan post like_count o save_count mikhay?
-            const like_count = Number(req.body.like_count) || 0;
-            const save_count = Number(req.body.save_count) || 0;
-            const mentions =  req.body.mentions
+            const mentions = Array.isArray(req.body.mentions) ? req.body.mentions : [];
             const hashtag_array: string[] = extractHashtags(req.body.caption);
             const postData: InsertPostDto = {
                 user_id: req.user.id,
                 urls: filePaths,
                 caption,
-                like_count,
-                save_count,
                 mentions,
                 hashtag_array
             }
@@ -122,15 +123,16 @@ export class UserController {
 
     }
 
-    getPosts = async (req: Authenticate, res: Response, next: NextFunction) => {
+    async getPosts(req: Authenticate, res: Response, next: NextFunction) {
         try {
             const posts = await this.userService.getUserPosts(req.user.id);
-            return res.status(200).json({code: 'GET_POST_SUCCESSFULLY', data: posts})
-
+            return res.status(200).json({
+                code: 'GET_POST_SUCCESSFULLY',
+                data: posts
+            });
         } catch (error: unknown) {
-            if (error instanceof APIError) return next(error)
+            if (error instanceof APIError) return next(error);
         }
-
     }
 
     async followUser(req: Authenticate, res: Response, next: NextFunction) {
@@ -150,7 +152,7 @@ export class UserController {
         } catch (error: unknown) {
             if (error instanceof APIError) return next(error)
         }
-    } 
+    }
 
     async unfollowUser(req: Authenticate, res: Response, next: NextFunction) {
 
@@ -169,6 +171,23 @@ export class UserController {
         } catch (error: unknown) {
             if (error instanceof APIError) return next(error)
         }
-        
+
+    }
+
+    async getUserSavesList(req: Authenticate, res: Response, next: NextFunction) {
+        const page = Number(req.query.page) || 1;
+        const pageSize = Number(req.query.pageSize) || 10;
+        const userId: string = req.user.id;
+
+        try {
+            const savedPosts = await this.postService.getSavePosts(userId, page, pageSize);
+
+            return res.status(200).json({
+                code: "SUCCESS",
+                data: savedPosts,
+            })
+        } catch (error) {
+            if (error instanceof APIError) return next(error)
+        }
     }
 }

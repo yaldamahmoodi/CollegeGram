@@ -59,4 +59,12 @@ export class PostService {
         await this.postRepository.updatePostSaveCount(postId, -1)
         return this.saveRepository.unsavePost(userId, postId);
     }
+
+    async getSavePosts(userId: string, page: number, pageSize: number) {
+        const savePosts = await this.saveRepository.getSavesListByUserId(userId, page, pageSize);
+        if (savePosts.data.length === 0) {
+            throw new NotFoundError("SAVE_NOT_FOUND");
+        }
+        return savePosts;
+    }
 }
