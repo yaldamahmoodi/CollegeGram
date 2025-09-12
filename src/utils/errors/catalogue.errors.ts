@@ -22,6 +22,7 @@ export const CatalogueErrors = {
     YOU_CANNOT_FOLLOW_YOURSELF: {code: "YOU_CANNOT_FOLLOW_YOURSELF", message: "YOU_CANNOT_FOLLOW_YOURSELF"},
     YOU_CANNOT_UNFOLLOW_YOURSELF: {code: "YOU_CANNOT_UNFOLLOW_YOURSELF", message: "YOU_CANNOT_UNFOLLOW_YOURSELF"},
     SAVE_NOT_FOUND: {code: "SAVE_NOT_FOUND", message: "SAVE_NOT_FOUND"},
+    NO_DATA_PROVIDED:{code: "NO_DATA_PROVIDED", message: "No data provided  for update"},
 } as const;
 
 export type ErrorCode = keyof typeof CatalogueErrors;

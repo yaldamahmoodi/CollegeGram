@@ -4,6 +4,7 @@ import type {FollowUnfollowRepository} from "../repositories/followUnfollow.repo
 import bcrypt from 'bcrypt';
 import type {updateProfileUserSchema} from "../db/models/user.model.ts";
 import {NotFoundError} from "../utils/errors/notFound.errors.ts";
+import {BadRequestErrors} from "../utils/errors/badRequest.errors.ts";
 
 export class UserService {
 
@@ -35,12 +36,14 @@ export class UserService {
         return userDetails;
     }
 
-    // async updateProfile(userName: string, userData: updateProfileUserSchema) {
-    //     if (userData.password) {
-    //         userData.password = await bcrypt.hash(userData.password, 10);
-    //     }
-    //     return await this.userRepository.updateUser(userName, userData);
-    // }
+    async updateProfile(userId: string, userData: updateProfileUserSchema) {
+
+        if (userData.password) {
+            userData.password = await bcrypt.hash(userData.password, 10);
+        }
+
+        return await this.userRepository.updateUser(userId, userData);
+    }
 
     async followUser(userId: string, followedUserId: string) {
         return await this.followUnfollowRepository.followUser(userId, followedUserId);

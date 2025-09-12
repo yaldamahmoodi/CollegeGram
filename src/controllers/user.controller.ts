@@ -8,6 +8,7 @@ import {type userParamSchema} from "../utils/types.ts";
 import {extractHashtags} from "../helpers/hashtag.extractor.ts";
 import type {PostService} from "../services/post.service.ts";
 import type {InsertPostDto} from "../db/models/post.model.ts";
+import type {updateProfileUserSchema} from "../db/models/user.model.ts";
 
 
 export class UserController {
@@ -23,7 +24,7 @@ export class UserController {
         this.uploadProfile = this.uploadProfile.bind(this);
         this.createPost = this.createPost.bind(this);
         this.getUserDetails = this.getUserDetails.bind(this);
-        // this.updateProfile = this.updateProfile.bind(this);
+        this.updateProfile = this.updateProfile.bind(this);
         this.followUser = this.followUser.bind(this);
         this.unfollowUser = this.unfollowUser.bind(this);
 
@@ -112,20 +113,28 @@ export class UserController {
         }
     }
 
-    // async updateProfile(req: Authenticate, res: Response, next: NextFunction) {
-    //
-    //     try {
-    //         await this.userService.updateProfile(req.user.username, req.body);
-    //         return res.status(201).json({
-    //             success: true,
-    //             message: "User successfully Updated"
-    //         });
-    //
-    //     } catch (error: unknown) {
-    //         if (error instanceof APIError) return next(error)
-    //     }
-    //
-    // }
+    async updateProfile(req: Authenticate<{}, {}, updateProfileUserSchema>, res: Response, next: NextFunction) {
+
+        try {
+            const updatedUser = await this.userService.updateProfile(req.user.id, req.body);
+            return res.status(200).json({
+                code: "USER_UPDATED_SUCCESS",
+                message: "User successfully Updated",
+                data: {
+                    userId: req.user.id,
+                    username: updatedUser.username,
+                    firstname:updatedUser.firstname,
+                    lastname : updatedUser.lastname,
+                    email:updatedUser.email,
+                    biography:updatedUser.biography
+                }
+            });
+
+        } catch (error: unknown) {
+            if (error instanceof APIError) return next(error)
+        }
+
+    }
 
 
     async followUser(req: Authenticate, res: Response, next: NextFunction) {
