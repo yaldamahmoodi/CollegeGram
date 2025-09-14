@@ -48,6 +48,11 @@ router.post(
     userController.unfollowUser
 );
 
+router.get(
+    '/savesList',
+    userController.getUserSavesList
+)
+
 router.use(errorHandler);
 
 export default router;
