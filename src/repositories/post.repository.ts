@@ -44,9 +44,10 @@ export class PostRepository {
     }
 
     async updatePostSaveCount(postId: string, count: number) {
-        return await postModel.findOneAndUpdate(
-            {post_id: postId},
-            {$inc: {count: count}}
+        return postModel.findOneAndUpdate(
+            { _id: postId },
+            { $inc: { save_count: count } },
+            { new: true }
         )
     }
 
