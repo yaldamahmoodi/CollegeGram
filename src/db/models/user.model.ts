@@ -14,9 +14,9 @@ export interface IUser {
         path: string;
         user_id: Types.ObjectId;
     };
-    follower_count: number;
-    following_count: number;
-    post_count: number;
+    follower_count?: number;
+    following_count?: number;
+    post_count?: number;
     createdAt: Date;
     updatedAt: Date;
 }
@@ -25,7 +25,7 @@ const UserSchema: Schema<IUser> = new Schema(
     {
         email: {type: String, required: true, unique: true, maxlength: 255},
         username: {type: String, required: true, unique: true, minlength: 5, maxlength: 20, match: /^[a-zA-Z0-9_-]{5,}$/, trim: true},
-        password: {type: String, required: true, maxlength: 20},
+        password: {type: String, required: true},
         firstname: {type: String, maxlength: 255, default: null},
         lastname: {type: String, maxlength: 255, default: null},
         biography: {type: String, maxlength: 1500, default: null},
@@ -55,7 +55,7 @@ export const UserModel: Model<IUser> = mongoose.model<IUser>('User', UserSchema)
 export const insertUserSchema = z.object({
     email: z.email().max(255),
     username: z.string().min(5).max(20).regex(/^[a-zA-Z0-9_-]{5,}/),
-    password: z.string().regex(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[\W_]).{8,}$/).max(20),
+    password: z.string().regex(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[\W_]).{8,}$/),
     firstname: z.string().max(255).nullable().optional(),
     lastname: z.string().max(255).nullable().optional(),
     biography: z.string().max(1500).nullable().optional(),
@@ -79,7 +79,7 @@ export const selectUserSchema = z.object({
 
 export const updateProfileUserSchema = z.object({
     email: z.email().max(255).optional(),
-    password: z.string().regex(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[\W_]).{8,}$/).max(20).optional(),
+    password: z.string().regex(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[\W_]).{8,}$/).optional(),
     firstname: z.string().max(255).nullable().optional(),
     lastname: z.string().max(255).nullable().optional(),
     biography: z.string().max(1500).nullable().optional(),

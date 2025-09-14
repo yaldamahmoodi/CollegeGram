@@ -5,6 +5,7 @@ import {AlreadyDoneError} from "../utils/errors/alreadyDone.errors.ts";
 import {BadRequestErrors} from "../utils/errors/badRequest.errors.ts";
 import {type InsertPostDto} from "../db/models/post.model.ts";
 import {ValidationError} from "../utils/errors/validation.errors.ts";
+import {InternalErrors} from "../utils/errors/internal.errors.ts";
 
 export class PostService {
 
@@ -54,8 +55,8 @@ export class PostService {
     }
 
     async likePost(userId: string, postId: string) {
-        await this.getPost(postId)
-        await this.postRepository.likePost(userId, postId)
+          await this.getPost(postId)
+          await this.postRepository.likePost(userId, postId)
     }
 
     async unLikePost(userId: string, postId: string) {
@@ -63,18 +64,22 @@ export class PostService {
         await this.postRepository.unLikePost(userId, postId)
     }
 
-    //: Promise<Post | null>
     async savePost(userId: string, postId: string) {
-        const postExistence = await this.postRepository.getPostById(postId)
-        if (!postExistence) {
-            throw new NotFoundError("NOT_FOUND");
+        const postExistence = await this.postRepository.getPostById(postId);
+        if (!postExistence) throw new NotFoundError("NOT_FOUND");
+
+        const save = await this.saveRepository.savePost(postId, userId);
+        if (save.acknowledged == false) throw new InternalErrors("INTERNAL_SERVER_ERROR");
+
+        if (save.upsertedCount > 0) {
+            await this.postRepository.updatePostSaveCount(postId, 1);
         }
-        const existingSave = await this.saveRepository.findSave(postId, userId);
-        if (existingSave) {
-            throw new AlreadyDoneError('ALREADY_SAVED')
+
+        if(save.upsertedCount == 0){
+            throw new AlreadyDoneError("ALREADY_SAVED");
         }
-        await this.postRepository.updatePostSaveCount(postId, 1)
-        return this.saveRepository.savePost(postId, userId);
+
+        return save;
     }
 
     async unsavePost(userId: string, postId: string) {
@@ -84,7 +89,7 @@ export class PostService {
         }
         const existingSave = await this.saveRepository.findSave(postId, userId);
         if (!existingSave) {
-            throw new BadRequestErrors("NOT_SAVED");
+            throw new BadRequestErrors("NOT_SAVED",'Post already not saved');
         }
         await this.postRepository.updatePostSaveCount(postId, -1)
         return this.saveRepository.unsavePost(userId, postId);

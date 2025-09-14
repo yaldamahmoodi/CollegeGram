@@ -22,9 +22,6 @@ const swaggerDocument = YAML.load(path.join(__dirname, "../docs", "swagger.yaml"
 app.use("/api/docs", swaggerUi.serve, swaggerUi.setup(swaggerDocument));
 
 
-
-
-
 /* ---- GLOBAL MIDDLE WARES ---- */
 app.use(express.json());
 app.use(helmet());
@@ -32,15 +29,19 @@ app.use(cookieParser(env.COOKIE_SECRET));
 
 const allowedOrigins = env.CORS_ORIGIN.split(",");
 app.use(cors({
-    origin: function(origin, callback) {
+    origin: function (origin, callback) {
+        // allow requests with no origin (like mobile apps or curl requests)
         if (!origin) return callback(null, true);
-        if (allowedOrigins.includes(origin)) {
+
+        if (allowedOrigins.indexOf(origin) !== -1) {
             callback(null, true);
         } else {
             callback(new Error('Not allowed by CORS'));
         }
     },
     credentials: true,
+    methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS', 'PATCH'],
+    allowedHeaders: ['Content-Type', 'Authorization']
 }));
 
 app.use(morgan("combined"))
