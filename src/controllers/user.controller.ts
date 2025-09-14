@@ -27,6 +27,7 @@ export class UserController {
         this.updateProfile = this.updateProfile.bind(this);
         this.followUser = this.followUser.bind(this);
         this.unfollowUser = this.unfollowUser.bind(this);
+        this.getUserSavesList = this.getUserSavesList.bind(this);
 
     }
 
@@ -123,10 +124,10 @@ export class UserController {
                 data: {
                     userId: req.user.id,
                     username: updatedUser.username,
-                    firstname:updatedUser.firstname,
-                    lastname : updatedUser.lastname,
-                    email:updatedUser.email,
-                    biography:updatedUser.biography
+                    firstname: updatedUser.firstname,
+                    lastname: updatedUser.lastname,
+                    email: updatedUser.email,
+                    biography: updatedUser.biography
                 }
             });
 
@@ -184,9 +185,24 @@ export class UserController {
         try {
             const savedPosts = await this.postService.getSavePosts(userId, page, pageSize);
 
+            const transformedData = savedPosts.data.map(item => {
+                return {
+                    _id: item._id,
+                    postOwner: item.postOwner.username,
+                    createdAt: item.createdAt,
+                    updatedAt: item.updatedAt,
+                    firstUrl: item.post.urls[0] || null,
+                    like_count: item.post.like_count,
+                    save_count: item.post.save_count,
+                    mentions: item.post.mentions,
+                    hashtag_array: item.post.hashtag_array,
+                    photo_length: item.post.photo_length,
+                };
+            });
             return res.status(200).json({
-                code: "SUCCESS",
-                data: savedPosts,
+                code: "GET_SAVED_POSTS_SUCCESS",
+                totalCount: savedPosts.metadata.totalCount,
+                savedPosts: transformedData,
             })
         } catch (error) {
             if (error instanceof APIError) return next(error)
