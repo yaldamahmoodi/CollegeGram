@@ -104,7 +104,7 @@ export class PostController {
 
     })
 
-    unLikePost = asyncHandler(async (req: Authenticate<string>, res: Response) => {
+    unLikePost = asyncHandler(async (req: Authenticate, res: Response) => {
         await this.postService.unLikePost(req.user.id, req.params['post_id'])
         return res.status(200).json({
             code: "UNLIKED_SUCCESSFULY",

@@ -52,6 +52,7 @@ export class PostRepository {
 
     async likePost(userId: string, postId: string) {
       try{
+
             const like = await LikeModel.updateOne(
                 {post_id: postId, user_id: userId},
                 {$setOnInsert: {post_id: postId, user_id: userId, createdAt: new Date()}},
@@ -59,9 +60,10 @@ export class PostRepository {
             );
 
             if (like.upsertedCount > 0) {
+                console.log("upserted")
                 await postModel.updateOne(
                     {_id: postId},
-                    {$inc: {likeCount: 1}},
+                    {$inc: {like_count: 1}},
                 );
             }
 
@@ -71,7 +73,6 @@ export class PostRepository {
         }
     }
 
-
     async unLikePost(userId: string, postId: string) {
         try {
             const result = await LikeModel.deleteOne(
@@ -80,10 +81,9 @@ export class PostRepository {
             if (result.deletedCount > 0) {
                 await postModel.updateOne(
                     {_id: postId},
-                    {$inc: {likeCount: -1}},
+                    {$inc: {like_count: -1}}
                 );
             }
-
         } catch (err) {
             throw new InternalErrors(
                 "INTERNAL_SERVER_ERROR",

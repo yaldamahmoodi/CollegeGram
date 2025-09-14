@@ -22,6 +22,7 @@ export const bodyParser =
         }
     }
 
+
 export const paramParser =
     <T extends ZodSchema>(schema: T) =>
         (
@@ -30,7 +31,9 @@ export const paramParser =
             next: NextFunction
         ) => {
             try {
-                req.params = schema.parse(req.params)
+
+                req.params = schema.parse(req.params);
+
                 next()
             } catch (err) {
                 if (err instanceof ZodError) {
