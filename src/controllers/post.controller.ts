@@ -96,10 +96,10 @@ export class PostController {
     });
 
     likePost = asyncHandler(async (req: Authenticate<string>, res: Response) => {
-        await this.postService.likePost(req.user.id, req.params['post_id'])
+        await this.postService.likePost(req.user.id, req.body.postId)
         return res.status(200).json({
             code: "LIKED_SUCCESSFULY",
-            message: `post ${req.params['post_id']}liked successfully.`, data: []
+            message: `post ${req.body.postId} liked successfully.`, data: []
         })
 
     })

@@ -24,8 +24,7 @@ router.get(
 )
 
 router.post(
-    "/:post_id/Like",
-    paramParser(postIdSchema),
+    "/Like",
     postController.likePost
 )
 router.post(
