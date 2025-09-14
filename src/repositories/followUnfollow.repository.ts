@@ -34,11 +34,12 @@ export class FollowUnfollowRepository {
                 following_id: followedUserId
             });
             if (dll.deletedCount > 0) {
-            }
+
             await UserModel.updateOne(
                 {_id: userId},
                 {$inc: {following_count: -1}},
             );
+            }
         } catch (err: unknown) {
             throw new ValidationError("INTERNAL_SERVER_ERROR");
         }
