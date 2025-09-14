@@ -6,6 +6,7 @@ import Profile from "@pages/Profile";
 import Register from "@pages/Register";
 import NotFound from "@pages/NotFound";
 import ProtectedRoute from "./ProtectedRoute";
+import TagPage from "@pages/TagPage.tsx";
 import { ROUTES } from "./routes";
 
 export default function AppRoutes() {
@@ -16,12 +17,12 @@ export default function AppRoutes() {
         <Route path={ROUTES.REGISTER} element={<Register />} />
         <Route index element={<Navigate to={ROUTES.LOGIN} />} />
       </Route>
-      <Route element={<ProtectedRoute />}>
+      {/* <Route element={<ProtectedRoute />}> */}
         <Route path={ROUTES.DASHBOARD} element={<ProfileLayout />}>
           <Route index element={<Profile />} />
         </Route>
-      </Route>
-
+      {/* </Route> */}
+        <Route path={ROUTES.Tage_Page} element={<TagPage/>}/>
       <Route path={ROUTES.CATCH_ALL} element={<NotFound />} />
     </Routes>
   );

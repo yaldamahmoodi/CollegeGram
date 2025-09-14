@@ -4,4 +4,5 @@ export const ROUTES = {
   DASHBOARD: "/dashboard",
   NOT_FOUND: "/notFound",
   CATCH_ALL: "*",
+  Tage_Page: "/tage",
 } as const;
