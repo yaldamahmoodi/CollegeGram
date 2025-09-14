@@ -3,14 +3,15 @@ import {LikeModel} from "../db/models/like.model.ts";
 import mongoose from "mongoose";
 import {InternalErrors} from "../utils/errors/internal.errors.ts";
 import {UserModel, type IUser} from "../db/models/user.model.ts";
+import {AlreadyDoneError} from "../utils/errors/alreadyDone.errors.ts";
 
 export class PostRepository {
 
     async findUserPosts(userId: string, page: number, pageSize: number) {
-        const totalCount = await postModel.countDocuments({ user_id: userId });
+        const totalCount = await postModel.countDocuments({user_id: userId});
         const data = await postModel
-            .find({ user_id: userId })
-            .sort({ createdAt: -1 })
+            .find({user_id: userId})
+            .sort({createdAt: -1})
             .skip((page - 1) * pageSize)
             .limit(pageSize)
             .lean();
@@ -20,7 +21,6 @@ export class PostRepository {
             data
         };
     }
-
 
 
     async findUserDetails(userId: string): Promise<IUser | null> {
@@ -45,52 +45,50 @@ export class PostRepository {
 
     async updatePostSaveCount(postId: string, count: number) {
         return postModel.findOneAndUpdate(
-            { _id: postId },
-            { $inc: { save_count: count } },
-            { new: true }
+            {_id: postId},
+            {$inc: {save_count: count}},
+            {new: true}
         )
     }
 
     async likePost(userId: string, postId: string) {
-      try{
 
-            const like = await LikeModel.updateOne(
-                {post_id: postId, user_id: userId},
-                {$setOnInsert: {post_id: postId, user_id: userId, createdAt: new Date()}},
-                {upsert: true}
+        const like = await LikeModel.updateOne(
+            {post_id: postId, user_id: userId},
+            {$setOnInsert: {post_id: postId, user_id: userId, createdAt: new Date()}},
+            {upsert: true}
+        );
+
+        if (like.upsertedCount > 0) {
+            await postModel.updateOne(
+                {_id: postId},
+                {$inc: {like_count: 1}},
             );
-
-            if (like.upsertedCount > 0) {
-                console.log("upserted")
-                await postModel.updateOne(
-                    {_id: postId},
-                    {$inc: {like_count: 1}},
-                );
-            }
-
-
-        } catch (err) {
-            throw new InternalErrors("INTERNAL_SERVER_ERROR", "error liking post");
         }
+
+        if (like.upsertedCount == 0) {
+            throw new AlreadyDoneError('ALREADY_DONE', 'post liked before')
+        }
+
+        return like;
     }
 
     async unLikePost(userId: string, postId: string) {
-        try {
-            const result = await LikeModel.deleteOne(
-                {post_id: postId, user_id: userId},
-            );
-            if (result.deletedCount > 0) {
-                await postModel.updateOne(
-                    {_id: postId},
-                    {$inc: {like_count: -1}}
-                );
-            }
-        } catch (err) {
-            throw new InternalErrors(
-                "INTERNAL_SERVER_ERROR",
-                "error in unliking post"
+
+        const result = await LikeModel.deleteOne(
+            {post_id: postId, user_id: userId},
+        );
+        if (result.deletedCount > 0) {
+            await postModel.updateOne(
+                {_id: postId},
+                {$inc: {like_count: -1}}
             );
         }
+        if (result.deletedCount == 0) {
+            throw new AlreadyDoneError('ALREADY_DONE', 'post unliked before')
+        }
+
+        return result;
     }
 
 }

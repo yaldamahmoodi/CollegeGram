@@ -76,7 +76,7 @@ export class PostService {
         }
 
         if(save.upsertedCount == 0){
-            throw new AlreadyDoneError("ALREADY_SAVED");
+            throw new AlreadyDoneError("ALREADY_SAVED",'post already saved');
         }
 
         return save;

@@ -114,7 +114,7 @@ export class PostController {
         await this.postService.likePost(req.user.id, req.body.postId)
         return res.status(200).json({
             code: "LIKED_SUCCESSFULY",
-            message: `post ${req.body.postId} liked successfully.`, data: []
+            message: `post ${req.body.postId} liked successfully.`
         })
 
     })
@@ -123,7 +123,7 @@ export class PostController {
         await this.postService.unLikePost(req.user.id, req.params['post_id'])
         return res.status(200).json({
             code: "UNLIKED_SUCCESSFULY",
-            message: `post ${req.params['post_id']}unliked successfully.`, data: []
+            message: `post ${req.params['post_id']}unliked successfully.`
         })
     })
 

@@ -146,8 +146,8 @@ export class UserController {
         try {
 
             await this.userService.followUser(req.user.id, followedUserId);
-            return res.status(201).json({
-                success: true,
+            return res.status(200).json({
+                code: "USER_FOLLOWED",
                 message: "User successfully Followed"
             });
 
@@ -165,8 +165,8 @@ export class UserController {
         try {
 
             await this.userService.unfollowUser(req.user.id, unfollowedUserId);
-            return res.status(201).json({
-                success: true,
+            return res.status(200).json({
+                code: "USER_UNFOLLOWED",
                 message: "User successfully Unfollowed"
             });
 
