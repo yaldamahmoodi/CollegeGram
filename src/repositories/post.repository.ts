@@ -51,57 +51,43 @@ export class PostRepository {
     }
 
     async likePost(userId: string, postId: string) {
-        const session = await mongoose.startSession();
-        session.startTransaction();
-        try {
+      try{
             const like = await LikeModel.updateOne(
                 {post_id: postId, user_id: userId},
                 {$setOnInsert: {post_id: postId, user_id: userId, createdAt: new Date()}},
-                {upsert: true, session}
+                {upsert: true}
             );
 
             if (like.upsertedCount > 0) {
                 await postModel.updateOne(
                     {_id: postId},
                     {$inc: {likeCount: 1}},
-                    {session}
                 );
             }
 
-            await session.commitTransaction();
-            await session.endSession();
+
         } catch (err) {
-            await session.abortTransaction();
-            await session.endSession();
-            throw new InternalErrors("INTERNAL_SERVER_ERROR", "transaction error in liking post");
+            throw new InternalErrors("INTERNAL_SERVER_ERROR", "error liking post");
         }
     }
 
 
     async unLikePost(userId: string, postId: string) {
-        const session = await mongoose.startSession();
-        session.startTransaction();
         try {
             const result = await LikeModel.deleteOne(
                 {post_id: postId, user_id: userId},
-                {session}
             );
             if (result.deletedCount > 0) {
                 await postModel.updateOne(
                     {_id: postId},
                     {$inc: {likeCount: -1}},
-                    {session}
                 );
             }
 
-            await session.commitTransaction();
-            await session.endSession();
         } catch (err) {
-            await session.abortTransaction();
-            await session.endSession();
             throw new InternalErrors(
                 "INTERNAL_SERVER_ERROR",
-                "transaction error in unliking post"
+                "error in unliking post"
             );
         }
     }
