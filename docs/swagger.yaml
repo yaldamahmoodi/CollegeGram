@@ -508,7 +508,9 @@ paths:
   /api/v1/posts/like:
     post:
       summary: Like a post
-      description: Like a specific post by its ID.
+      description: Add a like to a specific post for the authenticated user.
+      tags:
+        - Posts
       security:
         - cookieAuth: [ ]
       requestBody:
@@ -522,6 +524,7 @@ paths:
               properties:
                 postId:
                   type: string
+                  description: The ID of the post to like
                   example: 68c416ecf90cd074f701a4f4
       responses:
         '200':
@@ -537,9 +540,6 @@ paths:
                   message:
                     type: string
                     example: post 68c416ecf90cd074f701a4f4 liked successfully.
-                  data:
-                    type: array
-                    example: [ ]
         '404':
           description: Post not found
           content:
@@ -553,16 +553,44 @@ paths:
                   message:
                     type: string
                     example: Post with given ID does not exist
+        '409':
+          description: Post already liked
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  code:
+                    type: string
+                    example: ALREADY_DONE
+                  details:
+                    type: string
+                    example: post liked before
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  code:
+                    type: string
+                    example: INTERNAL_SERVER_ERROR
+                  message:
+                    type: string
+                    example: Something went wrong while liking the post.
 
   /api/v1/posts/{post_id}/unLike:
     post:
       summary: Unlike a post
-      description: Remove a like from a specific post by its ID.
+      description: Remove a like from a specific post for the authenticated user by its ID.
+      tags:
+        - Posts
       security:
         - cookieAuth: [ ]
       parameters:
-        - in: path
-          name: post_id
+        - name: post_id
+          in: path
           required: true
           schema:
             type: string
@@ -582,9 +610,6 @@ paths:
                   message:
                     type: string
                     example: post 68c416ecf90cd074f701a4f4 unliked successfully.
-                  data:
-                    type: array
-                    example: [ ]
         '404':
           description: Post not found
           content:
@@ -598,10 +623,39 @@ paths:
                   message:
                     type: string
                     example: Post with given ID does not exist
+        '409':
+          description: Post already unliked
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  code:
+                    type: string
+                    example: ALREADY_DONE
+                  details:
+                    type: string
+                    example: post unliked before
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  code:
+                    type: string
+                    example: INTERNAL_SERVER_ERROR
+                  message:
+                    type: string
+                    example: Something went wrong while unliking the post.
+
   /api/v1/posts/save:
     post:
       summary: Save a post
       description: Save a specific post by its ID for the authenticated user.
+      tags:
+        - Posts
       security:
         - cookieAuth: [ ]
       requestBody:
@@ -644,6 +698,19 @@ paths:
                   message:
                     type: string
                     example: Post with given ID does not exist
+        '409':
+          description: Post already saved
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  code:
+                    type: string
+                    example: ALREADY_SAVED
+                  details:
+                    type: string
+                    example: post already saved
         '500':
           description: Internal server error
           content:
@@ -657,10 +724,13 @@ paths:
                   message:
                     type: string
                     example: Something went wrong while saving the post.
+
   /api/v1/posts/unsave:
     post:
       summary: Unsave a post
       description: Remove a saved post for the authenticated user by its ID.
+      tags:
+        - Posts
       security:
         - cookieAuth: [ ]
       requestBody:
@@ -703,6 +773,19 @@ paths:
                   message:
                     type: string
                     example: Post with given ID does not exist
+        '409':
+          description: Post already unsaved
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  code:
+                    type: string
+                    example: ALREADY_DONE
+                  details:
+                    type: string
+                    example: post already unsaved
         '500':
           description: Internal server error
           content:
@@ -716,6 +799,156 @@ paths:
                   message:
                     type: string
                     example: Something went wrong while unsaving the post.
+
+  /api/v1/users/follow:
+    post:
+      summary: Follow a user
+      description: Follow another user by their user ID.
+      tags:
+        - Users
+      security:
+        - cookieAuth: [ ]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - followedUserId
+              properties:
+                followedUserId:
+                  type: string
+                  description: The ID of the user to follow
+                  example: 68c6cbfd5bc774e86bdf4eb2
+      responses:
+        '200':
+          description: User followed successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  code:
+                    type: string
+                    example: USER_FOLLOWED
+                  message:
+                    type: string
+                    example: User successfully Followed
+        '400':
+          description: Invalid follow request (e.g., trying to follow yourself)
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  code:
+                    type: string
+                    example: YOU_CANNOT_FOLLOW_YOURSELF
+                  message:
+                    type: string
+                    example: You cannot follow yourself
+        '404':
+          description: Target user not found
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  code:
+                    type: string
+                    example: NOT_FOUND_USER
+                  message:
+                    type: string
+                    example: User with given ID does not exist
+        '409':
+          description: User already followed
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  code:
+                    type: string
+                    example: ALREADY_DONE
+                  details:
+                    type: string
+                    example: user followed before
+
+  /api/v1/users/unfollow:
+    post:
+      summary: Unfollow a user
+      description: Unfollow another user by their user ID.
+      tags:
+        - Users
+      security:
+        - cookieAuth: [ ]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - unfollowedUserId
+              properties:
+                unfollowedUserId:
+                  type: string
+                  description: The ID of the user to unfollow
+                  example: 68c6cbfd5bc774e86bdf4eb2
+      responses:
+        '200':
+          description: User unfollowed successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  code:
+                    type: string
+                    example: USER_UNFOLLOWED
+                  message:
+                    type: string
+                    example: User successfully Unfollowed
+        '400':
+          description: Invalid unfollow request (e.g., trying to unfollow yourself)
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  code:
+                    type: string
+                    example: YOU_CANNOT_UNFOLLOW_YOURSELF
+                  message:
+                    type: string
+                    example: You cannot unfollow yourself
+        '404':
+          description: Target user not found
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  code:
+                    type: string
+                    example: NOT_FOUND_USER
+                  message:
+                    type: string
+                    example: User with given ID does not exist
+        '409':
+          description: User already unfollowed
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  code:
+                    type: string
+                    example: ALREADY_DONE
+                  details:
+                    type: string
+                    example: user unfollowed before
 
 components:
   securitySchemes:
