@@ -2,93 +2,45 @@ import {FollowingModel} from "../db/models/following.model.ts"
 import {FollowerModel} from "../db/models/follower.model.ts";
 import type {ClientSession} from "mongoose";
 import mongoose from "mongoose";
-import { ValidationError } from "../utils/errors/validation.errors.ts";
-import { UserModel } from "../db/models/user.model.ts";
+import {ValidationError} from "../utils/errors/validation.errors.ts";
+import {UserModel} from "../db/models/user.model.ts";
 
 export class FollowUnfollowRepository {
 
 
     async followUser(userId: string, followedUserId: string) {
-
-        const session: ClientSession = await mongoose.startSession();
-        session.startTransaction();
-
         try {
-            await FollowingModel.create([{
-                user_id: userId,
-                following_id: followedUserId
-            }], { session });
-
-            await UserModel.updateOne(
-                { _id: userId },
-                { $inc: { following_count: 1 } },
-                { session }
-            );
-
-            await FollowerModel.create([{
-                user_id: followedUserId,
-                follower_id: userId
-            }], { session });
-
-            await UserModel.updateOne(
-                { _id: followedUserId },
-                { $inc: { follower_count: 1 } },
-                { session }
-            );
-
-            await session.commitTransaction();
-
+            const fll =
+                await FollowingModel.updateOne(
+                    {user_id: userId, following_id: followedUserId},
+                    {$setOnInsert: {user_id: userId, following_id: followedUserId, createdAt: new Date()}},
+                    {upsert: true}
+                )
+            if (fll.upsertedCount > 0) {
+                await UserModel.updateOne(
+                    {_id: userId},
+                    {$inc: {following_count: 1}},
+                );
+            }
         } catch (err: unknown) {
-            await session.abortTransaction();
-            throw new ValidationError("INTERNAL_SERVER_ERROR");       
-
-        } finally {
-            session.endSession();
+            throw new ValidationError("INTERNAL_SERVER_ERROR");
         }
     }
 
     async unfollowUser(userId: string, followedUserId: string) {
-
-        const session: ClientSession = await mongoose.startSession();
-        session.startTransaction();
-
         try {
-            await FollowingModel.deleteOne([{
+            const dll = await FollowingModel.deleteOne({
                 user_id: userId,
                 following_id: followedUserId
-            }], { session });
-
+            });
+            if (dll.deletedCount > 0) {
+            }
             await UserModel.updateOne(
-                { _id: userId },
-                { $inc: { following_count: -1 } },
-                { session }
+                {_id: userId},
+                {$inc: {following_count: -1}},
             );
-
-            await FollowerModel.deleteOne([{
-                user_id: followedUserId,
-                follower_id: userId
-            }], { session });
-
-            await UserModel.updateOne(
-                { _id: followedUserId },
-                { $inc: { follower_count: -1 } },
-                { session }
-            );
-
-            await session.commitTransaction();
-
         } catch (err: unknown) {
-            await session.abortTransaction();
-            throw new ValidationError("INTERNAL_SERVER_ERROR");       
-
-        } finally {
-            session.endSession();
+            throw new ValidationError("INTERNAL_SERVER_ERROR");
         }
-        
     }
-
-
-
-
-
 }
