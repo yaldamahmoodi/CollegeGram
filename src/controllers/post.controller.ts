@@ -75,12 +75,11 @@ export class PostController {
 
     async savePost(req: Authenticate, res: Response, next: NextFunction) {
         try {
-            const savePostDetails = await this.postService.savePost(req.user.id, req.body.postId);
+             await this.postService.savePost(req.user.id, req.body.postId);
 
             return res.status(200).json({
                 code: "SAVED_SUCCESSFULLY",
                 message: `Post ${req.body.postId} saved successfully.`,
-                data: savePostDetails
             });
         } catch (error) {
             if (error instanceof APIError) return next(error);
@@ -94,12 +93,11 @@ export class PostController {
 
     async unsavePost(req: Authenticate, res: Response, next: NextFunction) {
         try {
-            const unsavePostDetails = await this.postService.unsavePost(req.user.id, req.body.postId);
+             await this.postService.unsavePost(req.user.id, req.body.postId);
 
             return res.status(200).json({
                 code: "UNSAVED_SUCCESSFULLY",
                 message: `Post ${req.body.postId} unsaved successfully.`,
-                data: unsavePostDetails
             });
         } catch (error) {
             if (error instanceof APIError) return next(error);

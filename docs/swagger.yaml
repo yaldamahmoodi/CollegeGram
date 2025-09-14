@@ -505,7 +505,217 @@ paths:
                   code:
                     type: string
                     example: NOT_FOUND_USER
+  /api/v1/posts/like:
+    post:
+      summary: Like a post
+      description: Like a specific post by its ID.
+      security:
+        - cookieAuth: [ ]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - postId
+              properties:
+                postId:
+                  type: string
+                  example: 68c416ecf90cd074f701a4f4
+      responses:
+        '200':
+          description: Post liked successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  code:
+                    type: string
+                    example: LIKED_SUCCESSFULY
+                  message:
+                    type: string
+                    example: post 68c416ecf90cd074f701a4f4 liked successfully.
+                  data:
+                    type: array
+                    example: [ ]
+        '404':
+          description: Post not found
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  code:
+                    type: string
+                    example: NOT_FOUND_POST
+                  message:
+                    type: string
+                    example: Post with given ID does not exist
 
+  /api/v1/posts/{post_id}/unLike:
+    post:
+      summary: Unlike a post
+      description: Remove a like from a specific post by its ID.
+      security:
+        - cookieAuth: [ ]
+      parameters:
+        - in: path
+          name: post_id
+          required: true
+          schema:
+            type: string
+          description: The ID of the post to unlike
+          example: 68c416ecf90cd074f701a4f4
+      responses:
+        '200':
+          description: Post unliked successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  code:
+                    type: string
+                    example: UNLIKED_SUCCESSFULY
+                  message:
+                    type: string
+                    example: post 68c416ecf90cd074f701a4f4 unliked successfully.
+                  data:
+                    type: array
+                    example: [ ]
+        '404':
+          description: Post not found
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  code:
+                    type: string
+                    example: NOT_FOUND_POST
+                  message:
+                    type: string
+                    example: Post with given ID does not exist
+  /api/v1/posts/save:
+    post:
+      summary: Save a post
+      description: Save a specific post by its ID for the authenticated user.
+      security:
+        - cookieAuth: [ ]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - postId
+              properties:
+                postId:
+                  type: string
+                  description: The ID of the post to save
+                  example: 68c416ecf90cd074f701a4f4
+      responses:
+        '200':
+          description: Post saved successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  code:
+                    type: string
+                    example: SAVED_SUCCESSFULLY
+                  message:
+                    type: string
+                    example: Post 68c416ecf90cd074f701a4f4 saved successfully.
+        '404':
+          description: Post not found
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  code:
+                    type: string
+                    example: NOT_FOUND_POST
+                  message:
+                    type: string
+                    example: Post with given ID does not exist
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  code:
+                    type: string
+                    example: INTERNAL_SERVER_ERROR
+                  message:
+                    type: string
+                    example: Something went wrong while saving the post.
+  /api/v1/posts/unsave:
+    post:
+      summary: Unsave a post
+      description: Remove a saved post for the authenticated user by its ID.
+      security:
+        - cookieAuth: [ ]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - postId
+              properties:
+                postId:
+                  type: string
+                  description: The ID of the post to unsave
+                  example: 68c416ecf90cd074f701a4f4
+      responses:
+        '200':
+          description: Post unsaved successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  code:
+                    type: string
+                    example: UNSAVED_SUCCESSFULLY
+                  message:
+                    type: string
+                    example: Post 68c416ecf90cd074f701a4f4 unsaved successfully.
+        '404':
+          description: Post not found
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  code:
+                    type: string
+                    example: NOT_FOUND_POST
+                  message:
+                    type: string
+                    example: Post with given ID does not exist
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  code:
+                    type: string
+                    example: INTERNAL_SERVER_ERROR
+                  message:
+                    type: string
+                    example: Something went wrong while unsaving the post.
 
 components:
   securitySchemes:
