@@ -35,13 +35,11 @@ router.post(
 )
 
 router.post(
-    "/:post_id/savePost",
-    paramParser(postIdSchema),
+    "/savePost",
     postController.savePost
 )
 router.post(
-    "/:post_id/unsavePost",
-    paramParser(postIdSchema),
+    "/unsavePost",
     postController.unsavePost
 )
 
