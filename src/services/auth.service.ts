@@ -17,6 +17,7 @@ export class AuthService {
 
 
     async register(user: insertUserZodSchema) {
+
         const userByEmail = await this.authRepository.findByEmail(user.email);
         const userByUsername = await this.authRepository.findByUsername(user.username);
 
@@ -24,6 +25,7 @@ export class AuthService {
             throw new ValidationError("DUPLICATE_CREDENTIALS");
         }
         const hashedPassword = await bcrypt.hash(user.password, 10);
+        console.log(hashedPassword);
         return await this.authRepository.createUser({
             ...user,
             password: hashedPassword,

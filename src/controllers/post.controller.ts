@@ -113,15 +113,15 @@ export class PostController {
 
 
     likePost = asyncHandler(async (req: Authenticate<string>, res: Response) => {
-        await this.postService.likePost(req.user.id, req.params['post_id'])
+        await this.postService.likePost(req.user.id, req.body.postId)
         return res.status(200).json({
             code: "LIKED_SUCCESSFULY",
-            message: `post ${req.params['post_id']}liked successfully.`, data: []
+            message: `post ${req.body.postId} liked successfully.`, data: []
         })
 
     })
 
-    unLikePost = asyncHandler(async (req: Authenticate<string>, res: Response) => {
+    unLikePost = asyncHandler(async (req: Authenticate, res: Response) => {
         await this.postService.unLikePost(req.user.id, req.params['post_id'])
         return res.status(200).json({
             code: "UNLIKED_SUCCESSFULY",

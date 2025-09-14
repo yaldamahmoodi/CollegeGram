@@ -55,8 +55,8 @@ export class PostService {
     }
 
     async likePost(userId: string, postId: string) {
-        await this.getPost(postId)
-        await this.postRepository.likePost(userId, postId)
+          await this.getPost(postId)
+          await this.postRepository.likePost(userId, postId)
     }
 
     async unLikePost(userId: string, postId: string) {
