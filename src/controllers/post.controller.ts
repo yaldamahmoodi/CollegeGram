@@ -127,5 +127,13 @@ export class PostController {
         })
     })
 
+    explore = asyncHandler(async (req: Authenticate, res: Response) => {
+        const page = Number(req.query.page) || 1;
+        const pageSize = Number(req.query.pageSize) || 10;
+        const userId: string = req.user.id;
+
+
+    })
+
 
 }

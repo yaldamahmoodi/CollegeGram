@@ -44,4 +44,21 @@ export const paramParser =
 
         }
 
+export const queryParser = <T extends ZodSchema>(schema: T) =>
+    (
+        req: Request<{}, {}, {}, z.infer<T>>,
+        res: Response,
+        next: NextFunction
+    ) => {
+        try {
+            req.query = schema.parse(req.query);
+            next()
+        } catch (err) {
+            if (err instanceof ZodError) {
+                return next(new ZodValidationError(err))
+            }
+            next(new InternalErrors())
+        }
+    }
+
 

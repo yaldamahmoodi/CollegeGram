@@ -1,8 +1,8 @@
 import {Router} from "express";
 import {authMiddleware} from "../../middlewares/auth.middleware.ts";
 import {errorHandler} from "../../middlewares/error.middleware.ts";
-import { paramParser} from "../../middlewares/parsers.middleware.ts";
-import {postIdSchema} from "../../dtos/posts.dto.ts";
+import {paramParser, queryParser} from "../../middlewares/parsers.middleware.ts";
+import {exploreSchema, postIdSchema} from "../../dtos/posts.dto.ts";
 import {initiator} from "../../server.ts";
 import {uploadProfilePhotoMiddleware} from "../../middlewares/uploadProfilePhoto.middleware.ts";
 
@@ -41,6 +41,8 @@ router.post(
     "/unsavePost",
     postController.unsavePost
 )
+
+router.post("/explore", queryParser(exploreSchema), postController.explore)
 
 router.use(errorHandler);
 
