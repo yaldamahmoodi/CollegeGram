@@ -1,9 +1,9 @@
 import {type InsertPostDto, type Post, postModel} from "../db/models/post.model.ts";
 import {LikeModel} from "../db/models/like.model.ts";
-import mongoose from "mongoose";
-import {InternalErrors} from "../utils/errors/internal.errors.ts";
+import {Types} from "mongoose";
 import {UserModel, type IUser} from "../db/models/user.model.ts";
 import {AlreadyDoneError} from "../utils/errors/alreadyDone.errors.ts";
+import {FollowingModel} from "../db/models/following.model.ts";
 
 export class PostRepository {
 
@@ -89,6 +89,58 @@ export class PostRepository {
         }
 
         return result;
+    }
+
+    async explore(userId: string, page: number, pageSize: number) {
+        const skip = (page - 1) * pageSize;
+
+        return FollowingModel.aggregate([
+            {
+                $match: {user_id: new Types.ObjectId(userId)},
+            },
+            {
+                $lookup: {
+                    from: "posts",
+                    localField: "following_id",
+                    foreignField: "user_id",
+                    as: "posts",
+                },
+            },
+            {$unwind: "$posts"},
+            {
+                $lookup: {
+                    from: "users",
+                    localField: "following_id",
+                    foreignField: "_id",
+                    as: "user",
+                },
+            },
+            {$unwind: "$user"},
+            {
+                $sort: {"posts.createdAt": -1},
+            },
+            {$skip: skip},
+            {$limit: pageSize},
+            {
+                $project: {
+                    _id: 0,
+                    post_id: "$posts._id",
+                    urls: "$posts.urls",
+                    like_count: "$posts.like_count",
+                    save_count: "$posts.save_count",
+                    comment_count: "$posts.comment_count",
+                    createdAt: "$posts.createdAt",
+
+                    userId: "$user._id",
+                    firstname: "$user.firstname",
+                    lastname: "$user.lastname",
+                    following_count: "$user.following_count",
+                    profilePhotoUrl: "$user.profilePhotoUrl",
+                },
+            },
+        ]);
+
+
     }
 
 }

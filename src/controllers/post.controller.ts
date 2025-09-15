@@ -75,7 +75,7 @@ export class PostController {
 
     async savePost(req: Authenticate, res: Response, next: NextFunction) {
         try {
-             await this.postService.savePost(req.user.id, req.body.postId);
+            await this.postService.savePost(req.user.id, req.body.postId);
 
             return res.status(200).json({
                 code: "SAVED_SUCCESSFULLY",
@@ -93,7 +93,7 @@ export class PostController {
 
     async unsavePost(req: Authenticate, res: Response, next: NextFunction) {
         try {
-             await this.postService.unsavePost(req.user.id, req.body.postId);
+            await this.postService.unsavePost(req.user.id, req.body.postId);
 
             return res.status(200).json({
                 code: "UNSAVED_SUCCESSFULLY",
@@ -128,9 +128,15 @@ export class PostController {
     })
 
     explore = asyncHandler(async (req: Authenticate, res: Response) => {
-        const page = Number(req.query.page) || 1;
-        const pageSize = Number(req.query.pageSize) || 10;
+        const page = req.query.page;
+        const pageSize = req.query.pageSize;
         const userId: string = req.user.id;
+
+        await this.postService.explore(userId, page, pageSize)
+        return res.status(200).json({
+            code: "EXPLORE_SUCCESSFULY",
+            message: `Explore data limited in ${pageSize} and in ${page} for user ${userId} extract successfully.`
+        })
 
 
     })

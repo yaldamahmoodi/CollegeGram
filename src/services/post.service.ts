@@ -55,8 +55,8 @@ export class PostService {
     }
 
     async likePost(userId: string, postId: string) {
-          await this.getPost(postId)
-          await this.postRepository.likePost(userId, postId)
+        await this.getPost(postId)
+        await this.postRepository.likePost(userId, postId)
     }
 
     async unLikePost(userId: string, postId: string) {
@@ -75,8 +75,8 @@ export class PostService {
             await this.postRepository.updatePostSaveCount(postId, 1);
         }
 
-        if(save.upsertedCount == 0){
-            throw new AlreadyDoneError("ALREADY_SAVED",'post already saved');
+        if (save.upsertedCount == 0) {
+            throw new AlreadyDoneError("ALREADY_SAVED", 'post already saved');
         }
 
         return save;
@@ -89,7 +89,7 @@ export class PostService {
         }
         const existingSave = await this.saveRepository.findSave(postId, userId);
         if (!existingSave) {
-            throw new BadRequestErrors("NOT_SAVED",'Post already not saved');
+            throw new BadRequestErrors("NOT_SAVED", 'Post already not saved');
         }
         await this.postRepository.updatePostSaveCount(postId, -1)
         return this.saveRepository.unsavePost(userId, postId);
@@ -101,5 +101,9 @@ export class PostService {
             throw new NotFoundError("SAVE_NOT_FOUND");
         }
         return savePosts;
+    }
+
+    async explore(userId: string, page: number, pageSize: number) {
+        return await this.postRepository.explore(userId, page, pageSize);
     }
 }
