@@ -4,7 +4,7 @@ import type {PostService} from "../services/post.service.ts";
 import {APIError} from "../utils/errors/api.errors.ts";
 import {asyncHandler} from "../utils/asyncHandler.utils.ts";
 import {type userParamSchema, UserParamsSchema} from "../utils/types.ts";
-import type {exploreSchema} from "../dtos/posts.dto.js";
+import type {exploreSchema} from "../dtos/posts.dto.ts";
 
 export class PostController {
 
