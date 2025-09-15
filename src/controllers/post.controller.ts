@@ -4,6 +4,7 @@ import type {PostService} from "../services/post.service.ts";
 import {APIError} from "../utils/errors/api.errors.ts";
 import {asyncHandler} from "../utils/asyncHandler.utils.ts";
 import {type userParamSchema, UserParamsSchema} from "../utils/types.ts";
+import type {exploreSchema} from "../dtos/posts.dto.js";
 
 export class PostController {
 
@@ -127,15 +128,16 @@ export class PostController {
         })
     })
 
-    explore = asyncHandler(async (req: Authenticate, res: Response) => {
+    explore = asyncHandler(async (req: Authenticate<{},{},{},exploreSchema>, res: Response) => {
+
         const page = req.query.page;
         const pageSize = req.query.pageSize;
         const userId: string = req.user.id;
 
-        await this.postService.explore(userId, page, pageSize)
+        const output = await this.postService.explore(userId, page, pageSize)
         return res.status(200).json({
             code: "EXPLORE_SUCCESSFULY",
-            message: `Explore data limited in ${pageSize} and in ${page} for user ${userId} extract successfully.`
+            data: output
         })
 
 

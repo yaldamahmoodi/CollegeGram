@@ -51,7 +51,7 @@ export const queryParser = <T extends ZodSchema>(schema: T) =>
         next: NextFunction
     ) => {
         try {
-            req.query = schema.parse(req.query);
+            schema.parse(req.query);
             next()
         } catch (err) {
             if (err instanceof ZodError) {

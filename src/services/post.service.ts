@@ -105,5 +105,5 @@ export class PostService {
 
     async explore(userId: string, page: number, pageSize: number) {
         return await this.postRepository.explore(userId, page, pageSize);
-    }
+        }
 }

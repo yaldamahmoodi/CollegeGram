@@ -10,7 +10,7 @@ export type postIdSchema = z.infer<typeof postIdSchema>
 export const exploreSchema = z.object({
     page: z.string().transform((value) =>
         Number(value) < 1 ? 1 : Number(value)),
-    limit: z.string().transform((value) =>
+    pageSize: z.string().transform((value) =>
         Number(value) < 10 ? 10 : Number(value)),
 })
 

@@ -140,13 +140,14 @@ export class UserController {
 
     async followUser(req: Authenticate, res: Response, next: NextFunction) {
 
-        const {followedUserId} = req.body;
+        const {followerUserId} = req.body;
+        console.log(followerUserId)
 
-        if (followedUserId === req.user.id) return next(new ValidationError("YOU_CANNOT_FOLLOW_YOURSELF"))
+        if (followerUserId === req.user.id) return next(new ValidationError("YOU_CANNOT_FOLLOW_YOURSELF"))
 
         try {
 
-            await this.userService.followUser(req.user.id, followedUserId);
+            await this.userService.followUser(req.user.id, followerUserId);
             return res.status(200).json({
                 code: "USER_FOLLOWED",
                 message: "User successfully Followed"
@@ -159,13 +160,13 @@ export class UserController {
 
     async unfollowUser(req: Authenticate, res: Response, next: NextFunction) {
 
-        const {unfollowedUserId} = req.body;
+        const {followerUserId} = req.body;
 
-        if (unfollowedUserId === req.user.id) return next(new ValidationError("YOU_CANNOT_UNFOLLOW_YOURSELF"))
+        if (followerUserId === req.user.id) return next(new ValidationError("YOU_CANNOT_UNFOLLOW_YOURSELF"))
 
         try {
 
-            await this.userService.unfollowUser(req.user.id, unfollowedUserId);
+            await this.userService.unfollowUser(req.user.id, followerUserId);
             return res.status(200).json({
                 code: "USER_UNFOLLOWED",
                 message: "User successfully Unfollowed"
