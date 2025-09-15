@@ -42,7 +42,7 @@ router.post(
     postController.unsavePost
 )
 
-router.post("/explore", queryParser(exploreSchema), postController.explore)
+router.get("/explore", queryParser(exploreSchema), postController.explore)
 
 router.use(errorHandler);
 
