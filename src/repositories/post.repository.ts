@@ -96,10 +96,10 @@ export class PostRepository {
         const skip = (page - 1) * pageSize;
 
         return FollowingModel.aggregate([
-            // 1️⃣ Find all users that the logged-in user follows
+
             {$match: {user_id: new Types.ObjectId(userId)}},
 
-            // 2️⃣ Lookup posts for each followed user
+
             {
                 $lookup: {
                     from: "posts",
@@ -109,10 +109,10 @@ export class PostRepository {
                 },
             },
 
-            // 3️⃣ Flatten posts array
+
             {$unwind: {path: "$posts", preserveNullAndEmptyArrays: false}},
 
-            // 4️⃣ Lookup user info for the post author
+
             {
                 $lookup: {
                     from: "users",
@@ -123,14 +123,14 @@ export class PostRepository {
             },
             {$unwind: {path: "$user", preserveNullAndEmptyArrays: false}},
 
-            // 5️⃣ Sort posts by createdAt descending
+
             {$sort: {"posts.createdAt": -1}},
 
-            // 6️⃣ Pagination
+
             {$skip: skip},
             {$limit: Number(pageSize)},
 
-            // 7️⃣ Project required fields
+
             {
                 $project: {
                     _id: 0,
