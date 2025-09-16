@@ -6,6 +6,6 @@ default:
 hello:
   stage: test
   script:
-    - echo "✅ running without profile scripts"
+    - echo "✅ Runner is now working cleanly"
     - whoami
-    - bash --version
+    - echo "Ready to run builds"
