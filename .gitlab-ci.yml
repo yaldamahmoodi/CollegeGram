@@ -4,23 +4,39 @@ stages:
 
 default:
   tags: ["hamgit-shell"]  # use your self-hosted runner
+  variables:
+    DOCKER_HOST: unix:///var/run/docker.sock
 
-variables:
-  DOCKER_HOST: unix:///var/run/docker.sock
-
-# 1. Build images
+# 1. Build Docker images
 build:
   stage: build
   script:
     - echo "🔨 Building Docker images..."
+    # Create .env files for API
+    - mkdir -p apps/api
+    - echo "ACCESS_TOKEN_EXPIRES_IN=$ACCESS_TOKEN_EXPIRES_IN" >> apps/api/.env
+    - echo "ACCESS_TOKEN_SECRET=$ACCESS_TOKEN_SECRET" >> apps/api/.env
+    - echo "APP_STAGE=$APP_STAGE" >> apps/api/.env
+    - echo "MONGODB_URI=$MONGODB_URI" >> apps/api/.env
+    - echo "MAX_POOL_SIZE=$MAX_POOL_SIZE" >> apps/api/.env
+    - echo "MIN_POOL_SIZE=$MIN_POOL_SIZE" >> apps/api/.env
+    - echo "PORT=$PORT" >> apps/api/.env
+    - echo "NODE_ENV=$NODE_ENV" >> apps/api/.env
+    - echo "APP_STAGE=$APP_STAGE" >> apps/web/.env
+    - echo "CORS_ORIGIN=$CORS_ORIGIN" >> apps/web/.env
+
+    # Create .env files for Web
+    - mkdir -p apps/web
+    - echo "VITE_BASE_URL=$VITE_BASE_URL" >> apps/web/.env
+
+    # Build fresh images
     - docker compose build --no-cache
 
-# 2. Deploy
+# 2. Deploy services
 deploy:
   stage: deploy
   script:
     - echo "🚀 Deploying..."
-    # stop old containers, start new ones
     - docker compose down
     - docker compose up -d --remove-orphans
   rules:
