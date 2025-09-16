@@ -12,5 +12,3 @@ hello:
     - docker --version
     - echo "compose version:"
     - docker compose version
-  rules:
-    - if: '$CI_COMMIT_BRANCH == "prod"'
