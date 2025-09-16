@@ -4,7 +4,8 @@ stages:
 
 default:
   tags: ["hamgit-shell"]  # use your self-hosted runner
-  variables:
+
+variables:
     DOCKER_HOST: unix:///var/run/docker.sock
 
 # 1. Build Docker images
