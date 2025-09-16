@@ -8,7 +8,6 @@ hello:
   stage: test
   script:
     - echo "✅ hello from prod-shell-runner on devsync server"
-    - echo "current user: $(whoami)"
     - echo "docker version:"
     - docker --version
     - echo "compose version:"
