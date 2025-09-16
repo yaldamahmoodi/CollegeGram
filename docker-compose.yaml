@@ -28,7 +28,7 @@ services:
     restart: unless-stopped
     depends_on:
       - mongo
-      - elasticsearch
+#      - elasticsearch
     environment:
       - NODE_ENV=production
       - MONGO_URI=mongodb://admin:admin@mongo:27017/collagegram?authSource=admin
