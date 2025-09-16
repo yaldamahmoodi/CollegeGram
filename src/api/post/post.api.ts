@@ -2,8 +2,8 @@ import api from "../axios";
 import { POST_URLS } from "./urls";
 import type { CreatePostPayload } from "@app-types/post";
 
-export const getPosts = async () => {
-  const { data } = await api.get(POST_URLS.USER_POSTS);
+export const getPosts = async (userId: string = "" , page: number = 1 , pageSize: number = 10) => { 
+  const { data } = await api.get(`/posts/getPosts?page=${page}&pageSize=${pageSize}${userId ? "&id=" + userId : ""} `);
   return data;
 };
 

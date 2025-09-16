@@ -1,7 +1,7 @@
-import { usePosts } from "@hooks/post.hook";
 import Button from "@components/Button";
-import { useState } from "react";
+import { use, useEffect, useState } from "react";
 import PostDetailsModal from "@/layouts/ProfileLayout/components/PostDetailsModal.tsx";
+import { getPosts } from "@/api/post/post.api";
 
 interface UserPostsProps {
     onChangeModal: () => void;
@@ -9,8 +9,21 @@ interface UserPostsProps {
 
 const UserPosts = (props: UserPostsProps) => {
     const { onChangeModal } = props;
+    const [data, setData] = useState(null);
+    // const data  = use(getPosts());
+    // console.log(data)
+    useEffect(() => {
+        (async () => {
+          try {
+            const dataaa = await getPosts()
+            setData(dataaa);
+          } catch (err) {
+            console.error("API Fetch Error:", err);
+          }
+        })();
+      }, []);
+      useEffect(() => {console.log(data)}, [data])
 
-    const { data } = usePosts();
     const mockPosts = [
         { id: "0", url: "https://picsum.photos/400/300?random=1" },
         { id: "1", url: "https://picsum.photos/400/300?random=2" },
@@ -21,9 +34,9 @@ const UserPosts = (props: UserPostsProps) => {
 
     return (
         <div className="profile-posts w-full h-full flex-auto border border-gray-400 p-4 overflow-y-auto rounded-4xl">
-            {mockPosts.length ? (
+            {data.length ? (
                 <div className="flex flex-wrap gap-10 justify-evenly">
-                    {mockPosts.map((item) => (
+                    {data.map((item) => (
                         <img
                             key={item.id}
                             src={item.url}
