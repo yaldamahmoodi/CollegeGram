@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { useFormik } from "formik";
-import Modal from "@components/Modal";
+import Modal from "@components/Modal"
 import Input from "@components/Input";
 import passwordIcon from "@assets/icons/password.svg";
 import userNameIcon from "@assets/icons/username.svg";
@@ -36,11 +36,11 @@ const EditProfileModal: React.FC<Props> = ({ isOpen, onClose }) => {
     <Modal
       isOpen={isOpen}
       onClose={onClose}
-      onPrimaryClick={formik.handleSubmit}
-      primaryLabel="ثبت تغیرات"
-      secondaryLabel="پشیمون شدم"
-      primaryActive={true}
-      secondaryActive={true}
+      // onPrimaryClick={formik.handleSubmit}
+      // primaryLabel="ثبت تغیرات"
+      // secondaryLabel="پشیمون شدم"
+      // primaryActive={true}
+      // secondaryActive={true}
       className="w-96">
       <h2 className="text-2xl flex self-center">ویرایش حساب</h2>
       <form onSubmit={formik.handleSubmit} className="flex flex-col gap-4">

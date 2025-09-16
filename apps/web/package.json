@@ -1,5 +1,5 @@
 {
-  "name": "project-devsync-rc",
+  "name": "web",
   "private": true,
   "version": "0.0.0",
   "type": "module",
@@ -9,6 +9,7 @@
     "lint": "eslint .",
     "preview": "vite preview"
   },
+  "packageManager": "pnpm@10.13.1",
   "dependencies": {
     "@hookform/resolvers": "^5.2.1",
     "@tailwindcss/vite": "^4.1.11",

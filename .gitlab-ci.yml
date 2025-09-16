@@ -1,11 +1,27 @@
-stages: [test]
+stages:
+  - build
+  - deploy
 
 default:
-  tags: ["hamgit-shell"]
+  tags: ["hamgit-shell"]  # use your self-hosted runner
 
-hello:
-  stage: test
+variables:
+  DOCKER_HOST: unix:///var/run/docker.sock
+
+# 1. Build images
+build:
+  stage: build
   script:
-    - echo "✅ Runner is now working cleanly"
-    - whoami
-    - echo "Ready to run builds"
+    - echo "🔨 Building Docker images..."
+    - docker compose build --no-cache
+
+# 2. Deploy
+deploy:
+  stage: deploy
+  script:
+    - echo "🚀 Deploying..."
+    # stop old containers, start new ones
+    - docker compose down
+    - docker compose up -d --remove-orphans
+  rules:
+    - if: '$CI_COMMIT_BRANCH == "prod"'  # deploy only from prod branch

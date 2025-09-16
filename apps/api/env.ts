@@ -11,6 +11,8 @@ if (isDevelopment) {
     loadEnv()
 } else if (isTest) {
     loadEnv(".env.test")
+} else {
+    loadEnv()
 }
 
 const envSchema = z.object({

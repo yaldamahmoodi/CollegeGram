@@ -96,7 +96,7 @@ const Stepper: React.FC<StepperProps> = ({
           <div className="flex justify-end w-full gap-4">
             <a
               className="text-gray-700 cursor-pointer self-end ml-3"
-              onClick={() => callbackHandler()}>
+              onClick={callbackHandler}>
               پشیمون شدم
             </a>
           </div>
