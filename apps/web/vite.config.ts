@@ -10,12 +10,12 @@ export default defineConfig({
         host: '0.0.0.0',
         port: 3000,
         strictPort: true,
-        allowedHosts: ['web', '188.121.102.156', 'https://devsyncc.ir', 'https://devsyncc.ir/'],
+        allowedHosts: ['web', '188.121.102.156', 'https://devsyncc.ir', 'devsyncc.ir', 'https://devsyncc.ir/'],
     },
     server: {
         host: '0.0.0.0', // listen on all interfaces
         port: 3000,
-        allowedHosts: ['web', '188.121.102.156', 'https://devsyncc.ir', 'https://devsyncc.ir/'],
+        allowedHosts: ['web', '188.121.102.156', 'https://devsyncc.ir', 'devsyncc.ir', 'https://devsyncc.ir/'],
         hmr: {
             host: '188.121.102.156',
             protocol: 'wss', // if using HTTPS in Nginx
