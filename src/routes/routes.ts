@@ -3,6 +3,6 @@ export const ROUTES = {
   REGISTER: "/register",
   DASHBOARD: "/dashboard",
   NOT_FOUND: "/notFound",
-  CATCH_ALL: "*",
   Tage_Page: "/tage",
+  CATCH_ALL: "*",
 } as const;
