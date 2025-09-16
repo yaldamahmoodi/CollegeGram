@@ -1,5 +1,4 @@
-stages:
-  - test
+stages: [test]
 
 default:
   tags: ["hamgit-shell"]
@@ -7,10 +6,8 @@ default:
 hello:
   stage: test
   script:
-    - echo "✅ hello from prod-shell-runner on devsync server"
-    - echo "docker version:"
+    - echo "✅ running as $(whoami)"
     - docker --version
-    - echo "compose version:"
     - docker compose version
   rules:
     - if: '$CI_COMMIT_BRANCH == "prod"'
