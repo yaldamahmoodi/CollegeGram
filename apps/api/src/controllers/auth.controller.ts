@@ -31,8 +31,8 @@ export class AuthController {
             const {accessToken, userId} = await this.authService.login(req.body.username, req.body.password);
             return res.status(200).cookie('accessToken', accessToken, {
                 httpOnly: true,
-                secure: false,
-                sameSite: "none",
+                secure: true,
+                sameSite: "strict",
                 signed: true,
                 maxAge: 7 * 24 * 60 * 60 * 1000,
             }).json({
