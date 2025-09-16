@@ -5,6 +5,7 @@ import Login from "@pages/Login";
 import Profile from "@pages/Profile";
 import Register from "@pages/Register";
 import NotFound from "@pages/NotFound";
+import Save from "@pages/Save";
 import ProtectedRoute from "./ProtectedRoute";
 import { ROUTES } from "./routes";
 
@@ -21,7 +22,7 @@ export default function AppRoutes() {
           <Route index element={<Profile />} />
         </Route>
       </Route>
-
+        <Route path={ROUTES.SAVE} element={<Save/>} />
       <Route path={ROUTES.CATCH_ALL} element={<NotFound />} />
     </Routes>
   );

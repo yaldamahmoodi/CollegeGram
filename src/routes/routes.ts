@@ -3,5 +3,6 @@ export const ROUTES = {
   REGISTER: "/register",
   DASHBOARD: "/dashboard",
   NOT_FOUND: "/notFound",
+  SAVE: "/save",
   CATCH_ALL: "*",
 } as const;
