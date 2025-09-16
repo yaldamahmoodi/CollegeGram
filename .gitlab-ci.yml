@@ -3,43 +3,55 @@ stages:
   - deploy
 
 default:
-  tags: ["hamgit-shell"]  # use your self-hosted runner
+  tags: [ "hamgit-shell" ]  # use your self-hosted runner
 
 variables:
-    DOCKER_HOST: unix:///var/run/docker.sock
+  DOCKER_HOST: unix:///var/run/docker.sock
 
 # 1. Build Docker images
 build:
   stage: build
   script:
     - echo "🔨 Building Docker images..."
-    # Create .env files for API
-    - mkdir -p apps/api
-    - touch apps/api/.env
-    - echo "ACCESS_TOKEN_EXPIRES_IN=$ACCESS_TOKEN_EXPIRES_IN" >> apps/api/.env
-    - echo "ACCESS_TOKEN_SECRET=$ACCESS_TOKEN_SECRET" >> apps/api/.env
-    - echo "APP_STAGE=$APP_STAGE" >> apps/api/.env
-    - echo "MONGODB_URI=$MONGODB_URI" >> apps/api/.env
-    - echo "MAX_POOL_SIZE=$MAX_POOL_SIZE" >> apps/api/.env
-    - echo "MIN_POOL_SIZE=$MIN_POOL_SIZE" >> apps/api/.env
-    - echo "PORT=$PORT" >> apps/api/.env
-    - echo "NODE_ENV=$NODE_ENV" >> apps/api/.env
-    - echo "APP_STAGE=$APP_STAGE" >> apps/api/.env
-    - echo "CORS_ORIGIN=$CORS_ORIGIN" >> apps/api/.env
-    - cat apps/api/.env
-    # Create .env files for Web
-    - mkdir -p apps/web
-    - echo "VITE_BASE_URL=$VITE_BASE_URL" >> apps/web/.env
 
-    # Build fresh images
+    # Create .env file for API
+    - mkdir -p apps/api
+    - cat > apps/api/.env <<EOL
+      ACCESS_TOKEN_EXPIRES_IN=$ACCESS_TOKEN_EXPIRES_IN
+      ACCESS_TOKEN_SECRET=$ACCESS_TOKEN_SECRET
+      APP_STAGE=$APP_STAGE
+      MONGODB_URI=$MONGODB_URI
+      MAX_POOL_SIZE=$MAX_POOL_SIZE
+      MIN_POOL_SIZE=$MIN_POOL_SIZE
+      PORT=$PORT
+      NODE_ENV=$NODE_ENV
+      EOL
+
+    # Create .env file for Web
+    - mkdir -p apps/web
+    - cat > apps/web/.env <<EOL
+      VITE_BASE_URL=$VITE_BASE_URL
+      APP_STAGE=$APP_STAGE
+      CORS_ORIGIN=$CORS_ORIGIN
+      NODE_ENV=$NODE_ENV
+      EOL
+
+    # Build images
     - docker compose build --no-cache
+  artifacts:
+    paths:
+      - apps/api/.env
+      - apps/web/.env
+    expire_in: 1h   # keep only short-term
 
 # 2. Deploy services
 deploy:
   stage: deploy
+  dependencies:
+    - build   # ensures artifacts are downloaded
   script:
     - echo "🚀 Deploying..."
     - docker compose down
     - docker compose up -d --remove-orphans
   rules:
-    - if: '$CI_COMMIT_BRANCH == "prod"'  # deploy only from prod branch
+    - if: '$CI_COMMIT_BRANCH == "prod"'
