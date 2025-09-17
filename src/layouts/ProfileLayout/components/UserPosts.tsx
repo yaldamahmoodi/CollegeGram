@@ -1,5 +1,6 @@
 import { usePosts } from "@hooks/post.hook";
 import Button from "@components/Button";
+import type { PostInfo, Posts } from "@app-types/post";
 
 interface UserPostsProps {
   onChangeModal: () => void;
@@ -8,11 +9,29 @@ interface UserPostsProps {
 const UserPosts = (props: UserPostsProps) => {
   const { onChangeModal } = props;
 
-  const { data } = usePosts();
+  // let list = [
+  //   { id: 1, urls: "https://picsum.photos/200/300?random=1" },
+  //   { id: 2, urls: "https://picsum.photos/200/300?random=2" },
+  //   { id: 3, urls: "https://picsum.photos/200/300?random=3" },
+  //   { id: 4, urls: "https://picsum.photos/200/300?random=4" },
+  // ];
+
+  const { data: posts } = usePosts();
   return (
     <div className="profile-posts w-full h-full flex-auto border border-gray-400 p-4 overflow-y-auto rounded-4xl">
-      {data?.length ? (
-        posts
+      {posts?.data?.length ? (
+        <div className="flex justify-center grid lg:grid-cols-3 md:grid-cols-2 xs:grid-cols-1 justify-evently gap-5 p-5">
+          {posts?.data?.map((post: PostInfo) => {
+            return (
+              <div className="flex" key={post._id}>
+                <img
+                  src={post.urls[0]}
+                  className="w-[400px] max-h-[400px] rounded-3xl"
+                />
+              </div>
+            );
+          })}
+        </div>
       ) : (
         <div className="flex flex-col justify-center items-center gap-2 w-full h-full">
           <span>هنوز هیچ پستی توی صفحه ات نذاشتی!</span>

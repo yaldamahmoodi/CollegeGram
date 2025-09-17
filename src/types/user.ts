@@ -23,3 +23,14 @@ export interface LoginFormValues {
 }
 
 export type UserLoginPayload = Omit<LoginFormValues, "rememberMe">;
+
+export interface UserInfoResponse
+  extends Pick<
+    UserRegisterPayload,
+    "firstname" | "lastname" | "biography" | "username" | "email"
+  > {
+  follower_count: number;
+  following_count: number;
+  post_count: number;
+  profilePhotoUrl: string;
+}

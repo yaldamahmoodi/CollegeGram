@@ -38,5 +38,6 @@ export const useUserInfo = () => {
   return useQuery({
     queryKey: ["userInfo"],
     queryFn: getUserInfo,
+    select: (response) => response.data,
   });
 };
