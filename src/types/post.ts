@@ -1,6 +1,7 @@
 export interface CreatePostPayload {
   photos: File[];
   caption?: string;
+  mentions?: MentionsType[];
 }
 
 export type MentionsType = {

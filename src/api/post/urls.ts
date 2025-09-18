@@ -1,5 +1,5 @@
 export const POST_URLS = {
   BASE: "/posts",
-  USER_POSTS: "/users/profile/posts",
+  POSTS_LIST: "/posts/getPosts",
   CREATE_POST: "/users/upload/post",
 };

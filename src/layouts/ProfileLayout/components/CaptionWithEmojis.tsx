@@ -2,8 +2,12 @@ import { useEffect, useRef, useState } from "react";
 import GroupIcon from "@assets/icons/Group.svg";
 import { EMOJIS } from "../consts/emojis";
 
-const CaptionWithEmojis = () => {
-  const [value, setValue] = useState("");
+interface Props {
+  value: string;
+  onChange: (val: string) => void;
+}
+
+const CaptionWithEmojis = ({ value, onChange }: Props) => {
   const [open, setOpen] = useState(false);
   const [caret, setCaret] = useState<{ start: number; end: number }>({
     start: 0,
@@ -26,7 +30,6 @@ const CaptionWithEmojis = () => {
     return () => document.removeEventListener("mousedown", onDown);
   }, [open]);
 
-
   const rememberCaret = () => {
     const el = taRef.current;
     if (!el) return;
@@ -41,7 +44,7 @@ const CaptionWithEmojis = () => {
     const before = value.slice(0, start);
     const after = value.slice(end);
     const next = before + text + after;
-    setValue(next);
+    onChange(next);
     const newPos = start + text.length;
     requestAnimationFrame(() => {
       el.focus();
@@ -81,7 +84,7 @@ const CaptionWithEmojis = () => {
         <textarea
           ref={taRef}
           value={value}
-          onChange={(e) => setValue(e.target.value)}
+          onChange={(e) => onChange(e.target.value)}
           onClick={rememberCaret}
           onKeyUp={rememberCaret}
           dir="rtl"
