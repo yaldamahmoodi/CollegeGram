@@ -7,7 +7,7 @@ export const MESSAGES = {
   emailRequired: "ایمیل الزامی است.",
   emailInvalid: "ایمیل معتبر وارد کنید.",
   passwordRequired: "رمز عبور الزامی است.",
-  passwordMinLength: "رمز عبور باید حداقل 6 کاراکتر باشد.",
+  passwordMinLength: "رمز عبور باید حداقل 8 کاراکتر باشد.",
   passwordSpecialChar: "رمز عبور باید حداقل یک کاراکتر خاص داشته باشد",
   confirmPasswordRequired: "تکرار رمز عبور الزامی است.",
   confirmPasswordMatch: "رمز عبور باید با هم مطابقت داشته باشد.",

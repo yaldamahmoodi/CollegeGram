@@ -22,7 +22,7 @@ const Login = () => {
     username: Yup.string().required(MESSAGES.usernameRequired),
     password: Yup.string()
       .required(MESSAGES.passwordRequired)
-      .min(6, MESSAGES.passwordMinLength)
+      .min(8, MESSAGES.passwordMinLength)
       .matches(/[!@#$%^&*(),.?":{}|<>]/, MESSAGES.passwordSpecialChar),
   });
 

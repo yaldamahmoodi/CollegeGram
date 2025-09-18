@@ -15,7 +15,7 @@ const validationSchema = Yup.object({
     .email(MESSAGES.emailInvalid)
     .required(MESSAGES.emailRequired),
   password: Yup.string()
-    .min(6, MESSAGES.passwordMinLength)
+    .min(8, MESSAGES.passwordMinLength)
     .required(MESSAGES.passwordRequired)
     .matches(/[!@#$%^&*(),.?":{}|<>]/, MESSAGES.passwordSpecialChar),
   confirmPassword: Yup.string()

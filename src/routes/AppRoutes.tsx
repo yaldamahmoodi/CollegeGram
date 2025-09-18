@@ -1,21 +1,28 @@
 import AuthLayout from "@/layouts/AuthLayout";
 import ProfileLayout from "@/layouts/ProfileLayout";
 import { Routes, Route, Navigate } from "react-router-dom";
-import Login from "@/pages/Login";
-import Profile from "@/pages/Profile";
-import Register from "@/pages/Register";
+import Login from "@pages/Login";
+import Profile from "@pages/Profile";
+import Register from "@pages/Register";
+import NotFound from "@pages/NotFound";
+import ProtectedRoute from "./ProtectedRoute";
+import { ROUTES } from "./routes";
 
 export default function AppRoutes() {
   return (
     <Routes>
       <Route path="/" element={<AuthLayout />}>
-        <Route path="login" element={<Login />} />
-        <Route path="register" element={<Register />} />
-        <Route index element={<Navigate to="login" />} />
+        <Route path={ROUTES.LOGIN} element={<Login />} />
+        <Route path={ROUTES.REGISTER} element={<Register />} />
+        <Route index element={<Navigate to={ROUTES.LOGIN} />} />
       </Route>
-      <Route path="/dashboard" element={<ProfileLayout />}>
-        <Route index element={<Profile />} />
+      <Route element={<ProtectedRoute />}>
+        <Route path={ROUTES.DASHBOARD} element={<ProfileLayout />}>
+          <Route index element={<Profile />} />
+        </Route>
       </Route>
+
+      <Route path={ROUTES.CATCH_ALL} element={<NotFound />} />
     </Routes>
   );
 }
