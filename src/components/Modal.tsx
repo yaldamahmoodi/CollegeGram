@@ -38,10 +38,10 @@ const Modal = (props: ModalProps) => {
 
   return (
     <div
-      className={`fixed inset-0 flex items-center justify-center bg-black/50 `}
+      className={`fixed inset-0   flex items-center justify-center bg-black/50 `}
       onClick={onClose}>
       <div
-        className={`bg-[#f7f7f7] rounded-2xl shadow-lg p-6 flex flex-col gap-4 ${className} ${modalSizeClasses[size]}`}
+        className={`bg-[#f7f7f7] w-max rounded-2xl shadow-lg p-6 flex flex-col gap-4 ${className} ${modalSizeClasses[size]}`}
         onClick={(e) => e.stopPropagation()}>
         {children}
 

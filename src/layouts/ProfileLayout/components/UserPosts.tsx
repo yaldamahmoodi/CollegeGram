@@ -1,45 +1,27 @@
 import Button from "@components/Button";
-import {useLayoutEffect, useState} from "react";
+import {useEffect, useState} from "react";
 import PostDetailsModal from "@/layouts/ProfileLayout/components/PostDetailsModal.tsx";
-import {getPosts} from "@/api/post/post.api";
+
+import {usePosts} from "@hooks/post.hook.ts";
+import type {postData} from "@api/post/post.api.ts";
 
 interface UserPostsProps {
     onChangeModal: () => void;
 }
 
-interface postData {
-    "_id": string,
-    "user_id": string,
-    "urls": string[],
-    "caption": string,
-    "like_count": number,
-    "save_count": number,
-    "mentions": string[],
-    "hashtag_array": string[],
-    "photo_length": number,
-    createdAt: string,
-}
-
-type postDataType = postData[];
 
 const UserPosts = (props: UserPostsProps) => {
     const {onChangeModal} = props;
-    const [data, setData] = useState<postDataType>([]);
-    // const data  = use(getPosts());
-    // console.log(data)
-    useLayoutEffect(() => {
-        (async () => {
-            try {
-                const dataaa = await getPosts()
-                setData(dataaa.data);
-            } catch (err) {
-                console.error("API Fetch Error:", err);
-            }
-        })();
-    }, []);
-
+    const {data = []} = usePosts()
     const [selectedPost, setSelectedPost] = useState<postData | null>(null);
-    console.log(data, selectedPost)
+    useEffect(() => {
+        if (selectedPost && data) {
+            const updated = data.find(p => p._id === selectedPost._id);
+            if (updated) {
+                setSelectedPost(updated);
+            }
+        }
+    }, [data, selectedPost]);
     return (
         <div className="profile-posts w-full h-full flex-auto border border-gray-400 p-4 overflow-y-auto rounded-4xl">
             {data.length > 0 ? (

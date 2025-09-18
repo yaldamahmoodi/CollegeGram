@@ -9,6 +9,7 @@ import save from "@assets/icons/save.svg";
 import comment from "@assets/icons/comment.svg";
 import {useNavigate} from "react-router-dom";
 import {Expand, XCircle} from "lucide-react";
+import {useLikePost} from "@hooks/post.hook.ts";
 
 interface postData {
     "_id": string,
@@ -43,8 +44,10 @@ const PostDetailsModal = ({isOpen, close, data}: PostDetailsModalProps) => {
     // const diffDay = Math.floor(diffMs / 86400000);
 
     const [comentsCount] = useState(12);
-    const handleLike = () => {
-        // api like
+
+    const likeMutation = useLikePost()
+    const handleLike = async () => {
+        likeMutation.mutate({postId: data._id})
     };
 
     const navigate = useNavigate();
@@ -52,9 +55,7 @@ const PostDetailsModal = ({isOpen, close, data}: PostDetailsModalProps) => {
     const handleCommentClick = () => {
         navigate("/login")
     }
-
     const handleSave = () => {
-
     };
 
     if (!isOpen) return null;
@@ -62,7 +63,7 @@ const PostDetailsModal = ({isOpen, close, data}: PostDetailsModalProps) => {
     return (
         <Modal isOpen={isOpen} size="medium">
             <div className="flex items-center justify-between px-4 py-2">
-               <Expand className="text-red-500" /> <XCircle onClick={close} className="text-red-500"/>
+                <Expand className="text-red-500"/> <XCircle onClick={close} className="text-red-500"/>
             </div>
             <div className="flex flex-col md:flex-row gap-14 pt-12">
                 <div className="flex-1">
