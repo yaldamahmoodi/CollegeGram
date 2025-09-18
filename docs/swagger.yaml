@@ -1054,7 +1054,96 @@ paths:
                   message:
                     type: string
                     example: Something went wrong while fetching saved posts.
-
+  /api/v1/users/followers:
+    get:
+      summary: Get followers list
+      description: |
+        followers list
+      security:
+        - cookieAuth: [ ]
+      responses:
+        '200':
+          description: Followers list retrieved successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  code:
+                    type: string
+                    example: success
+                  data:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        username:
+                          type: string
+                          example: yaldoomaldoo1
+                        follower_count:
+                          type: integer
+                          example: 0
+                        following_count:
+                          type: integer
+                          example: 1
+        '401':
+          description: Unauthorized – User not authenticated
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  code:
+                    type: string
+                    example: UNAUTHORIZED
+                  message:
+                    type: string
+                    example: Authentication required
+  /api/v1/users/followings:
+    get:
+      summary: Get followings list
+      description: |
+        followings list
+      security:
+        - cookieAuth: [ ]
+      responses:
+        '200':
+          description: Followings list retrieved successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  code:
+                    type: string
+                    example: sucess
+                  data:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        username:
+                          type: string
+                          example: yaldaMahmoodi
+                        follower_count:
+                          type: integer
+                          example: 1
+                        following_count:
+                          type: integer
+                          example: 0
+        '401':
+          description: Unauthorized – User not authenticated
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  code:
+                    type: string
+                    example: UNAUTHORIZED
+                  message:
+                    type: string
+                    example: Authentication required
 
 components:
   securitySchemes:
