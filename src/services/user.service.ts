@@ -3,7 +3,6 @@ import type {ProfileRepository} from "../repositories/profile.repository.ts";
 import bcrypt from 'bcrypt';
 import type {updateProfileUserSchema} from "../db/models/user.model.ts";
 import {NotFoundError} from "../utils/errors/notFound.errors.ts";
-import {BadRequestErrors} from "../utils/errors/badRequest.errors.ts";
 import type {FollowRepository} from "../repositories/follow.repitory.ts";
 
 export class UserService {
@@ -51,6 +50,14 @@ export class UserService {
 
     async unfollowUser(userId: string, unfollowedUserId: string) {
         return await this.followRepository.unfollowUser(userId, unfollowedUserId);
+    }
+
+    async getFollowings(userId: string) {
+        return this.followRepository.getFollowings(userId)
+    }
+
+    async getFollowers(userId: string) {
+        return this.followRepository.getFollowers(userId)
     }
 
 }
