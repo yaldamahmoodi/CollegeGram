@@ -1,6 +1,7 @@
 import {Follow} from "../db/models/follow.model.ts";
 import {UserModel} from "../db/models/user.model.ts";
 import {AlreadyDoneError} from "../utils/errors/alreadyDone.errors.ts";
+import mongoose from "mongoose";
 
 export class FollowRepository {
 
@@ -35,8 +36,6 @@ export class FollowRepository {
             follower_id: userId,
             following_id: followedUserId
         });
-        console.log(userId, 'userId');
-        console.log(followedUserId, 'followedUserId');
         if (dll.deletedCount > 0) {
             await UserModel.updateOne(
                 {_id: userId},
@@ -55,17 +54,62 @@ export class FollowRepository {
         return dll;
     }
 
+    async getFollowers(user_id: string) {
+        return Follow.aggregate([
+            {
+                $match: {
+                    following_id: new mongoose.Types.ObjectId(user_id),
+                },
+            },
+            {
+                $lookup: {
+                    from: "users",
+                    localField: "follower_id",
+                    foreignField: "_id",
+                    as: "followerDetails",
+                },
+            },
+            {$unwind: "$followerDetails"},
+            {
+                $project: {
+                    _id: 0,
+                    username: "$followerDetails.username",
+                    follower_count: "$followerDetails.follower_count",
+                    following_count: "$followerDetails.following_count",
+                    profilePhoto: "$followerDetails.ProfilePhoto",
+                },
+            },
+        ]);
 
-    async getFollowers(userId: string) {
-        return Follow.find({following_id: userId})
-            .populate("follower_id", "username avatar")
-            .exec();
+
     }
 
-
-    async getFollowings(userId: string) {
-        return Follow.find({follower_id: userId})
-            .populate("following_id", "username avatar")
-            .exec();
+    async getFollowings(user_id: string) {
+        return Follow.aggregate([
+            {
+                $match: {
+                    follower_id: new mongoose.Types.ObjectId(user_id),
+                },
+            },
+            {
+                $lookup: {
+                    from: "users",
+                    localField: "following_id",
+                    foreignField: "_id",
+                    as: "followingDetails",
+                },
+            },
+            {$unwind: "$followingDetails"},
+            {
+                $project: {
+                    _id: 0,
+                    username: "$followingDetails.username",
+                    follower_count: "$followingDetails.follower_count",
+                    following_count: "$followingDetails.following_count",
+                    profilePhoto: "$followingDetails.ProfilePhoto",
+                },
+            },
+        ]);
     }
+
 }
