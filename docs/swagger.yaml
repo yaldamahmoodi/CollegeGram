@@ -1071,7 +1071,7 @@ paths:
                 properties:
                   code:
                     type: string
-                    example: success
+                    example: SUCCESS
                   data:
                     type: array
                     items:
@@ -1116,7 +1116,7 @@ paths:
                 properties:
                   code:
                     type: string
-                    example: sucess
+                    example: SUCCESS
                   data:
                     type: array
                     items:

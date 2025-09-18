@@ -216,7 +216,7 @@ export class UserController {
         try {
             const followerUserList = await this.userService.getFollowers(req.user.id)
             return res.status(200).json({
-                code: "success",
+                code: "SUCCESS",
                 data: followerUserList
             })
         } catch (error) {
@@ -228,7 +228,7 @@ export class UserController {
         try {
             const followingUserList = await this.userService.getFollowings(req.user.id)
             return res.status(200).json({
-                code: "sucess",
+                code: "SUCCESS",
                 data: followingUserList
             })
         } catch (error) {
