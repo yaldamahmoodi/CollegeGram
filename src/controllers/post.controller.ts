@@ -53,7 +53,9 @@ export class PostController {
             const output = posts.data.map(post => ({
                 _id: post._id,
                 user_id: post.user_id,
-                urls: post.urls,
+                urls: post.urls.map((filename: string) =>
+                    `${req.protocol}://${req.get("host")}/uploads/posts/${filename}`
+                ),
                 caption: post.caption,
                 like_count: post.like_count,
                 save_count: post.save_count,

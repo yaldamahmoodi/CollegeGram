@@ -91,7 +91,7 @@ export class UserController {
 
             const files = req.files as Express.Multer.File[];
             const caption = req.body.caption;
-            const filePaths: string[] = files.map(file => file.path);
+            const filePaths: string[] = files.map(file => file.filename);
             const mentions = Array.isArray(req.body.mentions) ? req.body.mentions : [];
             const hashtag_array: string[] = caption ? extractHashtags(caption) : [];
 

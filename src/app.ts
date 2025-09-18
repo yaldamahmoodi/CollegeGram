@@ -46,6 +46,7 @@ app.use(cors({
 
 app.use(morgan("combined"))
 
+app.use("/uploads", express.static(path.join(__dirname, "middlewares", "uploads")));
 
 /* ---- ROUTES ---- */
 app.use("/api/health", healthRoute)
