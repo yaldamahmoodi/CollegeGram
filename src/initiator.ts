@@ -9,7 +9,6 @@ import {ProfileRepository} from "./repositories/profile.repository.ts";
 import {PostController} from "./controllers/post.controller.ts";
 import {PostService} from "./services/post.service.ts";
 import {SaveRepository} from "./repositories/save.repository.ts";
-import {FollowUnfollowRepository} from "./repositories/followUnfollow.repository.ts";
 import {ElasticClient} from "./services/elasticClient.service.ts";
 import {SearchIndexManager} from "./services/SearchIndexManager.service.ts";
 import {FollowRepository} from "./repositories/follow.repitory.ts";
@@ -26,7 +25,6 @@ export class Initiator {
     public postService: PostService;
     public postController: PostController;
     public saveRepository: SaveRepository;
-    // public followUnfollowRepository: FollowUnfollowRepository;
     public followRepository: FollowRepository;
 
     public elasticClient: ElasticClient;
@@ -38,7 +36,6 @@ export class Initiator {
         this.postRepository = new PostRepository();
         this.saveRepository = new SaveRepository();
         this.profileRepository = new ProfileRepository();
-        // this.followUnfollowRepository = new FollowUnfollowRepository()
         this.followRepository = new FollowRepository()
 
 
