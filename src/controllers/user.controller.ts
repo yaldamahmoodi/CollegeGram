@@ -28,6 +28,9 @@ export class UserController {
         this.followUser = this.followUser.bind(this);
         this.unfollowUser = this.unfollowUser.bind(this);
         this.getUserSavesList = this.getUserSavesList.bind(this);
+        this.unfollowUser = this.unfollowUser.bind(this);
+        this.getFollowingsList = this.getFollowingsList.bind(this);
+        this.getFollowersList = this.getFollowersList.bind(this);
 
     }
 
@@ -208,4 +211,29 @@ export class UserController {
             if (error instanceof APIError) return next(error)
         }
     }
+
+    async getFollowersList(req: Authenticate<{}, {}>, res: Response, next: NextFunction) {
+        try {
+            const followerUserList = await this.userService.getFollowers(req.user.id)
+            return res.status(200).json({
+                code: "success",
+                data: followerUserList
+            })
+        } catch (error) {
+            if (error instanceof APIError) return next(error)
+        }
+    }
+
+    async getFollowingsList(req: Authenticate<{}, {}>, res: Response, next: NextFunction) {
+        try {
+            const followingUserList = await this.userService.getFollowings(req.user.id)
+            return res.status(200).json({
+                code: "sucess",
+                data: followingUserList
+            })
+        } catch (error) {
+            if (error instanceof APIError) return next(error)
+        }
+    }
+
 }
