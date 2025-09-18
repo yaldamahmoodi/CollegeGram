@@ -37,17 +37,16 @@ export class UserController {
 
         if (!req.file) return next(new ValidationError("INVALID_CREDENTIALS"))
 
-        const filePath = req.file.path;
+        const filename = req.file.filename;
 
         try {
-            const profile = await this.userService.uploadProfile(filePath, req.user.id);
+             await this.userService.uploadProfile(filename, req.user.id);
             return res.status(201).json({
                 code: "UPLOADED",
                 message: "Profile upload success",
-                data: profile
             });
         } catch (error: unknown) {
-            if (error instanceof APIError) return next(error)
+            if (error instanceof APIError) return next(error);
         }
     }
 
@@ -60,7 +59,9 @@ export class UserController {
 
         try {
             const userDetails = await this.userService.getUserDetails(userId);
-            const profilePhotoPath = userDetails.ProfilePhoto?.path;
+            const profilePhotoUrl = userDetails.ProfilePhoto?.path
+                ? `${req.protocol}://${req.get("host")}/uploads/profiles/${userDetails.ProfilePhoto.path}`
+                : null;
             return res.status(200).json({
                 code: "GET_USER_SUCCESSFULLY",
                 data: {
@@ -72,7 +73,7 @@ export class UserController {
                     follower_count: userDetails.follower_count,
                     following_count: userDetails.following_count,
                     post_count: userDetails.post_count,
-                    profilePhotoUrl: profilePhotoPath,
+                    profilePhotoUrl,
                 }
             })
         } catch (error: unknown) {
