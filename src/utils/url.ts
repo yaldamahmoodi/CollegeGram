@@ -1,4 +1,4 @@
 export const getImageUrl = (path: string): string => {
-  const baseUrl = process.env.VITE_BASE_URL;
+  const baseUrl = "http://localhost:3001/api/v1";
   return `${baseUrl}${path}`;
 };

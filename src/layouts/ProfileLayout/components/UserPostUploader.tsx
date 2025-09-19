@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 
 interface Props {
   images: File[];
@@ -8,25 +8,33 @@ interface Props {
 const UserPostUploader = ({ images, onChange }: Props) => {
   const [previews, setPreviews] = useState<string[]>([]);
 
+  useEffect(() => {
+    const newPreviews = images.map((file) => URL.createObjectURL(file));
+    setPreviews(newPreviews);
+    return () => {
+      newPreviews.forEach((url) => URL.revokeObjectURL(url));
+    };
+  }, [images]);
+
   const handleUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files) {
       const filesArray = Array.from(e.target.files);
+      const validFiles = filesArray.filter((file) =>
+        ["image/jpeg", "image/jpg", "image/png"].includes(file.type)
+      );
 
-      // ساخت preview
-      const previewUrls = filesArray.map((file) => URL.createObjectURL(file));
+      if (validFiles.length !== filesArray.length) {
+        alert("فقط فایل‌های JPG, JPEG و PNG مجاز هستند.");
+      }
 
-      onChange([...images, ...filesArray]);
-      setPreviews((prev) => [...prev, ...previewUrls]);
-
+      onChange([...images, ...validFiles]);
       e.target.value = "";
     }
   };
 
   const removeImage = (index: number) => {
     const updated = images.filter((_, i) => i !== index);
-    const updatedPreviews = previews.filter((_, i) => i !== index);
     onChange(updated);
-    setPreviews(updatedPreviews);
   };
 
   return (
@@ -34,17 +42,17 @@ const UserPostUploader = ({ images, onChange }: Props) => {
       <span className="font-medium mb-8">عکس‌های مورد نظرت رو آپلود کن:</span>
       <div className="flex flex-col-3 max-w-[406px] max-h-[258px] gap-4 flex-wrap overflow-y-auto justify-center">
         <label className="w-28 h-28 rounded-2xl flex justify-center items-center cursor-pointer hover:bg-orange-50 transition">
+          <input
+            type="file"
+            accept=".jpg,.jpeg,.png"
+            multiple
+            className="hidden"
+            onChange={handleUpload}
+          />
           <div
             className={`uploader w-[121px] h-[100px] flex items-center justify-end bg-cover bg-center bg-no-repeat ${
               previews.length === 0 ? "self-center" : "self-start"
             }`}
-          />
-          <input
-            type="file"
-            accept="image/*"
-            multiple
-            className="hidden"
-            onChange={handleUpload}
           />
         </label>
         {previews.map((src, index) => (

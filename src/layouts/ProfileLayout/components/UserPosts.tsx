@@ -27,12 +27,12 @@ const UserPosts = (props: UserPostsProps) => {
       {posts?.data?.length ? (
         <div className="flex justify-center grid lg:grid-cols-3 md:grid-cols-2 xs:grid-cols-1 justify-evently gap-5 p-5">
           {posts?.data?.map((post: PostInfo) => {
-            const url = getImageUrl(post.urls[0]);
             return (
               <div className="flex" key={post._id}>
                 <img
-                  src={url}
-                  className="w-[400px] max-h-[400px] rounded-3xl"
+                  src="http://localhost:3001/uploads/posts/photos-1758272130837-100637302.jpg"
+                  alt="post image"
+                  className="w-[400px] h-[400px] object-cover rounded-3xl"
                 />
               </div>
             );
