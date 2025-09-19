@@ -9,9 +9,10 @@ import {ProfileRepository} from "./repositories/profile.repository.ts";
 import {PostController} from "./controllers/post.controller.ts";
 import {PostService} from "./services/post.service.ts";
 import {SaveRepository} from "./repositories/save.repository.ts";
-import {FollowUnfollowRepository} from "./repositories/followUnfollow.repository.ts";
 import {ElasticClient} from "./services/elasticClient.service.ts";
 import {SearchIndexManager} from "./services/SearchIndexManager.service.ts";
+import {FollowRepository} from "./repositories/follow.repitory.ts";
+
 export class Initiator {
     public userService: UserService;
     public userRepository: UserRepository;
@@ -24,7 +25,7 @@ export class Initiator {
     public postService: PostService;
     public postController: PostController;
     public saveRepository: SaveRepository;
-    public followUnfollowRepository: FollowUnfollowRepository;
+    public followRepository: FollowRepository;
 
     public elasticClient: ElasticClient;
     public searchIndexManager: SearchIndexManager;
@@ -35,17 +36,17 @@ export class Initiator {
         this.postRepository = new PostRepository();
         this.saveRepository = new SaveRepository();
         this.profileRepository = new ProfileRepository();
-        this.followUnfollowRepository = new FollowUnfollowRepository()
+        this.followRepository = new FollowRepository()
+
 
         this.elasticClient = new ElasticClient();
         this.searchIndexManager = new SearchIndexManager(this.elasticClient);
     }
 
 
-
     public setupServices(): void {
         this.authService = new AuthService(this.authRepository);
-        this.userService = new UserService(this.userRepository, this.profileRepository, this.followUnfollowRepository);
+        this.userService = new UserService(this.userRepository, this.profileRepository, this.followRepository);
         this.postService = new PostService(this.postRepository, this.saveRepository);
     }
 

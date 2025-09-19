@@ -53,6 +53,17 @@ router.get(
     userController.getUserSavesList
 )
 
+router.get(
+    "/followers",
+    userController.getFollowersList
+)
+
+router.get(
+    "/followings",
+    userController.getFollowingsList
+)
+
+
 router.use(errorHandler);
 
 export default router;
