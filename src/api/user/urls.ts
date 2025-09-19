@@ -4,4 +4,5 @@ export const USER_URLS = {
   LOGIN: "/auth/login",
   USER_INFO: "/users/profile",
   UPLOAD_PROFILE_IMAGE: "/users/profile/upload",
+  UPDATE_PROFILE: "/users/profile/update",
 };
