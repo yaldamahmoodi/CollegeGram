@@ -7,7 +7,8 @@ import userNameIcon from "@assets/icons/username.svg";
 import emailIcon from "@assets/icons/email.svg";
 import uploadImageIcon from "@assets/images/uploadImageIcon.svg";
 import refreshIcon from "@assets/icons/refresh.svg";
-import { updateProfile, type UpdateProfilePayload } from "@/api/user/user.api";
+import { updateProfile, uploadProfileImage, type UpdateProfilePayload } from "@/api/user/user.api";
+import Button from "@components/Button";
 
 type FormValues = {
     firstname: string;
@@ -26,6 +27,8 @@ interface Props {
 const EditProfileModal: React.FC<Props> = ({ isOpen, onClose }) => {
     const [image, setImage] = useState<File | null>(null);
     const [preview, setPreview] = useState<string | null>(null);
+    const [isPrivate, setIsPrivate] = useState(false);
+
 
     const formik = useFormik<FormValues>({
     initialValues: {
@@ -46,14 +49,18 @@ const EditProfileModal: React.FC<Props> = ({ isOpen, onClose }) => {
             const payload: UpdateProfilePayload = Object.fromEntries(
                 Object.entries(raw).filter(([, v]) => v != null && String(v).trim() !== "")
             ) as UpdateProfilePayload;
-            if (Object.keys(payload).length === 0) {
+            if (Object.keys(payload).length > 0) {
+                await updateProfile(payload);
+            }
+            if (image) {
+                await uploadProfileImage(image);
+            }
+            if (Object.keys(payload).length === 0 && !image) {
                 onClose();
                 return;
             }
-
-            await updateProfile(payload);
             onClose();
-        },
+            },
   });
 
   return (
@@ -61,7 +68,7 @@ const EditProfileModal: React.FC<Props> = ({ isOpen, onClose }) => {
           isOpen={isOpen}
           onClose={onClose}
           onClickHandler={() => {
-              if (!formik.isSubmitting) formik.submitForm(); // جلوگیری از دابل‌کلیک
+              if (!formik.isSubmitting) formik.submitForm();
           }}
           labelHandler={formik.isSubmitting ? "در حال ذخیره..." : "ثبت تغییرات"}
           labelClose="پشیمون شدم"
@@ -166,7 +173,24 @@ const EditProfileModal: React.FC<Props> = ({ isOpen, onClose }) => {
           }
           errorMessage={formik.errors.confirmPassword}
         />
-        <div className="flex flex-col gap-2">
+          <div className="flex items-center gap-2">
+              <Button
+                  type="button"
+                  onClick={() => setIsPrivate(!isPrivate)}
+                  className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors
+          ${isPrivate ? "bg-[#E7000B]" : "bg-gray-300"}`}
+                  label={
+                      <span
+                          className={`absolute top-0.5 left-0.5 h-5 w-5 rounded-full bg-white shadow transition-transform
+              ${isPrivate ? "translate-x-5" : "translate-x-0"}`}
+                      />
+                  }
+              />
+              <span className="text-sm select-none">پیج خصوصی باشه</span>
+
+          </div>
+
+          <div className="flex flex-col gap-2">
             <p>بایو</p>
         <Input
           type="text"

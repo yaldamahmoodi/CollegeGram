@@ -30,3 +30,16 @@ export const updateProfile = async (payload: UpdateProfilePayload) => {
     const { data } = await api.patch(USER_URLS.UPDATE_PROFILE, payload);
     return data?.data ?? data;
 };
+
+
+export const uploadProfileImage = async (image: File) => {
+    const formData = new FormData();
+    formData.append("image", image);
+
+    const { data } = await api.post(USER_URLS.UPLOAD_PROFILE_IMAGE, formData, {
+        headers: { "Content-Type": "multipart/form-data" },
+    });
+
+    return data;
+};
+
