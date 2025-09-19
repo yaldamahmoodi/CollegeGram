@@ -46,7 +46,7 @@ const ProfileLayout = () => {
         <div className="hidden lg:block bg-white right-sidebar w-1/4 p-4 border border-gray-400 rounded-4xl">
           <ProfileSidebarMenu />
         </div>
-        <div className="left-section w-full lg:w-3/4 flex flex-col px-4 lg:pr-8">
+        <div className="left-section w-full lg:w-3/4 flex flex-col px-4 lg:px-15">
           <Outlet />
         </div>
       </div>

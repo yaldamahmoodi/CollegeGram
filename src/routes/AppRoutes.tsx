@@ -5,6 +5,7 @@ import Login from "@pages/Login";
 import Profile from "@pages/Profile";
 import Register from "@pages/Register";
 import NotFound from "@pages/NotFound";
+import Explore from "@/pages/explore/Explore";
 import ProtectedRoute from "./ProtectedRoute";
 import { ROUTES } from "./routes";
 
@@ -19,6 +20,7 @@ export default function AppRoutes() {
       <Route element={<ProtectedRoute />}>
         <Route path={ROUTES.DASHBOARD} element={<ProfileLayout />}>
           <Route index element={<Profile />} />
+          <Route path={ROUTES.EXPLORE} element={<Explore />} />
         </Route>
       </Route>
 
