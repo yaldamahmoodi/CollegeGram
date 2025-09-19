@@ -46,3 +46,11 @@ export interface FollowingType {
   following_count: number;
   follower_count: number;
 }
+
+export interface followType {
+  followedUserId: string;
+}
+
+export interface unfollowType {
+  unfollowedUserId: string;
+}

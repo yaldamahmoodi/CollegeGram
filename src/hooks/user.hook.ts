@@ -5,6 +5,8 @@ import {
   getUserInfo,
   getFollowers,
   getFollowings,
+  follow,
+  unFollow,
 } from "@/api/user/user.api";
 import { useNavigate } from "react-router-dom";
 import { ROUTES } from "@/routes/routes";
@@ -61,5 +63,17 @@ export const useFollowersList = () => {
     queryKey: ["followers"],
     queryFn: getFollowers,
     select: (response) => response.data,
+  });
+};
+
+export const useFollow = () => {
+  return useMutation({
+    mutationFn: follow,
+  });
+};
+
+export const useUnFollow = () => {
+  return useMutation({
+    mutationFn: unFollow,
   });
 };

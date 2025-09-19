@@ -6,4 +6,6 @@ export const USER_URLS = {
   UPLOAD_PROFILE_IMAGE: "/users/profile/upload",
   FOLLOWINGS_LIST: "/users/followings",
   FOLLOWERS_LIST: "/users/followers",
+  FOLLOW: "users/follow",
+  UNFOLLOW: "users/unfollow",
 };
