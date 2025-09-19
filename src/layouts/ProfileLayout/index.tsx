@@ -1,14 +1,13 @@
 import { useState } from "react";
-import ProfileInfo from "./components/ProfileInfo";
 import Button from "@/components/Button";
 import CraetePostModal from "./components/CraetePostModal";
 import ProfileSidebarMenu from "./components/ProfileSidebarMenu";
-import UserPosts from "./components/UserPosts";
 import profilePhoto from "@/assets/images/avatar.png";
 import searchIcon from "@assets/icons/Mobile/Search.svg";
 import gridMenuIcon from "@assets/icons/Mobile/gridMenu.svg";
 import hamburgerMenuIcon from "@assets/icons/Mobile/hamburgerMenu.svg";
 import plusIcon from "@assets/icons/plus.svg";
+import { Outlet } from "react-router-dom";
 
 const ProfileLayout = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -48,17 +47,7 @@ const ProfileLayout = () => {
           <ProfileSidebarMenu />
         </div>
         <div className="left-section w-full lg:w-3/4 flex flex-col px-4 lg:pr-8">
-          <div className="title w-full bg-transparent pb-6">
-            <h2 className="text-xl lg:text-2xl font-bold">صفحه من</h2>
-          </div>
-
-          <div className="profile-info w-full bg-transparent my-2">
-            <ProfileInfo />
-          </div>
-
-          <div className="separator w-full h-px bg-gray-400 my-6"></div>
-
-          <UserPosts onChangeModal={() => setIsModalOpen(true)} />
+          <Outlet />
         </div>
       </div>
 
