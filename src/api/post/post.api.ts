@@ -1,6 +1,6 @@
 import api from "../axios";
 import {POST_URLS} from "./urls";
-import type {CreateLikePostPayload, CreatePostPayload, CreateUnLikePostPayload} from "@app-types/post";
+import type {CreateLikePostPayload, CreatePostPayload, CreateUnLikePostPayload, CreateSavePostPayload, CreateUnSavePostPayload} from "@app-types/post";
 
 
 export interface postData {
@@ -44,12 +44,19 @@ export const createPost = async (payload: CreatePostPayload) => {
 
 export const likePost = async (payload: CreateLikePostPayload) => {
     return  await api.post(POST_URLS.LIKE_POST, payload);
-
 }
 
 
 export const unLikePost = async (payload: CreateUnLikePostPayload) => {
     const {postId} = payload;
    return await api.post(`/posts/${postId}/unlike`)
+}
 
+export const savePost = async (payload: CreateSavePostPayload) => {
+    return await api.post(POST_URLS.SAVE_POST, payload);
+};
+
+export const unSavePost = async (payload: CreateUnSavePostPayload) => {
+    const {postId} = payload;
+    return await api.post(`/posts/${postId}/unsave`)
 }

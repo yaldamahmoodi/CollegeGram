@@ -31,7 +31,7 @@ const UserPosts = (props: UserPostsProps) => {
                             key={item._id}
                             src={item.urls[0] || ""}
                             className="w-80 h-80 rounded-2xl cursor-pointer"
-                            onClick={() => setSelectedPost(item)} // ست کردن پست انتخاب شده
+                            onClick={() => setSelectedPost(item)}
                         />
                     ))}
                 </div>

@@ -10,3 +10,10 @@ export interface CreateLikePostPayload {
 export interface CreateUnLikePostPayload {
   postId: string
 }
+
+export interface CreateSavePostPayload {
+    postId: string;
+}
+export interface CreateUnSavePostPayload {
+    postId: string
+}

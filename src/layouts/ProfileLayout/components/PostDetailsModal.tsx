@@ -9,7 +9,7 @@ import save from "@assets/icons/save.svg";
 import comment from "@assets/icons/comment.svg";
 import {useNavigate} from "react-router-dom";
 import {Expand, XCircle} from "lucide-react";
-import {useLikePost} from "@hooks/post.hook.ts";
+import {useLikePost, useSavePost} from "@hooks/post.hook.ts";
 
 interface postData {
     "_id": string,
@@ -50,13 +50,18 @@ const PostDetailsModal = ({isOpen, close, data}: PostDetailsModalProps) => {
         likeMutation.mutate({postId: data._id})
     };
 
+
+    const saveMutation = useSavePost();
+    const handleSave = async () => {
+        saveMutation.mutate({ postId: data._id }); // payload فقط برای savePost استفاده میشه
+    };
+
+
     const navigate = useNavigate();
 
     const handleCommentClick = () => {
-        navigate("/login")
+        navigate("/post")
     }
-    const handleSave = () => {
-    };
 
     if (!isOpen) return null;
 
