@@ -1,5 +1,5 @@
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import { getPosts, createPost } from "@/api/post/post.api";
+import { getPosts, createPost, getSavedPosts } from "@/api/post/post.api";
 
 export const usePosts = () => {
   return useQuery({
@@ -15,5 +15,12 @@ export const useCreatePost = () => {
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["posts"] });
     },
+  });
+};
+
+export const useSavedPostList = () => {
+  return useQuery({
+    queryKey: ["savedPosts"],
+    queryFn: getSavedPosts,
   });
 };

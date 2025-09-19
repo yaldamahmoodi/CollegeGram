@@ -23,3 +23,8 @@ export const createPost = async (payload: CreatePostPayload) => {
   });
   return data;
 };
+
+export const getSavedPosts = async () => {
+  const { data } = await api.get(POST_URLS.SAVED_POST_LIST);
+  return data;
+};

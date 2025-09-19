@@ -3,6 +3,7 @@ export const ROUTES = {
   REGISTER: "/register",
   DASHBOARD: "/dashboard",
   NOT_FOUND: "/notFound",
-  SAVE: "/save",
+  SAVED_POSTS: "savedPosts",
+  TAGGED_POSTS: "taggedPosts",
   CATCH_ALL: "*",
 } as const;
