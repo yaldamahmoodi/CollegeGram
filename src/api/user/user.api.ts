@@ -16,3 +16,13 @@ export const getUserInfo = async () => {
   const { data } = await api.get(USER_URLS.USER_INFO);
   return data;
 };
+
+export const getFollowers = async () => {
+  const { data } = await api.get(USER_URLS.FOLLOWERS_LIST);
+  return data;
+};
+
+export const getFollowings = async () => {
+  const { data } = await api.get(USER_URLS.FOLLOWINGS_LIST);
+  return data;
+};

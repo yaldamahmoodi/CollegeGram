@@ -1,5 +1,7 @@
 import Button from "@components/Button";
 import actionMenuIcon from "@assets/icons/actionMenu.svg";
+import { useFollowingList } from "@/hooks/user.hook";
+
 type User = {
   id: string | number;
   name: string;
@@ -8,7 +10,7 @@ type User = {
   avatar: string;
 };
 
-type UserListModalProps = {
+type FollowingListModalProps = {
   isOpen: boolean;
   onClose: () => void;
   title: string;
@@ -18,7 +20,7 @@ type UserListModalProps = {
   onItemAction?: (user: User) => void;
 };
 
-const UserListModal = (props: UserListModalProps) => {
+const FollowingListModal = (props: FollowingListModalProps) => {
   const {
     isOpen,
     onClose,
@@ -29,8 +31,11 @@ const UserListModal = (props: UserListModalProps) => {
     onItemAction,
   } = props;
 
+  const { data: followings } = useFollowingList();
+
   if (!isOpen) return null;
 
+  const userList = followings.length ? followings : users;
   return (
     <div
       className="fixed inset-0 z-50 flex items-center justify-center bg-black/40"
@@ -41,7 +46,7 @@ const UserListModal = (props: UserListModalProps) => {
         </div>
 
         <div className="max-h-[55vh] overflow-y-auto divide-y divide-gray-300 mb-5">
-          {users.map((user) => (
+          {userList.map((user) => (
             <div
               key={user.id}
               className="flex items-center justify-between px-2 py-4">
@@ -80,4 +85,4 @@ const UserListModal = (props: UserListModalProps) => {
   );
 };
 
-export default UserListModal;
+export default FollowingListModal;

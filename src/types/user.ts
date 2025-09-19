@@ -34,3 +34,15 @@ export interface UserInfoResponse
   post_count: number;
   profilePhotoUrl: string;
 }
+
+export interface FollowersType {
+  username: string;
+  following_count: number;
+  follower_count: number;
+}
+
+export interface FollowingType {
+  username: string;
+  following_count: number;
+  follower_count: number;
+}

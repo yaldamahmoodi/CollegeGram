@@ -1,5 +1,11 @@
 import { useMutation, useQuery } from "@tanstack/react-query";
-import { login, register, getUserInfo } from "@/api/user/user.api";
+import {
+  login,
+  register,
+  getUserInfo,
+  getFollowers,
+  getFollowings,
+} from "@/api/user/user.api";
 import { useNavigate } from "react-router-dom";
 import { ROUTES } from "@/routes/routes";
 
@@ -38,6 +44,22 @@ export const useUserInfo = () => {
   return useQuery({
     queryKey: ["userInfo"],
     queryFn: getUserInfo,
+    select: (response) => response.data,
+  });
+};
+
+export const useFollowingList = () => {
+  return useQuery({
+    queryKey: ["followings"],
+    queryFn: getFollowings,
+    select: (response) => response.data,
+  });
+};
+
+export const useFollowersList = () => {
+  return useQuery({
+    queryKey: ["followers"],
+    queryFn: getFollowers,
     select: (response) => response.data,
   });
 };

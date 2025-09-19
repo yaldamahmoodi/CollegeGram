@@ -3,7 +3,7 @@ import EditProfileModal from "@/layouts/ProfileLayout/components/EditProfileModa
 import { useEffect, useState } from "react";
 import { useUserInfo } from "@hooks/user.hook";
 import { MESSAGES } from "@/const/message";
-import UserListModal from "./UserListModal";
+import UserListModal from "./FollowingsListModal";
 import UsernameIcon from "@assets/images/username.png";
 import { getImageUrl } from "@/utils/url";
 
