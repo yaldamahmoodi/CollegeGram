@@ -51,7 +51,7 @@ app.use(morgan("combined"));
 
 app.use(
   "/uploads/profiles",
-  express.static(path.join(__dirname, "middlewares/uploads/profiles"), {
+  express.static(path.join(__dirname, "middlewares/uploads"), {
     setHeaders: (res) => {
       res.setHeader("Cross-Origin-Resource-Policy", "cross-origin");
     },
