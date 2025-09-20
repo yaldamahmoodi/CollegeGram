@@ -13,6 +13,7 @@ import {ElasticClient} from "./services/elasticClient.service.ts";
 import {SearchIndexManager} from "./services/SearchIndexManager.service.ts";
 import {SearchController} from "./controllers/search.controller.ts";
 import {UserSearchService} from "./services/UserSearchService.ts";
+import {FollowRepository} from "./repositories/follow.repository.ts";
 
 
 
