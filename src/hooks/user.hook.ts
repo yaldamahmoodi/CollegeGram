@@ -32,7 +32,7 @@ export const useLogin = () => {
     onSuccess: (data) => {
       localStorage.setItem("token", data.accessToken);
       localStorage.setItem("userId", data.userId);
-      navigate(ROUTES.DASHBOARD);
+      navigate(ROUTES.PROFILE);
       console.log("Login Success:", data);
     },
     onError: (error) => {

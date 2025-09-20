@@ -1,7 +1,7 @@
 import { useState } from "react";
 import Button from "@/components/Button";
 import CraetePostModal from "./components/CraetePostModal";
-import ProfileSidebarMenu from "./components/ProfileSidebarMenu";
+import ProfileSidebarMenu from "./components/sidebar/SidebarMenu";
 import profilePhoto from "@/assets/images/avatar.png";
 import searchIcon from "@assets/icons/Mobile/Search.svg";
 import gridMenuIcon from "@assets/icons/Mobile/gridMenu.svg";
@@ -46,7 +46,7 @@ const ProfileLayout = () => {
         <div className="hidden lg:block bg-white right-sidebar w-1/4 p-4 border border-gray-400 rounded-4xl">
           <ProfileSidebarMenu />
         </div>
-        <div className="left-section w-full lg:w-3/4 flex flex-col px-4 lg:pr-8">
+        <div className="left-section w-full lg:w-3/4 flex flex-col px-4 lg:px-15">
           <Outlet />
         </div>
       </div>

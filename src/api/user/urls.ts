@@ -8,4 +8,5 @@ export const USER_URLS = {
   FOLLOWERS_LIST: "/users/followers",
   FOLLOW: "users/follow",
   UNFOLLOW: "users/unfollow",
+  UPDATE_PROFILE: "/users/profile/update",
 };
