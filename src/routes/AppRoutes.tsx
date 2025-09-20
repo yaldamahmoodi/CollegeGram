@@ -19,11 +19,11 @@ export default function AppRoutes() {
         <Route index element={<Navigate to={ROUTES.LOGIN} />} />
       </Route>
       {/* <Route element={<ProtectedRoute />}> */}
-        <Route path={ROUTES.DASHBOARD} element={<ProfileLayout />}>
-          <Route index element={<Profile />} />
-          <Route path={ROUTES.TAGGED_POSTS} element={<TagPage />} />
-          <Route path={ROUTES.SAVED_POSTS} element={<Save />} />
-        </Route>
+      <Route path={ROUTES.PROFILE} element={<ProfileLayout />}>
+        <Route index element={<Profile />} />
+        <Route path={ROUTES.TAGGED_POSTS} element={<TagPage />} />
+        <Route path={ROUTES.SAVED_POSTS} element={<Save />} />
+      </Route>
       {/* </Route> */}
 
       <Route path={ROUTES.CATCH_ALL} element={<NotFound />} />
