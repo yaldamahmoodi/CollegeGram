@@ -3,7 +3,7 @@ import type {ProfileRepository} from "../repositories/profile.repository.ts";
 import bcrypt from 'bcrypt';
 import type {updateProfileUserSchema} from "../db/models/user.model.ts";
 import {NotFoundError} from "../utils/errors/notFound.errors.ts";
-import type {FollowRepository} from "../repositories/follow.repitory.ts";
+import type {FollowRepository} from "../repositories/follow.repository.ts";
 
 export class UserService {
 
