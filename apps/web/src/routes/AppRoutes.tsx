@@ -9,7 +9,6 @@ import Explore from "@/pages/explore/Explore";
 import SavedPosts from "@/pages/SavedPosts";
 import ProtectedRoute from "./ProtectedRoute";
 import TaggedPosts from "@/pages/TaggedPosts";
-import PostDetail from "@/pages/PostDetail";
 
 import { ROUTES } from "./routes";
 
@@ -26,7 +25,7 @@ export default function AppRoutes() {
           <Route index element={<Profile />} />
           <Route path={ROUTES.TAGGED_POSTS} element={<TaggedPosts />} />
           <Route path={ROUTES.SAVED_POSTS} element={<SavedPosts />} />
-          <Route path={ROUTES.POST_DETAIL} element={<PostDetail />} />
+          {/* <Route path={ROUTES.POST_DETAIL} element={<PostDetail  />} /> */}
           <Route path={ROUTES.EXPLORE} element={<Explore />} />
         </Route>
       </Route>

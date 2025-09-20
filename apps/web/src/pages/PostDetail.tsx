@@ -1,14 +1,11 @@
 import { useState } from "react";
 import ImageSlider from "@components/Image.tsx";
-import Modal from "@components/Modal.tsx";
 import avatar from "@assets/images/avatar.png";
 import Button from "@components/Button.tsx";
-import edit from "@assets/icons/edit.svg";
 import like from "@assets/icons/like.svg";
 import save from "@assets/icons/save.svg";
 import comment from "@assets/icons/comment.svg";
 import { useNavigate } from "react-router-dom";
-import { Expand, XCircle } from "lucide-react";
 import { useLikePost, useSavePost } from "@hooks/post.hook.ts";
 
 interface postData {
@@ -25,12 +22,10 @@ interface postData {
 }
 
 interface PostDetailProps {
-  isOpen: boolean;
-  close: () => void;
   data: postData;
 }
 
-const PostDetail = ({ isOpen, close, data }: PostDetailProps) => {
+const PostDetail = ({ data }: PostDetailProps) => {
   const created = Date.parse(data?.createdAt || new Date().toISOString());
   if (Number.isNaN(created)) throw new Error("Invalid createdAt");
 

@@ -1,4 +1,3 @@
-import { useSavedPostList } from "@/hooks/post.hook";
 import { useState } from "react";
 // import PostDetailsModal from "@/layouts/ProfileLayout/components/PostDetailsModal.tsx";
 
@@ -9,7 +8,7 @@ interface Post {
 }
 
 const SavedPosts = () => {
-  const { data: savedPosts } = useSavedPostList();
+
 
   const mockPosts: Post[] = [
     {
@@ -29,8 +28,8 @@ const SavedPosts = () => {
     },
   ];
 
-  const [posts, setPosts] = useState<Post[]>(mockPosts);
-  const [selectedPost, setSelectedPost] = useState<Post | null>(null);
+  const [posts] = useState<Post[]>(mockPosts);
+  const [_, setSelectedPost] = useState<Post | null>(null);
 
   return (
     <div className="tag-page w-full p-4">

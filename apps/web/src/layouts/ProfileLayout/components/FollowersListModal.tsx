@@ -46,7 +46,7 @@ const FollowersListModal = (props: FollowersListModalProps) => {
         </div>
 
         <div className="max-h-[55vh] overflow-y-auto divide-y divide-gray-300 mb-5">
-          {userList.map((user) => (
+          {userList.map((user: User) => (
             <div
               key={user.id}
               className="flex items-center justify-between px-2 py-4">

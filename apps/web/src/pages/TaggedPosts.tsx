@@ -26,8 +26,8 @@ const TaggedPosts = () => {
     },
   ];
 
-  const [posts, setPosts] = useState<Post[]>(mockPosts);
-  const [selectedPost, setSelectedPost] = useState<Post | null>(null);
+  const [posts] = useState<Post[]>(mockPosts);
+  const [_, setSelectedPost] = useState<Post | null>(null);
 
   return (
     <div className="tag-page w-full p-4">

@@ -5,7 +5,6 @@ import { useUserInfo } from "@hooks/user.hook";
 import { MESSAGES } from "@/const/message";
 import UserListModal from "./FollowingsListModal";
 import UsernameIcon from "@assets/images/username.png";
-import { getImageUrl } from "@/utils/url";
 
 const ProfileInfo = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);

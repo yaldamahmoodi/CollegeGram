@@ -70,7 +70,7 @@ export const useSavePost = () => {
 
             } catch (err: any) {
                 if (err.response?.status === 409) {
-                    const res = await unSavePost();
+                    const res = await unSavePost(payload);
                     if (res.status !== 200) throw new Error("Failed to unsave post");
                     return { action: "unsave" };
                 }
