@@ -51,30 +51,30 @@ app.use(
 
 app.use(morgan("combined"));
 
-app.use(
-  "/uploads/profiles",
-  express.static(path.join(__dirname, "middlewares/uploads"), {
-    setHeaders: (res) => {
-      res.setHeader("Cross-Origin-Resource-Policy", "cross-origin");
-      res.setHeader("Access-Control-Allow-Origin", allowedOrigins[0] || "*");
-      res.setHeader("Access-Control-Allow-Methods", "GET");
-      res.setHeader("Access-Control-Allow-Headers", "Content-Type");
-      res.setHeader("Cache-Control", "public, max-age=31536000"); // Cache for 1 year
-    },
-  })
-);
-app.use(
-  "/uploads/posts",
-  express.static(path.join(__dirname, "middlewares/uploads/posts"), {
-    setHeaders: (res) => {
-      res.setHeader("Cross-Origin-Resource-Policy", "cross-origin");
-      res.setHeader("Access-Control-Allow-Origin", allowedOrigins[0] || "*");
-      res.setHeader("Access-Control-Allow-Methods", "GET");
-      res.setHeader("Access-Control-Allow-Headers", "Content-Type");
-      res.setHeader("Cache-Control", "public, max-age=31536000"); // Cache for 1 year
-    },
-  })
-);
+// app.use(
+//   "/uploads/profiles",
+//   express.static(path.join(__dirname, "middlewares/uploads"), {
+//     setHeaders: (res) => {
+//       res.setHeader("Cross-Origin-Resource-Policy", "cross-origin");
+//       res.setHeader("Access-Control-Allow-Origin", allowedOrigins[0] || "*");
+//       res.setHeader("Access-Control-Allow-Methods", "GET");
+//       res.setHeader("Access-Control-Allow-Headers", "Content-Type");
+//       res.setHeader("Cache-Control", "public, max-age=31536000"); // Cache for 1 year
+//     },
+//   })
+// );
+// app.use(
+//   "/uploads/posts",
+//   express.static(path.join(__dirname, "middlewares/uploads/posts"), {
+//     setHeaders: (res) => {
+//       res.setHeader("Cross-Origin-Resource-Policy", "cross-origin");
+//       res.setHeader("Access-Control-Allow-Origin", allowedOrigins[0] || "*");
+//       res.setHeader("Access-Control-Allow-Methods", "GET");
+//       res.setHeader("Access-Control-Allow-Headers", "Content-Type");
+//       res.setHeader("Cache-Control", "public, max-age=31536000"); // Cache for 1 year
+//     },
+//   })
+// );
 
 /* ---- ROUTES ---- */
 app.use("/api/health", healthRoute);
@@ -83,14 +83,7 @@ app.use("/api/v1/users", userRoute);
 app.use("/api/v1/posts", postRoute);
 app.use("/api/v1/search", searchRoute);
 
-// Test route for uploads
-app.get("/api/uploads/test", (req, res) => {
-  res.json({ 
-    message: "Uploads endpoint is working", 
-    profilesPath: path.join(__dirname, "middlewares/uploads"),
-    postsPath: path.join(__dirname, "middlewares/uploads/posts")
-  });
-});
+// Uploads are now served directly by nginx at /uploads/ path
 
 export { app };
 export default app;
