@@ -10,7 +10,9 @@ import type { UserRegisterFormValues } from "@app-types/user";
 import { MESSAGES } from "@/const/message";
 
 const validationSchema = Yup.object({
-  username: Yup.string().required(MESSAGES.usernameRequired),
+  username: Yup.string()
+    .required(MESSAGES.usernameRequired)
+    .min(6, MESSAGES.usernameMinLength),
   email: Yup.string()
     .email(MESSAGES.emailInvalid)
     .required(MESSAGES.emailRequired),
@@ -99,7 +101,7 @@ const Register = () => {
       <Button
         label={MESSAGES.registerSubmitButton}
         disabled={!!Object.keys(formik.errors).length}
-        className={"mt-8"}
+        className={"w-[20px] mt-8 flex self-end"}
       />
     </form>
   );

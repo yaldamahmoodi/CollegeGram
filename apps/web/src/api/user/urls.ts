@@ -4,4 +4,9 @@ export const USER_URLS = {
   LOGIN: "/auth/login",
   USER_INFO: "/users/profile",
   UPLOAD_PROFILE_IMAGE: "/users/profile/upload",
+  FOLLOWINGS_LIST: "/users/followings",
+  FOLLOWERS_LIST: "/users/followers",
+  FOLLOW: "users/follow",
+  UNFOLLOW: "users/unfollow",
+  UPDATE_PROFILE: "/users/profile/update",
 };

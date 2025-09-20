@@ -5,7 +5,7 @@ import env from "../../env.ts";
 import type {insertUserZodSchema, selectUserZodSchema} from "../db/models/user.model.ts";
 import {ValidationError} from "../utils/errors/validation.errors.ts";
 import {NotFoundError} from "../utils/errors/notFound.errors.ts";
-import {ElasticClient} from "../services/elasticClient.service.ts";
+import {ElasticClient} from "./elasticClient.service.ts";
 import {UserSearchService} from "./UserSearchService.ts";
 
 const elasticClient = new ElasticClient();
