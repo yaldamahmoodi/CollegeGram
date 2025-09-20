@@ -1,7 +1,7 @@
 import { useState } from "react";
 import Button from "@/components/Button";
 import CraetePostModal from "./components/CraetePostModal";
-import ProfileSidebarMenu from "./components/ProfileSidebarMenu";
+import ProfileSidebarMenu from "./components/sidebar/SidebarMenu";
 import profilePhoto from "@/assets/images/avatar.png";
 import searchIcon from "@assets/icons/Mobile/Search.svg";
 import gridMenuIcon from "@assets/icons/Mobile/gridMenu.svg";

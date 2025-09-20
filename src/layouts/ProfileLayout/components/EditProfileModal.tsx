@@ -7,16 +7,30 @@ import userNameIcon from "@assets/icons/username.svg";
 import emailIcon from "@assets/icons/email.svg";
 import uploadImageIcon from "@assets/images/uploadImageIcon.svg";
 import refreshIcon from "@assets/icons/refresh.svg";
+import { updateProfile, uploadProfileImage, type UpdateProfilePayload } from "@/api/user/user.api";
+import Button from "@components/Button";
+
+type FormValues = {
+    firstname: string;
+    lastname: string;
+    email: string;
+    password: string;
+    confirmPassword: string;
+    bio: string;
+};
+
 interface Props {
   isOpen: boolean;
   onClose: () => void;
 }
 
 const EditProfileModal: React.FC<Props> = ({ isOpen, onClose }) => {
-  const [image, setImage] = useState<File | null>(null);
-  const [preview, setPreview] = useState<string | null>(null);
+    const [image, setImage] = useState<File | null>(null);
+    const [preview, setPreview] = useState<string | null>(null);
+    const [isPrivate, setIsPrivate] = useState(false);
 
-  const formik = useFormik({
+
+    const formik = useFormik<FormValues>({
     initialValues: {
       firstname: "",
       lastname: "",
@@ -25,23 +39,40 @@ const EditProfileModal: React.FC<Props> = ({ isOpen, onClose }) => {
       confirmPassword: "",
       bio: "",
     },
-    onSubmit: (values) => {
-      console.log("Form Values:", values);
-      console.log("Selected Image:", image);
-      onClose();
-    },
+        onSubmit: async (values, { setFieldError }) => {
+            const { confirmPassword, bio, ...rest } = values;
+            if (rest.password && rest.password !== confirmPassword) {
+                setFieldError("confirmPassword", "تکرار رمز با رمز برابر نیست");
+                return;
+            }
+            const raw = { ...rest, biography: bio };
+            const payload: UpdateProfilePayload = Object.fromEntries(
+                Object.entries(raw).filter(([, v]) => v != null && String(v).trim() !== "")
+            ) as UpdateProfilePayload;
+            if (Object.keys(payload).length > 0) {
+                await updateProfile(payload);
+            }
+            if (image) {
+                await uploadProfileImage(image);
+            }
+            if (Object.keys(payload).length === 0 && !image) {
+                onClose();
+                return;
+            }
+            onClose();
+            },
   });
 
   return (
-    <Modal
-      isOpen={isOpen}
-      onClose={onClose}
-      onPrimaryClick={formik.handleSubmit}
-      primaryLabel="ثبت تغیرات"
-      secondaryLabel="پشیمون شدم"
-      primaryActive={true}
-      secondaryActive={true}
-      className="w-96">
+      <Modal
+          isOpen={isOpen}
+          onClose={onClose}
+          onClickHandler={() => {
+              if (!formik.isSubmitting) formik.submitForm();
+          }}
+          labelHandler={formik.isSubmitting ? "در حال ذخیره..." : "ثبت تغییرات"}
+          labelClose="پشیمون شدم"
+          className="w-96">
       <h2 className="text-2xl flex self-center">ویرایش حساب</h2>
       <form onSubmit={formik.handleSubmit} className="flex flex-col gap-4">
           <div className="relative flex flex-col self-center items-center gap-2 mb-4 rounded-full overflow-hidden w-32 h-32  cursor-pointer justify-center hover:bg-orange-50 transition">
@@ -142,12 +173,28 @@ const EditProfileModal: React.FC<Props> = ({ isOpen, onClose }) => {
           }
           errorMessage={formik.errors.confirmPassword}
         />
-        <div className="flex flex-col gap-2">
+          <div className="flex items-center gap-2">
+              <Button
+                  type="button"
+                  onClick={() => setIsPrivate(!isPrivate)}
+                  className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors
+          ${isPrivate ? "bg-[#E7000B]" : "bg-gray-300"}`}
+                  label={
+                      <span
+                          className={`absolute top-0.5 left-0.5 h-5 w-5 rounded-full bg-white shadow transition-transform
+              ${isPrivate ? "translate-x-5" : "translate-x-0"}`}
+                      />
+                  }
+              />
+              <span className="text-sm select-none">پیج خصوصی باشه</span>
+
+          </div>
+
+          <div className="flex flex-col gap-2">
             <p>بایو</p>
         <Input
           type="text"
           multiple
-          // placeholder="بایو"
           name="bio"
           value={formik.values.bio}
           onChange={formik.handleChange}
