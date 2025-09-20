@@ -101,7 +101,7 @@ const Register = () => {
       <Button
         label={MESSAGES.registerSubmitButton}
         disabled={!!Object.keys(formik.errors).length}
-        className={"mt-8"}
+        className={"w-[20px] mt-8 flex self-end"}
       />
     </form>
   );

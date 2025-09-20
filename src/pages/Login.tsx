@@ -78,7 +78,7 @@ const Login = () => {
       <Button
         label="ورود"
         disabled={!!Object.keys(formik.errors).length}
-        className="mt-8"
+        className="w-[20px] mt-8 flex self-end"
       />
 
       <div className="flex flex-col mt-8 gap-3">
