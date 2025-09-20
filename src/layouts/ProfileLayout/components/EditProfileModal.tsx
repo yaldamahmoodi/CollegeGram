@@ -15,6 +15,7 @@ import {
 import { useUserInfo } from "@/hooks/user.hook";
 // import Button from "@components/Button";
 
+
 type FormValues = {
   firstname: string;
   lastname: string;
@@ -34,7 +35,7 @@ const EditProfileModal: React.FC<Props> = ({ isOpen, onClose }) => {
   const [preview, setPreview] = useState<string | null>(null);
   const [isPrivate, setIsPrivate] = useState(false);
 
-  const { data: user } = useUserInfo();
+    const { data: user } = useUserInfo();
 
   const formik = useFormik<FormValues>({
     initialValues: {

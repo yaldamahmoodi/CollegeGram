@@ -5,7 +5,7 @@ import avatar from "@assets/images/avatar.png";
 import Button from "@components/Button.tsx";
 import edit from "@assets/icons/edit.svg";
 import like from "@assets/icons/like.svg";
-import save from "@assets/icons/save.svg";
+import savePost from "@assets/icons/savePost.svg";
 import comment from "@assets/icons/comment.svg";
 import { useNavigate } from "react-router-dom";
 import { Expand, XCircle } from "lucide-react";
@@ -120,7 +120,7 @@ const PostDetailsModal = ({ isOpen, close, data }: PostDetailsModalProps) => {
             <Button
               type="button"
               onClick={handleSave}
-              icon={<img src={save} />}
+              icon={<img src={savePost} />}
               label={data.save_count.toString()}
               className="flex flex-col items-center bg-transparent hover:bg-transparent !text-[#EA5A69]"
             />

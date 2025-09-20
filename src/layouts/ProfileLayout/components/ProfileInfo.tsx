@@ -51,6 +51,7 @@ const ProfileInfo = () => {
       avatar: "https://i.pravatar.cc/153?img=14",
     },
   ];
+  console.log(user?.profilePhotoUrl)
 
   return (
     <div className="profile-info-container w-full flex flex-col lg:flex-row lg:items-start gap-6 py-4  flex flex-justify">
@@ -59,10 +60,10 @@ const ProfileInfo = () => {
           <img
             src={
               user?.profilePhotoUrl
-                ? getImageUrl(user?.profilePhotoUrl)
+                ? user?.profilePhotoUrl
                 : UsernameIcon
             }
-            className="h-[134px] w-[134px] bg-cover no-repeat"
+            className="h-[134px] w-[134px] bg-cover no-repeat rounded-full"
           />
         </div>
       </div>

@@ -2,19 +2,21 @@ import avatar from "@assets/images/avatar.png";
 import { useLocation } from "react-router-dom";
 import { SidebarValue, SidebarBottomValue } from "./const";
 import SidebarItems from "./SidebarItem";
+import {useUserInfo} from "@hooks/user.hook.ts";
 
 const SidebarMenu = () => {
   const location = useLocation();
+  const {data:user} = useUserInfo()
 
   return (
     <div className="flex flex-col ">
       <div className="flex items-center gap-3 my-5 px-3">
         <img
-          src={avatar}
+          src={user && user.profilePhotoUrl || avatar}
           alt="profile"
           className="w-12 h-12 rounded-full object-cover"
         />
-        <span className="text-gray-800 font-semibold">mahzm</span>
+        <span className="text-gray-800 font-semibold">{user && user.username}</span>
       </div>
 
       <div className="flex flex-col gap-3">
