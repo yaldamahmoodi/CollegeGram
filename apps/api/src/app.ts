@@ -38,12 +38,14 @@ app.use(
       if (allowedOrigins.indexOf(origin) !== -1) {
         callback(null, true);
       } else {
+        console.log(`CORS blocked origin: ${origin}`);
         callback(new Error("Not allowed by CORS"));
       }
     },
     credentials: true,
     methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS", "PATCH"],
-    allowedHeaders: ["Content-Type", "Authorization"],
+    allowedHeaders: ["Content-Type", "Authorization", "X-Requested-With"],
+    exposedHeaders: ["Content-Type", "Authorization"],
   })
 );
 
@@ -54,6 +56,10 @@ app.use(
   express.static(path.join(__dirname, "middlewares/uploads"), {
     setHeaders: (res) => {
       res.setHeader("Cross-Origin-Resource-Policy", "cross-origin");
+      res.setHeader("Access-Control-Allow-Origin", allowedOrigins[0] || "*");
+      res.setHeader("Access-Control-Allow-Methods", "GET");
+      res.setHeader("Access-Control-Allow-Headers", "Content-Type");
+      res.setHeader("Cache-Control", "public, max-age=31536000"); // Cache for 1 year
     },
   })
 );
@@ -62,6 +68,10 @@ app.use(
   express.static(path.join(__dirname, "middlewares/uploads/posts"), {
     setHeaders: (res) => {
       res.setHeader("Cross-Origin-Resource-Policy", "cross-origin");
+      res.setHeader("Access-Control-Allow-Origin", allowedOrigins[0] || "*");
+      res.setHeader("Access-Control-Allow-Methods", "GET");
+      res.setHeader("Access-Control-Allow-Headers", "Content-Type");
+      res.setHeader("Cache-Control", "public, max-age=31536000"); // Cache for 1 year
     },
   })
 );
@@ -72,6 +82,15 @@ app.use("/api/v1/auth", authRoute);
 app.use("/api/v1/users", userRoute);
 app.use("/api/v1/posts", postRoute);
 app.use("/api/v1/search", searchRoute);
+
+// Test route for uploads
+app.get("/api/uploads/test", (req, res) => {
+  res.json({ 
+    message: "Uploads endpoint is working", 
+    profilesPath: path.join(__dirname, "middlewares/uploads"),
+    postsPath: path.join(__dirname, "middlewares/uploads/posts")
+  });
+});
 
 export { app };
 export default app;
