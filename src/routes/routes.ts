@@ -9,5 +9,6 @@ export const ROUTES = {
   NOTIFICATIONS: "notifications",
   SEARCH: "search",
   EXPLORE: "explore",
+  POST_DETAIL: "postDetail",
   CATCH_ALL: "*",
 } as const;
