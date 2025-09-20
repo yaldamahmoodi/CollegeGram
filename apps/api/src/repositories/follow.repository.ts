@@ -1,0 +1,115 @@
+import {Follow} from "../db/models/follow.model.ts";
+import {UserModel} from "../db/models/user.model.ts";
+import {AlreadyDoneError} from "../utils/errors/alreadyDone.errors.ts";
+import mongoose from "mongoose";
+
+export class FollowRepository {
+
+    async followUser(userId: string, followedUserId: string) {
+
+        const fll = await Follow.updateOne(
+            {follower_id: userId, following_id: followedUserId},
+            {$setOnInsert: {follower_id: userId, following_id: followedUserId, createdAt: new Date()}},
+            {upsert: true}
+        );
+
+        if (fll.upsertedCount > 0) {
+            await UserModel.updateOne(
+                {_id: userId},
+                {$inc: {following_count: 1}}
+            );
+            await UserModel.updateOne(
+                {_id: followedUserId},
+                {$inc: {follower_count: 1}}
+            );
+        }
+
+        if (fll.upsertedCount === 0) {
+            throw new AlreadyDoneError("ALREADY_DONE", "user followed before");
+        }
+
+        return fll;
+    }
+
+    async unfollowUser(userId: string, followedUserId: string) {
+        const dll = await Follow.deleteOne({
+            follower_id: userId,
+            following_id: followedUserId
+        });
+        if (dll.deletedCount > 0) {
+            await UserModel.updateOne(
+                {_id: userId},
+                {$inc: {following_count: -1}}
+            );
+            await UserModel.updateOne(
+                {_id: followedUserId},
+                {$inc: {follower_count: -1}}
+            );
+        }
+
+        if (dll.deletedCount === 0) {
+            throw new AlreadyDoneError("ALREADY_DONE", "user unfollowed before");
+        }
+
+        return dll;
+    }
+
+    async getFollowers(user_id: string) {
+        return Follow.aggregate([
+            {
+                $match: {
+                    following_id: new mongoose.Types.ObjectId(user_id),
+                },
+            },
+            {
+                $lookup: {
+                    from: "users",
+                    localField: "follower_id",
+                    foreignField: "_id",
+                    as: "followerDetails",
+                },
+            },
+            {$unwind: "$followerDetails"},
+            {
+                $project: {
+                    _id: 0,
+                    username: "$followerDetails.username",
+                    follower_count: "$followerDetails.follower_count",
+                    following_count: "$followerDetails.following_count",
+                    profilePhoto: "$followerDetails.ProfilePhoto",
+                },
+            },
+        ]);
+
+
+    }
+
+    async getFollowings(user_id: string) {
+        return Follow.aggregate([
+            {
+                $match: {
+                    follower_id: new mongoose.Types.ObjectId(user_id),
+                },
+            },
+            {
+                $lookup: {
+                    from: "users",
+                    localField: "following_id",
+                    foreignField: "_id",
+                    as: "followingDetails",
+                },
+            },
+            {$unwind: "$followingDetails"},
+            {
+                $project: {
+                    _id: 0,
+                    username: "$followingDetails.username",
+                    follower_count: "$followingDetails.follower_count",
+                    following_count: "$followingDetails.following_count",
+                    profilePhoto: "$followingDetails.ProfilePhoto",
+                },
+            },
+        ]);
+    }
+
+}

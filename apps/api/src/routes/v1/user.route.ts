@@ -7,6 +7,7 @@ import {bodyParser} from "../../middlewares/parsers.middleware.ts";
 import {updateProfileUserSchema} from "../../db/models/user.model.ts";
 import {initiator} from "../../server.ts";
 import {uploadPostPhotosMiddleware} from "../../middlewares/uploadPost.middleware.ts";
+import {followSchema} from "../../dtos/user.dto.ts";
 
 const router = Router();
 
@@ -40,11 +41,13 @@ router.patch(
 
 router.post(
     "/follow",
+    bodyParser(followSchema),
     userController.followUser
 );
 
 router.post(
     "/unfollow",
+    bodyParser(followSchema),
     userController.unfollowUser
 );
 
@@ -52,6 +55,17 @@ router.get(
     '/savesList',
     userController.getUserSavesList
 )
+
+router.get(
+    "/followers",
+    userController.getFollowersList
+)
+
+router.get(
+    "/followings",
+    userController.getFollowingsList
+)
+
 
 router.use(errorHandler);
 

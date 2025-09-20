@@ -1,31 +1,23 @@
-FROM node:24-slim AS backend-base
-WORKDIR /api
+# Use official Node.js 24 image
+FROM node:24.6.0
 
-# Enable pnpm via corepack
+# Set working directory inside the container
+WORKDIR /app
+
+# Install pnpm globally
 RUN npm install -g pnpm
-RUN corepack enable && corepack prepare pnpm@latest --activate
 
-# Copy only package files and install deps
-COPY package.json pnpm-lock.yaml tsconfig.json  ./
-RUN pnpm install
+# Copy package files first to leverage Docker cache
+COPY package.json pnpm-lock.yaml* ./
 
-# Copy source code
-COPY src ./src
-COPY docs ./docs
-COPY env.ts ./
-COPY .env ./
+# Install dependencies
+RUN pnpm install --frozen-lockfile
 
-# Install nodemon globally for dev container
-RUN npm install -g nodemon
+# Copy the rest of your app
+COPY . .
 
-# ----------------------------
-# Backend production stage
-# ----------------------------
-FROM backend-base
-ENV NODE_ENV=production
-ENV APP_STAGE=production
-
-# Build TS for production
+# Expose the port your app runs on
 EXPOSE 3001
 
-CMD ["pnpm", "run", "start"]
+# Default command to run your app
+CMD ["pnpm","run", "start"]

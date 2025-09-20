@@ -28,6 +28,9 @@ export class UserController {
         this.followUser = this.followUser.bind(this);
         this.unfollowUser = this.unfollowUser.bind(this);
         this.getUserSavesList = this.getUserSavesList.bind(this);
+        this.unfollowUser = this.unfollowUser.bind(this);
+        this.getFollowingsList = this.getFollowingsList.bind(this);
+        this.getFollowersList = this.getFollowersList.bind(this);
 
     }
 
@@ -37,17 +40,16 @@ export class UserController {
 
         if (!req.file) return next(new ValidationError("INVALID_CREDENTIALS"))
 
-        const filePath = req.file.path;
+        const filename = req.file.filename;
 
         try {
-            const profile = await this.userService.uploadProfile(filePath, req.user.id);
+             await this.userService.uploadProfile(filename, req.user.id);
             return res.status(201).json({
                 code: "UPLOADED",
                 message: "Profile upload success",
-                data: profile
             });
         } catch (error: unknown) {
-            if (error instanceof APIError) return next(error)
+            if (error instanceof APIError) return next(error);
         }
     }
 
@@ -60,7 +62,9 @@ export class UserController {
 
         try {
             const userDetails = await this.userService.getUserDetails(userId);
-            const profilePhotoPath = userDetails.ProfilePhoto?.path;
+            const profilePhotoUrl = userDetails.ProfilePhoto?.path
+                ? `${req.protocol}://${req.get("host")}/uploads/profiles/${userDetails.ProfilePhoto.path}`
+                : null;
             return res.status(200).json({
                 code: "GET_USER_SUCCESSFULLY",
                 data: {
@@ -72,7 +76,7 @@ export class UserController {
                     follower_count: userDetails.follower_count,
                     following_count: userDetails.following_count,
                     post_count: userDetails.post_count,
-                    profilePhotoUrl: profilePhotoPath,
+                    profilePhotoUrl,
                 }
             })
         } catch (error: unknown) {
@@ -91,7 +95,7 @@ export class UserController {
 
             const files = req.files as Express.Multer.File[];
             const caption = req.body.caption;
-            const filePaths: string[] = files.map(file => file.path);
+            const filePaths: string[] = files.map(file => file.filename);
             const mentions = Array.isArray(req.body.mentions) ? req.body.mentions : [];
             const hashtag_array: string[] = caption ? extractHashtags(caption) : [];
 
@@ -140,13 +144,14 @@ export class UserController {
 
     async followUser(req: Authenticate, res: Response, next: NextFunction) {
 
-        const {followedUserId} = req.body;
+        const {followerUserId} = req.body;
+        console.log(followerUserId)
 
-        if (followedUserId === req.user.id) return next(new ValidationError("YOU_CANNOT_FOLLOW_YOURSELF"))
+        if (followerUserId === req.user.id) return next(new ValidationError("YOU_CANNOT_FOLLOW_YOURSELF"))
 
         try {
 
-            await this.userService.followUser(req.user.id, followedUserId);
+            await this.userService.followUser(req.user.id, followerUserId);
             return res.status(200).json({
                 code: "USER_FOLLOWED",
                 message: "User successfully Followed"
@@ -159,13 +164,13 @@ export class UserController {
 
     async unfollowUser(req: Authenticate, res: Response, next: NextFunction) {
 
-        const {unfollowedUserId} = req.body;
+        const {followerUserId} = req.body;
 
-        if (unfollowedUserId === req.user.id) return next(new ValidationError("YOU_CANNOT_UNFOLLOW_YOURSELF"))
+        if (followerUserId === req.user.id) return next(new ValidationError("YOU_CANNOT_UNFOLLOW_YOURSELF"))
 
         try {
 
-            await this.userService.unfollowUser(req.user.id, unfollowedUserId);
+            await this.userService.unfollowUser(req.user.id, followerUserId);
             return res.status(200).json({
                 code: "USER_UNFOLLOWED",
                 message: "User successfully Unfollowed"
@@ -208,4 +213,29 @@ export class UserController {
             if (error instanceof APIError) return next(error)
         }
     }
+
+    async getFollowersList(req: Authenticate<{}, {}>, res: Response, next: NextFunction) {
+        try {
+            const followerUserList = await this.userService.getFollowers(req.user.id)
+            return res.status(200).json({
+                code: "SUCCESS",
+                data: followerUserList
+            })
+        } catch (error) {
+            if (error instanceof APIError) return next(error)
+        }
+    }
+
+    async getFollowingsList(req: Authenticate<{}, {}>, res: Response, next: NextFunction) {
+        try {
+            const followingUserList = await this.userService.getFollowings(req.user.id)
+            return res.status(200).json({
+                code: "SUCCESS",
+                data: followingUserList
+            })
+        } catch (error) {
+            if (error instanceof APIError) return next(error)
+        }
+    }
+
 }

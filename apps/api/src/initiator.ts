@@ -9,9 +9,15 @@ import {ProfileRepository} from "./repositories/profile.repository.ts";
 import {PostController} from "./controllers/post.controller.ts";
 import {PostService} from "./services/post.service.ts";
 import {SaveRepository} from "./repositories/save.repository.ts";
-import {FollowUnfollowRepository} from "./repositories/followUnfollow.repository.ts";
 import {ElasticClient} from "./services/elasticClient.service.ts";
 import {SearchIndexManager} from "./services/SearchIndexManager.service.ts";
+import {SearchController} from "./controllers/search.controller.ts";
+import {UserSearchService} from "./services/UserSearchService.ts";
+import {FollowRepository} from "./repositories/follow.repository.ts";
+
+
+
+
 export class Initiator {
     public userService: UserService;
     public userRepository: UserRepository;
@@ -24,10 +30,12 @@ export class Initiator {
     public postService: PostService;
     public postController: PostController;
     public saveRepository: SaveRepository;
-    public followUnfollowRepository: FollowUnfollowRepository;
+    public followRepository: FollowRepository;
 
     public elasticClient: ElasticClient;
     public searchIndexManager: SearchIndexManager;
+    public searchController: SearchController;
+    public userSearchService: UserSearchService;
 
     constructor() {
         this.userRepository = new UserRepository();
@@ -35,24 +43,28 @@ export class Initiator {
         this.postRepository = new PostRepository();
         this.saveRepository = new SaveRepository();
         this.profileRepository = new ProfileRepository();
-        this.followUnfollowRepository = new FollowUnfollowRepository()
+        this.followRepository = new FollowRepository()
+
 
         this.elasticClient = new ElasticClient();
         this.searchIndexManager = new SearchIndexManager(this.elasticClient);
     }
 
 
-
     public setupServices(): void {
         this.authService = new AuthService(this.authRepository);
-        this.userService = new UserService(this.userRepository, this.profileRepository, this.followUnfollowRepository);
+        this.userService = new UserService(this.userRepository, this.profileRepository, this.followRepository);
         this.postService = new PostService(this.postRepository, this.saveRepository);
+        this.userSearchService = new UserSearchService(this.elasticClient);
+
     }
 
     public setupControllers(): void {
         this.authController = new AuthController(this.authService);
         this.userController = new UserController(this.userService, this.postService);
         this.postController = new PostController(this.postService);
+        this.searchController = new SearchController(this.userSearchService);
+
     }
 
     public getAuthController() {
@@ -66,5 +78,9 @@ export class Initiator {
 
     public getPostController() {
         return this.postController;
+    }
+    
+    public getSearchController() {
+        return this.searchController;
     }
 }

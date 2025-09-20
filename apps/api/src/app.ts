@@ -12,6 +12,7 @@ import postRoute from "./routes/v1/post.route.ts";
 import env from "../env.ts";
 import path from "path";
 import {fileURLToPath} from "node:url";
+import searchRoute from "./routes/v1/search.route.ts"
 
 
 const __filename = fileURLToPath(import.meta.url);
@@ -46,12 +47,15 @@ app.use(cors({
 
 app.use(morgan("combined"))
 
+app.use("/uploads/profiles", express.static(path.join(__dirname, "middlewares/uploads/profiles")));
+app.use("/uploads/posts", express.static(path.join(__dirname, "middlewares/uploads/posts")));
 
 /* ---- ROUTES ---- */
 app.use("/api/health", healthRoute)
 app.use("/api/v1/auth", authRoute);
 app.use("/api/v1/users", userRoute);
 app.use("/api/v1/posts", postRoute);
+app.use("/api/v1/search", searchRoute);
 
 
 export {app};
