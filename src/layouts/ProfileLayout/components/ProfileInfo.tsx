@@ -72,7 +72,7 @@ const ProfileInfo = () => {
           <div className="flex flex-row items-center gap-2">
             <div className="text-lg md:text-2xl font-bold mb-1">
               {user?.firstname && user?.lastname
-                ? `${user.data.firstname}  ${user.data.lastname}`
+                ? `${user?.firstname}  ${user?.lastname}`
                 : "کاربر کالج گرام"}
             </div>
             <span className="text-sm lg:text-base font-light mr-3 ">
