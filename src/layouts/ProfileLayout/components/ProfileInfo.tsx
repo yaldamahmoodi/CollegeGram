@@ -1,6 +1,6 @@
 import Button from "@components/Button";
 import EditProfileModal from "@/layouts/ProfileLayout/components/EditProfileModal";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { useUserInfo } from "@hooks/user.hook";
 import { MESSAGES } from "@/const/message";
 import UserListModal from "./FollowingsListModal";
