@@ -1,15 +1,23 @@
 import Button from "@/components/Button";
 import React, { useState } from "react";
+import type { MentionsType } from "@app-types/post";
 
 interface MentionInputProps {
-  users: string[];
+  users: MentionsType[];
+  mentions: MentionsType[];
+  setMentions: (val: MentionsType[]) => void;
   handlePostSubmit?: () => void;
 }
 
-const MentionInput = ({ users, handlePostSubmit }: MentionInputProps) => {
+const MentionInput = ({
+  users,
+  mentions,
+  setMentions,
+  handlePostSubmit,
+}: MentionInputProps) => {
   const [inputValue, setInputValue] = useState("");
   const [isMentioning, setIsMentioning] = useState(false);
-  const [suggestedUsers, setSuggestedUsers] = useState<string[]>([]);
+  const [suggestedUsers, setSuggestedUsers] = useState<MentionsType[]>([]);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value;
@@ -20,7 +28,7 @@ const MentionInput = ({ users, handlePostSubmit }: MentionInputProps) => {
     if (mentionPart.length > 0) {
       setIsMentioning(true);
       const filteredUsers = users.filter((user) =>
-        user.toLowerCase().includes(mentionPart.toLowerCase())
+        user.username.toLowerCase().includes(mentionPart.toLowerCase())
       );
       setSuggestedUsers(filteredUsers);
     } else {
@@ -29,8 +37,11 @@ const MentionInput = ({ users, handlePostSubmit }: MentionInputProps) => {
     }
   };
 
-  const handleUserSelect = (user: string) => {
-    setInputValue(inputValue.replace(/@[\w]*$/, `@${user}`));
+  const handleUserSelect = (user: MentionsType) => {
+    if (!mentions.some((m) => m.user_id === user.user_id)) {
+      setMentions([...mentions, user]);
+    }
+    setInputValue("");
     setIsMentioning(false);
     setSuggestedUsers([]);
   };
@@ -50,14 +61,23 @@ const MentionInput = ({ users, handlePostSubmit }: MentionInputProps) => {
         <ul className="absolute bg-white border rounded-md shadow-lg w-full mt-1 max-h-40 overflow-auto z-10">
           {suggestedUsers.map((user) => (
             <li
-              key={user}
+              key={user.user_id}
               onClick={() => handleUserSelect(user)}
               className="p-2 cursor-pointer hover:bg-gray-200">
-              @{user}
+              @{user.username}
             </li>
           ))}
         </ul>
       )}
+      <div className="flex flex-wrap gap-2 mb-4">
+        {mentions.map((m) => (
+          <span
+            key={m.user_id}
+            className="px-2 py-1 bg-orange-100 text-orange-700 rounded-xl text-sm">
+            @{m.username}
+          </span>
+        ))}
+      </div>
       <Button
         onClick={handlePostSubmit}
         label=" ثبت و انتشار پست"

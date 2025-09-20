@@ -5,9 +5,10 @@ import Login from "@pages/Login";
 import Profile from "@pages/Profile";
 import Register from "@pages/Register";
 import NotFound from "@pages/NotFound";
-import Save from "@/pages/SavedPosts";
+import Explore from "@/pages/explore/Explore";
+import SavedPosts from "@/pages/SavedPosts";
 import ProtectedRoute from "./ProtectedRoute";
-import TagPage from "@/pages/TaggedPosts";
+import TaggedPosts from "@/pages/TaggedPosts";
 import { ROUTES } from "./routes";
 
 export default function AppRoutes() {
@@ -18,13 +19,14 @@ export default function AppRoutes() {
         <Route path={ROUTES.REGISTER} element={<Register />} />
         <Route index element={<Navigate to={ROUTES.LOGIN} />} />
       </Route>
-      {/* <Route element={<ProtectedRoute />}> */}
-      <Route path={ROUTES.PROFILE} element={<ProfileLayout />}>
-        <Route index element={<Profile />} />
-        <Route path={ROUTES.TAGGED_POSTS} element={<TagPage />} />
-        <Route path={ROUTES.SAVED_POSTS} element={<Save />} />
+      <Route element={<ProtectedRoute />}>
+        <Route path={ROUTES.PROFILE} element={<ProfileLayout />}>
+          <Route index element={<Profile />} />
+          <Route path={ROUTES.TAGGED_POSTS} element={<TaggedPosts />} />
+          <Route path={ROUTES.SAVED_POSTS} element={<SavedPosts />} />
+          <Route path={ROUTES.EXPLORE} element={<Explore />} />
+        </Route>
       </Route>
-      {/* </Route> */}
 
       <Route path={ROUTES.CATCH_ALL} element={<NotFound />} />
     </Routes>

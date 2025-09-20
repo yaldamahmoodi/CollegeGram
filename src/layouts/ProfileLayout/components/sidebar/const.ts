@@ -30,7 +30,7 @@ export const SidebarValue = [
     link: ROUTES.NOTIFICATIONS,
     icon: notificationIcon,
     text: "اعلانات",
-    id: "notif",
+    id: "notification",
   },
   {
     link: ROUTES.TAGGED_POSTS,
@@ -44,13 +44,13 @@ export const SidebarBottomValue = [
   {
     link: ROUTES.EXPLORE,
     icon: exploreIcon,
-    text: "صفحه من",
-    id: "home",
+    text: " اکسپلور",
+    id: "explore",
   },
   {
     link: ROUTES.SEARCH,
     icon: searchIcon,
-    text: "ذخیره ها",
-    id: "save",
+    text: "جستجو ",
+    id: "search",
   },
 ];
