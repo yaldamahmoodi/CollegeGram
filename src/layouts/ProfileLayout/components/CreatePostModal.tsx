@@ -1,8 +1,8 @@
 import Modal from "@components/Modal";
 import Stepper from "./Stepper";
-import UserPostUploader from "../components/UserPostUploader";
-import CaptionWithEmojis from "../components/CaptionWithEmojis";
-import MentionInput from "../components/MentionInput";
+import UserPostUploader from "./UserPostUploader";
+import CaptionWithEmojis from "./CaptionWithEmojis";
+import MentionInput from "./MentionInput";
 import { useState } from "react";
 import { useCreatePost } from "@/hooks/post.hook";
 import type { MentionsType } from "@app-types/post";
@@ -61,7 +61,7 @@ const CreatePostModal = (props: CreatePostModalProps) => {
   ];
 
   return (
-    <Modal isOpen={isOpen} className="w-[500px]">
+    <Modal isOpen={isOpen} size={"medium"}>
       <Stepper steps={steps} callbackHandler={onClose} />
     </Modal>
   );

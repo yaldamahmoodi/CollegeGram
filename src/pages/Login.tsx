@@ -19,7 +19,9 @@ const Login = () => {
   };
 
   const validationSchema = Yup.object({
-    username: Yup.string().required(MESSAGES.usernameRequired),
+    username: Yup.string()
+      .required(MESSAGES.usernameRequired)
+      .min(6, MESSAGES.usernameMinLength),
     password: Yup.string()
       .required(MESSAGES.passwordRequired)
       .min(8, MESSAGES.passwordMinLength)

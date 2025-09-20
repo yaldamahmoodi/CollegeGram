@@ -1,7 +1,7 @@
 import Button from "@components/Button";
 import { useEffect, useState } from "react";
 import PostDetailsModal from "@/layouts/ProfileLayout/components/PostDetailsModal.tsx";
-
+import groupPhotoIcon from "@assets/icons/GroupPhotos.svg";
 import { usePosts } from "@hooks/post.hook.ts";
 import type { postData } from "@api/post/post.api.ts";
 
@@ -24,14 +24,22 @@ const UserPosts = (props: UserPostsProps) => {
   return (
     <div className="profile-posts w-full h-full flex-auto border border-gray-400 p-4 overflow-y-auto rounded-4xl">
       {data.length > 0 ? (
-        <div className="flex flex-wrap gap-10 justify-evenly">
+        <div className="flex flex-wrap gap-8 justify-start">
           {data.map((item) => (
-            <img
-              key={item._id}
-              src={item.urls[0] || ""}
-              className="w-80 h-80 rounded-2xl cursor-pointer"
-              onClick={() => setSelectedPost(item)}
-            />
+            <div className="relative ">
+              {item.urls.length > 1 && (
+                <img
+                  src={groupPhotoIcon}
+                  className="absolute top-5 left-5 w-10 h-10"
+                />
+              )}
+              <img
+                key={item._id}
+                src={item.urls[0] || ""}
+                className="w-100 h-100 rounded-4xl cursor-pointer object-cover"
+                onClick={() => setSelectedPost(item)}
+              />
+            </div>
           ))}
         </div>
       ) : (

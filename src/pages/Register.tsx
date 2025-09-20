@@ -10,7 +10,9 @@ import type { UserRegisterFormValues } from "@app-types/user";
 import { MESSAGES } from "@/const/message";
 
 const validationSchema = Yup.object({
-  username: Yup.string().required(MESSAGES.usernameRequired),
+  username: Yup.string()
+    .required(MESSAGES.usernameRequired)
+    .min(6, MESSAGES.usernameMinLength),
   email: Yup.string()
     .email(MESSAGES.emailInvalid)
     .required(MESSAGES.emailRequired),

@@ -4,6 +4,7 @@ export const MESSAGES = {
   password: "رمز عبور",
   confirmPassword: "تکرار رمر عبور",
   usernameRequired: "نام کاربری الزامی است.",
+  usernameMinLength: " نام کاربری باید حداقل 6 کاراکتر باشد.",
   emailRequired: "ایمیل الزامی است.",
   emailInvalid: "ایمیل معتبر وارد کنید.",
   passwordRequired: "رمز عبور الزامی است.",

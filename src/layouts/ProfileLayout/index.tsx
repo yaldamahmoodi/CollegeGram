@@ -1,6 +1,6 @@
 import { useState } from "react";
 import Button from "@/components/Button";
-import CraetePostModal from "./components/CraetePostModal";
+import CraetePostModal from "./components/CreatePostModal";
 import ProfileSidebarMenu from "./components/sidebar/SidebarMenu";
 import profilePhoto from "@/assets/images/avatar.png";
 import searchIcon from "@assets/icons/Mobile/Search.svg";
