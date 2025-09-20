@@ -1,22 +1,21 @@
 import type {UserRepository} from "../repositories/user.repository.ts";
 import type {ProfileRepository} from "../repositories/profile.repository.ts";
-import type {FollowUnfollowRepository} from "../repositories/followUnfollow.repository.ts";
 import bcrypt from 'bcrypt';
 import type {updateProfileUserSchema} from "../db/models/user.model.ts";
 import {NotFoundError} from "../utils/errors/notFound.errors.ts";
-import {BadRequestErrors} from "../utils/errors/badRequest.errors.ts";
+import type {FollowRepository} from "../repositories/follow.repitory.ts";
 
 export class UserService {
 
     private readonly userRepository: UserRepository;
     private readonly profilePhotoRepository: ProfileRepository;
-    private readonly followUnfollowRepository: FollowUnfollowRepository;
+    private readonly followRepository: FollowRepository;
 
 
-    constructor(userRepository: UserRepository, profilePhotoRepository: ProfileRepository, followUnfollowRepository: FollowUnfollowRepository) {
+    constructor(userRepository: UserRepository, profilePhotoRepository: ProfileRepository, followRepository: FollowRepository) {
         this.userRepository = userRepository;
         this.profilePhotoRepository = profilePhotoRepository;
-        this.followUnfollowRepository = followUnfollowRepository;
+        this.followRepository = followRepository;
     }
 
     async uploadProfile(filePath: string, userId: string) {
@@ -46,11 +45,19 @@ export class UserService {
     }
 
     async followUser(userId: string, followedUserId: string) {
-        return await this.followUnfollowRepository.followUser(userId, followedUserId);
+        return await this.followRepository.followUser(userId, followedUserId);
     }
 
     async unfollowUser(userId: string, unfollowedUserId: string) {
-        return await this.followUnfollowRepository.unfollowUser(userId, unfollowedUserId);
+        return await this.followRepository.unfollowUser(userId, unfollowedUserId);
+    }
+
+    async getFollowings(userId: string) {
+        return this.followRepository.getFollowings(userId)
+    }
+
+    async getFollowers(userId: string) {
+        return this.followRepository.getFollowers(userId)
     }
 
 }
