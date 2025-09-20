@@ -11,7 +11,11 @@ import {PostService} from "./services/post.service.ts";
 import {SaveRepository} from "./repositories/save.repository.ts";
 import {ElasticClient} from "./services/elasticClient.service.ts";
 import {SearchIndexManager} from "./services/SearchIndexManager.service.ts";
-import {FollowRepository} from "./repositories/follow.repitory.ts";
+import {SearchController} from "./controllers/search.controller.ts";
+import {UserSearchService} from "./services/UserSearchService.ts";
+
+
+
 
 export class Initiator {
     public userService: UserService;
@@ -29,6 +33,8 @@ export class Initiator {
 
     public elasticClient: ElasticClient;
     public searchIndexManager: SearchIndexManager;
+    public searchController: SearchController;
+    public userSearchService: UserSearchService;
 
     constructor() {
         this.userRepository = new UserRepository();
@@ -48,12 +54,16 @@ export class Initiator {
         this.authService = new AuthService(this.authRepository);
         this.userService = new UserService(this.userRepository, this.profileRepository, this.followRepository);
         this.postService = new PostService(this.postRepository, this.saveRepository);
+        this.userSearchService = new UserSearchService(this.elasticClient);
+
     }
 
     public setupControllers(): void {
         this.authController = new AuthController(this.authService);
         this.userController = new UserController(this.userService, this.postService);
         this.postController = new PostController(this.postService);
+        this.searchController = new SearchController(this.userSearchService);
+
     }
 
     public getAuthController() {
@@ -67,5 +77,9 @@ export class Initiator {
 
     public getPostController() {
         return this.postController;
+    }
+    
+    public getSearchController() {
+        return this.searchController;
     }
 }

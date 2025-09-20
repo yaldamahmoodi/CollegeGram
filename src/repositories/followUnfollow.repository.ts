@@ -1,7 +1,11 @@
 import {FollowingModel} from "../db/models/following.model.ts"
 import {UserModel} from "../db/models/user.model.ts";
 import {AlreadyDoneError} from "../utils/errors/alreadyDone.errors.ts";
+import {ElasticClient} from "../services/elasticClient.service.ts";
+import {UserSearchService} from "../services/UserSearchService.ts";
 
+const elasticClient = new ElasticClient();
+const userSearchService = new UserSearchService(elasticClient);
 export class FollowUnfollowRepository {
 
 
@@ -14,15 +18,28 @@ export class FollowUnfollowRepository {
                     {upsert: true}
                 )
             if (fll.upsertedCount > 0) {
+
+                
                 await UserModel.updateOne(
                     {_id: userId},
-                    {$inc: {following_count: 1}},
+                    {$inc: {following_count: +1}}
                 );
+                
+                await UserModel.updateOne(
+                    {_id: followedUserId}, 
+                    {$inc: {follower_count: +1}}
+                );
+                
+                const user = await UserModel.findById(userId).populate("ProfilePhoto");
+                const followedUser = await UserModel.findById(followedUserId).populate("ProfilePhoto");
+                if (user) await userSearchService.indexUser(user);
+                if (followedUser) await userSearchService.indexUser(followedUser);
+
             }
             if(fll.upsertedCount == 0){
                 throw new AlreadyDoneError('ALREADY_DONE','user followed before')
             }
-       return fll;
+            return fll;
     }
 
     async unfollowUser(userId: string, followedUserId: string) {
@@ -33,10 +50,23 @@ export class FollowUnfollowRepository {
             });
             if (dll.deletedCount > 0) {
 
-            await UserModel.updateOne(
-                {_id: userId},
-                {$inc: {following_count: -1}},
-            );
+                
+                await UserModel.updateOne(
+                    {_id: userId},
+                    {$inc: {following_count: -1}}
+                );
+                
+                await UserModel.updateOne(
+                    {_id: followedUserId}, 
+                    {$inc: {follower_count: -1}}
+                );
+                
+                const user = await UserModel.findById(userId).populate("ProfilePhoto");
+                const followedUser = await UserModel.findById(followedUserId).populate("ProfilePhoto");
+                if (user) await userSearchService.indexUser(user);
+                if (followedUser) await userSearchService.indexUser(followedUser);
+
+
             }
             if(dll.deletedCount == 0){
                 throw new AlreadyDoneError('ALREADY_DONE','user unfollowed before')

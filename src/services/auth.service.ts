@@ -5,7 +5,11 @@ import env from "../../env.ts";
 import type {insertUserZodSchema, selectUserZodSchema} from "../db/models/user.model.ts";
 import {ValidationError} from "../utils/errors/validation.errors.ts";
 import {NotFoundError} from "../utils/errors/notFound.errors.ts";
+import {ElasticClient} from "../services/elasticClient.service.ts";
+import {UserSearchService} from "./UserSearchService.ts";
 
+const elasticClient = new ElasticClient();
+const userSearchService = new UserSearchService(elasticClient);
 
 export class AuthService {
 
@@ -25,11 +29,21 @@ export class AuthService {
             throw new ValidationError("DUPLICATE_CREDENTIALS");
         }
         const hashedPassword = await bcrypt.hash(user.password, 10);
-        console.log(hashedPassword);
-        return await this.authRepository.createUser({
+        const newUser = await this.authRepository.createUser({
             ...user,
             password: hashedPassword,
         });
+
+        if(newUser) {
+
+            try {
+                await userSearchService.indexUser(newUser);
+            } catch (err) {
+                console.error(`Failed to index new user ${newUser._id} in ES:`, err);
+            }
+        }
+
+        return newUser;
     }
 
     async login(inputUsername: string, inputPassword: string) {
