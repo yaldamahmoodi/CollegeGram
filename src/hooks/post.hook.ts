@@ -1,5 +1,12 @@
 import {useQuery, useMutation, useQueryClient} from "@tanstack/react-query";
-import {getPosts, createPost, likePost, type postDataType, unLikePost} from "@/api/post/post.api";
+import {
+  getPosts,
+  createPost,
+  likePost,
+  type postDataType,
+  unLikePost,
+  getSavedPosts,
+} from "@/api/post/post.api";
 import type {CreateLikePostPayload} from "@/types/post.ts";
 import { savePost, unSavePost } from "@/api/post/post.api";
 import type { CreateSavePostPayload } from "@/types/post.ts";
@@ -74,4 +81,11 @@ export const useSavePost = () => {
             await queryClient.invalidateQueries({ queryKey: ["posts"] });
         },
     });
+};
+
+export const useSavedPostList = () => {
+  return useQuery({
+    queryKey: ["savedPosts"],
+    queryFn: getSavedPosts,
+  });
 };

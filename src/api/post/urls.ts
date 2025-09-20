@@ -6,4 +6,5 @@ export const POST_URLS = {
   SAVE_POST: "/posts/savePost",
   UNSAVE_POST: "/posts/unSavePost",
   // UNLIKE_POST: "this post is param path and need to be dynamic, check API "
+  SAVED_POST_LIST: "users/savesList",
 };
