@@ -3,7 +3,7 @@ import {LikeModel} from "../db/models/like.model.ts";
 import {Types} from "mongoose";
 import {UserModel, type IUser} from "../db/models/user.model.ts";
 import {AlreadyDoneError} from "../utils/errors/alreadyDone.errors.ts";
-import {FollowingModel} from "../db/models/following.model.ts";
+import {Follow} from "../db/models/follow.model.ts";
 
 export class PostRepository {
 
@@ -92,13 +92,10 @@ export class PostRepository {
     }
 
     async explore(userId: string, page: number, pageSize: number) {
-
         const skip = (page - 1) * pageSize;
 
-        return FollowingModel.aggregate([
-
-            {$match: {user_id: new Types.ObjectId(userId)}},
-
+        return Follow.aggregate([
+            {$match: {follower_id: new Types.ObjectId(userId)}},
 
             {
                 $lookup: {
@@ -109,9 +106,7 @@ export class PostRepository {
                 },
             },
 
-
             {$unwind: {path: "$posts", preserveNullAndEmptyArrays: false}},
-
 
             {
                 $lookup: {
@@ -123,13 +118,10 @@ export class PostRepository {
             },
             {$unwind: {path: "$user", preserveNullAndEmptyArrays: false}},
 
-
             {$sort: {"posts.createdAt": -1}},
-
 
             {$skip: skip},
             {$limit: Number(pageSize)},
-
 
             {
                 $project: {
@@ -149,8 +141,6 @@ export class PostRepository {
                 },
             },
         ]);
-
-
     }
 
 }
