@@ -26,9 +26,10 @@ build:
     - echo "NODE_ENV=$NODE_ENV" >> apps/api/.env
     - echo "APP_STAGE=$APP_STAGE" >> apps/api/.env
     - echo "CORS_ORIGIN=$CORS_ORIGIN" >> apps/api/.env
-
+    
     # Create .env files for Web
     - mkdir -p apps/web
+    - touch apps/web/.env
     - echo "VITE_BASE_URL=$VITE_BASE_URL" >> apps/web/.env
 
     # Build fresh images
@@ -43,6 +44,9 @@ build:
 # 2. Deploy services
 deploy:
   stage: deploy
+  needs:
+    - job: build
+      artifacts: true
   script:
     - echo "🚀 Deploying..."
     - docker compose down
