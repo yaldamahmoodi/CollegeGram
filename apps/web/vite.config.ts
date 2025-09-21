@@ -1,4 +1,4 @@
-import {defineConfig} from "vite";
+import { defineConfig } from "vite";
 import react from "@vitejs/plugin-react";
 import tailwindcss from "@tailwindcss/vite";
 import path from "path";
@@ -7,18 +7,34 @@ import path from "path";
 export default defineConfig({
   plugins: [react(), tailwindcss()],
   preview: {
-    host: '0.0.0.0',
+    host: "0.0.0.0",
     port: 3000,
     strictPort: true,
-    allowedHosts: ['web', '188.121.102.156', 'https://devsyncc.ir', 'devsyncc.ir', 'https://devsyncc.ir/'],
+    allowedHosts: [
+      "web",
+      "188.121.102.156",
+      "https://devsyncc.ir",
+      "devsyncc.ir",
+      "https://devsyncc.ir/",
+      "devsync.rahnemacollege.ir",
+      "https://devsync.rahnemacollege.ir",
+    ],
   },
   server: {
-    host: '0.0.0.0', // listen on all interfaces
+    host: "0.0.0.0", // listen on all interfaces
     port: 3000,
-    allowedHosts: ['web', '188.121.102.156', 'https://devsyncc.ir', 'devsyncc.ir', 'https://devsyncc.ir/'],
+    allowedHosts: [
+      "web",
+      "188.121.102.156",
+      "https://devsyncc.ir",
+      "devsyncc.ir",
+      "https://devsyncc.ir/",
+      "devsync.rahnemacollege.ir",
+      "https://devsync.rahnemacollege.ir",
+    ],
     hmr: {
-      host: '188.121.102.156',
-      protocol: 'wss', // if using HTTPS in Nginx
+      host: "188.121.102.156",
+      protocol: "wss", // if using HTTPS in Nginx
     },
     fs: {
       strict: false, // allow monorepo access
