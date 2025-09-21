@@ -33,6 +33,8 @@ build:
 
     # Build fresh images
     - docker compose build --no-cache
+  rules:
+    - if: '$CI_COMMIT_BRANCH == "prod"'  # build only from prod branch
   artifacts:
     paths:
       - apps/api/.env
