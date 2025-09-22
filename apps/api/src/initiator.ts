@@ -14,6 +14,9 @@ import {SearchIndexManager} from "./services/SearchIndexManager.service.ts";
 import {SearchController} from "./controllers/search.controller.ts";
 import {UserSearchService} from "./services/UserSearchService.ts";
 import {FollowRepository} from "./repositories/follow.repository.ts";
+import {CommentController} from "./controllers/comment.controller.ts";
+import {CommentService } from "./services/comment.service.ts";
+import {CommentRepository} from "./repositories/comment.repository.ts"
 
 
 
@@ -31,6 +34,9 @@ export class Initiator {
     public postController: PostController;
     public saveRepository: SaveRepository;
     public followRepository: FollowRepository;
+    public commentController: CommentController
+    public commentService: CommentService
+    public commentRepository: CommentRepository
 
     public elasticClient: ElasticClient;
     public searchIndexManager: SearchIndexManager;
@@ -44,6 +50,7 @@ export class Initiator {
         this.saveRepository = new SaveRepository();
         this.profileRepository = new ProfileRepository();
         this.followRepository = new FollowRepository()
+        this.commentRepository = new CommentRepository()
 
 
         this.elasticClient = new ElasticClient();
@@ -56,6 +63,7 @@ export class Initiator {
         this.userService = new UserService(this.userRepository, this.profileRepository, this.followRepository);
         this.postService = new PostService(this.postRepository, this.saveRepository);
         this.userSearchService = new UserSearchService(this.elasticClient);
+        this.commentService = new CommentService(this.commentRepository , this.postRepository)
 
     }
 
@@ -64,6 +72,7 @@ export class Initiator {
         this.userController = new UserController(this.userService, this.postService);
         this.postController = new PostController(this.postService);
         this.searchController = new SearchController(this.userSearchService);
+        this.commentController = new CommentController(this.commentService)
 
     }
 
@@ -82,5 +91,9 @@ export class Initiator {
     
     public getSearchController() {
         return this.searchController;
+    }
+
+    public getCommentController(){
+        return this.commentController
     }
 }

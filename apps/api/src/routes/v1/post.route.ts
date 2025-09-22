@@ -9,6 +9,7 @@ import {uploadProfilePhotoMiddleware} from "../../middlewares/uploadProfilePhoto
 const router = Router();
 
 const postController = initiator.getPostController();
+const CommentController = initiator.getCommentController()
 
 router.use(authMiddleware)
 
@@ -40,6 +41,15 @@ router.post(
 router.post(
     "/unsavePost",
     postController.unsavePost
+)
+
+router.post(
+    "comment/like",
+    CommentController.likeComment
+)
+router.post(
+    "/comment/unlike",
+    CommentController.unLikeComment
 )
 
 router.get("/explore", queryParser(exploreSchema), postController.explore)
