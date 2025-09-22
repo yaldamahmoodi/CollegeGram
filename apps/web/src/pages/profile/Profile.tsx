@@ -1,7 +1,7 @@
 import { useState } from "react";
-import UserPosts from "@/layouts/ProfileLayout/components/UserPosts";
-import ProfileInfo from "@/layouts/ProfileLayout/components/ProfileInfo";
-import CraetePostModal from "@/layouts/ProfileLayout/components/CreatePostModal";
+import UserPosts from "@/pages/profile/components/UserPosts";
+import ProfileInfo from "@/pages/profile/components/ProfileInfo";
+import CraetePostModal from "@/pages/profile/components/CreatePostModal";
 
 const Profile = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);

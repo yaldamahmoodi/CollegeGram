@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import GroupIcon from "@assets/icons/Group.svg";
-import { EMOJIS } from "../consts/emojis";
+import { EMOJIS } from "../../../layouts/ProfileLayout/consts/emojis";
 
 interface Props {
   value: string;

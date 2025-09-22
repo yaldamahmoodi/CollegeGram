@@ -1,10 +1,10 @@
 import AuthLayout from "@/layouts/AuthLayout";
 import { Routes, Route, Navigate } from "react-router-dom";
 import Login from "@pages/Login";
-import Profile from "@pages/Profile";
+import Profile from "@/pages/profile/Profile";
 import Register from "@pages/Register";
 import NotFound from "@pages/NotFound";
-import Explore from "@/pages/explore/Explore";
+import Search from "@/pages/search/Search";
 import SavedPosts from "@/pages/SavedPosts";
 import ProtectedRoute from "./ProtectedRoute";
 import TaggedPosts from "@/pages/TaggedPosts";
@@ -25,7 +25,7 @@ export default function AppRoutes() {
         <Route path={ROUTES.SAVED_POSTS} element={<SavedPosts />} />
         <Route path={ROUTES.TAGGED_POSTS} element={<TaggedPosts />} />
         <Route path={ROUTES.POST_DETAIL} element={<PostDetail />} />
-        <Route path={ROUTES.EXPLORE} element={<Explore />} />
+        <Route path={ROUTES.SEARCH} element={<Search />} />
       </Route>
 
       <Route path={ROUTES.CATCH_ALL} element={<NotFound />} />

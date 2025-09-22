@@ -1,5 +1,5 @@
 import Button from "@components/Button";
-import EditProfileModal from "@/layouts/ProfileLayout/components/EditProfileModal";
+import EditProfileModal from "@/pages/profile/components/EditProfileModal";
 import { useState } from "react";
 import { useUserInfo } from "@hooks/user.hook";
 import { MESSAGES } from "@/const/message";
@@ -50,18 +50,14 @@ const ProfileInfo = () => {
       avatar: "https://i.pravatar.cc/153?img=14",
     },
   ];
-  console.log(user?.profilePhotoUrl)
+  console.log(user?.profilePhotoUrl);
 
   return (
     <div className="profile-info-container w-full flex flex-col lg:flex-row lg:items-start gap-6 py-4  flex flex-justify">
       <div className="flex justify-center lg:justify-start">
         <div className="bg-white rounded-full bg-cover object-cover ">
           <img
-            src={
-              user?.profilePhotoUrl
-                ? user?.profilePhotoUrl
-                : UsernameIcon
-            }
+            src={user?.profilePhotoUrl ? user?.profilePhotoUrl : UsernameIcon}
             className="h-[134px] w-[134px] bg-cover no-repeat rounded-full"
           />
         </div>
