@@ -5,7 +5,6 @@ const router = Router();
 
 router.get("/", async (req, res) => {
   const emailResults = await EmailService.sendHealthCheckEmails();
-  res.status(200).json({});
   res.status(200).json({
     status: "ok",
     message: "Server is running & Email system is working correctly",
