@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, type ReactNode } from "react";
 import Button from "@/components/Button";
 import CraetePostModal from "./components/CreatePostModal";
 import ProfileSidebarMenu from "./components/sidebar/SidebarMenu";
@@ -9,7 +9,10 @@ import hamburgerMenuIcon from "@assets/icons/Mobile/hamburgerMenu.svg";
 import plusIcon from "@assets/icons/plus.svg";
 import { Outlet } from "react-router-dom";
 
-const ProfileLayout = () => {
+interface ProfileLayoutProps {
+  children: ReactNode;
+}
+const ProfileLayout = ({ children: ProfileLayoutProps }) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
 
@@ -47,7 +50,7 @@ const ProfileLayout = () => {
           <ProfileSidebarMenu />
         </div>
         <div className="left-section w-full lg:w-3/4 flex flex-col px-4 lg:px-15">
-          <Outlet />
+          {children}
         </div>
       </div>
 
