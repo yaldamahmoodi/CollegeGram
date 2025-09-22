@@ -1,4 +1,4 @@
-import { useState, type ReactNode } from "react";
+import { Children, useState, type ReactElement, type ReactNode } from "react";
 import Button from "@/components/Button";
 import CraetePostModal from "./components/CreatePostModal";
 import ProfileSidebarMenu from "./components/sidebar/SidebarMenu";
@@ -7,12 +7,12 @@ import searchIcon from "@assets/icons/Mobile/Search.svg";
 import gridMenuIcon from "@assets/icons/Mobile/gridMenu.svg";
 import hamburgerMenuIcon from "@assets/icons/Mobile/hamburgerMenu.svg";
 import plusIcon from "@assets/icons/plus.svg";
-import { Outlet } from "react-router-dom";
 
 interface ProfileLayoutProps {
   children: ReactNode;
 }
-const ProfileLayout = ({ children: ProfileLayoutProps }) => {
+const ProfileLayout = (props: ProfileLayoutProps) => {
+  const { children } = props;
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
 
