@@ -21,7 +21,7 @@ const ImageSlider = (props: ImageSliderProps) => {
   };
 
   return (
-    <div className="relative w-80 h-60 overflow-hidden rounded-2xl shadow-md">
+    <div className="relative w-100 h-auto overflow-hidden rounded-2xl shadow-md">
       <img
         src={images[currentIndex]}
         alt={`Slide ${currentIndex + 1}`}
