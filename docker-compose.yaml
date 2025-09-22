@@ -20,6 +20,17 @@ services:
     volumes:
       - esdata:/usr/share/elasticsearch/data
 
+  mailpit:
+    image: axllent/mailpit:latest
+    container_name: collagegram-mailpit
+    restart: unless-stopped
+    ports:
+      - "1025:1025"  # SMTP port
+      - "8025:8025"  # Web interface port
+    environment:
+      - MP_SMTP_AUTH_ACCEPT_ANY=1
+      - MP_SMTP_AUTH_ALLOW_INSECURE=1
+
   api:
     build: ./apps/api
     container_name: monorepo-api
