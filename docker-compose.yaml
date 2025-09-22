@@ -28,6 +28,7 @@ services:
       - "1025:1025"  # SMTP port
       - "8025:8025"  # Web interface port
     environment:
+      - MP_WEBROOT: /mailpit/
       - MP_SMTP_AUTH_ACCEPT_ANY=1
       - MP_SMTP_AUTH_ALLOW_INSECURE=1
 
