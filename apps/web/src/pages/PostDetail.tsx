@@ -1,5 +1,5 @@
 import { useState } from "react";
-import ImageSlider from "@components/Image.tsx";
+import ImageSlider from "@/components/ImageSlider";
 import avatar from "@assets/images/avatar.png";
 import Button from "@components/Button.tsx";
 import like from "@assets/icons/like.svg";
