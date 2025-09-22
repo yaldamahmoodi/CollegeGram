@@ -1,5 +1,4 @@
 import AuthLayout from "@/layouts/AuthLayout";
-import ProfileLayout from "@/layouts/ProfileLayout";
 import { Routes, Route, Navigate } from "react-router-dom";
 import Login from "@pages/Login";
 import Profile from "@pages/Profile";
