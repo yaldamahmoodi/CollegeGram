@@ -143,8 +143,8 @@ const PostDetail = () => {
 
           <div className="space-y-4 pt-2 text-sm">
             {comments.map((c) => (
-              <div key={c.id} className="pb-3 border-b last:border-none">
-                <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between w-full">
+              <div key={c.id} className="pb-3 mb-2 last:border-none">
+                <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between w-full mb-5">
                   <div className="flex items-center gap-2">
                     <p className="font-medium">{c.name}</p>
                     <span className="text-xs text-gray-500">۱۲ مرداد</span>
