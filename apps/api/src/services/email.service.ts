@@ -1,16 +1,17 @@
 import nodemailer from 'nodemailer';
+import env from '../../env.ts';
 
 class EmailService {
   private transporter: nodemailer.Transporter;
 
   constructor() {
     this.transporter = nodemailer.createTransport({
-      host: process.env.SMTP_HOST || 'mailpit',
-      port: parseInt(process.env.SMTP_PORT || '1025'),
+      host: env.SMTP_HOST || 'mailpit',
+      port: parseInt(env.SMTP_PORT || '1025'),
       secure: false, // true for 465, false for other ports
       auth: {
-        user: process.env.SMTP_USER || '',
-        pass: process.env.SMTP_PASS || ''
+        user: env.SMTP_USER || '',
+        pass: env.SMTP_PASS || ''
       }
     });
   }
