@@ -163,13 +163,106 @@ paths:
                         type: string
                         nullable: true
                         example: /uploads/profile/johndoe.png
+  /api/v1/users/{id}:
+    get:
+      summary: Get another user's profile
+      description: |
+        پروفایل کاربر دیگری را با استفاده از `id` دریافت می‌کند.  
+        - این درخواست نیاز به لاگین دارد.  
+        - علاوه بر اطلاعات پروفایل، مشخص می‌کند که آیا کاربر لاگین‌شده این فرد را فالو کرده یا نه.
+      security:
+        - cookieAuth: [ ]
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+          description: ID کاربری که می‌خواهید پروفایلش را ببینید
+          example: 68c6cbfd5bc774e86bdf4eb2
+      responses:
+        '200':
+          description: User profile retrieved successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  code:
+                    type: string
+                    example: GET_USER_PROFILE_SUCCESSFULLY
+                  data:
+                    type: object
+                    properties:
+                      username:
+                        type: string
+                        example: yaldoomaldoo1
+                      email:
+                        type: string
+                        format: email
+                        example: yaldoomaldoo101@gamil.com
+                      firstname:
+                        type: string
+                        nullable: true
+                        example: null
+                      lastname:
+                        type: string
+                        nullable: true
+                        example: null
+                      biography:
+                        type: string
+                        nullable: true
+                        example: null
+                      follower_count:
+                        type: integer
+                        example: 0
+                      following_count:
+                        type: integer
+                        example: 0
+                      post_count:
+                        type: integer
+                        example: 0
+                      profilePhotoUrl:
+                        type: string
+                        nullable: true
+                        example: null
+                      isFollowed:
+                        type: boolean
+                        example: false
+        '404':
+          description: User not found
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  code:
+                    type: string
+                    example: NOT_FOUND_USER
+                  message:
+                    type: string
+                    example: User with given ID does not exist
+        '401':
+          description: Unauthorized – User not authenticated
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  code:
+                    type: string
+                    example: UNAUTHORIZED
+                  message:
+                    type: string
+                    example: Authentication required
+
 
   /api/v1/users/profile/upload:
     post:
       summary: Upload profile photo
       description: Upload or update the authenticated user's profile photo.
       security:
-        - cookieAuth: []
+        - cookieAuth: [ ]
       requestBody:
         required: true
         content:
@@ -223,7 +316,7 @@ paths:
       summary: Get user posts with pagination
       description: Retrieve paginated posts for a user. Optional query parameters `page` and `pageSize` control pagination.
       security:
-        - cookieAuth: []
+        - cookieAuth: [ ]
       parameters:
         - in: query
           name: id
