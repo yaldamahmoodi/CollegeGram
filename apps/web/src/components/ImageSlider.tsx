@@ -34,7 +34,7 @@ const ImageSlider = ({ images }: ImageSliderProps) => {
                                 key={index}
                                 onClick={() => setCurrentIndex(index)}
                                 className={`w-3 h-3 rounded-full cursor-pointer transition-all ${
-                                    index === currentIndex ? "bg-black scale-110" : "bg-gray-400"
+                                    index === currentIndex ? "bg-black scale-110" : "bg-white"
                                 }`}
                             />
                         ))}
@@ -47,11 +47,23 @@ const ImageSlider = ({ images }: ImageSliderProps) => {
                     <Button
                         onClick={prevSlide}
                         className="bg-transparent hover:bg-transparent active:bg-transparent focus:bg-transparent !text-black text-2xl font-bold"
+                        style={{
+                            minWidth:"auto",
+                            paddingLeft:"0px",
+                            paddingRight:"0px",
+                            fontSize: "24px",
+                        }}
                         label="‹"
                     />
                     <Button
                         onClick={nextSlide}
-                        className="bg-transparent hover:bg-transparent active:bg-transparent focus:bg-transparent !text-black text-2xl"
+                        className="bg-transparent hover:bg-transparent active:bg-transparent focus:bg-transparent !text-black text-2xl px-0 font-bold"
+                        style={{
+                            minWidth:"auto",
+                            paddingLeft:"0px",
+                            paddingRight:"0px",
+                            fontSize: "24px",
+                        }}
                         label="›"
                     />
                 </div>

@@ -52,6 +52,24 @@ const Caption = ({ text }: { text: string }) => {
     );
 };
 
+const Mentions = ({ items }: { items?: string[] }) => {
+    if (!items || items.length === 0) return null;
+
+    return (
+        <div className="flex flex-wrap gap-2 justify-end">
+            {items.map((m, i) => (
+                <span
+                    key={`${m}-${i}`}
+                    className="px-2 py-1 rounded-full bg-orange-500 text-white text-xs leading-none"
+                    dir="rtl"
+                >
+          {m}
+        </span>
+            ))}
+        </div>
+    );
+};
+
 const PostDetailsModal = ({ isOpen, close, data }: PostDetailsModalProps) => {
     const created = Date.parse(data.createdAt || new Date().toISOString());
     if (Number.isNaN(created)) throw new Error("Invalid createdAt");
@@ -99,9 +117,7 @@ const PostDetailsModal = ({ isOpen, close, data }: PostDetailsModalProps) => {
                     <div className="min-w-0">
                         <div className="relative w-full">
                             <div className="w-full max-h-[65vh] lg:max-h-[60vh] xl:max-h-[58vh] 2xl:max-h-[55vh] overflow-hidden">
-                                <ImageSlider
-                                    images={data.urls}
-                                />
+                                <ImageSlider images={data.urls} />
                             </div>
                         </div>
                     </div>
@@ -124,11 +140,14 @@ const PostDetailsModal = ({ isOpen, close, data }: PostDetailsModalProps) => {
                             />
                         </div>
 
-                        <div className="flex flex-col gap-2 min-w-0">
+                        <div className="flex flex-col gap-3 min-w-0">
                             <span className="text-xs text-gray-500">{diffMin} دقیقه پیش</span>
+
                             <div className="max-h-[40vh] overflow-auto pr-1">
                                 <Caption text={data.caption} />
                             </div>
+
+                           <Mentions items={data.mentions} />
                         </div>
 
                         <div className="flex items-center gap-6 flex-wrap">
@@ -138,6 +157,7 @@ const PostDetailsModal = ({ isOpen, close, data }: PostDetailsModalProps) => {
                                 icon={<img src={comment} />}
                                 label={String(comentsCount)}
                                 className="flex flex-col items-center bg-transparent hover:bg-transparent !text-[#EA5A69]"
+
                             />
                             <Button
                                 type="button"
