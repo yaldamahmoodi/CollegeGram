@@ -69,19 +69,35 @@ export class FollowRepository {
                     as: "followerDetails",
                 },
             },
-            {$unwind: "$followerDetails"},
+            { $unwind: "$followerDetails" },
+            {
+                $lookup: {
+                    from: "profilephotos",
+                    localField: "followerDetails._id",
+                    foreignField: "user_id",
+                    as: "profilePhoto",
+                },
+            },
+            {
+                $unwind: {
+                    path: "$profilePhoto",
+                    preserveNullAndEmptyArrays: true,
+                },
+            },
             {
                 $project: {
                     _id: 0,
                     username: "$followerDetails.username",
+                    firstname: "$followerDetails.firstname",
+                    lastname: "$followerDetails.lastname",
                     follower_count: "$followerDetails.follower_count",
                     following_count: "$followerDetails.following_count",
-                    profilePhoto: "$followerDetails.ProfilePhoto",
+                    profilePhoto: {
+                        $ifNull: ["$profilePhoto.path", null],
+                    },
                 },
             },
         ]);
-
-
     }
 
     async getFollowings(user_id: string) {
@@ -99,18 +115,38 @@ export class FollowRepository {
                     as: "followingDetails",
                 },
             },
-            {$unwind: "$followingDetails"},
+            { $unwind: "$followingDetails" },
+            {
+                $lookup: {
+                    from: "profilephotos",
+                    localField: "followingDetails._id",
+                    foreignField: "user_id",
+                    as: "profilePhoto",
+                },
+            },
+            {
+                $unwind: {
+                    path: "$profilePhoto",
+                    preserveNullAndEmptyArrays: true,
+                },
+            },
             {
                 $project: {
                     _id: 0,
                     username: "$followingDetails.username",
+                    firstname: "$followingDetails.firstname",
+                    lastname: "$followingDetails.lastname",
                     follower_count: "$followingDetails.follower_count",
                     following_count: "$followingDetails.following_count",
-                    profilePhoto: "$followingDetails.ProfilePhoto",
+                    profilePhoto: {
+                        $ifNull: ["$profilePhoto.path", null],
+                    },
                 },
             },
         ]);
     }
+
+
 
     async isFollowed(followerId: string, followingId: string): Promise<boolean> {
         const exists = await Follow.exists({
