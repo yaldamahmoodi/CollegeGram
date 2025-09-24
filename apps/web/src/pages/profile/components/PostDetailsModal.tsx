@@ -150,13 +150,18 @@ const PostDetailsModal = ({ isOpen, close, data }: PostDetailsModalProps) => {
                            <Mentions items={data.mentions} />
                         </div>
 
-                        <div className="flex items-center gap-6 flex-wrap">
+                        <div className="flex justify-end items-center gap-6">
                             <Button
                                 type="button"
                                 onClick={handleCommentClick}
                                 icon={<img src={comment} />}
                                 label={String(comentsCount)}
                                 className="flex flex-col items-center bg-transparent hover:bg-transparent !text-[#EA5A69]"
+                                style={{
+                                    minWidth:"auto",
+                                    paddingLeft:"0px",
+                                    paddingRight:"0px",
+                                }}
 
                             />
                             <Button
@@ -165,6 +170,11 @@ const PostDetailsModal = ({ isOpen, close, data }: PostDetailsModalProps) => {
                                 label={data.like_count.toString()}
                                 icon={<img src={like} />}
                                 className="flex flex-col items-center bg-transparent hover:bg-transparent !text-[#EA5A69]"
+                                style={{
+                                    minWidth:"auto",
+                                    paddingLeft:"0px",
+                                    paddingRight:"0px",
+                                }}
                             />
                             <Button
                                 type="button"
@@ -172,6 +182,12 @@ const PostDetailsModal = ({ isOpen, close, data }: PostDetailsModalProps) => {
                                 icon={<img src={savePost} />}
                                 label={data.save_count.toString()}
                                 className="flex flex-col items-center bg-transparent hover:bg-transparent !text-[#EA5A69]"
+                                style={{
+                                    minWidth:"auto",
+                                    paddingLeft:"0px",
+                                    paddingRight:"0px",
+                                }}
+
                             />
                         </div>
                     </div>
