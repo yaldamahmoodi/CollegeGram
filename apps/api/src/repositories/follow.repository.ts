@@ -112,4 +112,12 @@ export class FollowRepository {
         ]);
     }
 
+    async isFollowed(followerId: string, followingId: string): Promise<boolean> {
+        const exists = await Follow.exists({
+            follower_id: followerId,
+            following_id: followingId,
+        });
+        return Boolean(exists);
+    }
+
 }
