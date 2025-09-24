@@ -10,6 +10,7 @@ import {
 } from "@/api/user/user.api";
 import { useNavigate } from "react-router-dom";
 import { ROUTES } from "@/routes/routes";
+import { useAuth } from "@hooks/useAuth";
 
 export const useRegister = () => {
   const navigate = useNavigate();
@@ -27,11 +28,11 @@ export const useRegister = () => {
 
 export const useLogin = () => {
   const navigate = useNavigate();
+  const { setToken } = useAuth();
   return useMutation({
     mutationFn: login,
     onSuccess: (data) => {
-      localStorage.setItem("token", data.accessToken);
-      localStorage.setItem("userId", data.userId);
+      setToken(data.accessToken);
       navigate(ROUTES.PROFILE);
       console.log("Login Success:", data);
     },
