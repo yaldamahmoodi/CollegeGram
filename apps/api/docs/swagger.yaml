@@ -1238,6 +1238,109 @@ paths:
                     type: string
                     example: Authentication required
 
+  /api/v1/posts/comment:
+    post:
+      summary: Add a comment to a post
+      description: |
+        یک کامنت جدید به پست اضافه می‌کند.  
+        - در صورت ارسال `parent_comment`، کامنت به عنوان **ریپلای** ثبت می‌شود.  
+        - نیاز به احراز هویت دارد.
+      tags:
+        - Comments
+      security:
+        - cookieAuth: [ ]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - post_id
+                - content
+              properties:
+                post_id:
+                  type: string
+                  description: شناسه پست
+                  example: 68d50f8ca54197555078bf31
+                content:
+                  type: string
+                  description: متن کامنت
+                  example: this post is perfect
+                parent_comment:
+                  type: string
+                  nullable: true
+                  description: شناسه کامنت والد (برای ریپلای)
+                  example: null
+      responses:
+        '201':
+          description: Comment added successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  code:
+                    type: string
+                    example: COMMENT_ADDED_SUCCESSFULLY
+                  data:
+                    type: object
+                    properties:
+                      _id:
+                        type: string
+                        example: 68d511b117a16012d74a14a0
+                      post_id:
+                        type: string
+                        example: 68d50f8ca54197555078bf31
+                      user_id:
+                        type: string
+                        example: 68d2acb57698eafb14b85ed4
+                      content:
+                        type: string
+                        example: this post is perfect
+                      like_count:
+                        type: integer
+                        example: 0
+                      parent_comment:
+                        type: string
+                        nullable: true
+                        example: null
+                      createdAt:
+                        type: string
+                        format: date-time
+                        example: 2025-09-25T09:56:01.038Z
+                      updatedAt:
+                        type: string
+                        format: date-time
+                        example: 2025-09-25T09:56:01.038Z
+        '400':
+          description: Bad request (invalid input)
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  code:
+                    type: string
+                    example: INVALID_POST_ID
+                  message:
+                    type: string
+                    example: Invalid post ID
+        '401':
+          description: Unauthorized – User not logged in
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  code:
+                    type: string
+                    example: UNAUTHORIZED
+                  message:
+                    type: string
+                    example: User not authenticated
+
+
 components:
   securitySchemes:
     cookieAuth:
