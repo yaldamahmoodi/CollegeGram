@@ -27,7 +27,7 @@ export class UserService {
         return await this.profilePhotoRepository.upsertProfilePhoto(findUserById._id, filePath);
     }
 
-    async getUserDetails(userId: string) {
+    async getProfile(userId: string) {
         const userDetails = await this.userRepository.findUserDetails(userId);
         if (!userDetails) {
             throw new NotFoundError("NOT_FOUND_USER");
@@ -58,6 +58,24 @@ export class UserService {
 
     async getFollowers(userId: string) {
         return this.followRepository.getFollowers(userId)
+    }
+
+    async getOtherProfile(loggedInUserId: string, targetUserId: string) {
+        const userDetails = await this.userRepository.findUserDetails(targetUserId);
+        if (!userDetails) {
+            throw new NotFoundError("NOT_FOUND_USER");
+        }
+
+        const isFollowed = await this.followRepository.isFollowed(
+            loggedInUserId,
+            targetUserId
+        );
+
+
+        return {
+            ...userDetails,
+            isFollowed,
+        };
     }
 
 }

@@ -20,7 +20,6 @@ import {CommentRepository} from "./repositories/comment.repository.ts"
 
 
 
-
 export class Initiator {
     public userService: UserService;
     public userRepository: UserRepository;
@@ -38,6 +37,7 @@ export class Initiator {
     public commentService: CommentService
     public commentRepository: CommentRepository
 
+
     public elasticClient: ElasticClient;
     public searchIndexManager: SearchIndexManager;
     public searchController: SearchController;
@@ -50,9 +50,8 @@ export class Initiator {
         this.saveRepository = new SaveRepository();
         this.profileRepository = new ProfileRepository();
         this.followRepository = new FollowRepository()
-        this.commentRepository = new CommentRepository()
-
-
+        this.commentRepository = new CommentRepository();
+        
         this.elasticClient = new ElasticClient();
         this.searchIndexManager = new SearchIndexManager(this.elasticClient);
     }
@@ -61,7 +60,7 @@ export class Initiator {
     public setupServices(): void {
         this.authService = new AuthService(this.authRepository);
         this.userService = new UserService(this.userRepository, this.profileRepository, this.followRepository);
-        this.postService = new PostService(this.postRepository, this.saveRepository);
+        this.postService = new PostService(this.postRepository, this.saveRepository, this.commentRepository);
         this.userSearchService = new UserSearchService(this.elasticClient);
         this.commentService = new CommentService(this.commentRepository , this.postRepository)
 
@@ -88,7 +87,7 @@ export class Initiator {
     public getPostController() {
         return this.postController;
     }
-    
+
     public getSearchController() {
         return this.searchController;
     }

@@ -14,7 +14,7 @@ export class UserRepository {
 
     async findUserDetails(userId: string): Promise<IUser | null> {
         return await UserModel.findById(userId)
-            .populate("ProfilePhoto", "path");
+            .populate("ProfilePhoto", "path").lean();
     }
 
     async updateUser(userId: string, userData: updateProfileUserSchema) {

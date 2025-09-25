@@ -163,13 +163,106 @@ paths:
                         type: string
                         nullable: true
                         example: /uploads/profile/johndoe.png
+  /api/v1/users/{id}:
+    get:
+      summary: Get another user's profile
+      description: |
+        پروفایل کاربر دیگری را با استفاده از `id` دریافت می‌کند.  
+        - این درخواست نیاز به لاگین دارد.  
+        - علاوه بر اطلاعات پروفایل، مشخص می‌کند که آیا کاربر لاگین‌شده این فرد را فالو کرده یا نه.
+      security:
+        - cookieAuth: [ ]
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+          description: ID کاربری که می‌خواهید پروفایلش را ببینید
+          example: 68c6cbfd5bc774e86bdf4eb2
+      responses:
+        '200':
+          description: User profile retrieved successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  code:
+                    type: string
+                    example: GET_USER_PROFILE_SUCCESSFULLY
+                  data:
+                    type: object
+                    properties:
+                      username:
+                        type: string
+                        example: yaldoomaldoo1
+                      email:
+                        type: string
+                        format: email
+                        example: yaldoomaldoo101@gamil.com
+                      firstname:
+                        type: string
+                        nullable: true
+                        example: null
+                      lastname:
+                        type: string
+                        nullable: true
+                        example: null
+                      biography:
+                        type: string
+                        nullable: true
+                        example: null
+                      follower_count:
+                        type: integer
+                        example: 0
+                      following_count:
+                        type: integer
+                        example: 0
+                      post_count:
+                        type: integer
+                        example: 0
+                      profilePhotoUrl:
+                        type: string
+                        nullable: true
+                        example: null
+                      isFollowed:
+                        type: boolean
+                        example: false
+        '404':
+          description: User not found
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  code:
+                    type: string
+                    example: NOT_FOUND_USER
+                  message:
+                    type: string
+                    example: User with given ID does not exist
+        '401':
+          description: Unauthorized – User not authenticated
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  code:
+                    type: string
+                    example: UNAUTHORIZED
+                  message:
+                    type: string
+                    example: Authentication required
+
 
   /api/v1/users/profile/upload:
     post:
       summary: Upload profile photo
       description: Upload or update the authenticated user's profile photo.
       security:
-        - cookieAuth: []
+        - cookieAuth: [ ]
       requestBody:
         required: true
         content:
@@ -223,7 +316,7 @@ paths:
       summary: Get user posts with pagination
       description: Retrieve paginated posts for a user. Optional query parameters `page` and `pageSize` control pagination.
       security:
-        - cookieAuth: []
+        - cookieAuth: [ ]
       parameters:
         - in: query
           name: id
@@ -1144,6 +1237,109 @@ paths:
                   message:
                     type: string
                     example: Authentication required
+
+  /api/v1/posts/comment:
+    post:
+      summary: Add a comment to a post
+      description: |
+        یک کامنت جدید به پست اضافه می‌کند.  
+        - در صورت ارسال `parent_comment`، کامنت به عنوان **ریپلای** ثبت می‌شود.  
+        - نیاز به احراز هویت دارد.
+      tags:
+        - Comments
+      security:
+        - cookieAuth: [ ]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - post_id
+                - content
+              properties:
+                post_id:
+                  type: string
+                  description: شناسه پست
+                  example: 68d50f8ca54197555078bf31
+                content:
+                  type: string
+                  description: متن کامنت
+                  example: this post is perfect
+                parent_comment:
+                  type: string
+                  nullable: true
+                  description: شناسه کامنت والد (برای ریپلای)
+                  example: null
+      responses:
+        '201':
+          description: Comment added successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  code:
+                    type: string
+                    example: COMMENT_ADDED_SUCCESSFULLY
+                  data:
+                    type: object
+                    properties:
+                      _id:
+                        type: string
+                        example: 68d511b117a16012d74a14a0
+                      post_id:
+                        type: string
+                        example: 68d50f8ca54197555078bf31
+                      user_id:
+                        type: string
+                        example: 68d2acb57698eafb14b85ed4
+                      content:
+                        type: string
+                        example: this post is perfect
+                      like_count:
+                        type: integer
+                        example: 0
+                      parent_comment:
+                        type: string
+                        nullable: true
+                        example: null
+                      createdAt:
+                        type: string
+                        format: date-time
+                        example: 2025-09-25T09:56:01.038Z
+                      updatedAt:
+                        type: string
+                        format: date-time
+                        example: 2025-09-25T09:56:01.038Z
+        '400':
+          description: Bad request (invalid input)
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  code:
+                    type: string
+                    example: INVALID_POST_ID
+                  message:
+                    type: string
+                    example: Invalid post ID
+        '401':
+          description: Unauthorized – User not logged in
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  code:
+                    type: string
+                    example: UNAUTHORIZED
+                  message:
+                    type: string
+                    example: User not authenticated
+
 
 components:
   securitySchemes:
