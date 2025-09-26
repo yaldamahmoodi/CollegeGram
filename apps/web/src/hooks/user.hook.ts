@@ -33,6 +33,7 @@ export const useLogin = () => {
     mutationFn: login,
     onSuccess: (data) => {
       setToken(data.accessToken);
+      localStorage.setItem("userId", data.userId);
       navigate(ROUTES.PROFILE);
       console.log("Login Success:", data);
     },
