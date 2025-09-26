@@ -1,8 +1,6 @@
-import { CommentModel } from "../db/models/comment.model.ts";
+import {CommentModel, type IComment} from "../db/models/comment.model.ts";
 import mongoose from "mongoose";
 import {commentLikeModel} from "../db/models/commentLike.model.ts"
-import {type IComment} from "../db/models/comment.model.ts";
-
 export class CommentRepository {
     async findCommentById(commentId: string): Promise<Comment> {
         return CommentModel.findById(commentId);

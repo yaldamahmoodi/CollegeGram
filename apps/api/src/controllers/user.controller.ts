@@ -222,7 +222,7 @@ export class UserController {
         }
     }
 
-    async getFollowingsList(req: Authenticate<{}, {}>, res: Response, next: NextFunction) {
+    async getFollowingsList(req: Authenticate, res: Response, next: NextFunction) {
         try {
             const followingUserList = await this.userService.getFollowings(req.user.id)
             return res.status(200).json({
@@ -234,14 +234,14 @@ export class UserController {
         }
     }
 
-    async getOtherProfile(req: Authenticate & Request<{ id: string }>, res: Response, next: NextFunction) {
+    async getOtherProfile(req: Authenticate & Request<{ username: string }>, res: Response, next: NextFunction) {
         try {
-            const id = req.params.id;
+            const username = req.params.username;
             const loggedInUserId = req.user.id;
 
             const userDetails = await this.userService.getOtherProfile(
                 loggedInUserId,
-                id
+                username
             );
 
             const profilePhotoUrl = userDetails.ProfilePhoto?.path
@@ -252,6 +252,7 @@ export class UserController {
             return res.status(200).json({
                 code: "GET_USER_PROFILE_SUCCESSFULLY",
                 data: {
+                    userId: userDetails._id.toString(),
                     username: userDetails.username,
                     email: userDetails.email,
                     firstname: userDetails.firstname || null,

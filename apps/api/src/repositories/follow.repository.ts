@@ -87,6 +87,7 @@ export class FollowRepository {
             {
                 $project: {
                     _id: 0,
+                    userId: "$followerDetails._id",
                     username: "$followerDetails.username",
                     firstname: "$followerDetails.firstname",
                     lastname: "$followerDetails.lastname",
@@ -133,6 +134,7 @@ export class FollowRepository {
             {
                 $project: {
                     _id: 0,
+                    userId: "$followingDetails._id",
                     username: "$followingDetails.username",
                     firstname: "$followingDetails.firstname",
                     lastname: "$followingDetails.lastname",
@@ -145,6 +147,7 @@ export class FollowRepository {
             },
         ]);
     }
+
 
 
 

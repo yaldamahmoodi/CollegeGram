@@ -13,6 +13,7 @@ const router = Router();
 
 const userController = initiator.getUserController();
 
+
 router.use(authMiddleware)
 
 router.post(
@@ -67,7 +68,7 @@ router.get(
 )
 
 router.get(
-    "/:id",
+    "/:username",
     userController.getOtherProfile
 );
 
