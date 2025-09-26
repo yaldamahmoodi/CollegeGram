@@ -18,12 +18,8 @@ export class UserService {
         this.followRepository = followRepository;
     }
 
-    async getByUsername(username: string) {
-        const userDetails = await this.userRepository.findByUsername(username);
-        if (!userDetails) {
-            throw new NotFoundError("NOT_FOUND_USER");
-        }
-        return userDetails;
+    async getUserIdByUsername(username: string): Promise<string | null> {
+        return await this.userRepository.findUserIdByUsername(username);
     }
 
     async uploadProfile(filePath: string, userId: string) {
@@ -68,17 +64,16 @@ export class UserService {
         return this.followRepository.getFollowers(userId)
     }
 
-    async getOtherProfile(loggedInUserId: string, targetUserId: string) {
-        const userDetails = await this.userRepository.findUserDetails(targetUserId);
+    async getOtherProfile(loggedInUserId: string, targetUsername: string) {
+        const userDetails = await this.userRepository.findUserDetailsByUsername(targetUsername);
         if (!userDetails) {
             throw new NotFoundError("NOT_FOUND_USER");
         }
 
         const isFollowed = await this.followRepository.isFollowed(
             loggedInUserId,
-            targetUserId
+            userDetails._id.toString()
         );
-
 
         return {
             ...userDetails,

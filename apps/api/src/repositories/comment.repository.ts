@@ -1,4 +1,5 @@
 import {CommentModel, type IComment} from "../db/models/comment.model.ts";
+import mongoose from "mongoose";
 
 export class CommentRepository {
 
@@ -20,5 +21,16 @@ export class CommentRepository {
             parent_comment: parentComment,
         });
     }
+
+    async getCommentsByPostId(postId: string, skip: number, pageSize: number): Promise<IComment[]> {
+        const here = await CommentModel.aggregate([
+            {$match: {post_id: new mongoose.Types.ObjectId(postId)}},
+            {$skip: skip},
+            {$limit: pageSize}
+        ]);
+        console.log(here);
+        return here;
+    }
+
 
 }

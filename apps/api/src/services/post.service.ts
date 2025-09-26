@@ -15,7 +15,7 @@ export class PostService {
     private readonly saveRepository: SaveRepository;
     private readonly commentRepository: CommentRepository;
 
-    constructor(postRepository: PostRepository, saveRepository: SaveRepository,commentRepository: CommentRepository) {
+    constructor(postRepository: PostRepository, saveRepository: SaveRepository, commentRepository: CommentRepository) {
         this.postRepository = postRepository;
         this.saveRepository = saveRepository;
         this.commentRepository = commentRepository;
@@ -129,10 +129,14 @@ export class PostService {
         );
     }
 
-    // async getCommentsByPost(postId: string, page: number, pageSize: number) {
-    //     const post = await this.postRepository.getPostById(postId);
-    //     if (!post) throw new NotFoundError("POST_NOT_FOUND");
-    //
-    //     return this.commentRepository.findCommentsByPostId(postId, page, pageSize);
-    // }
+    async getCommentsByPost(postId: string, page: number, pageSize: number) {
+        const post = await this.postRepository.getPostById(postId);
+        if (!post) throw new NotFoundError("NOT_FOUND");
+
+        const skip = (page - 1) * pageSize;
+
+        const test = this.commentRepository.getCommentsByPostId(postId, skip, pageSize);
+        // console.log(test,'testy')
+        return test;
+    }
 }

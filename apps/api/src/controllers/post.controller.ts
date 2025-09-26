@@ -22,6 +22,7 @@ export class PostController {
         this.savePost = this.savePost.bind(this);
         this.unsavePost = this.unsavePost.bind(this);
         this.addComment = this.addComment.bind(this);
+        this.getComments = this.getComments.bind(this);
     }
 
     async getPost(req: Authenticate, res: Response) {
@@ -175,5 +176,21 @@ export class PostController {
         }
     }
 
+    async getComments(req: Authenticate, res: Response, next: NextFunction) {
+        const page = Number(req.query.page) || 1;
+        const pageSize = Number(req.query.pageSize) || 10;
+        const postId = req.query.postId as string;
+        try {
+            if (!req.user) return next(new UnauthorizedError("UNAUTHORIZED"))
+
+            const comments = this.postService.getCommentsByPost(postId, page, pageSize)
+            return res.status(200).json({
+                code: "GET_COMMENTS_SUCCESSFULLY",
+                data: comments,
+            })
+        } catch (error) {
+            if (error instanceof APIError) return next(error);
+        }
+    }
 
 }
