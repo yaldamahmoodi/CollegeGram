@@ -252,6 +252,7 @@ export class UserController {
             return res.status(200).json({
                 code: "GET_USER_PROFILE_SUCCESSFULLY",
                 data: {
+                    userId: userDetails._id.toString(),
                     username: userDetails.username,
                     email: userDetails.email,
                     firstname: userDetails.firstname || null,

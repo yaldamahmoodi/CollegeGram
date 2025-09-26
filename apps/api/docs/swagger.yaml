@@ -169,7 +169,7 @@ paths:
       summary: Get other user's profile
       description: |
         پروفایل یک کاربر دیگر را بر اساس **username** برمی‌گرداند.
-        - اگر کاربر لاگین کرده باشد، فیلد `isFollowed` مشخص می‌کند که آیا کاربر جاری، این کاربر را فالو کرده یا نه.
+        - اگر کاربر لاگین کرده باشد، فیلد `isFollowed` مشخص می‌کند که آیا کاربر جاری این کاربر را فالو کرده یا نه.
       tags:
         - Users
       security:
@@ -196,13 +196,16 @@ paths:
                   data:
                     type: object
                     properties:
+                      userId:
+                        type: string
+                        example: 68d2b0927698eafb14b85ed9
                       username:
                         type: string
                         example: yaldoomaldoo1
                       email:
                         type: string
                         format: email
-                        example: yaldoomaldoo1@example.com
+                        example: yaldoomaldoo101@gamil.com
                       firstname:
                         type: string
                         nullable: true
@@ -217,20 +220,33 @@ paths:
                         example: null
                       follower_count:
                         type: integer
-                        example: 10
+                        example: 1
                       following_count:
                         type: integer
-                        example: 5
+                        example: 0
                       post_count:
                         type: integer
-                        example: 3
+                        example: 0
                       profilePhotoUrl:
                         type: string
                         nullable: true
-                        example: http://localhost:3001/uploads/profiles/profile.png
+                        example: null
                       isFollowed:
                         type: boolean
-                        example: false
+                        example: true
+        '401':
+          description: Unauthorized (user not logged in)
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  code:
+                    type: string
+                    example: UNAUTHORIZED
+                  message:
+                    type: string
+                    example: Authentication required
         '404':
           description: User not found
           content:
