@@ -23,7 +23,7 @@ export class UserController {
 
         this.uploadProfile = this.uploadProfile.bind(this);
         this.createPost = this.createPost.bind(this);
-        this.getUserDetails = this.getUserDetails.bind(this);
+        this.getProfile = this.getProfile.bind(this);
         this.updateProfile = this.updateProfile.bind(this);
         this.followUser = this.followUser.bind(this);
         this.unfollowUser = this.unfollowUser.bind(this);
@@ -31,6 +31,8 @@ export class UserController {
         this.unfollowUser = this.unfollowUser.bind(this);
         this.getFollowingsList = this.getFollowingsList.bind(this);
         this.getFollowersList = this.getFollowersList.bind(this);
+        this.getOtherProfile = this.getOtherProfile.bind(this);
+        this.getByUsername = this.getByUsername.bind(this);
 
     }
 
@@ -43,7 +45,7 @@ export class UserController {
         const filename = req.file.filename;
 
         try {
-             await this.userService.uploadProfile(filename, req.user.id);
+            await this.userService.uploadProfile(filename, req.user.id);
             return res.status(201).json({
                 code: "UPLOADED",
                 message: "Profile upload success",
@@ -53,15 +55,10 @@ export class UserController {
         }
     }
 
-    async getUserDetails(req: Authenticate & Request<{}, {}, {}, userParamSchema>, res: Response, next: NextFunction) {
-
-        let userId = req.query.id;
-        if (!userId) {
-            userId = req.user.id;
-        }
+    async getProfile(req: Authenticate & Request<{}, {}, {}, userParamSchema>, res: Response, next: NextFunction) {
 
         try {
-            const userDetails = await this.userService.getUserDetails(userId);
+            const userDetails = await this.userService.getProfile(req.user.id);
             const profilePhotoUrl = userDetails.ProfilePhoto?.path
                 ? `${req.protocol}://${req.get("host")}/uploads/profiles/${userDetails.ProfilePhoto.path}`
                 : null;
@@ -81,6 +78,34 @@ export class UserController {
             })
         } catch (error: unknown) {
             if (error instanceof APIError) return next(error)
+        }
+    }
+
+    async getByUsername(req: Request<{ username: string }>, res: Response, next: NextFunction) {
+        try {
+            const username = req.params.username;
+            const userDetails = await this.userService.getByUsername(username);
+            const profilePhotoUrl = userDetails.ProfilePhoto?.path
+                ? `${req.protocol}://${req.get("host")}/uploads/profiles/${userDetails.ProfilePhoto.path}`
+                : null;
+            return res.status(200).json({
+                code: "GET_USER_SUCCESSFULLY",
+                data: {
+                    _id: userDetails._id,
+                    username: userDetails.username,
+                    email: userDetails.email,
+                    firstname: userDetails.firstname || null,
+                    lastname: userDetails.lastname || null,
+                    biography: userDetails.biography || null,
+                    follower_count: userDetails.follower_count ?? 0,
+                    following_count: userDetails.following_count ?? 0,
+                    post_count: userDetails.post_count ?? 0,
+                    profilePhotoUrl,
+                }
+            })
+        } catch (error: unknown) {
+            if (error instanceof APIError) return next(error)
+            return next(error);
         }
     }
 
@@ -235,6 +260,42 @@ export class UserController {
             })
         } catch (error) {
             if (error instanceof APIError) return next(error)
+        }
+    }
+
+    async getOtherProfile(req: Authenticate & Request<{ id: string }>, res: Response, next: NextFunction) {
+        try {
+            const id = req.params.id;
+            const loggedInUserId = req.user.id;
+
+            const userDetails = await this.userService.getOtherProfile(
+                loggedInUserId,
+                id
+            );
+
+            const profilePhotoUrl = userDetails.ProfilePhoto?.path
+                ? `${req.protocol}://${req.get("host")}/uploads/profiles/${userDetails.ProfilePhoto.path}`
+                : null;
+
+
+            return res.status(200).json({
+                code: "GET_USER_PROFILE_SUCCESSFULLY",
+                data: {
+                    username: userDetails.username,
+                    email: userDetails.email,
+                    firstname: userDetails.firstname || null,
+                    lastname: userDetails.lastname || null,
+                    biography: userDetails.biography || null,
+                    follower_count: userDetails.follower_count ?? 0,
+                    following_count: userDetails.following_count ?? 0,
+                    post_count: userDetails.post_count ?? 0,
+                    profilePhotoUrl: profilePhotoUrl || null,
+                    isFollowed: userDetails.isFollowed ?? false,
+                },
+            });
+        } catch (error: unknown) {
+            if (error instanceof APIError) return next(error);
+            return next(error);
         }
     }
 

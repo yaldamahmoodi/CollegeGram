@@ -12,9 +12,14 @@ export class UserRepository {
         return await UserModel.findById(userId);
     }
 
+    async findByUsername(username: string): Promise<IUser | null> {
+        return await UserModel.findOne({ username })
+            .populate("ProfilePhoto", "path").lean();
+    }
+
     async findUserDetails(userId: string): Promise<IUser | null> {
         return await UserModel.findById(userId)
-            .populate("ProfilePhoto", "path");
+            .populate("ProfilePhoto", "path").lean();
     }
 
     async updateUser(userId: string, userData: updateProfileUserSchema) {

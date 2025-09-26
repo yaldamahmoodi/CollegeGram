@@ -22,7 +22,10 @@ export const CatalogueErrors = {
     YOU_CANNOT_FOLLOW_YOURSELF: {code: "YOU_CANNOT_FOLLOW_YOURSELF", message: "YOU_CANNOT_FOLLOW_YOURSELF"},
     YOU_CANNOT_UNFOLLOW_YOURSELF: {code: "YOU_CANNOT_UNFOLLOW_YOURSELF", message: "YOU_CANNOT_UNFOLLOW_YOURSELF"},
     SAVE_NOT_FOUND: {code: "SAVE_NOT_FOUND", message: "SAVE_NOT_FOUND"},
-    NO_DATA_PROVIDED:{code: "NO_DATA_PROVIDED", message: "No data provided  for update"},
+    NO_DATA_PROVIDED: {code: "NO_DATA_PROVIDED", message: "No data provided  for update"},
+    CONTENT_REQUIRED: {code: "CONTENT_REQUIRED", message: "Content is required"},
+    INVALID_COMMENT_ID:{code: "INVALID_COMMENT_ID", message: "Invalid com identifier"},
+    INVALID_POST_ID:{code: "INVALID_POST_ID", message: "Invalid post ID"},
 } as const;
 
 export type ErrorCode = keyof typeof CatalogueErrors;
