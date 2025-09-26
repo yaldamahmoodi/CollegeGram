@@ -256,6 +256,80 @@ paths:
                     type: string
                     example: Authentication required
 
+  /api/v1/users/{username}:
+    get:
+      summary: دریافت پروفایل با نام‌کاربری (عمومی)
+      description: |
+        دریافت اطلاعات پروفایل کاربر با استفاده از `username`.  
+        این مسیر عمومی است و نیاز به لاگین ندارد.
+      parameters:
+        - name: username
+          in: path
+          required: true
+          schema:
+            type: string
+          description: نام‌کاربری کاربر هدف
+          example: johndoe
+      responses:
+        '200':
+          description: اطلاعات کاربر با موفقیت برگردانده شد
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  code:
+                    type: string
+                    example: GET_USER_SUCCESSFULLY
+                  data:
+                    type: object
+                    properties:
+                      username:
+                        type: string
+                        example: johndoe
+                      email:
+                        type: string
+                        format: email
+                        example: john@example.com
+                      firstname:
+                        type: string
+                        nullable: true
+                        example: John
+                      lastname:
+                        type: string
+                        nullable: true
+                        example: Doe
+                      biography:
+                        type: string
+                        nullable: true
+                        example: من عاشق برنامه‌نویسی‌ام
+                      follower_count:
+                        type: integer
+                        example: 12
+                      following_count:
+                        type: integer
+                        example: 5
+                      post_count:
+                        type: integer
+                        example: 3
+                      profilePhotoUrl:
+                        type: string
+                        nullable: true
+                        example: /uploads/profiles/johndoe.png
+        '404':
+          description: کاربر یافت نشد
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  code:
+                    type: string
+                    example: NOT_FOUND_USER
+                  message:
+                    type: string
+                    example: User with given username does not exist
+
 
   /api/v1/users/profile/upload:
     post:

@@ -32,6 +32,7 @@ export class UserController {
         this.getFollowingsList = this.getFollowingsList.bind(this);
         this.getFollowersList = this.getFollowersList.bind(this);
         this.getOtherProfile = this.getOtherProfile.bind(this);
+        this.getByUsername = this.getByUsername.bind(this);
 
     }
 
@@ -77,6 +78,33 @@ export class UserController {
             })
         } catch (error: unknown) {
             if (error instanceof APIError) return next(error)
+        }
+    }
+
+    async getByUsername(req: Request<{ username: string }>, res: Response, next: NextFunction) {
+        try {
+            const username = req.params.username;
+            const userDetails = await this.userService.getByUsername(username);
+            const profilePhotoUrl = userDetails.ProfilePhoto?.path
+                ? `${req.protocol}://${req.get("host")}/uploads/profiles/${userDetails.ProfilePhoto.path}`
+                : null;
+            return res.status(200).json({
+                code: "GET_USER_SUCCESSFULLY",
+                data: {
+                    username: userDetails.username,
+                    email: userDetails.email,
+                    firstname: userDetails.firstname || null,
+                    lastname: userDetails.lastname || null,
+                    biography: userDetails.biography || null,
+                    follower_count: userDetails.follower_count ?? 0,
+                    following_count: userDetails.following_count ?? 0,
+                    post_count: userDetails.post_count ?? 0,
+                    profilePhotoUrl,
+                }
+            })
+        } catch (error: unknown) {
+            if (error instanceof APIError) return next(error)
+            return next(error);
         }
     }
 
