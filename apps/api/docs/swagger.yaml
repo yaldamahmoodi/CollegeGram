@@ -163,26 +163,28 @@ paths:
                         type: string
                         nullable: true
                         example: /uploads/profile/johndoe.png
-  /api/v1/users/{id}:
+
+  /api/v1/users/{username}:
     get:
-      summary: Get another user's profile
+      summary: Get other user's profile
       description: |
-        پروفایل کاربر دیگری را با استفاده از `id` دریافت می‌کند.  
-        - این درخواست نیاز به لاگین دارد.  
-        - علاوه بر اطلاعات پروفایل، مشخص می‌کند که آیا کاربر لاگین‌شده این فرد را فالو کرده یا نه.
+        پروفایل یک کاربر دیگر را بر اساس **username** برمی‌گرداند.
+        - اگر کاربر لاگین کرده باشد، فیلد `isFollowed` مشخص می‌کند که آیا کاربر جاری، این کاربر را فالو کرده یا نه.
+      tags:
+        - Users
       security:
         - cookieAuth: [ ]
       parameters:
-        - name: id
+        - name: username
           in: path
           required: true
           schema:
             type: string
-          description: ID کاربری که می‌خواهید پروفایلش را ببینید
-          example: 68c6cbfd5bc774e86bdf4eb2
+          description: Username of the target user
+          example: yaldoomaldoo1
       responses:
         '200':
-          description: User profile retrieved successfully
+          description: User profile returned successfully
           content:
             application/json:
               schema:
@@ -200,7 +202,7 @@ paths:
                       email:
                         type: string
                         format: email
-                        example: yaldoomaldoo101@gamil.com
+                        example: yaldoomaldoo1@example.com
                       firstname:
                         type: string
                         nullable: true
@@ -215,17 +217,17 @@ paths:
                         example: null
                       follower_count:
                         type: integer
-                        example: 0
+                        example: 10
                       following_count:
                         type: integer
-                        example: 0
+                        example: 5
                       post_count:
                         type: integer
-                        example: 0
+                        example: 3
                       profilePhotoUrl:
                         type: string
                         nullable: true
-                        example: null
+                        example: http://localhost:3001/uploads/profiles/profile.png
                       isFollowed:
                         type: boolean
                         example: false
@@ -241,97 +243,8 @@ paths:
                     example: NOT_FOUND_USER
                   message:
                     type: string
-                    example: User with given ID does not exist
-        '401':
-          description: Unauthorized – User not authenticated
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  code:
-                    type: string
-                    example: UNAUTHORIZED
-                  message:
-                    type: string
-                    example: Authentication required
-
-  /api/v1/users/{username}:
-    get:
-      summary: دریافت پروفایل با نام‌کاربری (عمومی)
-      description: |
-        دریافت اطلاعات پروفایل کاربر با استفاده از `username`.  
-        این مسیر عمومی است و نیاز به لاگین ندارد.
-      parameters:
-        - name: username
-          in: path
-          required: true
-          schema:
-            type: string
-          description: نام‌کاربری کاربر هدف
-          example: johndoe
-      responses:
-        '200':
-          description: اطلاعات کاربر با موفقیت برگردانده شد
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  code:
-                    type: string
-                    example: GET_USER_SUCCESSFULLY
-                  data:
-                    type: object
-                    properties:
-                      _id:
-                        type: string
-                        example: 68c6cbfd5bc774e86bdf4eb2
-                      username:
-                        type: string
-                        example: johndoe
-                      email:
-                        type: string
-                        format: email
-                        example: john@example.com
-                      firstname:
-                        type: string
-                        nullable: true
-                        example: John
-                      lastname:
-                        type: string
-                        nullable: true
-                        example: Doe
-                      biography:
-                        type: string
-                        nullable: true
-                        example: من عاشق برنامه‌نویسی‌ام
-                      follower_count:
-                        type: integer
-                        example: 12
-                      following_count:
-                        type: integer
-                        example: 5
-                      post_count:
-                        type: integer
-                        example: 3
-                      profilePhotoUrl:
-                        type: string
-                        nullable: true
-                        example: /uploads/profiles/johndoe.png
-        '404':
-          description: کاربر یافت نشد
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  code:
-                    type: string
-                    example: NOT_FOUND_USER
-                  message:
-                    type: string
                     example: User with given username does not exist
+
 
 
   /api/v1/users/profile/upload:

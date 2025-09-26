@@ -13,11 +13,6 @@ const router = Router();
 
 const userController = initiator.getUserController();
 
-// Public route: get user by username
-router.get(
-    "/:username",
-    userController.getByUsername
-);
 
 router.use(authMiddleware)
 
@@ -73,9 +68,10 @@ router.get(
 )
 
 router.get(
-    "/:id",
+    "/:username",
     userController.getOtherProfile
 );
+
 
 
 router.use(errorHandler);
