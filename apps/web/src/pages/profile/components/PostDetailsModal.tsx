@@ -68,7 +68,7 @@ const PostDetailsModal = ({ isOpen, close, data }: PostDetailsModalProps) => {
       <div className="flex items-center justify-between px-4 py-2">
         <Expand
           className="text-red-500"
-          onClick={() => navigate(ROUTES.POST_DETAIL)}
+          onClick={() => navigate(`/${ROUTES.POST_DETAIL}/${data._id}`)}
         />{" "}
         <XCircle onClick={close} className="text-red-500" />
       </div>
