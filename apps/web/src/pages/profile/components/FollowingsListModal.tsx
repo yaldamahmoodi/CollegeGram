@@ -1,23 +1,15 @@
 import Button from "@components/Button";
 import actionMenuIcon from "@assets/icons/actionMenu.svg";
 import { useFollowingList } from "@/hooks/user.hook";
-
-type User = {
-  id: string | number;
-  name: string;
-  followersCount?: number;
-  username: string;
-  avatar: string;
-};
+import type { FollowingType } from "@/types/user";
 
 type FollowingListModalProps = {
   isOpen: boolean;
   onClose: () => void;
   title: string;
-  users: User[];
   actionLabel?: string;
   onAction?: () => void;
-  onItemAction?: (user: User) => void;
+  onItemAction?: (user: FollowingType) => void;
 };
 
 const FollowingListModal = (props: FollowingListModalProps) => {
@@ -25,7 +17,6 @@ const FollowingListModal = (props: FollowingListModalProps) => {
     isOpen,
     onClose,
     title,
-    users,
     actionLabel = "بستن",
     onAction,
     onItemAction,
@@ -35,7 +26,6 @@ const FollowingListModal = (props: FollowingListModalProps) => {
 
   if (!isOpen) return null;
 
-  const userList = followings.length ? followings : users;
   return (
     <div
       className="fixed inset-0 z-50 flex items-center justify-center bg-black/40"
@@ -46,35 +36,37 @@ const FollowingListModal = (props: FollowingListModalProps) => {
         </div>
 
         <div className="max-h-[55vh] overflow-y-auto divide-y divide-gray-300 mb-5">
-          {userList.map((user: User) => (
-            <div
-              key={user.id}
-              className="flex items-center justify-between px-2 py-4">
-              <div className="flex items-center gap-3">
-                <img
-                  src={user.avatar}
-                  alt={user.name}
-                  className="h-10 w-10 rounded-full object-cover"
-                />
-                <div className="text-right">
-                  <p className="text-sm font-medium text-gray-800 pb-1">
-                    {user.name}
-                  </p>
-                  <p className="text-xs text-gray-500">
-                    {user.followersCount} هزار دنبال‌کننده‌ها
-                  </p>
-                </div>
-              </div>
+          {followings.length
+            ? followings?.map((user: FollowingType) => (
+                <div
+                  key={user?.userId}
+                  className="flex items-center justify-between px-2 py-4">
+                  <div className="flex items-center gap-3">
+                    <img
+                      src={user?.profilePhoto}
+                      alt={user?.username}
+                      className="h-10 w-10 rounded-full object-cover"
+                    />
+                    <div className="text-right">
+                      <p className="text-sm font-medium text-gray-800 pb-1">
+                        ` ${user?.firstname} ${user?.lastname}`
+                      </p>
+                      <p className="text-xs text-gray-500">
+                        {user?.follower_count || 0} هزار دنبال‌کننده‌ها
+                      </p>
+                    </div>
+                  </div>
 
-              {onItemAction && (
-                <button
-                  onClick={() => onItemAction(user)}
-                  className="text-red-500 text-2xl px-2 ">
-                  <img src={actionMenuIcon} className="h-5" />
-                </button>
-              )}
-            </div>
-          ))}
+                  {onItemAction && (
+                    <button
+                      onClick={() => onItemAction(user)}
+                      className="text-red-500 text-2xl px-2 ">
+                      <img src={actionMenuIcon} className="h-5" />
+                    </button>
+                  )}
+                </div>
+              ))
+            : "هنوز کسی را دنبال نکردی"}
         </div>
 
         <div className="flex justify-end">

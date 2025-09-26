@@ -50,7 +50,6 @@ const ProfileInfo = () => {
       avatar: "https://i.pravatar.cc/153?img=14",
     },
   ];
-  console.log(user?.profilePhotoUrl);
 
   return (
     <div className="profile-info-container w-full flex flex-col lg:flex-row lg:items-start gap-6 py-4  flex flex-justify">
@@ -131,17 +130,15 @@ const ProfileInfo = () => {
         isOpen={openFollowers}
         onClose={() => setOpenFollowers(false)}
         title="دنبال‌شونده‌ها"
-        users={mockUsers}
         actionLabel="بستن"
-        onItemAction={(user) => alert(`اکشن برای: ${user.name}`)}
+        onItemAction={(user) => console.log(user)}
       />
       <UserListModal
         isOpen={openFollowing}
         onClose={() => setOpenFollowing(false)}
         title="دنبال‌کننده‌ها"
-        users={mockUsers}
         actionLabel="بستن"
-        onItemAction={(user) => alert(`اکشن برای: ${user.name}`)}
+        onItemAction={(user) => console.log(user)}
       />
     </div>
   );
