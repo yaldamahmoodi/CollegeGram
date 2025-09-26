@@ -1150,8 +1150,9 @@ paths:
   /api/v1/users/followers:
     get:
       summary: Get followers list
-      description: |
-        followers list
+      description: لیست کاربرانی که کاربر لاگین‌شده را دنبال می‌کنند.
+      tags:
+        - Users
       security:
         - cookieAuth: [ ]
       responses:
@@ -1170,17 +1171,32 @@ paths:
                     items:
                       type: object
                       properties:
+                        userId:
+                          type: string
+                          example: 68d2b0927698eafb14b85ed9
                         username:
                           type: string
                           example: yaldoomaldoo1
+                        firstname:
+                          type: string
+                          nullable: true
+                          example: null
+                        lastname:
+                          type: string
+                          nullable: true
+                          example: null
                         follower_count:
                           type: integer
-                          example: 0
+                          example: 1
                         following_count:
                           type: integer
-                          example: 1
+                          example: 0
+                        profilePhoto:
+                          type: string
+                          nullable: true
+                          example: null
         '401':
-          description: Unauthorized – User not authenticated
+          description: Unauthorized – User not logged in
           content:
             application/json:
               schema:
@@ -1191,12 +1207,14 @@ paths:
                     example: UNAUTHORIZED
                   message:
                     type: string
-                    example: Authentication required
+                    example: User not authenticated
+
   /api/v1/users/followings:
     get:
       summary: Get followings list
-      description: |
-        followings list
+      description: لیست کاربرانی که کاربر لاگین‌شده آن‌ها را دنبال می‌کند.
+      tags:
+        - Users
       security:
         - cookieAuth: [ ]
       responses:
@@ -1215,17 +1233,32 @@ paths:
                     items:
                       type: object
                       properties:
+                        userId:
+                          type: string
+                          example: 68d2b0927698eafb14b85ed9
                         username:
                           type: string
-                          example: yaldaMahmoodi
+                          example: yaldoomaldoo1
+                        firstname:
+                          type: string
+                          nullable: true
+                          example: null
+                        lastname:
+                          type: string
+                          nullable: true
+                          example: null
                         follower_count:
                           type: integer
                           example: 1
                         following_count:
                           type: integer
                           example: 0
+                        profilePhoto:
+                          type: string
+                          nullable: true
+                          example: null
         '401':
-          description: Unauthorized – User not authenticated
+          description: Unauthorized – User not logged in
           content:
             application/json:
               schema:
@@ -1236,7 +1269,7 @@ paths:
                     example: UNAUTHORIZED
                   message:
                     type: string
-                    example: Authentication required
+                    example: User not authenticated
 
   /api/v1/posts/comment:
     post:
