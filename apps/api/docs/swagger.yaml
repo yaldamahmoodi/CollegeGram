@@ -284,6 +284,9 @@ paths:
                   data:
                     type: object
                     properties:
+                      _id:
+                        type: string
+                        example: 68c6cbfd5bc774e86bdf4eb2
                       username:
                         type: string
                         example: johndoe

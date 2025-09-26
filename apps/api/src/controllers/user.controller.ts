@@ -91,6 +91,7 @@ export class UserController {
             return res.status(200).json({
                 code: "GET_USER_SUCCESSFULLY",
                 data: {
+                    _id: userDetails._id,
                     username: userDetails.username,
                     email: userDetails.email,
                     firstname: userDetails.firstname || null,
