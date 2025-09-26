@@ -18,6 +18,14 @@ export class UserService {
         this.followRepository = followRepository;
     }
 
+    async getByUsername(username: string) {
+        const userDetails = await this.userRepository.findByUsername(username);
+        if (!userDetails) {
+            throw new NotFoundError("NOT_FOUND_USER");
+        }
+        return userDetails;
+    }
+
     async uploadProfile(filePath: string, userId: string) {
         const findUserById = await this.userRepository.findByUserId(userId);
         if (!findUserById) {
