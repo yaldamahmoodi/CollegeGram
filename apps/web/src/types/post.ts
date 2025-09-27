@@ -17,7 +17,7 @@ export interface PostInfo {
   photo_length: number;
   like_count: number;
   save_count: number;
-  mention: MentionsType[];
+  mentions: MentionsType[];
   hashtag_array: string[];
 }
 
@@ -50,4 +50,21 @@ export interface SavedPostType {
   mentions: [];
   hashtag_array: [];
   photo_length: number;
+}
+
+export interface CreateCommentPayloadType {
+  post_id: string | undefined;
+  content: string;
+  parent_comment?: string;
+}
+
+export interface CreateCommentResponseType {
+  _id: string;
+  post_id: string;
+  user_id: string;
+  content: string;
+  like_count: number;
+  parent_comment: string;
+  createdAt: string;
+  updatedAt: string;
 }

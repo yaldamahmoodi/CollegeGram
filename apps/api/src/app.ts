@@ -19,7 +19,7 @@ const __dirname = path.dirname(__filename);
 
 const app = express();
 const swaggerDocument = YAML.load(
-  path.join(__dirname, "../docs", "swagger.yaml")
+    path.join(__dirname, "../docs", "swagger.yaml")
 );
 app.use("/api/docs", swaggerUi.serve, swaggerUi.setup(swaggerDocument));
 
@@ -30,23 +30,23 @@ app.use(cookieParser(env.COOKIE_SECRET));
 
 const allowedOrigins = env.CORS_ORIGIN.split(",");
 app.use(
-  cors({
-    origin: function (origin, callback) {
-      // allow requests with no origin (like mobile apps or curl requests)
-      if (!origin) return callback(null, true);
+    cors({
+        origin: function (origin, callback) {
+            // allow requests with no origin (like mobile apps or curl requests)
+            if (!origin) return callback(null, true);
 
-      if (allowedOrigins.indexOf(origin) !== -1) {
-        callback(null, true);
-      } else {
-        console.log(`CORS blocked origin: ${origin}`);
-        callback(new Error("Not allowed by CORS"));
-      }
-    },
-    credentials: true,
-    methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS", "PATCH"],
-    allowedHeaders: ["Content-Type", "Authorization", "X-Requested-With"],
-    exposedHeaders: ["Content-Type", "Authorization"],
-  })
+            if (allowedOrigins.indexOf(origin) !== -1) {
+                callback(null, true);
+            } else {
+                console.log(`CORS blocked origin: ${origin}`);
+                callback(new Error("Not allowed by CORS"));
+            }
+        },
+        credentials: true,
+        methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS", "PATCH"],
+        allowedHeaders: ["Content-Type", "Authorization", "X-Requested-With"],
+        exposedHeaders: ["Content-Type", "Authorization"],
+    })
 );
 
 app.use(morgan("combined"));
@@ -87,3 +87,4 @@ app.use("/api/v1/search", searchRoute);
 
 export { app };
 export default app;
+

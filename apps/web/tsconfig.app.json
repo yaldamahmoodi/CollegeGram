@@ -32,5 +32,5 @@
       "@hooks/*": ["./src/hooks/*"]
     }
   },
-  "include": ["src"]
+  "include": ["src", "src/hooks/useAuth.ts"]
 }

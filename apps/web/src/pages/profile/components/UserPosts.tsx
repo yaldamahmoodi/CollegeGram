@@ -1,6 +1,6 @@
 import Button from "@components/Button";
 import { useEffect, useState } from "react";
-import PostDetailsModal from "@/layouts/ProfileLayout/components/PostDetailsModal.tsx";
+import PostDetailsModal from "@/pages/profile/components/PostDetailsModal";
 import groupPhotoIcon from "@assets/icons/GroupPhotos.svg";
 import { usePosts } from "@hooks/post.hook.ts";
 import type { postData } from "@api/post/post.api.ts";

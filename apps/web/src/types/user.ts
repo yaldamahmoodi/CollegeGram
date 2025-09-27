@@ -35,17 +35,18 @@ export interface UserInfoResponse
   profilePhotoUrl: string;
 }
 
-export interface FollowersType {
+export interface UserRelationType {
+  userId: string;
   username: string;
-  following_count: number;
+  firstname: string;
+  lastname: string;
   follower_count: number;
+  following_count: number;
+  profilePhoto: string;
 }
 
-export interface FollowingType {
-  username: string;
-  following_count: number;
-  follower_count: number;
-}
+export type FollowersType = UserRelationType;
+export type FollowingType = UserRelationType;
 
 export interface followType {
   followedUserId: string;
