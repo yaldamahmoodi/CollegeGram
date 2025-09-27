@@ -6,8 +6,16 @@ import commentIcon from "@assets/icons/comment.svg";
 import saveIcon from "@assets/icons/savePost.svg";
 import sendIcon from "@assets/icons/sendComment.svg";
 import replayComment from "@assets/icons/replay.svg";
+import { useParams } from "react-router-dom";
+import { useCreateComment, useGetPostById } from "@/hooks/post.hook";
+import type { CreateCommentPayloadType } from "@app-types/post";
 
 const PostDetail = () => {
+  const { id } = useParams<{ id: string }>();
+  const addCommentMutation = useCreateComment();
+
+  const { data: post } = useGetPostById(id);
+
   const [comments, setComments] = useState([
     {
       id: 1,
@@ -31,20 +39,15 @@ const PostDetail = () => {
       liked: false,
     },
   ]);
-  const tags = ["شمس دهقان", "maryam"];
+
   const [newComment, setNewComment] = useState("");
 
   const handleAddComment = () => {
-    if (newComment.trim() === "") return;
-    const newC = {
-      id: comments.length + 1,
-      name: "کاربر من",
-      text: newComment,
-      likes: 0,
-      liked: false,
+    const payload: CreateCommentPayloadType = {
+      post_id: post?._id,
+      content: newComment,
     };
-    setComments([newC, ...comments]);
-    setNewComment("");
+    addCommentMutation.mutate(payload);
   };
 
   const toggleLike = (id) => {
@@ -65,13 +68,7 @@ const PostDetail = () => {
     <div className="max-w-5xl mx-auto p-2 sm:p-4">
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6">
         <div className="w-full">
-          <ImageSlider
-            images={[
-              "https://picsum.photos/400/400?random=1",
-              "https://picsum.photos/400/400?random=2",
-              "https://picsum.photos/400/400?random=3",
-            ]}
-          />
+          <ImageSlider images={post?.urls || []} />
         </div>
 
         <div className="flex flex-col space-y-4">
@@ -89,18 +86,15 @@ const PostDetail = () => {
           <p className="text-xs text-gray-500">۱۲ مرداد</p>
 
           <p className="text-sm md:text-base leading-6 text-gray-700">
-            درس بزرگی از <span className="font-bold">عوامل قُدرت</span> است، کسی
-            که بتواند بر <span className="font-bold">جامعه</span> مسلط شود
-            می‌تواند نیرویش کند. قدّرت نیرویی‌ست که با جامعه پیدا می‌شود. شاید
-            بتوان حتی جامعه را محصول گسترش همین نیرو دانست، اما امروز…
+            {post?.caption}
           </p>
 
           <div className="flex flex-wrap gap-2 mb-6 mt-3">
-            {tags.map((tag, i) => (
+            {post?.mentions.map((mention, i) => (
               <span
                 key={i}
                 className="px-2 py-1 text-xs md:text-sm text-white rounded-md cursor-pointer bg-orange-500 hover:bg-orange-600">
-                {tag}
+                {mention}
               </span>
             ))}
           </div>
@@ -108,15 +102,15 @@ const PostDetail = () => {
           <div className="flex flex-wrap justify-end items-center gap-6 text-gray-600 text-xs md:text-sm pb-3">
             <div className="flex flex-col items-center gap-1 cursor-pointer hover:text-blue-500">
               <img src={commentIcon} className="w-5 h-5" />
-              <span className="text-red-500">{comments.length}</span>
+              <span className="text-red-500">{comments.length || 0}</span>
             </div>
             <div className="flex flex-col items-center gap-1 cursor-pointer hover:text-red-500">
               <img src={LikeIcon} className="w-5 h-5" />
-              <span className="text-red-500">15</span>
+              <span className="text-red-500">{post?.like_count || 0}</span>
             </div>
             <div className="flex flex-col items-center gap-1 cursor-pointer hover:text-green-600">
               <img src={saveIcon} className="w-5 h-5" />
-              <span className="text-red-500">298</span>
+              <span className="text-red-500">{post?.save_count || 0}</span>
             </div>
           </div>
 

@@ -13,6 +13,7 @@ const router = Router();
 
 const userController = initiator.getUserController();
 
+
 router.use(authMiddleware)
 
 router.post(
@@ -23,7 +24,7 @@ router.post(
 
 router.get(
     "/profile",
-    userController.getUserDetails
+    userController.getProfile
 );
 
 router.post(
@@ -65,6 +66,12 @@ router.get(
     "/followings",
     userController.getFollowingsList
 )
+
+router.get(
+    "/:username",
+    userController.getOtherProfile
+);
+
 
 
 router.use(errorHandler);

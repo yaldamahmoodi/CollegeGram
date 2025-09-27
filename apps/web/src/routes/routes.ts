@@ -9,6 +9,6 @@ export const ROUTES = {
   NOTIFICATIONS: "/notifications",
   SEARCH: "/search",
   EXPLORE: "/explore",
-  POST_DETAIL: "/postDetail",
+  POST_DETAIL: "/postDetail/:id",
   CATCH_ALL: "*",
 } as const;

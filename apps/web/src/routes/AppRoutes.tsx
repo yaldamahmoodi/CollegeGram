@@ -1,3 +1,4 @@
+
 import AuthLayout from "@/layouts/AuthLayout";
 import { Routes, Route, Navigate } from "react-router-dom";
 import Login from "@pages/Login";
@@ -9,10 +10,12 @@ import SavedPosts from "@/pages/SavedPosts";
 import ProtectedRoute from "./ProtectedRoute";
 import TaggedPosts from "@/pages/TaggedPosts";
 import PostDetail from "@/pages/PostDetail";
-
 import { ROUTES } from "./routes";
+import { useAxiosInterceptor } from "@api/axios";
 
 export default function AppRoutes() {
+  useAxiosInterceptor();
+
   return (
     <Routes>
       <Route path="/" element={<AuthLayout />}>
@@ -20,6 +23,7 @@ export default function AppRoutes() {
         <Route path={ROUTES.REGISTER} element={<Register />} />
         <Route index element={<Navigate to={ROUTES.LOGIN} />} />
       </Route>
+
       <Route element={<ProtectedRoute />}>
         <Route path={ROUTES.PROFILE} element={<Profile />} />
         <Route path={ROUTES.SAVED_POSTS} element={<SavedPosts />} />

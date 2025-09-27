@@ -14,8 +14,7 @@ import {SearchIndexManager} from "./services/SearchIndexManager.service.ts";
 import {SearchController} from "./controllers/search.controller.ts";
 import {UserSearchService} from "./services/UserSearchService.ts";
 import {FollowRepository} from "./repositories/follow.repository.ts";
-
-
+import {CommentRepository} from "./repositories/comment.repository.ts";
 
 
 export class Initiator {
@@ -31,6 +30,7 @@ export class Initiator {
     public postController: PostController;
     public saveRepository: SaveRepository;
     public followRepository: FollowRepository;
+    public commentRepository: CommentRepository;
 
     public elasticClient: ElasticClient;
     public searchIndexManager: SearchIndexManager;
@@ -44,6 +44,7 @@ export class Initiator {
         this.saveRepository = new SaveRepository();
         this.profileRepository = new ProfileRepository();
         this.followRepository = new FollowRepository()
+        this.commentRepository = new CommentRepository();
 
 
         this.elasticClient = new ElasticClient();
@@ -54,7 +55,7 @@ export class Initiator {
     public setupServices(): void {
         this.authService = new AuthService(this.authRepository);
         this.userService = new UserService(this.userRepository, this.profileRepository, this.followRepository);
-        this.postService = new PostService(this.postRepository, this.saveRepository);
+        this.postService = new PostService(this.postRepository, this.saveRepository, this.commentRepository);
         this.userSearchService = new UserSearchService(this.elasticClient);
 
     }
@@ -79,7 +80,7 @@ export class Initiator {
     public getPostController() {
         return this.postController;
     }
-    
+
     public getSearchController() {
         return this.searchController;
     }

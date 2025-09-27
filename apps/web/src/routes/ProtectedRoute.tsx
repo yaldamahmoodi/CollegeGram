@@ -1,9 +1,11 @@
 import { Outlet, Navigate } from "react-router-dom";
 import { ROUTES } from "./routes";
 import ProfileLayout from "@/layouts/ProfileLayout";
+import { useAuth } from "@hooks/useAuth";
 
 const ProtectedRoute = () => {
-  const token = localStorage.getItem("token");
+  const { token } = useAuth();
+
   return token ? (
     <ProfileLayout>
       <Outlet />

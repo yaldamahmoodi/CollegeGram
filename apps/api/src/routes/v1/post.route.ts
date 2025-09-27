@@ -44,6 +44,10 @@ router.post(
 
 router.get("/explore", queryParser(exploreSchema), postController.explore)
 
+router.post('/comment', postController.addComment)
+
+router.get('/comments', postController.getComments)
+
 router.use(errorHandler);
 
 export default router;

@@ -5,6 +5,11 @@ import {APIError} from "../utils/errors/api.errors.ts";
 import {asyncHandler} from "../utils/asyncHandler.utils.ts";
 import {type userParamSchema, UserParamsSchema} from "../utils/types.ts";
 import type {exploreSchema} from "../dtos/posts.dto.ts";
+import {UnauthorizedError} from "../utils/errors/unauthorized.errors.ts";
+import type {InsertCommentDto} from "../db/models/comment.model.ts";
+import {Error, Types} from "mongoose";
+import {BadRequestErrors} from "../utils/errors/badRequest.errors.ts";
+import {ValidationError} from "../utils/errors/validation.errors.ts";
 
 export class PostController {
 
@@ -16,6 +21,8 @@ export class PostController {
         this.getPosts = this.getPosts.bind(this);
         this.savePost = this.savePost.bind(this);
         this.unsavePost = this.unsavePost.bind(this);
+        this.addComment = this.addComment.bind(this);
+        this.getComments = this.getComments.bind(this);
     }
 
     async getPost(req: Authenticate, res: Response) {
@@ -128,7 +135,7 @@ export class PostController {
         })
     })
 
-    explore = asyncHandler(async (req: Authenticate<{},{},{},exploreSchema>, res: Response) => {
+    explore = asyncHandler(async (req: Authenticate<{}, {}, {}, exploreSchema>, res: Response) => {
 
         const page = req.query.page;
         const pageSize = req.query.pageSize;
@@ -143,5 +150,47 @@ export class PostController {
 
     })
 
+    async addComment(req: Authenticate<{}, {}, InsertCommentDto>, res: Response, next: NextFunction) {
+        try {
+            if (!req.user) return next(new UnauthorizedError("UNAUTHORIZED"))
+
+            const {post_id, content, parent_comment} = req.body;
+            if (!post_id || !Types.ObjectId.isValid(post_id))
+                return next(new ValidationError("INVALID_POST_ID"));
+
+            if (!content)
+                return next(new BadRequestErrors('CONTENT_REQUIRED'));
+
+            if (parent_comment && !Types.ObjectId.isValid(parent_comment))
+                return next(new BadRequestErrors('INVALID_COMMENT_ID'));
+
+            const comment = await this.postService.addComment(req.user.id, req.body);
+
+            return res.status(201).json({
+                code: "COMMENT_ADDED_SUCCESSFULLY",
+                data: comment,
+            });
+
+        } catch (error) {
+            if (error instanceof APIError) return next(error);
+        }
+    }
+
+    async getComments(req: Authenticate, res: Response, next: NextFunction) {
+        const page = Number(req.query.page) || 1;
+        const pageSize = Number(req.query.pageSize) || 10;
+        const postId = req.query.postId as string;
+        try {
+            if (!req.user) return next(new UnauthorizedError("UNAUTHORIZED"))
+
+            const comments = this.postService.getCommentsByPost(postId, page, pageSize)
+            return res.status(200).json({
+                code: "GET_COMMENTS_SUCCESSFULLY",
+                data: comments,
+            })
+        } catch (error) {
+            if (error instanceof APIError) return next(error);
+        }
+    }
 
 }
