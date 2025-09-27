@@ -9,7 +9,6 @@ import {uploadProfilePhotoMiddleware} from "../../middlewares/uploadProfilePhoto
 const router = Router();
 
 const postController = initiator.getPostController();
-const CommentController = initiator.getCommentController()
 
 router.use(authMiddleware)
 
@@ -28,11 +27,6 @@ router.post(
     "/Like",
     postController.likePost
 )
-router.post(
-    "/:post_id/unLike",
-    paramParser(postIdSchema),
-    postController.unLikePost
-)
 
 router.post(
     "/savePost",
@@ -44,14 +38,20 @@ router.post(
 )
 
 router.post(
-    "comment/like",
-    CommentController.likeComment
+    "/comment/like",
+    postController.likeComment
 )
 router.post(
     "/comment/unlike",
-    CommentController.unLikeComment
+    
+    postController.unlikeComment
 )
 
+router.post(
+    "/:post_id/unLike",
+    paramParser(postIdSchema),
+    postController.unLikePost
+)
 
 router.get("/explore", queryParser(exploreSchema), postController.explore)
 

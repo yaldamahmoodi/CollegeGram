@@ -1,18 +1,18 @@
 import mongoose, {type Model, Schema, Types} from "mongoose";
 
-export interface ILike {
+export interface ICommentLike {
     _id: Types.ObjectId,
     comment_id: Types.ObjectId,
     user_id: Types.ObjectId, // liked user id
     createdAt: Date,
 }
 
-const LikeSchema: Schema<ILike> = new Schema({
+const LikeSchema: Schema<ICommentLike> = new Schema({
         user_id: {type: Schema.Types.ObjectId, ref: "User", required: true},
         comment_id: {type: Schema.Types.ObjectId, ref: "comment", required: true},
     },
     {
         timestamps: {createdAt: 'createdAt'}
     });
-export const commentLikeModel: Model<ILike> = mongoose.model<ILike>('Likes', LikeSchema);
+export const commentLikeModel: Model<ICommentLike> = mongoose.model<ICommentLike>('CommentLikes', LikeSchema);
 

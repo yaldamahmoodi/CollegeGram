@@ -20,60 +20,44 @@ export class CommentRepository {
         });
     }
 
-    async commentLikedBefore(user_id:string , comment_id: string){
-      return commentLikeModel.findOne({ user_id, comment_id }).exec()  
+    async getCommentsByPostId(postId: string, skip: number, pageSize: number): Promise<IComment[]> {
+        return await CommentModel.aggregate([
+            {$match: {post_id: new mongoose.Types.ObjectId(postId)}},
+            {$skip: skip},
+            {$limit: pageSize}
+        ]);
+
+    }
+
+    async commentLikedBefore(userId:string , commentId: string){
+    return await commentLikeModel.findOne({ user_id: userId, comment_id: commentId }).exec() 
     }
 
   async likeComment(userId:string , commentId: string) {
-    const likeComment_session = await mongoose.startSession();
-    likeComment_session.startTransaction()
-    try{
       const like = await commentLikeModel.updateOne(
       {user_id: userId , comment_id: commentId},
       {$setOnInsert: {user_id: userId , comment_id: commentId, createdAt: new Date()}},
-      {upsert: true , session: likeComment_session}
+      {upsert: true}
       )
 
       if (like.upsertedCount > 0) {
-    await CommentModel.updateOne(
+        await CommentModel.updateOne(
         { _id: commentId },
-        { $inc: { like_count: 1 } },
-        { session: likeComment_session }
+        { $inc: { like_count: 1 } }
      );
      }
-    await likeComment_session.commitTransaction();
-    await likeComment_session.endSession()
-  }
- catch(err){
-    await likeComment_session.abortTransaction()
-    await likeComment_session.endSession()
-  }
-  }
-  
-
-  async unLikeComment(userId: string , commentId: string) {
-    const unLikeComment_session = await mongoose.startSession()
-    unLikeComment_session.startTransaction()
-     try{
-      const unlike = await commentLikeModel.deleteOne(
-       {user_id: userId , comment_id: commentId},
-       {session: unLikeComment_session}
-      )
+  }  
+  async unlikeComment(userId: string , commentId: string) {
+    const unlike = await commentLikeModel.deleteOne({
+        user_id:userId,
+        comment_id: commentId
+    })
       if (unlike.deletedCount > 0){
-        await CommentModel.updateOne(
+          await CommentModel.updateOne(
           { _id: commentId},
-            {$inc: {like_count: -1}},
-            {session: unLikeComment_session}
+          {$inc: {like_count: -1}},
         )
       }
-      await unLikeComment_session.commitTransaction()
-      await unLikeComment_session.endSession()
-    }
-    catch{
-      await unLikeComment_session.abortTransaction()
-      await unLikeComment_session.endSession()
-
-    }
     }
 
   }

@@ -139,4 +139,36 @@ export class PostService {
         // console.log(test,'testy')
         return test;
     }
+
+  async commentLike(userId: string, commentId: string){
+    const comment = await this.commentRepository.findCommentById(commentId)
+    const existLike = await this.commentRepository.commentLikedBefore(userId,commentId)
+    if (!comment) {
+      throw new NotFoundError("NOT_FOUND" , "Comment_not_find") 
+    }
+    if(existLike) {
+      throw new NotFoundError("ALREADY_DONE" , "User_liked_comment_Before")
+    }
+
+    await this.commentRepository.likeComment(userId, commentId)
+
+  }
+
+  async commentUnLike(userId: string, commentId: string){
+    const comment = await this.commentRepository.findCommentById(commentId)
+    const existLike = await this.commentRepository.commentLikedBefore(userId,commentId)
+    console.log(existLike , "is it")
+    if (!comment) {
+      throw new NotFoundError("NOT_FOUND" , "Comment_not_find") 
+    }
+    if(!existLike) {
+      throw new NotFoundError("NO_DATA_PROVIDED" , "User_Doesnt_liked_comment_Before")
+    }
+
+    await this.commentRepository.unlikeComment(userId, commentId)
+    console.log(existLike , "is it")
+
+  }
+
+
 }

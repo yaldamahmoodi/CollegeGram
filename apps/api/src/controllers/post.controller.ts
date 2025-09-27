@@ -23,6 +23,8 @@ export class PostController {
         this.unsavePost = this.unsavePost.bind(this);
         this.addComment = this.addComment.bind(this);
         this.getComments = this.getComments.bind(this);
+        this.likeComment = this.likeComment.bind(this)
+        this.unlikeComment = this.unlikeComment.bind(this)
     }
 
     async getPost(req: Authenticate, res: Response) {
@@ -193,4 +195,27 @@ export class PostController {
         }
     }
 
+    async likeComment(req: Authenticate, res: Response, next: NextFunction){
+          try{
+            await this.postService.commentLike(req.body.userId , req.body.commentId)
+            return res.status(200).json({
+              code: "LIKED_SUCCESSFULY",
+              message: `comment ${req.body.commentId} liked successfully.`
+            })
+            } catch (error) {
+              if (error instanceof APIError) return next(error);
+            }  
+        }
+
+    async unlikeComment(req: Authenticate, res: Response, next: NextFunction){
+        try{
+        await this.postService.commentUnLike(req.body.userId , req.body.commentId)
+        return res.status(200).json({
+            code: "UNLIKED_SUCCESSFULY",
+            message: `comment ${req.body.commentId} unliked successfully.`
+        })
+        } catch (error) {
+            if (error instanceof APIError) return next(error);
+        } 
+        }
 }
