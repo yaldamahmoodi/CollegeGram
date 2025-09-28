@@ -68,8 +68,6 @@ export class Initiator {
         this.notificationService = new NotificationService(this.notificationRepository, this.webSocketService);
         this.userService = new UserService(this.userRepository, this.profileRepository, this.followRepository, this.notificationService);
         this.postService = new PostService(this.postRepository, this.saveRepository, this.commentRepository, this.notificationService);
-        this.userService = new UserService(this.userRepository, this.profileRepository, this.followRepository);
-        this.postService = new PostService(this.postRepository, this.saveRepository);
         this.userSearchService = new UserSearchService(this.elasticClient);
         this.commentService = new CommentService(this.postRepository, this.commentRepository);
 
