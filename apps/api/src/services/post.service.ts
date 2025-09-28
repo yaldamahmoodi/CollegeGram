@@ -13,10 +13,12 @@ export class PostService {
 
     private readonly postRepository: PostRepository;
     private readonly saveRepository: SaveRepository;
+    private readonly commentRepository: CommentRepository;
 
-    constructor(postRepository: PostRepository, saveRepository: SaveRepository) {
+    constructor(postRepository: PostRepository, saveRepository: SaveRepository, commentRepository: CommentRepository) {
         this.postRepository = postRepository;
         this.saveRepository = saveRepository;
+        this.commentRepository = commentRepository;
 
     }
 
@@ -119,4 +121,6 @@ export class PostService {
     async explore(userId: string, page: number, pageSize: number) {
         return await this.postRepository.explore(userId, page, pageSize);
     }
+
+
 }

@@ -48,7 +48,6 @@ export class Initiator {
         this.followRepository = new FollowRepository()
         this.commentRepository = new CommentRepository();
 
-
         this.elasticClient = new ElasticClient();
         this.searchIndexManager = new SearchIndexManager(this.elasticClient);
     }

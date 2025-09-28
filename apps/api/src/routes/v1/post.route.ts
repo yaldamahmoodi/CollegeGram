@@ -27,11 +27,6 @@ router.post(
     "/Like",
     postController.likePost
 )
-router.post(
-    "/:post_id/unLike",
-    paramParser(postIdSchema),
-    postController.unLikePost
-)
 
 router.post(
     "/savePost",
@@ -40,6 +35,22 @@ router.post(
 router.post(
     "/unsavePost",
     postController.unsavePost
+)
+
+router.post(
+    "/comment/like",
+    postController.likeComment
+)
+router.post(
+    "/comment/unlike",
+    
+    postController.unlikeComment
+)
+
+router.post(
+    "/:post_id/unLike",
+    paramParser(postIdSchema),
+    postController.unLikePost
 )
 
 router.get("/explore", queryParser(exploreSchema), postController.explore)
