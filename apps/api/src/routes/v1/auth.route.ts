@@ -11,6 +11,7 @@ const authController = initiator.getAuthController();
 
 router.post("/register", bodyParser(insertUserSchema), authController.register);
 router.post("/login", bodyParser(loginDTO), authController.login);
+router.post("/logout", authController.logout);
 
 router.use(errorHandler);
 

@@ -110,6 +110,31 @@ paths:
                     type: string
                     example: 64f2a7b9e0c0f123456789ab
 
+  /api/v1/auth/logout:
+    post:
+      summary: Logout user
+      description: Logout the authenticated user by clearing the access token cookie
+      security:
+        - cookieAuth: [ ]
+      responses:
+        '200':
+          description: Logout successful
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  code:
+                    type: string
+                    example: LOGOUT_SUCCESSFUL
+                  message:
+                    type: string
+                    example: User logged out successfully
+        '401':
+          description: Unauthorized – User not logged in
+        '500':
+          description: Internal Server Error
+
   /api/v1/users/profile:
     get:
       summary: Get user profile
