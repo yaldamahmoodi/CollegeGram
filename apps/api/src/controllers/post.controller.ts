@@ -51,6 +51,8 @@ export class PostController {
         });
     }
 
+    
+
     async getPosts(req: Authenticate<{}, {}, {}, userParamSchema>, res: Response, next: NextFunction) {
 
         const page = Number(req.query.page) || 1;

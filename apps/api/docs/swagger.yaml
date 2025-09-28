@@ -459,6 +459,7 @@ paths:
   /api/v1/posts/:post_id/getPost:
     get:
       summary: Get a single post by ID
+      description: Retrieve a single post with populated user information including profile photo
       security:
         - cookieAuth: [ ]
       parameters:
@@ -480,41 +481,7 @@ paths:
                     type: string
                     example: GET_POST_SUCCESSFULLY
                   data:
-                    type: object
-                    properties:
-                      _id:
-                        type: string
-                        example: "68c4153c7187a49aafe14e71"
-                      user_id:
-                        type: string
-                        example: "68c2b1db8d9f319250cd0f8c"
-                      urls:
-                        type: array
-                        items:
-                          type: string
-                          example: "/uploads/posts/photos-1757680956872-723233089.png"
-                      caption:
-                        type: string
-                        example: "jhdskjfhljds"
-                      like_count:
-                        type: integer
-                        example: 0
-                      save_count:
-                        type: integer
-                        example: 0
-                      mentions:
-                        type: array
-                        items:
-                          type: string
-                        example: [ ]
-                      hashtag_array:
-                        type: array
-                        items:
-                          type: string
-                        example: [ ]
-                      photo_length:
-                        type: integer
-                        example: 2
+                    $ref: '#/components/schemas/PopulatedPost'
         '404':
           description: Post not found
         '500':
@@ -2107,6 +2074,32 @@ components:
         isPrivate:
           type: boolean
 
+    User:
+      type: object
+      properties:
+        _id:
+          type: string
+          example: "64bfc67e2b3c5a001e9e8c11"
+        username:
+          type: string
+          example: "john_doe"
+        firstname:
+          type: string
+          example: "John"
+        lastname:
+          type: string
+          example: "Doe"
+        ProfilePhoto:
+          type: object
+          nullable: true
+          properties:
+            _id:
+              type: string
+              example: "64bfc67e2b3c5a001e9e8c99"
+            path:
+              type: string
+              example: "profile-1694582321.jpg"
+
     Post:
       type: object
       properties:
@@ -2117,6 +2110,52 @@ components:
           type: string
           description: ID of the user who created the post
           example: "64bfc67e2b3c5a001e9e8c11"
+        urls:
+          type: array
+          items:
+            type: string
+          example: [ "uploads/photo-1694582321.png" ]
+        caption:
+          type: string
+          example: "My first post 🎉"
+        photo_length:
+          type: integer
+          example: 3
+        like_count:
+          type: integer
+          example: 10
+        save_count:
+          type: integer
+          example: 5
+        mentions:
+          type: array
+          items:
+            type: object
+            properties:
+              user_id:
+                type: string
+                example: "64bfc67e2b3c5a001e9e8c77"
+              username:
+                type: string
+                example: "ali123"
+        hashtag_array:
+          type: array
+          items:
+            type: string
+          example: [ "#fun", "#travel" ]
+
+    PopulatedPost:
+      type: object
+      properties:
+        _id:
+          type: string
+          example: "64bfc67e2b3c5a001e9e8c21"
+        user_id:
+          type: string
+          description: ID of the user who created the post
+          example: "64bfc67e2b3c5a001e9e8c11"
+        user:
+          $ref: '#/components/schemas/User'
         urls:
           type: array
           items:
