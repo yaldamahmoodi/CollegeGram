@@ -1,5 +1,4 @@
 import {Router} from "express";
-import {Initiator} from "../../initiator.ts";
 import {authMiddleware} from "../../middlewares/auth.middleware.ts";
 import {uploadProfilePhotoMiddleware} from "../../middlewares/uploadProfilePhoto.middleware.ts";
 import {errorHandler} from "../../middlewares/error.middleware.ts";
