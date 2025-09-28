@@ -64,6 +64,14 @@ export class UserService {
         return this.followRepository.getFollowers(userId)
     }
 
+    async acceptFollowRequest(userId: string, followerUserId: string) {
+        return await this.followRepository.acceptFollowRequest(followerUserId, userId);
+    }
+
+    async rejectFollowRequest(userId: string, followerUserId: string) {
+        return await this.followRepository.rejectFollowRequest(followerUserId, userId);
+    }
+
     async getOtherProfile(loggedInUserId: string, targetUsername: string) {
         const userDetails = await this.userRepository.findUserDetailsByUsername(targetUsername);
         if (!userDetails) {
@@ -88,15 +96,16 @@ export class UserService {
         // );
 
         const hasBlocked = false;
-        const isCloseFriend = await this.followRepository.isCloseFriend(
-            loggedInUserId,
-            userDetails._id.toString()
-        );
+        // const isCloseFriend = await this.followRepository.isCloseFriend(
+        //     loggedInUserId,
+        //     userDetails._id.toString()
+        // );
+        const isCloseFriend = false;
 
 
         return {
             ...userDetails,
-            followStatus: isFollowed,
+            followStatus,
             isBlocked,
             hasBlocked,
             isCloseFriend,

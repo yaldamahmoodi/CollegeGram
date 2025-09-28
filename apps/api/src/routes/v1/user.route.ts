@@ -7,7 +7,7 @@ import {bodyParser} from "../../middlewares/parsers.middleware.ts";
 import {updateProfileUserSchema} from "../../db/models/user.model.ts";
 import {initiator} from "../../server.ts";
 import {uploadPostPhotosMiddleware} from "../../middlewares/uploadPost.middleware.ts";
-import {followSchema} from "../../dtos/user.dto.ts";
+import {followSchema, acceptFollowRequestSchema, rejectFollowRequestSchema} from "../../dtos/user.dto.ts";
 
 const router = Router();
 
@@ -50,6 +50,18 @@ router.post(
     "/unfollow",
     bodyParser(followSchema),
     userController.unfollowUser
+);
+
+router.post(
+    "/accept-follow-request",
+    bodyParser(acceptFollowRequestSchema),
+    userController.acceptFollowRequest
+);
+
+router.post(
+    "/reject-follow-request",
+    bodyParser(rejectFollowRequestSchema),
+    userController.rejectFollowRequest
 );
 
 router.get(

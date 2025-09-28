@@ -918,7 +918,7 @@ paths:
   /api/v1/users/follow:
     post:
       summary: Follow a user
-      description: Follow another user by their user ID.
+      description: Follow another user by their user ID. If the target user has a private account, this will send a follow request that needs to be accepted.
       tags:
         - Users
       security:
@@ -938,7 +938,7 @@ paths:
                   example: 68c6cbfd5bc774e86bdf4eb2
       responses:
         '200':
-          description: User followed successfully
+          description: User followed successfully or follow request sent
           content:
             application/json:
               schema:
@@ -950,6 +950,19 @@ paths:
                   message:
                     type: string
                     example: User successfully Followed
+        '201':
+          description: Follow request sent to private user
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  code:
+                    type: string
+                    example: FOLLOW_REQUEST_SENT
+                  message:
+                    type: string
+                    example: Follow request sent
         '400':
           description: Invalid follow request (e.g., trying to follow yourself)
           content:
@@ -1064,6 +1077,156 @@ paths:
                   details:
                     type: string
                     example: user unfollowed before
+
+  /api/v1/users/accept-follow-request:
+    post:
+      summary: Accept follow request
+      description: Accept a pending follow request from another user.
+      tags:
+        - Users
+      security:
+        - cookieAuth: [ ]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - followerUserId
+              properties:
+                followerUserId:
+                  type: string
+                  description: The ID of the user who sent the follow request
+                  example: 68c6cbfd5bc774e86bdf4eb2
+      responses:
+        '200':
+          description: Follow request accepted successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  code:
+                    type: string
+                    example: FOLLOW_REQUEST_ACCEPTED
+                  message:
+                    type: string
+                    example: Follow request successfully accepted
+        '400':
+          description: Invalid accept request (e.g., trying to accept yourself)
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  code:
+                    type: string
+                    example: YOU_CANNOT_ACCEPT_YOURSELF
+                  message:
+                    type: string
+                    example: You cannot accept yourself
+        '404':
+          description: Follow request not found
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  code:
+                    type: string
+                    example: NOT_FOUND
+                  message:
+                    type: string
+                    example: Follow request not found
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  code:
+                    type: string
+                    example: INTERNAL_SERVER_ERROR
+                  message:
+                    type: string
+                    example: Something went wrong while accepting the follow request.
+
+  /api/v1/users/reject-follow-request:
+    post:
+      summary: Reject follow request
+      description: Reject a pending follow request from another user.
+      tags:
+        - Users
+      security:
+        - cookieAuth: [ ]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - followerUserId
+              properties:
+                followerUserId:
+                  type: string
+                  description: The ID of the user who sent the follow request
+                  example: 68c6cbfd5bc774e86bdf4eb2
+      responses:
+        '200':
+          description: Follow request rejected successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  code:
+                    type: string
+                    example: FOLLOW_REQUEST_REJECTED
+                  message:
+                    type: string
+                    example: Follow request successfully rejected
+        '400':
+          description: Invalid reject request (e.g., trying to reject yourself)
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  code:
+                    type: string
+                    example: YOU_CANNOT_REJECT_YOURSELF
+                  message:
+                    type: string
+                    example: You cannot reject yourself
+        '404':
+          description: Follow request not found
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  code:
+                    type: string
+                    example: NOT_FOUND
+                  message:
+                    type: string
+                    example: Follow request not found
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  code:
+                    type: string
+                    example: INTERNAL_SERVER_ERROR
+                  message:
+                    type: string
+                    example: Something went wrong while rejecting the follow request.
 
   /api/v1/users/savesList:
     get:

@@ -26,6 +26,9 @@ export const CatalogueErrors = {
     CONTENT_REQUIRED: {code: "CONTENT_REQUIRED", message: "Content is required"},
     INVALID_COMMENT_ID:{code: "INVALID_COMMENT_ID", message: "Invalid com identifier"},
     INVALID_POST_ID:{code: "INVALID_POST_ID", message: "Invalid post ID"},
+    FOLLOW_REQUEST_SENT: {code: "FOLLOW_REQUEST_SENT", message: "Follow request sent"},
+    YOU_CANNOT_ACCEPT_YOURSELF: {code: "YOU_CANNOT_ACCEPT_YOURSELF", message: "You cannot accept yourself"},
+    YOU_CANNOT_REJECT_YOURSELF: {code: "YOU_CANNOT_REJECT_YOURSELF", message: "You cannot reject yourself"},
 } as const;
 
 export type ErrorCode = keyof typeof CatalogueErrors;

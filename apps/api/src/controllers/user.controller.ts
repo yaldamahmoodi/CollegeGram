@@ -32,6 +32,8 @@ export class UserController {
         this.getFollowingsList = this.getFollowingsList.bind(this);
         this.getFollowersList = this.getFollowersList.bind(this);
         this.getOtherProfile = this.getOtherProfile.bind(this);
+        this.acceptFollowRequest = this.acceptFollowRequest.bind(this);
+        this.rejectFollowRequest = this.rejectFollowRequest.bind(this);
 
     }
 
@@ -286,6 +288,38 @@ export class UserController {
         } catch (error: unknown) {
             if (error instanceof APIError) return next(error);
             return next(error);
+        }
+    }
+
+    async acceptFollowRequest(req: Authenticate, res: Response, next: NextFunction) {
+        const { followerUserId } = req.body;
+
+        if (followerUserId === req.user.id) return next(new ValidationError("YOU_CANNOT_ACCEPT_YOURSELF"))
+
+        try {
+            await this.userService.acceptFollowRequest(req.user.id, followerUserId);
+            return res.status(200).json({
+                code: "FOLLOW_REQUEST_ACCEPTED",
+                message: "Follow request successfully accepted"
+            });
+        } catch (error: unknown) {
+            if (error instanceof APIError) return next(error);
+        }
+    }
+
+    async rejectFollowRequest(req: Authenticate, res: Response, next: NextFunction) {
+        const { followerUserId } = req.body;
+
+        if (followerUserId === req.user.id) return next(new ValidationError("YOU_CANNOT_REJECT_YOURSELF"))
+
+        try {
+            await this.userService.rejectFollowRequest(req.user.id, followerUserId);
+            return res.status(200).json({
+                code: "FOLLOW_REQUEST_REJECTED",
+                message: "Follow request successfully rejected"
+            });
+        } catch (error: unknown) {
+            if (error instanceof APIError) return next(error);
         }
     }
 
