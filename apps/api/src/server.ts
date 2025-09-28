@@ -1,9 +1,72 @@
+import { createServer } from 'http';
+import { Server as SocketIOServer } from 'socket.io';
 import app from "./app.ts";
 import {Database} from "./db/connection.ts";
 import env from "../env.ts";
 import process from "node:process";
 import mongoose from "mongoose";
 import {Initiator} from "./initiator.ts";
+import jwt from 'jsonwebtoken';
+import { UserModel } from './db/models/user.model.ts';
+
+// Create HTTP server
+const server = createServer(app);
+
+// Create Socket.IO server
+export const io = new SocketIOServer(server, {
+    cors: {
+        origin: env.CORS_ORIGIN.split(","),
+        methods: ["GET", "POST"],
+        credentials: true
+    }
+});
+
+// Extend Socket interface to include userId
+declare module 'socket.io' {
+    interface Socket {
+        userId?: string;
+    }
+}
+
+// Socket.IO authentication middleware
+io.use(async (socket, next) => {
+    try {
+        const token = socket.handshake.auth.token || socket.handshake.headers.authorization?.replace('Bearer ', '');
+        
+        if (!token) {
+            return next(new Error('Authentication error: No token provided'));
+        }
+
+        const jwtSecret = env.ACCESS_TOKEN_SECRET;
+        const payload = jwt.verify(token, jwtSecret) as any;
+        
+        if (!payload._id) {
+            return next(new Error('Authentication error: Invalid token'));
+        }
+
+        const user = await UserModel.findById(payload._id);
+        if (!user) {
+            return next(new Error('Authentication error: User not found'));
+        }
+
+        socket.userId = payload._id;
+        next();
+    } catch (error) {
+        next(new Error('Authentication error: Invalid token'));
+    }
+});
+
+// Socket.IO connection handling
+io.on('connection', (socket) => {
+    console.log(`User ${socket.userId} connected`);
+    
+    // Join user-specific room
+    socket.join(`user_${socket.userId}`);
+    
+    socket.on('disconnect', () => {
+        console.log(`User ${socket.userId} disconnected`);
+    });
+});
 
 export const initiator = new Initiator();
 initiator.setupServices();
@@ -12,7 +75,7 @@ initiator.setupControllers();
 (async () => {
     try {
         await Database.getInstance();
-        app.listen(env.PORT, () => console.log(`Server running on ${env.PORT}`));
+        server.listen(env.PORT, () => console.log(`Server running on ${env.PORT}`));
     } catch (err) {
         console.error("Failed to start server:", err);
         process.exit(1);

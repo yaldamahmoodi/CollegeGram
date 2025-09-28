@@ -4,6 +4,7 @@ import bcrypt from 'bcrypt';
 import type {updateProfileUserSchema} from "../db/models/user.model.ts";
 import {NotFoundError} from "../utils/errors/notFound.errors.ts";
 import type {FollowRepository} from "../repositories/follow.repository.ts";
+import { WebSocketService } from "./websocket.service.ts";
 
 export class UserService {
 
@@ -49,7 +50,20 @@ export class UserService {
     }
 
     async followUser(userId: string, followedUserId: string) {
-        return await this.followRepository.followUser(userId, followedUserId);
+        const result = await this.followRepository.followUser(userId, followedUserId);
+        
+        // Send follow notification
+        const sender = await this.userRepository.findUserDetails(userId);
+        if (sender) {
+            WebSocketService.sendFollowNotification(followedUserId, {
+                type: 'follow',
+                senderUsername: sender.username,
+                senderId: userId,
+                timestamp: new Date().toISOString()
+            });
+        }
+        
+        return result;
     }
 
     async unfollowUser(userId: string, unfollowedUserId: string) {

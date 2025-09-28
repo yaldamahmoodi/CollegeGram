@@ -8,6 +8,7 @@ import {ValidationError} from "../utils/errors/validation.errors.ts";
 import {InternalErrors} from "../utils/errors/internal.errors.ts";
 import type {CommentRepository} from "../repositories/comment.repository.ts";
 import type {InsertCommentDto} from "../db/models/comment.model.ts";
+import { WebSocketService } from "./websocket.service.ts";
 
 export class PostService {
 
@@ -34,7 +35,23 @@ export class PostService {
             throw new ValidationError("INVALID_USERNAME");
         }
 
-        return await this.postRepository.createPost(postData);
+        const post = await this.postRepository.createPost(postData);
+
+        // Send mention notifications
+        for (const mention of postData.mentions) {
+            const sender = await this.postRepository.findUserDetails(postData.user_id);
+            if (sender) {
+                WebSocketService.sendMentionNotification(mention.user_id, {
+                    type: 'mention',
+                    postId: post._id.toString(),
+                    senderUsername: sender.username,
+                    senderId: postData.user_id,
+                    timestamp: new Date().toISOString()
+                });
+            }
+        }
+
+        return post;
     }
 
     async getUserDetails(userId: string) {
@@ -59,8 +76,25 @@ export class PostService {
     }
 
     async likePost(userId: string, postId: string) {
-        await this.getPost(postId)
-        await this.postRepository.likePost(userId, postId)
+        await this.getPost(postId);
+        await this.postRepository.likePost(userId, postId);
+
+        // Get post owner and sender details for notification
+        const post = await this.postRepository.getPostById(postId);
+        if (post && post.user_id.toString() !== userId) {
+            // Get sender username
+            const sender = await this.postRepository.findUserDetails(userId);
+            if (sender) {
+                // Send WebSocket notification
+                WebSocketService.sendLikeNotification(post.user_id.toString(), {
+                    type: 'like',
+                    postId,
+                    senderUsername: sender.username,
+                    senderId: userId,
+                    timestamp: new Date().toISOString()
+                });
+            }
+        }
     }
 
     async unLikePost(userId: string, postId: string) {
@@ -121,12 +155,47 @@ export class PostService {
             if (!parent) throw new NotFoundError("NOT_FOUND");
         }
 
-        return this.commentRepository.createComment(
+        const comment = await this.commentRepository.createComment(
             userId,
             commentData.post_id,
             commentData.content,
             commentData.parent_comment || null
         );
+
+        // Send notification to post owner
+        if (post.user_id.toString() !== userId) {
+            const sender = await this.postRepository.findUserDetails(userId);
+            if (sender) {
+                WebSocketService.sendCommentNotification(post.user_id.toString(), {
+                    type: 'comment',
+                    postId: commentData.post_id,
+                    commentId: comment._id.toString(),
+                    senderUsername: sender.username,
+                    senderId: userId,
+                    timestamp: new Date().toISOString()
+                });
+            }
+        }
+
+        // If this is a reply, also notify the parent comment author
+        if (commentData.parent_comment) {
+            const parentComment = await this.commentRepository.findCommentById(commentData.parent_comment);
+            if (parentComment && parentComment.user_id.toString() !== userId) {
+                const sender = await this.postRepository.findUserDetails(userId);
+                if (sender) {
+                    WebSocketService.sendCommentNotification(parentComment.user_id.toString(), {
+                        type: 'comment',
+                        postId: commentData.post_id,
+                        commentId: comment._id.toString(),
+                        senderUsername: sender.username,
+                        senderId: userId,
+                        timestamp: new Date().toISOString()
+                    });
+                }
+            }
+        }
+
+        return comment;
     }
 
     async getCommentsByPost(postId: string, page: number, pageSize: number) {

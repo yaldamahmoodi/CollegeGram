@@ -36,7 +36,8 @@
     "swagger-ui-express": "^5.0.1",
     "uuid": "^11.1.0",
     "yamljs": "^0.3.0",
-    "zod": "^4.0.17"
+    "zod": "^4.0.17",
+    "socket.io": "^4.8.1"
   },
   "devDependencies": {
     "@types/bcrypt": "^6.0.0",
