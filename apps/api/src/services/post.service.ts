@@ -157,7 +157,7 @@ export class PostService {
   async commentUnLike(userId: string, commentId: string){
     const comment = await this.commentRepository.findCommentById(commentId)
     const existLike = await this.commentRepository.commentLikedBefore(userId,commentId)
-    console.log(existLike , "is it")
+
     if (!comment) {
       throw new NotFoundError("NOT_FOUND" , "Comment_not_find") 
     }
@@ -166,7 +166,6 @@ export class PostService {
     }
 
     await this.commentRepository.unlikeComment(userId, commentId)
-    console.log(existLike , "is it")
 
   }
 

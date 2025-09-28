@@ -195,27 +195,27 @@ export class PostController {
         }
     }
 
-    async likeComment(req: Authenticate, res: Response, next: NextFunction){
-          try{
-            await this.postService.commentLike(req.body.userId , req.body.commentId)
+    async likeComment(req: Authenticate, res: Response, next: NextFunction) {
+        try {
+            await this.postService.commentLike(req.user.id, req.body.commentId)
             return res.status(200).json({
-              code: "LIKED_SUCCESSFULY",
-              message: `comment ${req.body.commentId} liked successfully.`
+                code: "LIKED_SUCCESSFULY",
+                message: `comment ${req.body.commentId} liked successfully.`
             })
-            } catch (error) {
-              if (error instanceof APIError) return next(error);
-            }  
-        }
-
-    async unlikeComment(req: Authenticate, res: Response, next: NextFunction){
-        try{
-        await this.postService.commentUnLike(req.body.userId , req.body.commentId)
-        return res.status(200).json({
-            code: "UNLIKED_SUCCESSFULY",
-            message: `comment ${req.body.commentId} unliked successfully.`
-        })
         } catch (error) {
             if (error instanceof APIError) return next(error);
-        } 
         }
+    }
+
+    async unlikeComment(req: Authenticate, res: Response, next: NextFunction) {
+        try {
+            await this.postService.commentUnLike(req.user.id, req.body.commentId)
+            return res.status(200).json({
+                code: "UNLIKED_SUCCESSFULY",
+                message: `comment ${req.body.commentId} unliked successfully.`
+            })
+        } catch (error) {
+            if (error instanceof APIError) return next(error);
+        }
+    }
 }
