@@ -554,7 +554,7 @@ paths:
                   example: "This is my new bio"
                 isPrivate:
                   type: boolean
-                  description: Whether the user's profile is private (default: false)
+                  description: "Whether the user's profile is private (default: false)"
                   example: false
       responses:
         '200':
@@ -2309,6 +2309,259 @@ paths:
         '500':
           description: Internal server error
 
+  /api/v1/closeFriend/add:
+    post:
+      summary: Add a user to close friends
+      description: |
+        کاربر لاگین‌شده می‌تواند یک کاربر دیگر را به لیست **دوستان نزدیک** اضافه کند.
+      tags:
+        - CloseFriends
+      security:
+        - cookieAuth: [ ]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - friendId
+              properties:
+                friendId:
+                  type: string
+                  description: ID of the user to add as a close friend
+                  example: 68d6cbfd5bc774e86bdf4eb2
+      responses:
+        '201':
+          description: Friend added successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  code:
+                    type: string
+                    example: FRIEND_ADDED_SUCCESS
+                  message:
+                    type: string
+                    example: Friend added to close friends successfully.
+        '400':
+          description: Cannot add yourself to close friends
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  code:
+                    type: string
+                    example: CAN_NOT_ADD_YOURSELF_TO_CLOSE_FRIEND
+                  message:
+                    type: string
+                    example: You cannot add yourself to close friends
+        '401':
+          description: Unauthorized (user not logged in)
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  code:
+                    type: string
+                    example: UNAUTHORIZED
+                  message:
+                    type: string
+                    example: Authentication required
+        '409':
+          description: Already exists in close friends
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  code:
+                    type: string
+                    example: ALREADY_DONE
+                  details:
+                    type: string
+                    example: user already exists in closeFriend
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  code:
+                    type: string
+                    example: INTERNAL_SERVER_ERROR
+                  message:
+                    type: string
+                    example: Something went wrong while adding to close friends
+
+  /api/v1/closeFriend/remove:
+    post:
+      summary: Remove a user from close friends
+      description: |
+        کاربر لاگین‌شده می‌تواند یک کاربر دیگر را از لیست **دوستان نزدیک** خودش حذف کند.
+      tags:
+        - CloseFriends
+      security:
+        - cookieAuth: [ ]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - friendId
+              properties:
+                friendId:
+                  type: string
+                  description: ID of the user to remove from close friends
+                  example: 68d6cbfd5bc774e86bdf4eb2
+      responses:
+        '200':
+          description: Friend removed successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  code:
+                    type: string
+                    example: FRIEND_REMOVED_SUCCESS
+                  message:
+                    type: string
+                    example: Friend removed from close friends successfully.
+        '401':
+          description: Unauthorized (user not logged in)
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  code:
+                    type: string
+                    example: UNAUTHORIZED
+                  message:
+                    type: string
+                    example: Authentication required
+        '404':
+          description: Friend not found in close friends list
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  code:
+                    type: string
+                    example: NOT_FOUND
+                  message:
+                    type: string
+                    example: user does not exists in closeFriend
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  code:
+                    type: string
+                    example: INTERNAL_SERVER_ERROR
+                  message:
+                    type: string
+                    example: Something went wrong while removing from close friends
+
+  /api/v1/closeFriend/list:
+    get:
+      summary: Get close friends list
+      description: |
+        برمی‌گردونه لیست **دوستان نزدیک** کاربر لاگین‌شده همراه با اطلاعات کاربر هر دوست.
+      tags:
+        - CloseFriends
+      security:
+        - cookieAuth: [ ]
+      responses:
+        '200':
+          description: List of close friends retrieved successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  code:
+                    type: string
+                    example: GET_CLOSE_FRIENDS_SUCCESS
+                  data:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        _id:
+                          type: string
+                          description: Close friend relationship ID
+                          example: 68d95206a276ca8a18ad3dfe
+                        createdAt:
+                          type: string
+                          format: date-time
+                          example: 2025-09-28T15:19:34.812Z
+                        updatedAt:
+                          type: string
+                          format: date-time
+                          example: 2025-09-28T15:19:36.905Z
+                        friend_info:
+                          type: object
+                          properties:
+                            _id:
+                              type: string
+                              example: 68d2b0927698eafb14b85ed9
+                            email:
+                              type: string
+                              format: email
+                              example: yaldoomaldoo101@gamil.com
+                            username:
+                              type: string
+                              example: yaldoomaldoo1
+                            firstname:
+                              type: string
+                              nullable: true
+                              example: null
+                            lastname:
+                              type: string
+                              nullable: true
+                              example: null
+                            profilePhoto:
+                              type: string
+                              nullable: true
+                              example: null
+        '401':
+          description: Unauthorized (user not logged in)
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  code:
+                    type: string
+                    example: UNAUTHORIZED
+                  message:
+                    type: string
+                    example: Authentication required
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  code:
+                    type: string
+                    example: INTERNAL_SERVER_ERROR
+                  message:
+                    type: string
+                    example: Something went wrong while fetching close friends
 
 
 components:

@@ -30,6 +30,7 @@ export const CatalogueErrors = {
     YOU_CANNOT_ACCEPT_YOURSELF: {code: "YOU_CANNOT_ACCEPT_YOURSELF", message: "You cannot accept yourself"},
     YOU_CANNOT_REJECT_YOURSELF: {code: "YOU_CANNOT_REJECT_YOURSELF", message: "You cannot reject yourself"},
     NOTIFICATION_NOT_FOUND: {code: "NOTIFICATION_NOT_FOUND", message: "Notification not found"},
+    CAN_NOT_ADD_YOURSELF_TO_CLOSE_FRIEND:{code:"CAN_NOT_ADD_YOURSELF_TO_CLOSE_FRIEND",message:"invalid request"}
 } as const;
 
 export type ErrorCode = keyof typeof CatalogueErrors;

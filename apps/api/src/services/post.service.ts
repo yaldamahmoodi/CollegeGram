@@ -23,7 +23,6 @@ export class PostService {
         this.saveRepository = saveRepository;
         this.commentRepository = commentRepository;
         this.notificationService = notificationService;
-
     }
 
     async createPost(postData: InsertPostDto) {

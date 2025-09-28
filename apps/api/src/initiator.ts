@@ -20,6 +20,9 @@ import {NotificationService} from "./services/notification.service.ts";
 import {NotificationController} from "./controllers/notification.controller.ts";
 import {WebSocketService} from "./services/websocket.service.ts";
 import {CommentService} from "./services/comment.service.ts";
+import {CloseFriendController} from "./controllers/closefriend.controller.ts";
+import {CloseFriendRepository} from "./repositories/closefriend.repository.ts";
+import {CloseFriendService} from "./services/closefriend.service.ts";
 
 
 export class Initiator {
@@ -46,6 +49,10 @@ export class Initiator {
     public searchIndexManager: SearchIndexManager;
     public searchController: SearchController;
     public userSearchService: UserSearchService;
+    public closeFriendController: CloseFriendController;
+    public closeFriendRepository: CloseFriendRepository;
+    public closeFriendService: CloseFriendService;
+
 
     constructor() {
         this.userRepository = new UserRepository();
@@ -60,6 +67,8 @@ export class Initiator {
 
         this.elasticClient = new ElasticClient();
         this.searchIndexManager = new SearchIndexManager(this.elasticClient);
+
+        this.closeFriendRepository = new CloseFriendRepository();
     }
 
 
@@ -70,7 +79,7 @@ export class Initiator {
         this.postService = new PostService(this.postRepository, this.saveRepository, this.commentRepository, this.notificationService);
         this.userSearchService = new UserSearchService(this.elasticClient);
         this.commentService = new CommentService(this.postRepository, this.commentRepository);
-
+        this.closeFriendService = new CloseFriendService(this.closeFriendRepository);
     }
 
     public setupControllers(): void {
@@ -79,7 +88,7 @@ export class Initiator {
         this.postController = new PostController(this.postService, this.commentService);
         this.searchController = new SearchController(this.userSearchService);
         this.notificationController = new NotificationController(this.notificationService);
-
+        this.closeFriendController = new CloseFriendController(this.closeFriendService);
     }
 
     public getAuthController() {
@@ -101,5 +110,9 @@ export class Initiator {
 
     public getNotificationController() {
         return this.notificationController;
+    }
+    
+    public getCloseFriendController() {
+        return this.closeFriendController;
     }
 }

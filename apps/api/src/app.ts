@@ -14,6 +14,7 @@ import env from "../env.ts";
 import path from "path";
 import { fileURLToPath } from "node:url";
 import searchRoute from "./routes/v1/search.route.ts";
+import closeFriendRoute from "./routes/v1/closeFriend.route.ts";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -83,6 +84,7 @@ app.use("/api/v1/users", userRoute);
 app.use("/api/v1/posts", postRoute);
 app.use("/api/v1/notifications", notificationRoute);
 app.use("/api/v1/search", searchRoute);
+app.use("/api/v1/closeFriend", closeFriendRoute);
 
 export { app };
 export default app;
