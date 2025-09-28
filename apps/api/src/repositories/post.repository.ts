@@ -1,9 +1,10 @@
 import {type InsertPostDto, type Post, postModel} from "../db/models/post.model.ts";
 import {LikeModel} from "../db/models/like.model.ts";
+import {SaveModel} from "../db/models/save.model.ts";
 import {Types} from "mongoose";
 import {UserModel, type IUser} from "../db/models/user.model.ts";
 import {AlreadyDoneError} from "../utils/errors/alreadyDone.errors.ts";
-import {Follow} from "../db/models/follow.model.ts";
+import {FollowModel} from "../db/models/follow.model.ts";
 
 export class PostRepository {
 
@@ -39,8 +40,37 @@ export class PostRepository {
         return await post.save();
     }
 
-    async getPostById(postId: string): Promise<Post | null> {
-        return postModel.findById(postId).exec();
+    async getPostById(postId: string, userId?: string): Promise<Post | null> {
+        const post = await postModel.findOne({_id: postId})
+            .populate({
+                path: "user_id",
+                select: "_id username firstname lastname",
+                populate: {
+                    path: "ProfilePhoto",
+                    select: "path"
+                }
+            })
+            .exec();
+
+        if (post && userId) {
+            // Check if the user has liked this post
+            const like = await LikeModel.findOne({
+                post_id: postId,
+                user_id: userId
+            });
+            
+            // Check if the user has saved this post
+            const save = await SaveModel.findOne({
+                post_id: postId,
+                user_id: userId
+            });
+            
+            // Add isLiked and isSaved fields to the post object
+            (post as any).isLiked = !!like;
+            (post as any).isSaved = !!save;
+        }
+
+        return post;
     }
 
     async updatePostSaveCount(postId: string, count: number) {
@@ -94,7 +124,7 @@ export class PostRepository {
     async explore(userId: string, page: number, pageSize: number) {
         const skip = (page - 1) * pageSize;
 
-        return Follow.aggregate([
+        return FollowModel.aggregate([
             {$match: {follower_id: new Types.ObjectId(userId)}},
 
             {
@@ -118,6 +148,15 @@ export class PostRepository {
             },
             {$unwind: {path: "$user", preserveNullAndEmptyArrays: false}},
 
+            {
+                $lookup: {
+                    from: "profilephotos",
+                    localField: "user._id",
+                    foreignField: "user_id",
+                    as: "profilePhoto",
+                },
+            },
+
             {$sort: {"posts.createdAt": -1}},
 
             {$skip: skip},
@@ -137,7 +176,13 @@ export class PostRepository {
                     firstname: "$user.firstname",
                     lastname: "$user.lastname",
                     following_count: "$user.following_count",
-                    profilePhotoUrl: "$user.profilePhotoUrl",
+                    profilePhotoUrl: {
+                        $cond: {
+                            if: {$gt: [{$size: "$profilePhoto"}, 0]},
+                            then: {$arrayElemAt: ["$profilePhoto.path", 0]},
+                            else: null
+                        }
+                    },
                 },
             },
         ]);

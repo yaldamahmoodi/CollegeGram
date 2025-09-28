@@ -19,6 +19,7 @@ import {NotificationRepository} from "./repositories/notification.repository.ts"
 import {NotificationService} from "./services/notification.service.ts";
 import {NotificationController} from "./controllers/notification.controller.ts";
 import {WebSocketService} from "./services/websocket.service.ts";
+import {CommentService} from "./services/comment.service.ts";
 
 
 export class Initiator {
@@ -39,6 +40,8 @@ export class Initiator {
     public notificationService: NotificationService;
     public notificationController: NotificationController;
     public webSocketService: WebSocketService;
+    public commentService: CommentService;
+
     public elasticClient: ElasticClient;
     public searchIndexManager: SearchIndexManager;
     public searchController: SearchController;
@@ -65,14 +68,17 @@ export class Initiator {
         this.notificationService = new NotificationService(this.notificationRepository, this.webSocketService);
         this.userService = new UserService(this.userRepository, this.profileRepository, this.followRepository, this.notificationService);
         this.postService = new PostService(this.postRepository, this.saveRepository, this.commentRepository, this.notificationService);
+        this.userService = new UserService(this.userRepository, this.profileRepository, this.followRepository);
+        this.postService = new PostService(this.postRepository, this.saveRepository);
         this.userSearchService = new UserSearchService(this.elasticClient);
+        this.commentService = new CommentService(this.postRepository, this.commentRepository);
 
     }
 
     public setupControllers(): void {
         this.authController = new AuthController(this.authService);
         this.userController = new UserController(this.userService, this.postService);
-        this.postController = new PostController(this.postService);
+        this.postController = new PostController(this.postService, this.commentService);
         this.searchController = new SearchController(this.userSearchService);
         this.notificationController = new NotificationController(this.notificationService);
 

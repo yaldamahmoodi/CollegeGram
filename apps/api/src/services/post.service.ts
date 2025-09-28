@@ -30,12 +30,23 @@ export class PostService {
         if (postData.urls.length < 1) {
             throw new ValidationError("INVALID_CREDENTIALS");
         }
-        const allExist = postData.mentions.every(async (mention) => {
-            return await this.getUserDetails(mention.user_id)
-        })
-
-        if (!allExist) {
-            throw new ValidationError("INVALID_USERNAME");
+        // Validate all mentioned users exist
+        if (postData.mentions && postData.mentions.length > 0) {
+            const mentionValidationPromises = postData.mentions.map(async (mention) => {
+                try {
+                    await this.getUserDetails(mention.user_id);
+                    return true;
+                } catch (error) {
+                    return false;
+                }
+            });
+            
+            const validationResults = await Promise.all(mentionValidationPromises);
+            const allExist = validationResults.every(result => result === true);
+            
+            if (!allExist) {
+                throw new ValidationError("INVALID_USERNAME");
+            }
         }
 
         const post = await this.postRepository.createPost(postData);
@@ -69,8 +80,8 @@ export class PostService {
         return await this.postRepository.findUserPosts(userId, page, pageSize);
     }
 
-    async getPost(postId: string) {
-        const post = await this.postRepository.getPostById(postId);
+    async getPost(postId: string, userId?: string) {
+        const post = await this.postRepository.getPostById(postId, userId);
         if (!post) {
             throw new NotFoundError("NOT_FOUND");
         }

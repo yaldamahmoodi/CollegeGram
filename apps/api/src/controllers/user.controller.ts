@@ -32,6 +32,8 @@ export class UserController {
         this.getFollowingsList = this.getFollowingsList.bind(this);
         this.getFollowersList = this.getFollowersList.bind(this);
         this.getOtherProfile = this.getOtherProfile.bind(this);
+        this.acceptFollowRequest = this.acceptFollowRequest.bind(this);
+        this.rejectFollowRequest = this.rejectFollowRequest.bind(this);
 
     }
 
@@ -92,7 +94,19 @@ export class UserController {
             const files = req.files as Express.Multer.File[];
             const caption = req.body.caption;
             const filePaths: string[] = files.map(file => file.filename);
-            const mentions = Array.isArray(req.body.mentions) ? req.body.mentions : [];
+            
+            // Parse mentions from JSON string if it exists
+            let mentions = [];
+            if (req.body.mentions) {
+                try {
+                    mentions = typeof req.body.mentions === 'string' 
+                        ? JSON.parse(req.body.mentions) 
+                        : req.body.mentions;
+                } catch (error) {
+                    mentions = [];
+                }
+            }
+            
             const hashtag_array: string[] = caption ? extractHashtags(caption) : [];
 
             const postData: InsertPostDto = {
@@ -127,7 +141,8 @@ export class UserController {
                     firstname: updatedUser.firstname,
                     lastname: updatedUser.lastname,
                     email: updatedUser.email,
-                    biography: updatedUser.biography
+                    biography: updatedUser.biography,
+                    isPrivate: updatedUser.isPrivate,
                 }
             });
 
@@ -244,6 +259,8 @@ export class UserController {
                 username
             );
 
+
+        
             const profilePhotoUrl = userDetails.ProfilePhoto?.path
                 ? `${req.protocol}://${req.get("host")}/uploads/profiles/${userDetails.ProfilePhoto.path}`
                 : null;
@@ -262,12 +279,47 @@ export class UserController {
                     following_count: userDetails.following_count ?? 0,
                     post_count: userDetails.post_count ?? 0,
                     profilePhotoUrl: profilePhotoUrl || null,
-                    isFollowed: userDetails.isFollowed ?? false,
+                    followStatus: userDetails.followStatus.status,
+                    isBlocked: userDetails.isBlocked ?? false,
+                    hasBlocked: userDetails.hasBlocked ?? false,
+                    isCloseFriend: userDetails.isCloseFriend ?? false,
                 },
             });
         } catch (error: unknown) {
             if (error instanceof APIError) return next(error);
             return next(error);
+        }
+    }
+
+    async acceptFollowRequest(req: Authenticate, res: Response, next: NextFunction) {
+        const { followerUserId } = req.body;
+
+        if (followerUserId === req.user.id) return next(new ValidationError("YOU_CANNOT_ACCEPT_YOURSELF"))
+
+        try {
+            await this.userService.acceptFollowRequest(req.user.id, followerUserId);
+            return res.status(200).json({
+                code: "FOLLOW_REQUEST_ACCEPTED",
+                message: "Follow request successfully accepted"
+            });
+        } catch (error: unknown) {
+            if (error instanceof APIError) return next(error);
+        }
+    }
+
+    async rejectFollowRequest(req: Authenticate, res: Response, next: NextFunction) {
+        const { followerUserId } = req.body;
+
+        if (followerUserId === req.user.id) return next(new ValidationError("YOU_CANNOT_REJECT_YOURSELF"))
+
+        try {
+            await this.userService.rejectFollowRequest(req.user.id, followerUserId);
+            return res.status(200).json({
+                code: "FOLLOW_REQUEST_REJECTED",
+                message: "Follow request successfully rejected"
+            });
+        } catch (error: unknown) {
+            if (error instanceof APIError) return next(error);
         }
     }
 

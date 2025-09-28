@@ -12,6 +12,7 @@ export class AuthController {
         this.authService = authService;
         this.register = this.register.bind(this);
         this.login = this.login.bind(this);
+        this.logout = this.logout.bind(this);
     }
 
     async register(req: Request<{}, {}, insertUserZodSchema>, res: Response, next: NextFunction) {
@@ -42,6 +43,25 @@ export class AuthController {
                 userId: userId,
             });
 
+        } catch (error: unknown) {
+            if (error instanceof APIError) return next(error)
+        }
+    }
+
+    async logout(req: Request, res: Response, next: NextFunction) {
+        try {
+            const result = await this.authService.logout();
+            
+            // Clear the accessToken cookie
+            return res.status(200).clearCookie('accessToken', {
+                httpOnly: true,
+                secure: true,
+                sameSite: "strict",
+                signed: true,
+            }).json({
+                code: "LOGOUT_SUCCESSFUL",
+                message: result.message
+            });
         } catch (error: unknown) {
             if (error instanceof APIError) return next(error)
         }
