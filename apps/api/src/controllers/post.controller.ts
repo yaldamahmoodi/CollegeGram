@@ -201,7 +201,7 @@ export class PostController {
 
     async likeComment(req: Authenticate, res: Response, next: NextFunction) {
         try {
-            await this.postService.commentLike(req.user.id, req.body.commentId)
+            await this.commentService.commentLike(req.user.id, req.body.commentId)
             return res.status(200).json({
                 code: "LIKED_SUCCESSFULY",
                 message: `comment ${req.body.commentId} liked successfully.`
@@ -213,7 +213,7 @@ export class PostController {
 
     async unlikeComment(req: Authenticate, res: Response, next: NextFunction) {
         try {
-            await this.postService.commentUnLike(req.user.id, req.body.commentId)
+            await this.commentService.commentUnLike(req.user.id, req.body.commentId)
             return res.status(200).json({
                 code: "UNLIKED_SUCCESSFULY",
                 message: `comment ${req.body.commentId} unliked successfully.`
