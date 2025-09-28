@@ -1379,6 +1379,110 @@ paths:
                     type: string
                     example: User not authenticated
 
+  /api/v1/posts/comments:
+    get:
+      summary: Get comments of a post
+      description: |
+        لیست کامنت‌های یک پست رو برمی‌گردونه.  
+        - نیاز به لاگین (کوکی) داره.  
+        - از query params برای صفحه‌بندی استفاده می‌کنه.
+      tags:
+        - Comments
+      security:
+        - cookieAuth: [ ]
+      parameters:
+        - name: postId
+          in: query
+          required: true
+          schema:
+            type: string
+          description: ID of the post to get comments for
+          example: 68d50f8ca54197555078bf31
+        - name: page
+          in: query
+          required: false
+          schema:
+            type: integer
+            default: 1
+          description: Page number for pagination
+          example: 1
+        - name: pageSize
+          in: query
+          required: false
+          schema:
+            type: integer
+            default: 10
+          description: Number of comments per page
+          example: 10
+      responses:
+        '200':
+          description: Comments fetched successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  code:
+                    type: string
+                    example: GET_COMMENTS_SUCCESSFULLY
+                  data:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        _id:
+                          type: string
+                          example: 68d511b117a16012d74a14a0
+                        post_id:
+                          type: string
+                          example: 68d50f8ca54197555078bf31
+                        user_id:
+                          type: string
+                          example: 68d2acb57698eafb14b85ed4
+                        content:
+                          type: string
+                          example: this post is perfect
+                        like_count:
+                          type: integer
+                          example: 0
+                        parent_comment:
+                          type: string
+                          nullable: true
+                          example: null
+                        createdAt:
+                          type: string
+                          format: date-time
+                          example: 2025-09-25T09:56:01.038Z
+                        updatedAt:
+                          type: string
+                          format: date-time
+                          example: 2025-09-25T09:56:01.038Z
+        '401':
+          description: Unauthorized (user not logged in)
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  code:
+                    type: string
+                    example: UNAUTHORIZED
+                  message:
+                    type: string
+                    example: Authentication required
+        '404':
+          description: Post not found
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  code:
+                    type: string
+                    example: NOT_FOUND
+                  message:
+                    type: string
+                    example: Post with given ID does not exist
 
 components:
   securitySchemes:
