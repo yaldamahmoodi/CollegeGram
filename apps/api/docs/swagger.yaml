@@ -1594,6 +1594,153 @@ paths:
                     type: string
                     example: Post with given ID does not exist
 
+  /api/v1/posts/comment/like:
+    post:
+      summary: Like a comment
+      description: Like a comment by its ID. Requires authentication.
+      tags:
+        - Comments
+      security:
+        - cookieAuth: [ ]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - commentId
+              properties:
+                commentId:
+                  type: string
+                  description: ID of the comment to like
+                  example: 68d511b117a16012d74a14a0
+      responses:
+        '200':
+          description: Comment liked successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  code:
+                    type: string
+                    example: LIKED_SUCCESSFULY
+                  message:
+                    type: string
+                    example: comment 68d511b117a16012d74a14a0 liked successfully.
+        '401':
+          description: Unauthorized (user not logged in)
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  code:
+                    type: string
+                    example: UNAUTHORIZED
+                  message:
+                    type: string
+                    example: Authentication required
+        '404':
+          description: Comment not found
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  code:
+                    type: string
+                    example: NOT_FOUND
+                  details:
+                    type: string
+                    example: Comment_not_find
+        '409':
+          description: Comment already liked by the user
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  code:
+                    type: string
+                    example: ALREADY_DONE
+                  details:
+                    type: string
+                    example: User_liked_comment_Before
+
+  /api/v1/posts/comment/unlike:
+    post:
+      summary: Unlike a comment
+      description: Remove a like from a comment by its ID. Requires authentication.
+      tags:
+        - Comments
+      security:
+        - cookieAuth: [ ]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - commentId
+              properties:
+                commentId:
+                  type: string
+                  description: ID of the comment to unlike
+                  example: 68d511b117a16012d74a14a0
+      responses:
+        '200':
+          description: Comment unliked successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  code:
+                    type: string
+                    example: UNLIKED_SUCCESSFULY
+                  message:
+                    type: string
+                    example: comment 68d511b117a16012d74a14a0 unliked successfully.
+        '401':
+          description: Unauthorized (user not logged in)
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  code:
+                    type: string
+                    example: UNAUTHORIZED
+                  message:
+                    type: string
+                    example: Authentication required
+        '404':
+          description: Comment not found or not liked by the user
+          content:
+            application/json:
+              schema:
+                type: object
+                oneOf:
+                  - type: object
+                    properties:
+                      code:
+                        type: string
+                        example: NOT_FOUND
+                      details:
+                        type: string
+                        example: Comment_not_find
+                  - type: object
+                    properties:
+                      code:
+                        type: string
+                        example: NO_DATA_PROVIDED
+                      details:
+                        type: string
+                        example: User_Doesnt_liked_comment_Before
+
 components:
   securitySchemes:
     cookieAuth:
