@@ -46,6 +46,7 @@ export class PostController {
             hashtag_array: post.hashtag_array,
             photo_length: post.photo_length,
             isLiked: post.isLiked || false,
+            isSaved: post.isSaved || false,
         }
         return res.status(200).json({
             code: 'GET_POST_SUCCESSFULLY',

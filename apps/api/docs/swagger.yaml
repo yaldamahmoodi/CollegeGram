@@ -2193,3 +2193,7 @@ components:
           type: boolean
           description: Whether the authenticated user has liked this post
           example: true
+        isSaved:
+          type: boolean
+          description: Whether the authenticated user has saved this post
+          example: false

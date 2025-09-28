@@ -19,6 +19,7 @@ export interface Post extends Document {
   mentions?: Mention[];
   hashtag_array: Array<string>;
   isLiked?: boolean;
+  isSaved?: boolean;
 }
 
 const postSchema: Schema<Post> = new Schema({

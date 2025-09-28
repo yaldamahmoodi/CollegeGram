@@ -1,5 +1,6 @@
 import {type InsertPostDto, type Post, postModel} from "../db/models/post.model.ts";
 import {LikeModel} from "../db/models/like.model.ts";
+import {SaveModel} from "../db/models/save.model.ts";
 import {Types} from "mongoose";
 import {UserModel, type IUser} from "../db/models/user.model.ts";
 import {AlreadyDoneError} from "../utils/errors/alreadyDone.errors.ts";
@@ -58,8 +59,15 @@ export class PostRepository {
                 user_id: userId
             });
             
-            // Add isLiked field to the post object
+            // Check if the user has saved this post
+            const save = await SaveModel.findOne({
+                post_id: postId,
+                user_id: userId
+            });
+            
+            // Add isLiked and isSaved fields to the post object
             (post as any).isLiked = !!like;
+            (post as any).isSaved = !!save;
         }
 
         return post;
