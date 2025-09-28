@@ -22,14 +22,13 @@ export class CommentRepository {
         });
     }
 
-    async getCommentsByPostId(postId: string, skip: number, pageSize: number): Promise<IComment[]> {
-        const here = await CommentModel.aggregate([
+    async getCommentsByPostId(postId: string, page: number, pageSize: number): Promise<IComment[]> {
+        return CommentModel.aggregate([
             {$match: {post_id: new mongoose.Types.ObjectId(postId)}},
-            {$skip: skip},
+            {$skip: (page - 1) * pageSize},
             {$limit: pageSize}
         ]);
-        console.log(here);
-        return here;
+
     }
 
 
