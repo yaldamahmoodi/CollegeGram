@@ -24,12 +24,23 @@ export class PostService {
         if (postData.urls.length < 1) {
             throw new ValidationError("INVALID_CREDENTIALS");
         }
-        const allExist = postData.mentions.every(async (mention) => {
-            return await this.getUserDetails(mention.user_id)
-        })
-
-        if (!allExist) {
-            throw new ValidationError("INVALID_USERNAME");
+        // Validate all mentioned users exist
+        if (postData.mentions && postData.mentions.length > 0) {
+            const mentionValidationPromises = postData.mentions.map(async (mention) => {
+                try {
+                    await this.getUserDetails(mention.user_id);
+                    return true;
+                } catch (error) {
+                    return false;
+                }
+            });
+            
+            const validationResults = await Promise.all(mentionValidationPromises);
+            const allExist = validationResults.every(result => result === true);
+            
+            if (!allExist) {
+                throw new ValidationError("INVALID_USERNAME");
+            }
         }
 
         return await this.postRepository.createPost(postData);

@@ -70,14 +70,36 @@ export class UserService {
             throw new NotFoundError("NOT_FOUND_USER");
         }
 
-        const isFollowed = await this.followRepository.isFollowed(
+        const followStatus = await this.followRepository.isFollowed(
             loggedInUserId,
             userDetails._id.toString()
         );
 
+        // const isBlocked = await this.blockRepository.isBlocked(
+        //     loggedInUserId,
+        //     userDetails._id.toString()
+        // );
+
+        const isBlocked = false;
+
+        // const hasBlocked = await this.blockRepository.hasBlocked(
+        //     loggedInUserId,
+        //     userDetails._id.toString()
+        // );
+
+        const hasBlocked = false;
+        const isCloseFriend = await this.followRepository.isCloseFriend(
+            loggedInUserId,
+            userDetails._id.toString()
+        );
+
+
         return {
             ...userDetails,
-            isFollowed,
+            followStatus: isFollowed,
+            isBlocked,
+            hasBlocked,
+            isCloseFriend,
         };
     }
 

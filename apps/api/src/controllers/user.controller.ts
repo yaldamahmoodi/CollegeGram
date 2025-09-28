@@ -92,7 +92,19 @@ export class UserController {
             const files = req.files as Express.Multer.File[];
             const caption = req.body.caption;
             const filePaths: string[] = files.map(file => file.filename);
-            const mentions = Array.isArray(req.body.mentions) ? req.body.mentions : [];
+            
+            // Parse mentions from JSON string if it exists
+            let mentions = [];
+            if (req.body.mentions) {
+                try {
+                    mentions = typeof req.body.mentions === 'string' 
+                        ? JSON.parse(req.body.mentions) 
+                        : req.body.mentions;
+                } catch (error) {
+                    mentions = [];
+                }
+            }
+            
             const hashtag_array: string[] = caption ? extractHashtags(caption) : [];
 
             const postData: InsertPostDto = {
@@ -127,7 +139,8 @@ export class UserController {
                     firstname: updatedUser.firstname,
                     lastname: updatedUser.lastname,
                     email: updatedUser.email,
-                    biography: updatedUser.biography
+                    biography: updatedUser.biography,
+                    isPrivate: updatedUser.isPrivate,
                 }
             });
 
@@ -244,6 +257,8 @@ export class UserController {
                 username
             );
 
+
+        
             const profilePhotoUrl = userDetails.ProfilePhoto?.path
                 ? `${req.protocol}://${req.get("host")}/uploads/profiles/${userDetails.ProfilePhoto.path}`
                 : null;
@@ -262,7 +277,10 @@ export class UserController {
                     following_count: userDetails.following_count ?? 0,
                     post_count: userDetails.post_count ?? 0,
                     profilePhotoUrl: profilePhotoUrl || null,
-                    isFollowed: userDetails.isFollowed ?? false,
+                    isFollowed: userDetails.followStatus ?? false,
+                    isBlocked: userDetails.isBlocked ?? false,
+                    hasBlocked: userDetails.hasBlocked ?? false,
+                    isCloseFriend: userDetails.isCloseFriend ?? false,
                 },
             });
         } catch (error: unknown) {

@@ -234,6 +234,18 @@ paths:
                       isFollowed:
                         type: boolean
                         example: true
+                      isBlocked:
+                        type: boolean
+                        description: Whether the logged-in user is blocked by this user
+                        example: false
+                      hasBlocked:
+                        type: boolean
+                        description: Whether the logged-in user has blocked this user
+                        example: false
+                      isCloseFriend:
+                        type: boolean
+                        description: Whether this user is a close friend of the logged-in user
+                        example: false
         '401':
           description: Unauthorized (user not logged in)
           content:
@@ -498,7 +510,7 @@ paths:
   /api/v1/users/profile/update:
     patch:
       summary: Update user profile
-      description: Update profile fields such as email, password, firstname, lastname, and biography.
+      description: Update profile fields such as email, password, firstname, lastname, biography, and privacy settings.
       security:
         - cookieAuth: [ ]
       requestBody:
@@ -535,6 +547,10 @@ paths:
                   maxLength: 1500
                   nullable: true
                   example: "This is my new bio"
+                isPrivate:
+                  type: boolean
+                  description: Whether the user's profile is private (default: false)
+                  example: false
       responses:
         '200':
           description: User profile updated successfully
@@ -1647,6 +1663,8 @@ components:
           type: string
         biography:
           type: string
+        isPrivate:
+          type: boolean
 
     Post:
       type: object

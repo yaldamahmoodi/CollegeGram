@@ -9,6 +9,7 @@ export interface IUser {
     firstname?: string | null;
     lastname?: string | null;
     biography?: string | null;
+    isPrivate?: boolean;
     ProfilePhoto?: {
         _id: Types.ObjectId;
         path: string;
@@ -29,6 +30,7 @@ const UserSchema: Schema<IUser> = new Schema(
         firstname: {type: String, maxlength: 255, default: null},
         lastname: {type: String, maxlength: 255, default: null},
         biography: {type: String, maxlength: 1500, default: null},
+        isPrivate: {type: Boolean, default: false},
         follower_count: { type: Number, default: 0 },
         following_count: { type: Number, default: 0 },
         post_count: { type: Number, default: 0 },
@@ -56,9 +58,10 @@ export const insertUserSchema = z.object({
     email: z.email().max(255),
     username: z.string().min(5).max(20).regex(/^[a-zA-Z0-9_-]{5,}/),
     password: z.string().regex(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[\W_]).{8,}$/),
-    firstname: z.string().max(255).nullable().optional(),
-    lastname: z.string().max(255).nullable().optional(),
-    biography: z.string().max(1500).nullable().optional(),
+    firstname: z.string().max(255).optional().default(null),
+    lastname: z.string().max(255).optional().default(null),
+    biography: z.string().max(1500).optional().default(null),
+    isPrivate: z.boolean().optional().default(false),
 });
 
 
@@ -66,9 +69,10 @@ export const selectUserSchema = z.object({
     _id: z.string(),
     email: z.email(),
     username: z.string(),
-    firstname: z.string().nullable().optional(),
-    lastname: z.string().nullable().optional(),
-    biography: z.string().nullable().optional(),
+    firstname: z.string(),
+    lastname: z.string(),
+    biography: z.string(),
+    isPrivate: z.boolean(),
     follower_count: z.number(),
     following_count: z.number(),
     post_count: z.number(),
@@ -80,9 +84,10 @@ export const selectUserSchema = z.object({
 export const updateProfileUserSchema = z.object({
     email: z.email().max(255).optional(),
     password: z.string().regex(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[\W_]).{8,}$/).optional(),
-    firstname: z.string().max(255).nullable().optional(),
-    lastname: z.string().max(255).nullable().optional(),
-    biography: z.string().max(1500).nullable().optional(),
+    firstname: z.string().max(255).optional().default(null),
+    lastname: z.string().max(255).optional().default(null),
+    biography: z.string().max(1500).optional().default(null),
+    isPrivate: z.boolean().optional().default(false),
 });
 
 
