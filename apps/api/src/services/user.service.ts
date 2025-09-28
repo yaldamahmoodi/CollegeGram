@@ -72,16 +72,21 @@ export class UserService {
         return await this.followRepository.rejectFollowRequest(followerUserId, userId);
     }
 
+    async getFollowStatus(followerUserId: string, followingUserId: string) {
+        return await this.followRepository.getFollowStatus(followerUserId, followingUserId);
+    }
+
     async getOtherProfile(loggedInUserId: string, targetUsername: string) {
         const userDetails = await this.userRepository.findUserDetailsByUsername(targetUsername);
         if (!userDetails) {
             throw new NotFoundError("NOT_FOUND_USER");
         }
 
-        const followStatus = await this.followRepository.isFollowed(
+        const followStatus = await this.getFollowStatus(
             loggedInUserId,
             userDetails._id.toString()
         );
+        
 
         // const isBlocked = await this.blockRepository.isBlocked(
         //     loggedInUserId,

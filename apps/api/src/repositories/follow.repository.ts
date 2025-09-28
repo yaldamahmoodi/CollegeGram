@@ -77,6 +77,14 @@ export class FollowRepository {
     return fll;
   }
 
+  async getFollowStatus(followerUserId: string, followingUserId: string) {
+    const fll = await FollowModel.findOne({
+      follower_id: followerUserId,
+      following_id: followingUserId,
+    });
+    return fll;
+  }
+
   async unfollowUser(userId: string, followedUserId: string) {
     const dll = await FollowModel.deleteOne({
       follower_id: userId,

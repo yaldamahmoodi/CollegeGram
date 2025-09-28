@@ -169,7 +169,8 @@ paths:
       summary: Get other user's profile
       description: |
         پروفایل یک کاربر دیگر را بر اساس **username** برمی‌گرداند.
-        - اگر کاربر لاگین کرده باشد، فیلد `isFollowed` مشخص می‌کند که آیا کاربر جاری این کاربر را فالو کرده یا نه.
+        - اگر کاربر لاگین کرده باشد، فیلدهای `isFollowed`، `followStatus` و `followedAt` مشخص می‌کنند که آیا کاربر جاری این کاربر را فالو کرده یا نه و وضعیت آن.
+        - `followStatus` می‌تواند "accepted" (تایید شده)، "pending" (در انتظار) یا null (فالو نکرده) باشد.
       tags:
         - Users
       security:
@@ -233,7 +234,19 @@ paths:
                         example: null
                       isFollowed:
                         type: boolean
+                        description: Whether the logged-in user is following this user
                         example: true
+                      followStatus:
+                        type: string
+                        nullable: true
+                        description: The status of the follow relationship (accepted, pending, or null if not following)
+                        example: "accepted"
+                      followedAt:
+                        type: string
+                        format: date-time
+                        nullable: true
+                        description: When the follow relationship was established
+                        example: "2024-01-15T10:30:00.000Z"
                       isBlocked:
                         type: boolean
                         description: Whether the logged-in user is blocked by this user

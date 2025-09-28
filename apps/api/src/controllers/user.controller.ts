@@ -279,7 +279,7 @@ export class UserController {
                     following_count: userDetails.following_count ?? 0,
                     post_count: userDetails.post_count ?? 0,
                     profilePhotoUrl: profilePhotoUrl || null,
-                    isFollowed: userDetails.followStatus ?? false,
+                    followStatus: userDetails.followStatus.status,
                     isBlocked: userDetails.isBlocked ?? false,
                     hasBlocked: userDetails.hasBlocked ?? false,
                     isCloseFriend: userDetails.isCloseFriend ?? false,
