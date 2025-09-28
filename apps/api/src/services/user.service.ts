@@ -4,18 +4,21 @@ import bcrypt from 'bcrypt';
 import type {updateProfileUserSchema} from "../db/models/user.model.ts";
 import {NotFoundError} from "../utils/errors/notFound.errors.ts";
 import type {FollowRepository} from "../repositories/follow.repository.ts";
+import type {BlockRepository} from  "../repositories/block.repository.ts"
 
 export class UserService {
 
     private readonly userRepository: UserRepository;
     private readonly profilePhotoRepository: ProfileRepository;
     private readonly followRepository: FollowRepository;
+    private readonly blockRepository: BlockRepository
 
 
-    constructor(userRepository: UserRepository, profilePhotoRepository: ProfileRepository, followRepository: FollowRepository) {
+    constructor(userRepository: UserRepository, profilePhotoRepository: ProfileRepository, followRepository: FollowRepository , blockRepository: BlockRepository) {
         this.userRepository = userRepository;
         this.profilePhotoRepository = profilePhotoRepository;
         this.followRepository = followRepository;
+        this.blockRepository = blockRepository
     }
 
     async getUserIdByUsername(username: string): Promise<string | null> {
@@ -79,6 +82,12 @@ export class UserService {
             ...userDetails,
             isFollowed,
         };
+    }
+
+    async blockService(userId : string , blockedId: string){
+        const existUserId = await this.userRepository.findByUserId(userId)
+        const existBlockedId = await this.userRepository.findByUserId(userId)
+        
     }
 
 }
