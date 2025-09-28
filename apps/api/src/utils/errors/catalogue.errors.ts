@@ -26,6 +26,7 @@ export const CatalogueErrors = {
     CONTENT_REQUIRED: {code: "CONTENT_REQUIRED", message: "Content is required"},
     INVALID_COMMENT_ID:{code: "INVALID_COMMENT_ID", message: "Invalid com identifier"},
     INVALID_POST_ID:{code: "INVALID_POST_ID", message: "Invalid post ID"},
+    CAN_NOT_ADD_YOURSELF_TO_CLOSE_FRIEND:{code:"CAN_NOT_ADD_YOURSELF_TO_CLOSE_FRIEND",message:"invalid request"}
 } as const;
 
 export type ErrorCode = keyof typeof CatalogueErrors;
