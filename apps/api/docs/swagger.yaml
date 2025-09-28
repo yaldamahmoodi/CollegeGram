@@ -2189,3 +2189,7 @@ components:
           items:
             type: string
           example: [ "#fun", "#travel" ]
+        isLiked:
+          type: boolean
+          description: Whether the authenticated user has liked this post
+          example: true

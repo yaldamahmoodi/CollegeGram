@@ -60,8 +60,8 @@ export class PostService {
         return await this.postRepository.findUserPosts(userId, page, pageSize);
     }
 
-    async getPost(postId: string) {
-        const post = await this.postRepository.getPostById(postId);
+    async getPost(postId: string, userId?: string) {
+        const post = await this.postRepository.getPostById(postId, userId);
         if (!post) {
             throw new NotFoundError("NOT_FOUND");
         }

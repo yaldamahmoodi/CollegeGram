@@ -39,8 +39,8 @@ export class PostRepository {
         return await post.save();
     }
 
-    async getPostById(postId: string): Promise<Post | null> {
-        return postModel.findOne({_id: postId})
+    async getPostById(postId: string, userId?: string): Promise<Post | null> {
+        const post = await postModel.findOne({_id: postId})
             .populate({
                 path: "user_id",
                 select: "_id username firstname lastname",
@@ -50,6 +50,19 @@ export class PostRepository {
                 }
             })
             .exec();
+
+        if (post && userId) {
+            // Check if the user has liked this post
+            const like = await LikeModel.findOne({
+                post_id: postId,
+                user_id: userId
+            });
+            
+            // Add isLiked field to the post object
+            (post as any).isLiked = !!like;
+        }
+
+        return post;
     }
 
     async updatePostSaveCount(postId: string, count: number) {
