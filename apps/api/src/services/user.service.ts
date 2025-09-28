@@ -5,18 +5,21 @@ import type {updateProfileUserSchema} from "../db/models/user.model.ts";
 import {NotFoundError} from "../utils/errors/notFound.errors.ts";
 import type {FollowRepository} from "../repositories/follow.repository.ts";
 import { WebSocketService } from "./websocket.service.ts";
+import type { NotificationService } from "./notification.service.ts";
 
 export class UserService {
 
     private readonly userRepository: UserRepository;
     private readonly profilePhotoRepository: ProfileRepository;
     private readonly followRepository: FollowRepository;
+    private readonly notificationService: NotificationService;
 
 
-    constructor(userRepository: UserRepository, profilePhotoRepository: ProfileRepository, followRepository: FollowRepository) {
+    constructor(userRepository: UserRepository, profilePhotoRepository: ProfileRepository, followRepository: FollowRepository, notificationService: NotificationService) {
         this.userRepository = userRepository;
         this.profilePhotoRepository = profilePhotoRepository;
         this.followRepository = followRepository;
+        this.notificationService = notificationService;
     }
 
     async getUserIdByUsername(username: string): Promise<string | null> {
@@ -52,15 +55,13 @@ export class UserService {
     async followUser(userId: string, followedUserId: string) {
         const result = await this.followRepository.followUser(userId, followedUserId);
         
-        // Send follow notification
         const sender = await this.userRepository.findUserDetails(userId);
         if (sender) {
-            WebSocketService.sendFollowNotification(followedUserId, {
-                type: 'follow',
-                senderUsername: sender.username,
-                senderId: userId,
-                timestamp: new Date().toISOString()
-            });
+            await this.notificationService.createFollowNotification(
+                followedUserId,
+                userId,
+                sender.username
+            );
         }
         
         return result;

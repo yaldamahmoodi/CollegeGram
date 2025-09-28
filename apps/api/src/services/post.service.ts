@@ -9,17 +9,20 @@ import {InternalErrors} from "../utils/errors/internal.errors.ts";
 import type {CommentRepository} from "../repositories/comment.repository.ts";
 import type {InsertCommentDto} from "../db/models/comment.model.ts";
 import { WebSocketService } from "./websocket.service.ts";
+import type { NotificationService } from "./notification.service.ts";
 
 export class PostService {
 
     private readonly postRepository: PostRepository;
     private readonly saveRepository: SaveRepository;
     private readonly commentRepository: CommentRepository;
+    private readonly notificationService: NotificationService;
 
-    constructor(postRepository: PostRepository, saveRepository: SaveRepository, commentRepository: CommentRepository) {
+    constructor(postRepository: PostRepository, saveRepository: SaveRepository, commentRepository: CommentRepository, notificationService: NotificationService) {
         this.postRepository = postRepository;
         this.saveRepository = saveRepository;
         this.commentRepository = commentRepository;
+        this.notificationService = notificationService;
 
     }
 
@@ -41,13 +44,13 @@ export class PostService {
         for (const mention of postData.mentions) {
             const sender = await this.postRepository.findUserDetails(postData.user_id);
             if (sender) {
-                WebSocketService.sendMentionNotification(mention.user_id, {
-                    type: 'mention',
-                    postId: post._id.toString(),
-                    senderUsername: sender.username,
-                    senderId: postData.user_id,
-                    timestamp: new Date().toISOString()
-                });
+                await this.notificationService.createMentionNotification(
+                    mention.user_id,
+                    postData.user_id,
+                    sender.username,
+                    post._id.toString(),
+                    postData.caption
+                );
             }
         }
 
@@ -85,14 +88,14 @@ export class PostService {
             // Get sender username
             const sender = await this.postRepository.findUserDetails(userId);
             if (sender) {
-                // Send WebSocket notification
-                WebSocketService.sendLikeNotification(post.user_id.toString(), {
-                    type: 'like',
+                // Create persistent notification
+                await this.notificationService.createLikeNotification(
+                    post.user_id.toString(),
+                    userId,
+                    sender.username,
                     postId,
-                    senderUsername: sender.username,
-                    senderId: userId,
-                    timestamp: new Date().toISOString()
-                });
+                    post.caption
+                );
             }
         }
     }
@@ -166,14 +169,15 @@ export class PostService {
         if (post.user_id.toString() !== userId) {
             const sender = await this.postRepository.findUserDetails(userId);
             if (sender) {
-                WebSocketService.sendCommentNotification(post.user_id.toString(), {
-                    type: 'comment',
-                    postId: commentData.post_id,
-                    commentId: comment._id.toString(),
-                    senderUsername: sender.username,
-                    senderId: userId,
-                    timestamp: new Date().toISOString()
-                });
+                await this.notificationService.createCommentNotification(
+                    post.user_id.toString(),
+                    userId,
+                    sender.username,
+                    commentData.post_id,
+                    comment._id.toString(),
+                    commentData.content,
+                    post.caption
+                );
             }
         }
 
@@ -183,14 +187,14 @@ export class PostService {
             if (parentComment && parentComment.user_id.toString() !== userId) {
                 const sender = await this.postRepository.findUserDetails(userId);
                 if (sender) {
-                    WebSocketService.sendCommentNotification(parentComment.user_id.toString(), {
-                        type: 'comment',
-                        postId: commentData.post_id,
-                        commentId: comment._id.toString(),
-                        senderUsername: sender.username,
-                        senderId: userId,
-                        timestamp: new Date().toISOString()
-                    });
+                    await this.notificationService.createReplyNotification(
+                        parentComment.user_id.toString(),
+                        userId,
+                        sender.username,
+                        commentData.post_id,
+                        comment._id.toString(),
+                        commentData.content
+                    );
                 }
             }
         }

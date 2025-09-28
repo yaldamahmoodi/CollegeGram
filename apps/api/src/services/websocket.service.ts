@@ -36,48 +36,56 @@ export type NotificationData = LikeNotification | CommentNotification | MentionN
 
 export class WebSocketService {
     
-    // Send like notification to a specific user
-    static sendLikeNotification(recipientId: string, notification: LikeNotification): void {
+    constructor() {
+        this.sendLikeNotification = this.sendLikeNotification.bind(this);
+        this.sendCommentNotification = this.sendCommentNotification.bind(this);
+        this.sendMentionNotification = this.sendMentionNotification.bind(this);
+        this.sendFollowNotification = this.sendFollowNotification.bind(this);
+        this.sendNotification = this.sendNotification.bind(this);
+        this.sendNotificationToUsers = this.sendNotificationToUsers.bind(this);
+        this.isUserConnected = this.isUserConnected.bind(this);
+        this.getConnectedUsersCount = this.getConnectedUsersCount.bind(this);
+        this.getConnectedUserIds = this.getConnectedUserIds.bind(this);
+        this.sendNotificationCount = this.sendNotificationCount.bind(this);
+        this.broadcast = this.broadcast.bind(this);
+    }
+    
+    sendLikeNotification(recipientId: string, notification: LikeNotification): void {
         if (io) {
             io.to(`user_${recipientId}`).emit('like_notification', notification);
             console.log(`Like notification sent to user ${recipientId} from ${notification.senderUsername}`);
         }
     }
     
-    // Send comment notification to a specific user
-    static sendCommentNotification(recipientId: string, notification: CommentNotification): void {
+    sendCommentNotification(recipientId: string, notification: CommentNotification): void {
         if (io) {
             io.to(`user_${recipientId}`).emit('comment_notification', notification);
             console.log(`Comment notification sent to user ${recipientId} from ${notification.senderUsername}`);
         }
     }
     
-    // Send mention notification to a specific user
-    static sendMentionNotification(recipientId: string, notification: MentionNotification): void {
+    sendMentionNotification(recipientId: string, notification: MentionNotification): void {
         if (io) {
             io.to(`user_${recipientId}`).emit('mention_notification', notification);
             console.log(`Mention notification sent to user ${recipientId} from ${notification.senderUsername}`);
         }
     }
     
-    // Send follow notification to a specific user
-    static sendFollowNotification(recipientId: string, notification: FollowNotification): void {
+    sendFollowNotification(recipientId: string, notification: FollowNotification): void {
         if (io) {
             io.to(`user_${recipientId}`).emit('follow_notification', notification);
             console.log(`Follow notification sent to user ${recipientId} from ${notification.senderUsername}`);
         }
     }
     
-    // Send generic notification
-    static sendNotification(recipientId: string, type: string, data: any): void {
+    sendNotification(recipientId: string, type: string, data: any): void {
         if (io) {
             io.to(`user_${recipientId}`).emit('notification', { type, data, timestamp: new Date().toISOString() });
             console.log(`Generic notification (${type}) sent to user ${recipientId}`);
         }
     }
     
-    // Send notification to multiple users
-    static sendNotificationToUsers(userIds: string[], type: string, data: any): void {
+    sendNotificationToUsers(userIds: string[], type: string, data: any): void {
         if (io) {
             userIds.forEach(userId => {
                 io.to(`user_${userId}`).emit('notification', { type, data, timestamp: new Date().toISOString() });
@@ -86,8 +94,7 @@ export class WebSocketService {
         }
     }
     
-    // Check if a user is connected
-    static isUserConnected(userId: string): boolean {
+    isUserConnected(userId: string): boolean {
         if (io) {
             const room = io.sockets.adapter.rooms.get(`user_${userId}`);
             return room ? room.size > 0 : false;
@@ -95,16 +102,14 @@ export class WebSocketService {
         return false;
     }
     
-    // Get connected users count
-    static getConnectedUsersCount(): number {
+    getConnectedUsersCount(): number {
         if (io) {
             return io.engine.clientsCount;
         }
         return 0;
     }
     
-    // Get all connected user IDs
-    static getConnectedUserIds(): string[] {
+    getConnectedUserIds(): string[] {
         if (io) {
             const connectedUsers: string[] = [];
             io.sockets.adapter.rooms.forEach((room, roomName) => {
@@ -120,8 +125,14 @@ export class WebSocketService {
         return [];
     }
     
-    // Send message to all connected users
-    static broadcast(type: string, data: any): void {
+    sendNotificationCount(userId: string, count: number): void {
+        if (io) {
+            io.to(`user_${userId}`).emit('notification_count', { count, timestamp: new Date().toISOString() });
+            console.log(`Notification count (${count}) sent to user ${userId}`);
+        }
+    }
+
+    broadcast(type: string, data: any): void {
         if (io) {
             io.emit('broadcast', { type, data, timestamp: new Date().toISOString() });
             console.log(`Broadcast message (${type}) sent to all users`);

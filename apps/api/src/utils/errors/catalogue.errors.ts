@@ -26,6 +26,7 @@ export const CatalogueErrors = {
     CONTENT_REQUIRED: {code: "CONTENT_REQUIRED", message: "Content is required"},
     INVALID_COMMENT_ID:{code: "INVALID_COMMENT_ID", message: "Invalid com identifier"},
     INVALID_POST_ID:{code: "INVALID_POST_ID", message: "Invalid post ID"},
+    NOTIFICATION_NOT_FOUND: {code: "NOTIFICATION_NOT_FOUND", message: "Notification not found"},
 } as const;
 
 export type ErrorCode = keyof typeof CatalogueErrors;

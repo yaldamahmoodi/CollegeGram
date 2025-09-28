@@ -2,7 +2,7 @@
 
 ## Overview
 
-This guide shows you how to implement real-time WebSocket notifications in your React frontend to receive notifications when users like, comment, mention, or follow you.
+This guide shows you how to implement real-time WebSocket notifications in your React frontend to receive notifications when users like, comment, mention, follow, save, or reply to your content. The backend now supports persistent notifications with full CRUD operations and real-time WebSocket delivery.
 
 ## 🚀 Quick Start
 
@@ -53,6 +53,23 @@ export interface FollowNotification {
     timestamp: string;
 }
 
+export interface SaveNotification {
+    type: 'save';
+    postId: string;
+    senderUsername: string;
+    senderId: string;
+    timestamp: string;
+}
+
+export interface ReplyNotification {
+    type: 'reply';
+    postId: string;
+    commentId: string;
+    senderUsername: string;
+    senderId: string;
+    timestamp: string;
+}
+
 class WebSocketService {
     private socket: Socket | null = null;
 
@@ -92,6 +109,24 @@ class WebSocketService {
         this.socket?.on('follow_notification', callback);
     }
 
+    onSaveNotification(callback: (notification: SaveNotification) => void) {
+        this.socket?.on('save_notification', callback);
+    }
+
+    onReplyNotification(callback: (notification: ReplyNotification) => void) {
+        this.socket?.on('reply_notification', callback);
+    }
+
+    // Listen for notification count updates
+    onNotificationCount(callback: (data: { count: number; timestamp: string }) => void) {
+        this.socket?.on('notification_count', callback);
+    }
+
+    // Listen for generic notifications
+    onNotification(callback: (data: { type: string; data: any; timestamp: string }) => void) {
+        this.socket?.on('notification', callback);
+    }
+
     // Remove listeners
     offLikeNotification(callback: (notification: LikeNotification) => void) {
         this.socket?.off('like_notification', callback);
@@ -107,6 +142,22 @@ class WebSocketService {
 
     offFollowNotification(callback: (notification: FollowNotification) => void) {
         this.socket?.off('follow_notification', callback);
+    }
+
+    offSaveNotification(callback: (notification: SaveNotification) => void) {
+        this.socket?.off('save_notification', callback);
+    }
+
+    offReplyNotification(callback: (notification: ReplyNotification) => void) {
+        this.socket?.off('reply_notification', callback);
+    }
+
+    offNotificationCount(callback: (data: { count: number; timestamp: string }) => void) {
+        this.socket?.off('notification_count', callback);
+    }
+
+    offNotification(callback: (data: { type: string; data: any; timestamp: string }) => void) {
+        this.socket?.off('notification', callback);
     }
 
     isConnected(): boolean {
@@ -128,14 +179,17 @@ import {
     LikeNotification, 
     CommentNotification, 
     MentionNotification, 
-    FollowNotification 
+    FollowNotification,
+    SaveNotification,
+    ReplyNotification
 } from '../services/websocket.service';
 
-export type NotificationData = LikeNotification | CommentNotification | MentionNotification | FollowNotification;
+export type NotificationData = LikeNotification | CommentNotification | MentionNotification | FollowNotification | SaveNotification | ReplyNotification;
 
 export const useNotifications = (token?: string) => {
     const [isConnected, setIsConnected] = useState(false);
     const [notifications, setNotifications] = useState<NotificationData[]>([]);
+    const [unreadCount, setUnreadCount] = useState(0);
 
     useEffect(() => {
         if (!token) return;
@@ -161,11 +215,26 @@ export const useNotifications = (token?: string) => {
             setNotifications(prev => [notification, ...prev]);
         };
 
+        const handleSave = (notification: SaveNotification) => {
+            setNotifications(prev => [notification, ...prev]);
+        };
+
+        const handleReply = (notification: ReplyNotification) => {
+            setNotifications(prev => [notification, ...prev]);
+        };
+
+        const handleNotificationCount = (data: { count: number; timestamp: string }) => {
+            setUnreadCount(data.count);
+        };
+
         // Add listeners
         websocketService.onLikeNotification(handleLike);
         websocketService.onCommentNotification(handleComment);
         websocketService.onMentionNotification(handleMention);
         websocketService.onFollowNotification(handleFollow);
+        websocketService.onSaveNotification(handleSave);
+        websocketService.onReplyNotification(handleReply);
+        websocketService.onNotificationCount(handleNotificationCount);
 
         // Cleanup
         return () => {
@@ -173,6 +242,9 @@ export const useNotifications = (token?: string) => {
             websocketService.offCommentNotification(handleComment);
             websocketService.offMentionNotification(handleMention);
             websocketService.offFollowNotification(handleFollow);
+            websocketService.offSaveNotification(handleSave);
+            websocketService.offReplyNotification(handleReply);
+            websocketService.offNotificationCount(handleNotificationCount);
             websocketService.disconnect();
             setIsConnected(false);
         };
@@ -185,6 +257,7 @@ export const useNotifications = (token?: string) => {
     return {
         isConnected,
         notifications,
+        unreadCount,
         removeNotification
     };
 };
@@ -247,6 +320,20 @@ const NotificationToast: React.FC<NotificationToastProps> = ({
                     message: `${notification.senderUsername} started following you`,
                     bgColor: 'bg-green-50 border-green-200',
                     iconBg: 'bg-green-100'
+                };
+            case 'save':
+                return {
+                    icon: '💾',
+                    message: `${notification.senderUsername} saved your post`,
+                    bgColor: 'bg-purple-50 border-purple-200',
+                    iconBg: 'bg-purple-100'
+                };
+            case 'reply':
+                return {
+                    icon: '↩️',
+                    message: `${notification.senderUsername} replied to your comment`,
+                    bgColor: 'bg-orange-50 border-orange-200',
+                    iconBg: 'bg-orange-100'
                 };
         }
     };
@@ -319,7 +406,11 @@ const NotificationContainer: React.FC<NotificationContainerProps> = ({ token }) 
             case 'like':
             case 'comment':
             case 'mention':
+            case 'save':
                 navigate(`/post/${notification.postId}`);
+                break;
+            case 'reply':
+                navigate(`/post/${notification.postId}#comment-${notification.commentId}`);
                 break;
             case 'follow':
                 navigate(`/profile/${notification.senderUsername}`);
@@ -458,6 +549,49 @@ Your backend sends these WebSocket events:
 | `comment_notification` | Someone comments on your post | `{ type, postId, commentId, senderUsername, senderId, timestamp }` |
 | `mention_notification` | Someone mentions you | `{ type, postId, senderUsername, senderId, timestamp }` |
 | `follow_notification` | Someone follows you | `{ type, senderUsername, senderId, timestamp }` |
+| `save_notification` | Someone saves your post | `{ type, postId, senderUsername, senderId, timestamp }` |
+| `reply_notification` | Someone replies to your comment | `{ type, postId, commentId, senderUsername, senderId, timestamp }` |
+| `notification_count` | Unread count update | `{ count, timestamp }` |
+| `notification` | Generic notification | `{ type, data, timestamp }` |
+
+## 📱 Persistent Notifications API
+
+The backend now supports persistent notifications with full CRUD operations. Here are the available endpoints:
+
+### Get Notifications
+```typescript
+GET /api/v1/notifications?page=1&pageSize=10&type=like&isRead=false
+```
+
+### Get Unread Count
+```typescript
+GET /api/v1/notifications/unread-count
+```
+
+### Mark as Read
+```typescript
+PATCH /api/v1/notifications/{id}/read
+```
+
+### Mark All as Read
+```typescript
+PATCH /api/v1/notifications/read-all
+```
+
+### Delete Notification
+```typescript
+DELETE /api/v1/notifications/{id}
+```
+
+### Delete All Notifications
+```typescript
+DELETE /api/v1/notifications
+```
+
+### Get Specific Notification
+```typescript
+GET /api/v1/notifications/{id}
+```
 
 ## 🎨 Customization
 
@@ -566,8 +700,12 @@ After implementing these files, you'll have:
 - ✅ Real-time notifications for comments and replies  
 - ✅ Real-time notifications for mentions
 - ✅ Real-time notifications for new followers
+- ✅ Real-time notifications for saved posts
+- ✅ Real-time notifications for comment replies
+- ✅ Persistent notification storage with full CRUD operations
+- ✅ Unread notification count tracking
 - ✅ Beautiful toast notifications with navigation
 - ✅ Auto-dismiss functionality
 - ✅ Connection status monitoring
 
-The notifications will appear in the top-right corner and automatically disappear after 5 seconds, or users can click them to navigate to the relevant content!
+The notifications will appear in the top-right corner and automatically disappear after 5 seconds, or users can click them to navigate to the relevant content! The backend now stores all notifications persistently, so users won't miss any notifications even if they're offline.

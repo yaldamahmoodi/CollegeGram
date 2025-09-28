@@ -15,6 +15,10 @@ import {SearchController} from "./controllers/search.controller.ts";
 import {UserSearchService} from "./services/UserSearchService.ts";
 import {FollowRepository} from "./repositories/follow.repository.ts";
 import {CommentRepository} from "./repositories/comment.repository.ts";
+import {NotificationRepository} from "./repositories/notification.repository.ts";
+import {NotificationService} from "./services/notification.service.ts";
+import {NotificationController} from "./controllers/notification.controller.ts";
+import {WebSocketService} from "./services/websocket.service.ts";
 
 
 export class Initiator {
@@ -31,7 +35,10 @@ export class Initiator {
     public saveRepository: SaveRepository;
     public followRepository: FollowRepository;
     public commentRepository: CommentRepository;
-
+    public notificationRepository: NotificationRepository;
+    public notificationService: NotificationService;
+    public notificationController: NotificationController;
+    public webSocketService: WebSocketService;
     public elasticClient: ElasticClient;
     public searchIndexManager: SearchIndexManager;
     public searchController: SearchController;
@@ -45,7 +52,8 @@ export class Initiator {
         this.profileRepository = new ProfileRepository();
         this.followRepository = new FollowRepository()
         this.commentRepository = new CommentRepository();
-
+        this.notificationRepository = new NotificationRepository();
+        this.webSocketService = new WebSocketService();
 
         this.elasticClient = new ElasticClient();
         this.searchIndexManager = new SearchIndexManager(this.elasticClient);
@@ -54,8 +62,9 @@ export class Initiator {
 
     public setupServices(): void {
         this.authService = new AuthService(this.authRepository);
-        this.userService = new UserService(this.userRepository, this.profileRepository, this.followRepository);
-        this.postService = new PostService(this.postRepository, this.saveRepository, this.commentRepository);
+        this.notificationService = new NotificationService(this.notificationRepository, this.webSocketService);
+        this.userService = new UserService(this.userRepository, this.profileRepository, this.followRepository, this.notificationService);
+        this.postService = new PostService(this.postRepository, this.saveRepository, this.commentRepository, this.notificationService);
         this.userSearchService = new UserSearchService(this.elasticClient);
 
     }
@@ -65,6 +74,7 @@ export class Initiator {
         this.userController = new UserController(this.userService, this.postService);
         this.postController = new PostController(this.postService);
         this.searchController = new SearchController(this.userSearchService);
+        this.notificationController = new NotificationController(this.notificationService);
 
     }
 
@@ -83,5 +93,9 @@ export class Initiator {
 
     public getSearchController() {
         return this.searchController;
+    }
+
+    public getNotificationController() {
+        return this.notificationController;
     }
 }

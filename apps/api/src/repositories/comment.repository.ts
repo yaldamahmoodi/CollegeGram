@@ -4,7 +4,7 @@ import mongoose from "mongoose";
 export class CommentRepository {
 
 
-    async findCommentById(commentId: string): Promise<Comment> {
+    async findCommentById(commentId: string): Promise<IComment | null> {
         return CommentModel.findById(commentId);
     }
 

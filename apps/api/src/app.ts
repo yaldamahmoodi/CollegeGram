@@ -9,6 +9,7 @@ import healthRoute from "./routes/health.route.ts";
 import authRoute from "./routes/v1/auth.route.ts";
 import userRoute from "./routes/v1/user.route.ts";
 import postRoute from "./routes/v1/post.route.ts";
+import notificationRoute from "./routes/v1/notification.route.ts";
 import env from "../env.ts";
 import path from "path";
 import { fileURLToPath } from "node:url";
@@ -32,7 +33,6 @@ const allowedOrigins = env.CORS_ORIGIN.split(",");
 app.use(
   cors({
     origin: function (origin, callback) {
-      // allow requests with no origin (like mobile apps or curl requests)
       if (!origin) return callback(null, true);
 
       if (allowedOrigins.indexOf(origin) !== -1) {
@@ -81,9 +81,8 @@ app.use("/api/health", healthRoute);
 app.use("/api/v1/auth", authRoute);
 app.use("/api/v1/users", userRoute);
 app.use("/api/v1/posts", postRoute);
+app.use("/api/v1/notifications", notificationRoute);
 app.use("/api/v1/search", searchRoute);
-
-// Uploads are now served directly by nginx at /uploads/ path
 
 export { app };
 export default app;
