@@ -16,6 +16,7 @@ import {UserSearchService} from "./services/UserSearchService.ts";
 import {FollowRepository} from "./repositories/follow.repository.ts";
 import {CommentRepository} from "./repositories/comment.repository.ts";
 import {CommentService} from "./services/comment.service.ts";
+import {BlockRepository} from "./repositories/block.repository.ts";
 
 
 export class Initiator {
@@ -38,6 +39,7 @@ export class Initiator {
     public searchIndexManager: SearchIndexManager;
     public searchController: SearchController;
     public userSearchService: UserSearchService;
+    public blockRepository: BlockRepository
 
     constructor() {
         this.userRepository = new UserRepository();
@@ -47,6 +49,7 @@ export class Initiator {
         this.profileRepository = new ProfileRepository();
         this.followRepository = new FollowRepository()
         this.commentRepository = new CommentRepository();
+        this.blockRepository = new BlockRepository()
 
         this.elasticClient = new ElasticClient();
         this.searchIndexManager = new SearchIndexManager(this.elasticClient);
@@ -55,8 +58,8 @@ export class Initiator {
 
     public setupServices(): void {
         this.authService = new AuthService(this.authRepository);
-        this.userService = new UserService(this.userRepository, this.profileRepository, this.followRepository);
-        this.postService = new PostService(this.postRepository, this.saveRepository);
+        this.userService = new UserService(this.userRepository, this.profileRepository, this.followRepository , this.blockRepository);
+        this.postService = new PostService(this.postRepository, this.saveRepository , this.commentRepository);
         this.userSearchService = new UserSearchService(this.elasticClient);
         this.commentService = new CommentService(this.postRepository, this.commentRepository);
 

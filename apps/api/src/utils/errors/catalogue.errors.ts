@@ -26,6 +26,8 @@ export const CatalogueErrors = {
     CONTENT_REQUIRED: {code: "CONTENT_REQUIRED", message: "Content is required"},
     INVALID_COMMENT_ID:{code: "INVALID_COMMENT_ID", message: "Invalid com identifier"},
     INVALID_POST_ID:{code: "INVALID_POST_ID", message: "Invalid post ID"},
+    YOU_CANNOT_BLOCK_YOURSELF: {code: "YOU_CANNOT_BLOCK_YOURSELF", message: "YOU_CANNOT_BLOCK_YOURSELF"},
+    YOU_CANNOT_UNBLOCK_YOURSELF: {code: "YOU_CANNOT_UNBLOCK_YOURSELF", message: "YOU_CANNOT_UNBLOCK_YOURSELF"}
 } as const;
 
 export type ErrorCode = keyof typeof CatalogueErrors;

@@ -32,6 +32,7 @@ export class UserController {
         this.getFollowingsList = this.getFollowingsList.bind(this);
         this.getFollowersList = this.getFollowersList.bind(this);
         this.getOtherProfile = this.getOtherProfile.bind(this);
+        
 
     }
 
@@ -270,5 +271,24 @@ export class UserController {
             return next(error);
         }
     }
+
+    async BlockUser(req: Authenticate, res: Response, next: NextFunction) {
+
+        const {blockUserId} = req.body;
+        if (blockUserId === req.user.id) return next(new ValidationError("YOU_CANNOT_FOLLOW_YOURSELF"))
+
+        try {
+
+            await this.userService.followUser(req.user.id, followerUserId);
+            return res.status(200).json({
+                code: "USER_FOLLOWED",
+                message: "User successfully Followed"
+            });
+
+        } catch (error: unknown) {
+            if (error instanceof APIError) return next(error)
+        }
+    }
+
 
 }

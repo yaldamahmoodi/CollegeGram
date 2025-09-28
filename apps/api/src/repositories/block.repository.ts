@@ -1,37 +1,37 @@
 import mongoose from "mongoose";
-import {block, type IBlock} from "../db/models/block.model.ts";
+import {Block, type IBlock} from "../db/models/block.model.ts";
 
 export class BlockRepository{
   async block (userId: string , blockedId: string){
-    return await block.updateOne(
+    return await Block.updateOne(
       {user_id: userId , blocked_id: blockedId},
-      {$setOnInsert: {user_id: userId , blockedId: blockedId, createdAt: new Date()}},
+      {$setOnInsert: {user_id: userId , blocked_id: blockedId, createdAt: new Date()}},
       {upsert: true}
     )
   }
 
   async unblock (userId: string , blockedId: string){
-    return await block.deleteOne({
+    return await Block.deleteOne({
             user_id:userId,
-            bloked_id: blockedId
+            blocked_id: blockedId
         })
   }
-  
-  async BlokedBefore(userId:string , blokedId: string){
-    return await block.findOne({ user_id: userId, blocked_id: blokedId }).exec()
+
+  async blockedBefore(userId:string , blockedId: string){
+    return await Block.findOne({ user_id: userId, blocked_id: blockedId }).exec()
     }
 
   async getblocks(user_id: string) {
-      return block.aggregate([
+      return Block.aggregate([
             {
                 $match: {
-                    bloked_id: new mongoose.Types.ObjectId(user_id),
+                    blocked_id: new mongoose.Types.ObjectId(user_id),
                 },
             },
             {
                 $lookup: {
                     from: "users",
-                    localField: "blocked_id",
+                    localField: "user_id",
                     foreignField: "_id",
                     as: "blockedDetails",
                 },

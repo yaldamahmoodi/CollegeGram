@@ -15,4 +15,4 @@ const BlockSchema: Schema<IBlock> = new Schema(
     },
     { timestamps: true }
 );
-export const block: Model<IBlock> = mongoose.model<IBlock>("block", BlockSchema);
+export const Block: Model<IBlock> = mongoose.model<IBlock>("block", BlockSchema);
