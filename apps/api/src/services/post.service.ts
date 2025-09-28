@@ -6,20 +6,15 @@ import {BadRequestErrors} from "../utils/errors/badRequest.errors.ts";
 import {type InsertPostDto} from "../db/models/post.model.ts";
 import {ValidationError} from "../utils/errors/validation.errors.ts";
 import {InternalErrors} from "../utils/errors/internal.errors.ts";
-import type {CommentRepository} from "../repositories/comment.repository.ts";
-import type {InsertCommentDto} from "../db/models/comment.model.ts";
 
 export class PostService {
 
     private readonly postRepository: PostRepository;
     private readonly saveRepository: SaveRepository;
-    private readonly commentRepository: CommentRepository;
 
-    constructor(postRepository: PostRepository, saveRepository: SaveRepository, commentRepository: CommentRepository) {
+    constructor(postRepository: PostRepository, saveRepository: SaveRepository) {
         this.postRepository = postRepository;
         this.saveRepository = saveRepository;
-        this.commentRepository = commentRepository;
-
     }
 
     async createPost(postData: InsertPostDto) {
