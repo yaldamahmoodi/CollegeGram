@@ -144,7 +144,7 @@ export class PostService {
     const comment = await this.commentRepository.findCommentById(commentId)
     const existLike = await this.commentRepository.commentLikedBefore(userId,commentId)
     if (!comment) {
-      throw new NotFoundError("NOT_FOUND" , "Comment_not_find") 
+      throw new NotFoundError("NOT_FOUND" , "Comment_not_find")
     }
     if(existLike) {
       throw new NotFoundError("ALREADY_DONE" , "User_liked_comment_Before")
@@ -159,7 +159,7 @@ export class PostService {
     const existLike = await this.commentRepository.commentLikedBefore(userId,commentId)
 
     if (!comment) {
-      throw new NotFoundError("NOT_FOUND" , "Comment_not_find") 
+      throw new NotFoundError("NOT_FOUND" , "Comment_not_find")
     }
     if(!existLike) {
       throw new NotFoundError("NO_DATA_PROVIDED" , "User_Doesnt_liked_comment_Before")

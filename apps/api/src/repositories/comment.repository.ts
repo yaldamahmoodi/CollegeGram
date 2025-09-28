@@ -20,17 +20,18 @@ export class CommentRepository {
         });
     }
 
-    async getCommentsByPostId(postId: string, skip: number, pageSize: number): Promise<IComment[]> {
-        return await CommentModel.aggregate([
+    async getCommentsByPostId(postId: string, page: number, pageSize: number): Promise<IComment[]> {
+        return CommentModel.aggregate([
             {$match: {post_id: new mongoose.Types.ObjectId(postId)}},
-            {$skip: skip},
+            {$skip: (page - 1) * pageSize},
             {$limit: pageSize}
         ]);
+
 
     }
 
     async commentLikedBefore(userId:string , commentId: string){
-    return await commentLikeModel.findOne({ user_id: userId, comment_id: commentId }).exec() 
+    return await commentLikeModel.findOne({ user_id: userId, comment_id: commentId }).exec()
     }
 
   async likeComment(userId:string , commentId: string) {
@@ -46,7 +47,7 @@ export class CommentRepository {
         { $inc: { like_count: 1 } }
      );
      }
-  }  
+  }
   async unlikeComment(userId: string , commentId: string) {
     const unlike = await commentLikeModel.deleteOne({
         user_id:userId,

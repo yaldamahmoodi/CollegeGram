@@ -1,22 +1,26 @@
 import type {Authenticate} from "../middlewares/auth.middleware.ts";
-import type {NextFunction, Response, Request} from "express";
+import type {NextFunction, Response} from "express";
 import type {PostService} from "../services/post.service.ts";
 import {APIError} from "../utils/errors/api.errors.ts";
 import {asyncHandler} from "../utils/asyncHandler.utils.ts";
-import {type userParamSchema, UserParamsSchema} from "../utils/types.ts";
+import {type userParamSchema} from "../utils/types.ts";
 import type {exploreSchema} from "../dtos/posts.dto.ts";
 import {UnauthorizedError} from "../utils/errors/unauthorized.errors.ts";
 import type {InsertCommentDto} from "../db/models/comment.model.ts";
-import {Error, Types} from "mongoose";
+import {Types} from "mongoose";
 import {BadRequestErrors} from "../utils/errors/badRequest.errors.ts";
 import {ValidationError} from "../utils/errors/validation.errors.ts";
+import type {CommentService} from "../services/comment.service.ts";
 
 export class PostController {
 
     private readonly postService: PostService;
+    private readonly commentService: CommentService;
 
-    constructor(postService: PostService) {
+    constructor(postService: PostService, commentService: CommentService) {
         this.postService = postService;
+        this.commentService = commentService;
+
         this.getPost = this.getPost.bind(this);
         this.getPosts = this.getPosts.bind(this);
         this.savePost = this.savePost.bind(this);
@@ -166,7 +170,7 @@ export class PostController {
             if (parent_comment && !Types.ObjectId.isValid(parent_comment))
                 return next(new BadRequestErrors('INVALID_COMMENT_ID'));
 
-            const comment = await this.postService.addComment(req.user.id, req.body);
+            const comment = await this.commentService.addComment(req.user.id, req.body);
 
             return res.status(201).json({
                 code: "COMMENT_ADDED_SUCCESSFULLY",
@@ -185,7 +189,7 @@ export class PostController {
         try {
             if (!req.user) return next(new UnauthorizedError("UNAUTHORIZED"))
 
-            const comments = this.postService.getCommentsByPost(postId, page, pageSize)
+            const comments = await this.commentService.getCommentsByPost(postId, page, pageSize)
             return res.status(200).json({
                 code: "GET_COMMENTS_SUCCESSFULLY",
                 data: comments,
