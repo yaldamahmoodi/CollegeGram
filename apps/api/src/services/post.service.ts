@@ -6,32 +6,38 @@ import {BadRequestErrors} from "../utils/errors/badRequest.errors.ts";
 import {type InsertPostDto} from "../db/models/post.model.ts";
 import {ValidationError} from "../utils/errors/validation.errors.ts";
 import {InternalErrors} from "../utils/errors/internal.errors.ts";
-import type {CommentRepository} from "../repositories/comment.repository.ts";
-import type {InsertCommentDto} from "../db/models/comment.model.ts";
 
 export class PostService {
 
     private readonly postRepository: PostRepository;
     private readonly saveRepository: SaveRepository;
-    private readonly commentRepository: CommentRepository;
 
-    constructor(postRepository: PostRepository, saveRepository: SaveRepository, commentRepository: CommentRepository) {
+    constructor(postRepository: PostRepository, saveRepository: SaveRepository) {
         this.postRepository = postRepository;
         this.saveRepository = saveRepository;
-        this.commentRepository = commentRepository;
-
     }
 
     async createPost(postData: InsertPostDto) {
         if (postData.urls.length < 1) {
             throw new ValidationError("INVALID_CREDENTIALS");
         }
-        const allExist = postData.mentions.every(async (mention) => {
-            return await this.getUserDetails(mention.user_id)
-        })
-
-        if (!allExist) {
-            throw new ValidationError("INVALID_USERNAME");
+        // Validate all mentioned users exist
+        if (postData.mentions && postData.mentions.length > 0) {
+            const mentionValidationPromises = postData.mentions.map(async (mention) => {
+                try {
+                    await this.getUserDetails(mention.user_id);
+                    return true;
+                } catch (error) {
+                    return false;
+                }
+            });
+            
+            const validationResults = await Promise.all(mentionValidationPromises);
+            const allExist = validationResults.every(result => result === true);
+            
+            if (!allExist) {
+                throw new ValidationError("INVALID_USERNAME");
+            }
         }
 
         return await this.postRepository.createPost(postData);
@@ -49,8 +55,8 @@ export class PostService {
         return await this.postRepository.findUserPosts(userId, page, pageSize);
     }
 
-    async getPost(postId: string) {
-        const post = await this.postRepository.getPostById(postId);
+    async getPost(postId: string, userId?: string) {
+        const post = await this.postRepository.getPostById(postId, userId);
         if (!post) {
             throw new NotFoundError("NOT_FOUND");
         }

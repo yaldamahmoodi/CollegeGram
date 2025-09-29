@@ -67,20 +67,56 @@ export class UserService {
         return this.followRepository.getFollowers(userId)
     }
 
+    async acceptFollowRequest(userId: string, followerUserId: string) {
+        return await this.followRepository.acceptFollowRequest(followerUserId, userId);
+    }
+
+    async rejectFollowRequest(userId: string, followerUserId: string) {
+        return await this.followRepository.rejectFollowRequest(followerUserId, userId);
+    }
+
+    async getFollowStatus(followerUserId: string, followingUserId: string) {
+        return await this.followRepository.getFollowStatus(followerUserId, followingUserId);
+    }
+
     async getOtherProfile(loggedInUserId: string, targetUsername: string) {
         const userDetails = await this.userRepository.findUserDetailsByUsername(targetUsername);
         if (!userDetails) {
             throw new NotFoundError("NOT_FOUND_USER");
         }
 
-        const isFollowed = await this.followRepository.isFollowed(
+        const followStatus = await this.getFollowStatus(
             loggedInUserId,
             userDetails._id.toString()
         );
+        
+
+        // const isBlocked = await this.blockRepository.isBlocked(
+        //     loggedInUserId,
+        //     userDetails._id.toString()
+        // );
+
+        const isBlocked = false;
+
+        // const hasBlocked = await this.blockRepository.hasBlocked(
+        //     loggedInUserId,
+        //     userDetails._id.toString()
+        // );
+
+        const hasBlocked = false;
+        // const isCloseFriend = await this.followRepository.isCloseFriend(
+        //     loggedInUserId,
+        //     userDetails._id.toString()
+        // );
+        const isCloseFriend = false;
+
 
         return {
             ...userDetails,
-            isFollowed,
+            followStatus,
+            isBlocked,
+            hasBlocked,
+            isCloseFriend,
         };
     }
 

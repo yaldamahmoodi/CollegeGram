@@ -32,11 +32,12 @@ export class PostController {
     }
 
     async getPost(req: Authenticate, res: Response) {
-        const post = await this.postService.getPost(req.params['post_id']);
+        const post = await this.postService.getPost(req.params['post_id'], req.user.id);
 
         const output = {
             _id: post._id,
             user_id: post.user_id,
+            user: post.user,
             urls: post.urls,
             caption: post.caption,
             like_count: post.like_count,
@@ -44,12 +45,16 @@ export class PostController {
             mentions: post.mentions,
             hashtag_array: post.hashtag_array,
             photo_length: post.photo_length,
+            isLiked: post.isLiked || false,
+            isSaved: post.isSaved || false,
         }
         return res.status(200).json({
             code: 'GET_POST_SUCCESSFULLY',
             data: output
         });
     }
+
+    
 
     async getPosts(req: Authenticate<{}, {}, {}, userParamSchema>, res: Response, next: NextFunction) {
 
