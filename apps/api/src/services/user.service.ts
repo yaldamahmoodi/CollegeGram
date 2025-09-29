@@ -119,8 +119,8 @@ export class UserService {
             isCloseFriend,
         };
     }
-
-    async blockService(userId : string , blockedId: string){
+    //transaction:
+    async blockUser(userId : string , blockedId: string){
         const existUserId = await this.userRepository.findByUserId(userId)
         const existBlockedId = await this.userRepository.findByUserId(blockedId)
         const blokedBefore = await this.blockRepository.blockedBefore(userId,blockedId)
@@ -138,7 +138,7 @@ export class UserService {
         await this.followRepository.unfollowUser(blockedId,userId)
     }
 
-    async unblockService(userId : string , blockedId: string){
+    async unBlockUser(userId : string , blockedId: string){
         const existUserId = await this.userRepository.findByUserId(userId)
         const existBlockedId = await this.userRepository.findByUserId(blockedId)
         const blokedBefore = await this.blockRepository.blockedBefore(userId,blockedId)
@@ -148,8 +148,8 @@ export class UserService {
         if(!existBlockedId){
             throw new NotFoundError("NOT_FOUND_USER" , "blockedId not found")
         }
-        if(blokedBefore){
-            throw new NotFoundError("ALREADY_DONE" , "block already done")
+        if(!blokedBefore){
+            throw new NotFoundError("NOT_FOUND" , "User is not blocked")
         }
         await this.blockRepository.unblock(userId , blockedId)
     }

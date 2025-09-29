@@ -78,9 +78,14 @@ router.get(
     userController.getFollowingsList
 )
 
-router.get(
+router.post(
     "/block",
     userController.BlockUser
+);
+
+router.post(
+    "/unblock",
+    userController.unBlockUser
 );
 
 

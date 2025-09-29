@@ -5,7 +5,6 @@ export interface IBlock extends Document {
     user_id: Types.ObjectId;       // صاحب لیست
     blocked_id: Types.ObjectId;    // کسی که بلاک شده
     createdAt: Date;
-    updatedAt: Date;
 }
 
 const BlockSchema: Schema<IBlock> = new Schema(
@@ -13,6 +12,6 @@ const BlockSchema: Schema<IBlock> = new Schema(
         user_id: { type: Schema.Types.ObjectId, ref: "User", required: true },
         blocked_id: { type: Schema.Types.ObjectId, ref: "User", required: true },
     },
-    { timestamps: true }
+    { timestamps: {createdAt:true} }
 );
 export const Block: Model<IBlock> = mongoose.model<IBlock>("block", BlockSchema);

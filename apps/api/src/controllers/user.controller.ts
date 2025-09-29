@@ -32,7 +32,6 @@ export class UserController {
         this.getFollowingsList = this.getFollowingsList.bind(this);
         this.getFollowersList = this.getFollowersList.bind(this);
         this.getOtherProfile = this.getOtherProfile.bind(this);  
-        this.getOtherProfile = this.getOtherProfile.bind(this);
         this.acceptFollowRequest = this.acceptFollowRequest.bind(this);
         this.rejectFollowRequest = this.rejectFollowRequest.bind(this);
 
@@ -328,12 +327,27 @@ export class UserController {
 
         const {blockUserId} = req.body;
         if (blockUserId === req.user.id) return next(new ValidationError("YOU_CANNOT_BLOCK_YOURSELF"))
-
         try {
-            await this.userService.followUser(req.user.id, blockUserId);
+            await this.userService.blockUser(req.user.id, blockUserId);
             return res.status(200).json({
                 code: "USER_BLOCKED",
                 message: "User successfully blocked"
+            });
+
+        } catch (error: unknown) {
+            if (error instanceof APIError) return next(error)
+        }
+    }
+
+    async unBlockUser(req: Authenticate, res: Response, next: NextFunction) {
+
+        const {blockUserId} = req.body;
+        if (blockUserId === req.user.id) return next(new ValidationError("YOU_CANNOT_UNBLOCK_YOURSELF"))
+        try {
+            await this.userService.unBlockUser(req.user.id, blockUserId);
+            return res.status(200).json({
+                code: "USER_UNBLOCKED",
+                message: "User successfully UNblocked"
             });
 
         } catch (error: unknown) {

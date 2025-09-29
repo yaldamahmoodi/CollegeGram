@@ -1,5 +1,5 @@
 import mongoose from "mongoose";
-import {Block, type IBlock} from "../db/models/block.model.ts";
+import {Block} from "../db/models/block.model.ts";
 
 export class BlockRepository{
   async block (userId: string , blockedId: string){
