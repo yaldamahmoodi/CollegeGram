@@ -358,7 +358,7 @@ paths:
                         example: 68c2b1db8d9f319250cd0f8c
                       path:
                         type: string
-                        example: /Users/yaldamahmoodi/Desktop/Git/Yaldoo/backmani/src/middlewares/uploads/profile-1757668980932-77093819.png
+                        example: /Users/yaldamahmoodi/Desktop/Git/Yaldoo/backmani/src/middlewares/uploads/profiles/profile-1757668980932-77093819.png
                       uploadedAt:
                         type: string
                         format: date-time
