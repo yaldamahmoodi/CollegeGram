@@ -121,6 +121,7 @@ export class UserService {
     }
     //transaction:
     async blockUser(userId : string , blockedId: string){
+        console.log("blockUser entry point")
         const existUserId = await this.userRepository.findByUserId(userId)
         const existBlockedId = await this.userRepository.findByUserId(blockedId)
         const blokedBefore = await this.blockRepository.blockedBefore(userId,blockedId)
@@ -133,8 +134,9 @@ export class UserService {
         if(blokedBefore){
             throw new NotFoundError("ALREADY_DONE" , "block already done")
         }
+
         await this.blockRepository.block(userId , blockedId)
-        await this.followRepository.unfollowUser(userId , blockedId)
+        await this.followRepository.unfollowUser(userId,blockedId)
         await this.followRepository.unfollowUser(blockedId,userId)
     }
 
