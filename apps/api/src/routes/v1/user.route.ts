@@ -68,6 +68,12 @@ router.get(
 )
 
 router.get(
+    "/block",
+    userController.BlockUser
+);
+
+
+router.get(
     "/:username",
     userController.getOtherProfile
 );

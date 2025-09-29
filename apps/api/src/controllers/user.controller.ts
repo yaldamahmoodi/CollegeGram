@@ -31,8 +31,7 @@ export class UserController {
         this.unfollowUser = this.unfollowUser.bind(this);
         this.getFollowingsList = this.getFollowingsList.bind(this);
         this.getFollowersList = this.getFollowersList.bind(this);
-        this.getOtherProfile = this.getOtherProfile.bind(this);
-        
+        this.getOtherProfile = this.getOtherProfile.bind(this);  
 
     }
 
