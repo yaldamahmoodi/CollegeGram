@@ -33,7 +33,7 @@ export class UserController {
     this.rejectFollowRequest = this.rejectFollowRequest.bind(this);
     this.BlockUser = this.BlockUser.bind(this);
     this.unBlockUser = this.unBlockUser.bind(this);
-    this.getBlockList = this.getBlockList.bind(this)
+    this.getBlocksList = this.getBlocksList.bind(this)
   }
 
   async uploadProfile(req: Authenticate, res: Response, next: NextFunction) {
@@ -386,19 +386,21 @@ export class UserController {
     }
   }
 
-  async getBlockList(
-    req: Authenticate<{}, {}>,
+  async getBlocksList(
+    req: Authenticate,
     res: Response,
     next: NextFunction
   ) {
     try {
-      const blockList = await this.userService.getBlocks(req.user.id);
+      console.log("6")
+      const blocksList = await this.userService.getBlocks(req.user.id);
       return res.status(200).json({
         code: "SUCCESS",
-        data: blockList,
+        data: blocksList,
       });
     } catch (error) {
       if (error instanceof APIError) return next(error);
     }
   }
+
 }

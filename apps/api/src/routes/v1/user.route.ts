@@ -90,16 +90,16 @@ router.post(
     userController.unBlockUser
 );
 
+router.get(
+    "/blockslist",
+    userController.getBlocksList
+)
+
 
 router.get(
     "/:username",
     userController.getOtherProfile
 );
-
-router.get(
-    "/blocklist",
-    userController.getBlockList
-)
 
 
 

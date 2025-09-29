@@ -25,7 +25,7 @@ export class BlockRepository{
       return Block.aggregate([
             {
                 $match: {
-                    blocked_id: new mongoose.Types.ObjectId(user_id),
+                    user_id: new mongoose.Types.ObjectId(user_id),
                 },
             },
             {
