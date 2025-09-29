@@ -275,14 +275,13 @@ export class UserController {
     async BlockUser(req: Authenticate, res: Response, next: NextFunction) {
 
         const {blockUserId} = req.body;
-        if (blockUserId === req.user.id) return next(new ValidationError("YOU_CANNOT_FOLLOW_YOURSELF"))
+        if (blockUserId === req.user.id) return next(new ValidationError("YOU_CANNOT_BLOCK_YOURSELF"))
 
         try {
-
-            await this.userService.followUser(req.user.id, followerUserId);
+            await this.userService.followUser(req.user.id, blockUserId);
             return res.status(200).json({
-                code: "USER_FOLLOWED",
-                message: "User successfully Followed"
+                code: "USER_BLOCKED",
+                message: "User successfully blocked"
             });
 
         } catch (error: unknown) {
