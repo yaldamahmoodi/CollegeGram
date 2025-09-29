@@ -11,3 +11,7 @@ export const acceptFollowRequestSchema = z.object({
 export const rejectFollowRequestSchema = z.object({
     followerUserId: z.string(),
 })
+
+export const blockUserSchema = z.object({
+    blockUserId: z.string(),
+})  

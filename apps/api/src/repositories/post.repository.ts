@@ -188,4 +188,80 @@ export class PostRepository {
         ]);
     }
 
+    async getMentionedPosts(userId: string, page: number, pageSize: number) {
+        const skip = (page - 1) * pageSize;
+        
+        const posts = await postModel.aggregate([
+            {
+                $match: {
+                    "mentions.user_id": new Types.ObjectId(userId)
+                }
+            },
+            {
+                $sort: { createdAt: -1 }
+            },
+            {
+                $skip: skip
+            },
+            {
+                $limit: pageSize
+            },
+            {
+                $lookup: {
+                    from: "users",
+                    localField: "user_id", 
+                    foreignField: "_id",
+                    as: "user"
+                }
+            },
+            {
+                $unwind: "$user"
+            },
+            {
+                $lookup: {
+                    from: "profilephotos",
+                    localField: "user._id",
+                    foreignField: "user_id", 
+                    as: "profilePhoto"
+                }
+            },
+            {
+                $project: {
+                    _id: 1,
+                    user_id: 1,
+                    urls: 1,
+                    caption: 1,
+                    like_count: 1,
+                    save_count: 1,
+                    mentions: 1,
+                    hashtag_array: 1,
+                    photo_length: 1,
+                    createdAt: 1,
+                    user: {
+                        _id: "$user._id",
+                        username: "$user.username", 
+                        firstname: "$user.firstname",
+                        lastname: "$user.lastname"
+                    },
+                    profilePhotoUrl: {
+                        $cond: {
+                            if: { $gt: [{ $size: "$profilePhoto" }, 0] },
+                            then: { $arrayElemAt: ["$profilePhoto.path", 0] },
+                            else: null
+                        }
+                    }
+                }
+            }
+        ]);
+        
+        const totalCount = await postModel.countDocuments({
+            "mentions.user_id": new Types.ObjectId(userId)
+        });
+        
+        return {
+            totalCount,
+            data: posts
+        };
+    }
+
 }

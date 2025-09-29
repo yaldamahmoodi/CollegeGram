@@ -6,7 +6,7 @@ import {bodyParser} from "../../middlewares/parsers.middleware.ts";
 import {updateProfileUserSchema} from "../../db/models/user.model.ts";
 import {initiator} from "../../server.ts";
 import {uploadPostPhotosMiddleware} from "../../middlewares/uploadPost.middleware.ts";
-import {followSchema, acceptFollowRequestSchema, rejectFollowRequestSchema} from "../../dtos/user.dto.ts";
+import {followSchema, acceptFollowRequestSchema, rejectFollowRequestSchema, blockUserSchema} from "../../dtos/user.dto.ts";
 
 const router = Router();
 
@@ -77,6 +77,19 @@ router.get(
     "/followings",
     userController.getFollowingsList
 )
+
+router.post(
+    "/block",
+    bodyParser(blockUserSchema),
+    userController.BlockUser
+);
+
+router.post(
+    "/unblock",
+    bodyParser(blockUserSchema),
+    userController.unBlockUser
+);
+
 
 router.get(
     "/:username",

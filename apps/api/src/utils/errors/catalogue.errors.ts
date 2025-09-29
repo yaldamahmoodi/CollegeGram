@@ -29,7 +29,9 @@ export const CatalogueErrors = {
     FOLLOW_REQUEST_SENT: {code: "FOLLOW_REQUEST_SENT", message: "Follow request sent"},
     YOU_CANNOT_ACCEPT_YOURSELF: {code: "YOU_CANNOT_ACCEPT_YOURSELF", message: "You cannot accept yourself"},
     YOU_CANNOT_REJECT_YOURSELF: {code: "YOU_CANNOT_REJECT_YOURSELF", message: "You cannot reject yourself"},
-    CAN_NOT_ADD_YOURSELF_TO_CLOSE_FRIEND:{code:"CAN_NOT_ADD_YOURSELF_TO_CLOSE_FRIEND",message:"invalid request"}
+    CAN_NOT_ADD_YOURSELF_TO_CLOSE_FRIEND:{code:"CAN_NOT_ADD_YOURSELF_TO_CLOSE_FRIEND",message:"invalid request"},
+    YOU_CANNOT_BLOCK_YOURSELF: {code: "YOU_CANNOT_BLOCK_YOURSELF", message: "YOU_CANNOT_BLOCK_YOURSELF"},
+    YOU_CANNOT_UNBLOCK_YOURSELF: {code: "YOU_CANNOT_UNBLOCK_YOURSELF", message: "YOU_CANNOT_UNBLOCK_YOURSELF"}
 } as const;
 
 export type ErrorCode = keyof typeof CatalogueErrors;

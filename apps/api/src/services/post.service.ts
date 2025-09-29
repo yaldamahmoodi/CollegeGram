@@ -117,5 +117,8 @@ export class PostService {
         return await this.postRepository.explore(userId, page, pageSize);
     }
 
+    async getMentionedPosts(userId: string, page: number, pageSize: number) {
+        return await this.postRepository.getMentionedPosts(userId, page, pageSize);
+    }
 
 }

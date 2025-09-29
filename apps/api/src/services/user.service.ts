@@ -4,18 +4,21 @@ import bcrypt from 'bcrypt';
 import type {updateProfileUserSchema} from "../db/models/user.model.ts";
 import {NotFoundError} from "../utils/errors/notFound.errors.ts";
 import type {FollowRepository} from "../repositories/follow.repository.ts";
+import type {BlockRepository} from  "../repositories/block.repository.ts"
 
 export class UserService {
 
     private readonly userRepository: UserRepository;
     private readonly profilePhotoRepository: ProfileRepository;
     private readonly followRepository: FollowRepository;
+    private readonly blockRepository: BlockRepository
 
 
-    constructor(userRepository: UserRepository, profilePhotoRepository: ProfileRepository, followRepository: FollowRepository) {
+    constructor(userRepository: UserRepository, profilePhotoRepository: ProfileRepository, followRepository: FollowRepository , blockRepository: BlockRepository) {
         this.userRepository = userRepository;
         this.profilePhotoRepository = profilePhotoRepository;
         this.followRepository = followRepository;
+        this.blockRepository = blockRepository
     }
 
     async getUserIdByUsername(username: string): Promise<string | null> {
@@ -116,5 +119,46 @@ export class UserService {
             isCloseFriend,
         };
     }
+    //transaction:
+    async blockUser(userId : string , blockedId: string){
+        console.log("blockUser entry point")
+        const existUserId = await this.userRepository.findByUserId(userId)
+        const existBlockedId = await this.userRepository.findByUserId(blockedId)
+        const blokedBefore = await this.blockRepository.blockedBefore(userId,blockedId)
+        if(!existUserId){
+            throw new NotFoundError("NOT_FOUND_USER" , "userId not found")
+        }
+        if(!existBlockedId){
+            throw new NotFoundError("NOT_FOUND_USER" , "blockedId not found")
+        }
+        if(blokedBefore){
+            throw new NotFoundError("ALREADY_DONE" , "block already done")
+        }
+
+        await this.blockRepository.block(userId , blockedId)
+        await this.followRepository.unfollowUser(userId,blockedId)
+        await this.followRepository.unfollowUser(blockedId,userId)
+    }
+
+    async unBlockUser(userId : string , blockedId: string){
+        const existUserId = await this.userRepository.findByUserId(userId)
+        const existBlockedId = await this.userRepository.findByUserId(blockedId)
+        const blokedBefore = await this.blockRepository.blockedBefore(userId,blockedId)
+        if(!existUserId){
+            throw new NotFoundError("NOT_FOUND_USER" , "userId not found")
+        }
+        if(!existBlockedId){
+            throw new NotFoundError("NOT_FOUND_USER" , "blockedId not found")
+        }
+        if(!blokedBefore){
+            throw new NotFoundError("NOT_FOUND" , "User is not blocked")
+        }
+        await this.blockRepository.unblock(userId , blockedId)
+    }
+
+    async getBlocks(userId: string) {
+        return this.blockRepository.getblocks(userId)
+    }
+
 
 }

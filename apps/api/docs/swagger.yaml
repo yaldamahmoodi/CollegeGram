@@ -1233,6 +1233,166 @@ paths:
                     type: string
                     example: Something went wrong while rejecting the follow request.
 
+  /api/v1/users/block:
+    post:
+      summary: Block a user
+      description: |
+        Block another user by their user ID. When a user is blocked:
+        - The blocked user cannot see the blocker's posts or profile
+        - Any existing follow relationships between the users are automatically removed
+        - The blocked user cannot follow the blocker
+      tags:
+        - Users
+      security:
+        - cookieAuth: [ ]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/BlockUserDto'
+      responses:
+        '200':
+          description: User blocked successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  code:
+                    type: string
+                    example: USER_BLOCKED
+                  message:
+                    type: string
+                    example: User successfully blocked
+        '400':
+          description: Invalid block request (e.g., trying to block yourself)
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  code:
+                    type: string
+                    example: YOU_CANNOT_BLOCK_YOURSELF
+                  message:
+                    type: string
+                    example: You cannot block yourself
+        '404':
+          description: Target user not found or already blocked
+          content:
+            application/json:
+              schema:
+                oneOf:
+                  - type: object
+                    properties:
+                      code:
+                        type: string
+                        example: NOT_FOUND_USER
+                      message:
+                        type: string
+                        example: User with given ID does not exist
+                  - type: object
+                    properties:
+                      code:
+                        type: string
+                        example: ALREADY_DONE
+                      details:
+                        type: string
+                        example: block already done
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  code:
+                    type: string
+                    example: INTERNAL_SERVER_ERROR
+                  message:
+                    type: string
+                    example: Something went wrong while blocking the user
+
+  /api/v1/users/unblock:
+    post:
+      summary: Unblock a user
+      description: |
+        Unblock a previously blocked user by their user ID. 
+        This will restore the ability for the unblocked user to see the unblocker's content.
+      tags:
+        - Users
+      security:
+        - cookieAuth: [ ]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/BlockUserDto'
+      responses:
+        '200':
+          description: User unblocked successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  code:
+                    type: string
+                    example: USER_UNBLOCKED
+                  message:
+                    type: string
+                    example: User successfully UNblocked
+        '400':
+          description: Invalid unblock request (e.g., trying to unblock yourself)
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  code:
+                    type: string
+                    example: YOU_CANNOT_UNBLOCK_YOURSELF
+                  message:
+                    type: string
+                    example: You cannot unblock yourself
+        '404':
+          description: Target user not found or not blocked
+          content:
+            application/json:
+              schema:
+                oneOf:
+                  - type: object
+                    properties:
+                      code:
+                        type: string
+                        example: NOT_FOUND_USER
+                      message:
+                        type: string
+                        example: User with given ID does not exist
+                  - type: object
+                    properties:
+                      code:
+                        type: string
+                        example: NOT_FOUND
+                      details:
+                        type: string
+                        example: User is not blocked
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  code:
+                    type: string
+                    example: INTERNAL_SERVER_ERROR
+                  message:
+                    type: string
+                    example: Something went wrong while unblocking the user
+
   /api/v1/users/savesList:
     get:
       summary: Get saved posts for authenticated user
@@ -1925,6 +2085,155 @@ paths:
                         type: string
                         example: User_Doesnt_liked_comment_Before
 
+  /api/v1/posts/mentions:
+    get:
+      summary: Get posts where user is mentioned
+      description: |
+        Retrieve paginated list of posts where the authenticated user has been mentioned.
+        This allows users to see all posts where they have been tagged by others.
+      tags:
+        - Posts
+      security:
+        - cookieAuth: [ ]
+      parameters:
+        - name: page
+          in: query
+          required: false
+          schema:
+            type: integer
+            default: 1
+            minimum: 1
+          description: Page number for pagination (default 1)
+          example: 1
+        - name: pageSize
+          in: query
+          required: false
+          schema:
+            type: integer
+            default: 10
+            minimum: 1
+            maximum: 50
+          description: Number of posts per page (default 10, max 50)
+          example: 10
+      responses:
+        '200':
+          description: Mentioned posts retrieved successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  code:
+                    type: string
+                    example: GET_MENTIONED_POSTS_SUCCESSFULLY
+                  totalCount:
+                    type: integer
+                    description: Total number of posts where user is mentioned
+                    example: 25
+                  data:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        _id:
+                          type: string
+                          example: 64a1b2c3d4e5f6789012345
+                        user_id:
+                          type: string
+                          description: ID of the post author
+                          example: 64a1b2c3d4e5f6789012346
+                        urls:
+                          type: array
+                          items:
+                            type: string
+                          description: Full URLs to post images
+                          example: 
+                            - "http://localhost:3000/uploads/posts/image1.jpg"
+                            - "http://localhost:3000/uploads/posts/image2.jpg"
+                        caption:
+                          type: string
+                          nullable: true
+                          description: Post caption text
+                          example: "Great post with @username mention!"
+                        like_count:
+                          type: integer
+                          example: 10
+                        save_count:
+                          type: integer
+                          example: 5
+                        mentions:
+                          type: array
+                          items:
+                            type: object
+                            properties:
+                              user_id:
+                                type: string
+                                example: 64a1b2c3d4e5f6789012347
+                              username:
+                                type: string
+                                example: mentioned_user
+                          description: List of all users mentioned in the post
+                        hashtag_array:
+                          type: array
+                          items:
+                            type: string
+                          example: ["#example", "#social"]
+                        photo_length:
+                          type: integer
+                          description: Number of photos in the post
+                          example: 2
+                        createdAt:
+                          type: string
+                          format: date-time
+                          example: "2023-01-01T00:00:00.000Z"
+                        user:
+                          type: object
+                          description: Post author information
+                          properties:
+                            _id:
+                              type: string
+                              example: 64a1b2c3d4e5f6789012346
+                            username:
+                              type: string
+                              example: post_author
+                            firstname:
+                              type: string
+                              example: John
+                            lastname:
+                              type: string
+                              example: Doe
+                        profilePhotoUrl:
+                          type: string
+                          nullable: true
+                          description: Author's profile photo URL
+                          example: profile_photo_path.jpg
+        '401':
+          description: Unauthorized (user not logged in)
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  code:
+                    type: string
+                    example: UNAUTHORIZED
+                  message:
+                    type: string
+                    example: Authentication required
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  code:
+                    type: string
+                    example: INTERNAL_SERVER_ERROR
+                  message:
+                    type: string
+                    example: Something went wrong while fetching mentioned posts
+
 
   /api/v1/users/getUsers/{page_number}:
       get:
@@ -2351,6 +2660,16 @@ components:
           type: string
         isPrivate:
           type: boolean
+
+    BlockUserDto:
+      type: object
+      required:
+        - blockUserId
+      properties:
+        blockUserId:
+          type: string
+          description: The ID of the user to block/unblock
+          example: 68c6cbfd5bc774e86bdf4eb2
 
     User:
       type: object
