@@ -33,6 +33,7 @@ export class UserController {
     this.rejectFollowRequest = this.rejectFollowRequest.bind(this);
     this.BlockUser = this.BlockUser.bind(this);
     this.unBlockUser = this.unBlockUser.bind(this);
+    this.getBlockList = this.getBlockList.bind(this)
   }
 
   async uploadProfile(req: Authenticate, res: Response, next: NextFunction) {
@@ -378,9 +379,25 @@ export class UserController {
       await this.userService.unBlockUser(req.user.id, blockUserId);
       return res.status(200).json({
         code: "USER_UNBLOCKED",
-        message: "User successfully UNblocked",
+        message: "User successfully unblocked",
       });
     } catch (error: unknown) {
+      if (error instanceof APIError) return next(error);
+    }
+  }
+
+  async getBlockList(
+    req: Authenticate<{}, {}>,
+    res: Response,
+    next: NextFunction
+  ) {
+    try {
+      const blockList = await this.userService.getBlocks(req.user.id);
+      return res.status(200).json({
+        code: "SUCCESS",
+        data: blockList,
+      });
+    } catch (error) {
       if (error instanceof APIError) return next(error);
     }
   }

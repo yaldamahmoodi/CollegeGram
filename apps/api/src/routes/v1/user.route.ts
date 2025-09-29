@@ -96,6 +96,11 @@ router.get(
     userController.getOtherProfile
 );
 
+router.get(
+    "/blocklist",
+    userController.getBlockList
+)
+
 
 
 router.use(errorHandler);
