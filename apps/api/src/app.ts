@@ -52,30 +52,30 @@ app.use(
 
 app.use(morgan("combined"));
 
-// app.use(
-//   "/uploads/profiles",
-//   express.static(path.join(__dirname, "middlewares/uploads"), {
-//     setHeaders: (res) => {
-//       res.setHeader("Cross-Origin-Resource-Policy", "cross-origin");
-//       res.setHeader("Access-Control-Allow-Origin", allowedOrigins[0] || "*");
-//       res.setHeader("Access-Control-Allow-Methods", "GET");
-//       res.setHeader("Access-Control-Allow-Headers", "Content-Type");
-//       res.setHeader("Cache-Control", "public, max-age=31536000"); // Cache for 1 year
-//     },
-//   })
-// );
-// app.use(
-//   "/uploads/posts",
-//   express.static(path.join(__dirname, "middlewares/uploads/posts"), {
-//     setHeaders: (res) => {
-//       res.setHeader("Cross-Origin-Resource-Policy", "cross-origin");
-//       res.setHeader("Access-Control-Allow-Origin", allowedOrigins[0] || "*");
-//       res.setHeader("Access-Control-Allow-Methods", "GET");
-//       res.setHeader("Access-Control-Allow-Headers", "Content-Type");
-//       res.setHeader("Cache-Control", "public, max-age=31536000"); // Cache for 1 year
-//     },
-//   })
-// );
+app.use(
+  "/uploads/profiles",
+  express.static(path.join(__dirname, "middlewares/uploads/profiles"), {
+    setHeaders: (res) => {
+      res.setHeader("Cross-Origin-Resource-Policy", "cross-origin");
+      res.setHeader("Access-Control-Allow-Origin", allowedOrigins[0] || "*");
+      res.setHeader("Access-Control-Allow-Methods", "GET");
+      res.setHeader("Access-Control-Allow-Headers", "Content-Type");
+      res.setHeader("Cache-Control", "public, max-age=31536000"); // Cache for 1 year
+    },
+  })
+);
+app.use(
+  "/uploads/posts",
+  express.static(path.join(__dirname, "middlewares/uploads/posts"), {
+    setHeaders: (res) => {
+      res.setHeader("Cross-Origin-Resource-Policy", "cross-origin");
+      res.setHeader("Access-Control-Allow-Origin", allowedOrigins[0] || "*");
+      res.setHeader("Access-Control-Allow-Methods", "GET");
+      res.setHeader("Access-Control-Allow-Headers", "Content-Type");
+      res.setHeader("Cache-Control", "public, max-age=31536000"); // Cache for 1 year
+    },
+  })
+);
 
 /* ---- ROUTES ---- */
 app.use("/api/health", healthRoute);

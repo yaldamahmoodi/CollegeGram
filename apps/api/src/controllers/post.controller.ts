@@ -29,6 +29,7 @@ export class PostController {
         this.getComments = this.getComments.bind(this);
         this.likeComment = this.likeComment.bind(this)
         this.unlikeComment = this.unlikeComment.bind(this)
+        this.getMentionedPosts = this.getMentionedPosts.bind(this)
     }
 
     async getPost(req: Authenticate, res: Response) {
@@ -227,4 +228,22 @@ export class PostController {
             if (error instanceof APIError) return next(error);
         }
     }
+
+    getMentionedPosts = asyncHandler(async (req: Authenticate, res: Response) => {
+        const page = Number(req.query.page) || 1;
+        const pageSize = Number(req.query.pageSize) || 10;
+        const userId = req.user.id;
+        
+        const mentionedPosts = await this.postService.getMentionedPosts(userId, page, pageSize);
+        const output = mentionedPosts.data.map(post => ({
+            ...post,
+            urls: post.urls.map((file: string) => `${req.protocol}://${req.get("host")}/uploads/posts/${file}`)
+        }));
+        
+        return res.status(200).json({
+            code: "GET_MENTIONED_POSTS_SUCCESSFULLY",
+            totalCount: mentionedPosts.totalCount,
+            data: output
+        });
+    });
 }
