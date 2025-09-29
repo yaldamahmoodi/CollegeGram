@@ -68,7 +68,7 @@ export class Initiator {
     public setupServices(): void {
         this.authService = new AuthService(this.authRepository);
         this.userService = new UserService(this.userRepository, this.profileRepository, this.followRepository , this.blockRepository);
-        this.postService = new PostService(this.postRepository, this.saveRepository , this.commentRepository);
+        this.postService = new PostService(this.postRepository, this.saveRepository);
         this.userSearchService = new UserSearchService(this.elasticClient);
         this.commentService = new CommentService(this.postRepository, this.commentRepository);
         this.closeFriendService = new CloseFriendService(this.closeFriendRepository);
