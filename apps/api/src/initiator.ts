@@ -15,6 +15,11 @@ import {SearchController} from "./controllers/search.controller.ts";
 import {UserSearchService} from "./services/UserSearchService.ts";
 import {FollowRepository} from "./repositories/follow.repository.ts";
 import {CommentRepository} from "./repositories/comment.repository.ts";
+import {CommentService} from "./services/comment.service.ts";
+import {BlockRepository} from "./repositories/block.repository.ts";
+import {CloseFriendController} from "./controllers/closefriend.controller.ts";
+import {CloseFriendRepository} from "./repositories/closefriend.repository.ts";
+import {CloseFriendService} from "./services/closefriend.service.ts";
 
 
 export class Initiator {
@@ -31,11 +36,17 @@ export class Initiator {
     public saveRepository: SaveRepository;
     public followRepository: FollowRepository;
     public commentRepository: CommentRepository;
+    public commentService: CommentService;
 
     public elasticClient: ElasticClient;
     public searchIndexManager: SearchIndexManager;
     public searchController: SearchController;
     public userSearchService: UserSearchService;
+    public blockRepository: BlockRepository
+    public closeFriendController: CloseFriendController;
+    public closeFriendRepository: CloseFriendRepository;
+    public closeFriendService: CloseFriendService;
+
 
     constructor() {
         this.userRepository = new UserRepository();
@@ -45,27 +56,30 @@ export class Initiator {
         this.profileRepository = new ProfileRepository();
         this.followRepository = new FollowRepository()
         this.commentRepository = new CommentRepository();
-
+        this.blockRepository = new BlockRepository()
 
         this.elasticClient = new ElasticClient();
         this.searchIndexManager = new SearchIndexManager(this.elasticClient);
+
+        this.closeFriendRepository = new CloseFriendRepository();
     }
 
 
     public setupServices(): void {
         this.authService = new AuthService(this.authRepository);
-        this.userService = new UserService(this.userRepository, this.profileRepository, this.followRepository);
-        this.postService = new PostService(this.postRepository, this.saveRepository, this.commentRepository);
+        this.userService = new UserService(this.userRepository, this.profileRepository, this.followRepository , this.blockRepository);
+        this.postService = new PostService(this.postRepository, this.saveRepository);
         this.userSearchService = new UserSearchService(this.elasticClient);
-
+        this.commentService = new CommentService(this.postRepository, this.commentRepository);
+        this.closeFriendService = new CloseFriendService(this.closeFriendRepository);
     }
 
     public setupControllers(): void {
         this.authController = new AuthController(this.authService);
         this.userController = new UserController(this.userService, this.postService);
-        this.postController = new PostController(this.postService);
+        this.postController = new PostController(this.postService, this.commentService);
         this.searchController = new SearchController(this.userSearchService);
-
+        this.closeFriendController = new CloseFriendController(this.closeFriendService);
     }
 
     public getAuthController() {
@@ -83,5 +97,9 @@ export class Initiator {
 
     public getSearchController() {
         return this.searchController;
+    }
+
+    public getCloseFriendController() {
+        return this.closeFriendController;
     }
 }
