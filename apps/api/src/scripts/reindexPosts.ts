@@ -3,15 +3,17 @@ import {SearchIndexManager} from "../services/SearchIndexManager.service.ts";
 import {ElasticClient} from "../services/elasticClient.service.ts";
 import {postModel} from "../db/models/post.model.ts";
 import {PostSearchService} from "../services/PostSearchService.ts";
+import {BlockRepository} from "../repositories/block.repository.ts";
 
 
 async function reindexPosts() {
     const elasticClient = new ElasticClient();
+    const blockRepository = new BlockRepository();
 
     const indexManager = new SearchIndexManager(elasticClient);
     await indexManager.createPostsIndex();
 
-    const postSearch = new PostSearchService(elasticClient);
+    const postSearch = new PostSearchService(elasticClient, blockRepository);
 
     // -----------------------------
     // Reindex Posts

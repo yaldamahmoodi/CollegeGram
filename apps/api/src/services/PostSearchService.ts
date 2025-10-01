@@ -1,12 +1,15 @@
 import { ElasticClient } from "./elasticClient.service.ts";
 import type { Post } from "../db/models/post.model.ts";
+import type { BlockRepository } from "../repositories/block.repository.ts";
 
 export class PostSearchService {
   private index = "posts";
   private readonly elasticClient: ElasticClient;
+  private readonly blockRepository: BlockRepository;
 
-  constructor(elasticClient: ElasticClient) {
+  constructor(elasticClient: ElasticClient, blockRepository: BlockRepository) {
     this.elasticClient = elasticClient;
+    this.blockRepository = blockRepository;
     this.searchPosts = this.searchPosts.bind(this);
   }
 
@@ -33,12 +36,17 @@ export class PostSearchService {
 
 
 
-  async searchPosts(query: string, pageNumber: number) {
+  async searchPosts(query: string, pageNumber: number, userId?: string) {
     try {
 
       const size = 10;
       const from = Math.max(0, (pageNumber - 1) * size);
       const q = (query ?? "").trim();
+
+      let blockedUserIds: string[] = [];
+      if (userId) {
+        blockedUserIds = await this.blockRepository.getBlockedUserIds(userId);
+      }
 
       const result = await this.elasticClient.getClient().search<Post>({
         index: this.index,
@@ -62,9 +70,23 @@ export class PostSearchService {
                 }
               }
             ],
-            minimum_should_match: 1
+            minimum_should_match: 1,
+            must_not: blockedUserIds.length > 0 ? {
+              terms: {
+                user_id: blockedUserIds,
+              },
+            } : undefined,
           }
-        }:{match_all:{}},
+        }:{
+          bool: {
+            must: { match_all: {} },
+            must_not: blockedUserIds.length > 0 ? {
+              terms: {
+                user_id: blockedUserIds,
+              },
+            } : undefined,
+          }
+        },
         sort: [{ like_count: { order: "desc" } }]
       });
 
@@ -88,10 +110,4 @@ export class PostSearchService {
     }
   }
 
-  async deletePost(id: string) {
-    await this.elasticClient.getClient().delete({
-      index: this.index,
-      id,
-    });
-  }
 }

@@ -7,9 +7,11 @@ import {AlreadyDoneError} from "../utils/errors/alreadyDone.errors.ts";
 import {FollowModel} from "../db/models/follow.model.ts";
 import {ElasticClient} from "../services/elasticClient.service.ts";
 import {PostSearchService} from "../services/PostSearchService.ts";
+import {BlockRepository} from "./block.repository.ts";
 
 const elasticClient = new ElasticClient();
-const postSearchService = new PostSearchService(elasticClient);
+const blockRepository = new BlockRepository();
+const postSearchService = new PostSearchService(elasticClient, blockRepository);
 export class PostRepository {
 
     private async safeIndexPost(post: Post) {

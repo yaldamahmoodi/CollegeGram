@@ -1,5 +1,7 @@
 import { ElasticClient } from "./elasticClient.service.ts";
 import type { IUser } from "../db/models/user.model.ts";
+import type { BlockRepository } from "../repositories/block.repository.ts";
+
 
 type UserSource = {
   username: string;
@@ -13,9 +15,11 @@ type UserSource = {
 export class UserSearchService {
   private index = "users";
   private readonly elasticClient: ElasticClient;
+  private readonly blockRepository: BlockRepository;
 
-  constructor(elasticClient: ElasticClient) {
+  constructor(elasticClient: ElasticClient, blockRepository: BlockRepository) {
     this.elasticClient = elasticClient;
+       this.blockRepository = blockRepository;
   }
 
   async indexUser(user: IUser) {
@@ -33,49 +37,69 @@ export class UserSearchService {
     });
   }
 
-  async searchUsers(query: string, pageNumber: number) {
-
+  async searchUsers(query: string, pageNumber: number, userId?: string) {
     try {
       const size = 10;
       const from = Math.max(0, (pageNumber - 1) * size);
       const q = (query ?? "").trim();
+
+      let blockedUserIds: string[] = [];
+      if (userId) {
+        blockedUserIds = await this.blockRepository.getBlockedUserIds(userId);
+      }
 
       const result = await this.elasticClient.getClient().search<UserSource>({
         index: this.index,
         from,
         size,
         track_total_hits: true,
-        query:q? {
-          bool: {
-            should: [
-              {
-                multi_match: {
-                  query: q,
-                  fields: ["username^2", "firstname", "lastname"],
-                  fuzziness: "AUTO",
-                  type: "most_fields",
-                },
+        query: q
+          ? {
+              bool: {
+                should: [
+                  {
+                    multi_match: {
+                      query: q,
+                      fields: ["username^2", "firstname", "lastname"],
+                      fuzziness: "AUTO",
+                      type: "most_fields",
+                    },
+                  },
+                  {
+                    wildcard: {
+                      username: { value: `*${q}*`, case_insensitive: true },
+                    },
+                  },
+                  {
+                    wildcard: {
+                      firstname: { value: `*${q}*`, case_insensitive: true },
+                    },
+                  },
+                  {
+                    wildcard: {
+                      lastname: { value: `*${q}*`, case_insensitive: true },
+                    },
+                  },
+                ],
+                minimum_should_match: 1,
+                must_not: blockedUserIds.length > 0 ? {
+                  ids: {
+                    values: blockedUserIds,
+                  },
+                } : undefined,
               },
-              {
-                wildcard: {
-                  username: { value: `*${q}*`, case_insensitive: true },
-                },
+            }
+          : {
+              bool: {
+                must: { match_all: {} },
+                must_not: blockedUserIds.length > 0 ? {
+                  ids: {
+                    values: blockedUserIds,
+                  },
+                } : undefined,
               },
-               {
-                wildcard: {
-                  firstname: { value: `*${q}*`, case_insensitive: true },
-                },
-              }, 
-              {
-                wildcard: {
-                  lastname: { value: `*${q}*`, case_insensitive: true },
-                },
-              },
-            ],
-            minimum_should_match: 1,
-          },
-        }:{match_all:{}},
-      sort: [{ createdAt: { order: "desc" } }],// sort: [{ createdAt: { order: "asc" } }]
+            },
+        sort: [{ createdAt: { order: "desc" } }],
       });
       const total =
         typeof (result.hits.total as any) === "number"
@@ -95,12 +119,5 @@ export class UserSearchService {
       throw error;
     }
   }
-
-
-  async deleteUser(id: string) {
-    await this.elasticClient.getClient().delete({
-      index: this.index,
-      id,
-    });
-  }
+  
 }

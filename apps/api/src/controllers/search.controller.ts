@@ -23,9 +23,9 @@ export class SearchController {
     try {
       const page = Number(req.params["page_number"]) || 1;
       const query = req.params["query"] as string;
+      const userId = req.user?.id;
 
-      const users = await this.userSearchService.searchUsers(query, page)
-        // : await this.userSearchService.getAllUsers(page);
+      const users = await this.userSearchService.searchUsers(query, page, userId);
 
       res.json(users);
     } catch (error: unknown) {
@@ -40,7 +40,8 @@ export class SearchController {
     try {
       const page = Number(req.params["page_number"]) || 1;
       const query = req.params["query"] as string;
-      const posts = await this.postSearchService.searchPosts(query, page)
+      const userId = req.user?.id;
+      const posts = await this.postSearchService.searchPosts(query, page, userId)
       
       return res.json(posts);
 

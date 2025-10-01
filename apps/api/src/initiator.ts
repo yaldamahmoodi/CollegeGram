@@ -71,10 +71,10 @@ export class Initiator {
         this.authService = new AuthService(this.authRepository);
         this.userService = new UserService(this.userRepository, this.profileRepository, this.followRepository , this.blockRepository);
         this.postService = new PostService(this.postRepository, this.saveRepository);
-        this.userSearchService = new UserSearchService(this.elasticClient);
+        this.userSearchService = new UserSearchService(this.elasticClient, this.blockRepository);
         this.commentService = new CommentService(this.postRepository, this.commentRepository);
         this.closeFriendService = new CloseFriendService(this.closeFriendRepository);
-        this.postSearchService = new PostSearchService(this.elasticClient);
+        this.postSearchService = new PostSearchService(this.elasticClient, this.blockRepository);
 
     }
 
