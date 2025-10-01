@@ -27,4 +27,36 @@ export class SearchIndexManager {
             },
         });
     }
+
+
+
+    async createPostsIndex() {
+        const client = this.elasticClient.getClient();
+        const exists = await client.indices.exists({index: "posts"});
+        if (exists) return;
+
+        await client.indices.create({
+            index: "posts",
+            mappings: {
+                properties: {
+                    user_id: { type: "keyword" },
+                    urls: { type: "keyword" }, 
+                    caption: { type: "text" },
+                    photo_length: { type: "integer" },
+                    like_count: { type: "integer" },
+                    save_count: { type: "integer" },
+                    mentions: {
+                        properties: {
+                            user_id: { type: "keyword" },
+                            username: { type: "text", fields: { raw: { type: "keyword" } } }
+                        }
+                    },
+                    hashtag_array: { type: "keyword" }, 
+                },
+
+            },
+        });
+    }
+
+
 }

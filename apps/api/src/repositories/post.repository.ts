@@ -5,8 +5,21 @@ import {Types} from "mongoose";
 import {UserModel, type IUser} from "../db/models/user.model.ts";
 import {AlreadyDoneError} from "../utils/errors/alreadyDone.errors.ts";
 import {FollowModel} from "../db/models/follow.model.ts";
+import {ElasticClient} from "../services/elasticClient.service.ts";
+import {PostSearchService} from "../services/PostSearchService.ts";
 
+const elasticClient = new ElasticClient();
+const postSearchService = new PostSearchService(elasticClient);
 export class PostRepository {
+
+    private async safeIndexPost(post: Post) {
+        try {
+            await postSearchService.indexPost(post);
+        } catch (err) {
+            console.error(`Failed to index post ${post._id} in ES:`, err);
+        }
+    }
+
 
     async findUserPosts(userId: string, page: number, pageSize: number) {
         const totalCount = await postModel.countDocuments({user_id: userId});
@@ -37,7 +50,13 @@ export class PostRepository {
             mentions: postData.mentions,
             hashtag_array: postData.hashtag_array,
         });
-        return await post.save();
+
+        const savedPost = await post.save();
+        if(savedPost) {
+            await this.safeIndexPost(savedPost);    
+        }
+        return savedPost;
+
     }
 
     async getPostById(postId: string, userId?: string): Promise<Post | null> {
@@ -74,11 +93,17 @@ export class PostRepository {
     }
 
     async updatePostSaveCount(postId: string, count: number) {
-        return postModel.findOneAndUpdate(
+        
+        const updatedPost = await postModel.findOneAndUpdate(
             {_id: postId},
             {$inc: {save_count: count}},
             {new: true}
         )
+
+        if(updatedPost) {
+            await this.safeIndexPost(updatedPost);    
+        }
+        return updatedPost;
     }
 
     async likePost(userId: string, postId: string) {
@@ -90,10 +115,16 @@ export class PostRepository {
         );
 
         if (like.upsertedCount > 0) {
-            await postModel.updateOne(
+           
+            const updatedPost = await postModel.findOneAndUpdate(
                 {_id: postId},
                 {$inc: {like_count: 1}},
+                {new: true},
             );
+            
+            if(updatedPost) {
+                await this.safeIndexPost(updatedPost as Post);    
+            }
         }
 
         if (like.upsertedCount == 0) {
@@ -109,10 +140,15 @@ export class PostRepository {
             {post_id: postId, user_id: userId},
         );
         if (result.deletedCount > 0) {
-            await postModel.updateOne(
+                const updatedPost = await postModel.findOneAndUpdate(
                 {_id: postId},
-                {$inc: {like_count: -1}}
+                {$inc: {like_count: -1}},
+                { new: true},
             );
+
+            if(updatedPost) {
+                await this.safeIndexPost(updatedPost as Post);    
+            }
         }
         if (result.deletedCount == 0) {
             throw new AlreadyDoneError('ALREADY_DONE', 'post unliked before')

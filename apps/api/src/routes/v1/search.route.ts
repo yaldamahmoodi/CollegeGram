@@ -10,13 +10,15 @@ const searchController = initiator.getSearchController();
 router.use(authMiddleware)
 
 router.get(
-    "/getUsers/:page_number",
+    "/getUsers/:page_number/{:query}",
     searchController.userSearch
 )
+
 router.get(
-    "/getUsers/:page_number/:query",
-    searchController.userSearch
+    "/getPosts/:page_number/{:query}",
+    searchController.postSearch
 )
+
 router.use(errorHandler);
 
 export default router;
