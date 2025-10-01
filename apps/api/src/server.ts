@@ -8,6 +8,8 @@ import mongoose from "mongoose";
 import {Initiator} from "./initiator.ts";
 import jwt from 'jsonwebtoken';
 import { UserModel } from './db/models/user.model.ts';
+import { WebSocketService } from "./services/websocket.service.ts";
+
 
 // Create HTTP server
 const server = createServer(app);
@@ -20,13 +22,8 @@ export const io = new SocketIOServer(server, {
         credentials: true
     }
 });
-
-// Extend Socket interface to include userId
-declare module 'socket.io' {
-    interface Socket {
-        userId?: string;
-    }
-}
+export const wsService = new WebSocketService();
+wsService.init(io);
 
 // Socket.IO authentication middleware
 io.use(async (socket, next) => {
@@ -63,6 +60,14 @@ io.on('connection', (socket) => {
     // Join user-specific room
     socket.join(`user_${socket.userId}`);
     
+    wsService.sendNotification(socket.userId!, {
+        type: "follow",
+        senderUsername: "system",
+        senderId: "0",
+        timestamp: new Date().toISOString(),
+    });
+
+
     socket.on('disconnect', () => {
         console.log(`User ${socket.userId} disconnected`);
     });

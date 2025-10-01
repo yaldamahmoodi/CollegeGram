@@ -86,5 +86,5 @@ app.use("/api/v1/notifications", notificationRoute);
 app.use("/api/v1/search", searchRoute);
 app.use("/api/v1/closeFriend", closeFriendRoute);
 
-export { app };
+// export { app };
 export default app;
