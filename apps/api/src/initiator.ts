@@ -57,6 +57,8 @@ export class Initiator {
     public closeFriendService: CloseFriendService;
     public postSearchService: PostSearchService;
 
+    private initialized: boolean = false;
+
 
     constructor() {
         this.userRepository = new UserRepository();
@@ -96,30 +98,47 @@ export class Initiator {
         this.searchController = new SearchController(this.userSearchService,this.postSearchService);
         this.notificationController = new NotificationController(this.notificationService);
         this.closeFriendController = new CloseFriendController(this.closeFriendService);
+        this.initialized = true;
+    }
+
+    private ensureInitialized(): void {
+        if (!this.initialized) {
+            this.setupServices();
+            this.setupControllers();
+        }
     }
 
     public getAuthController() {
+        this.ensureInitialized();
         return this.authController;
     }
 
     public getUserController() {
+        this.ensureInitialized();
         return this.userController;
     }
 
 
     public getPostController() {
+        this.ensureInitialized();
         return this.postController;
     }
 
     public getSearchController() {
+        this.ensureInitialized();
         return this.searchController;
     }
 
     public getNotificationController() {
+        this.ensureInitialized();
         return this.notificationController;
     }
     
     public getCloseFriendController() {
+        this.ensureInitialized();
         return this.closeFriendController;
     }
 }
+
+// Export a singleton to be used across the app without importing from server.ts
+export const initiator = new Initiator();

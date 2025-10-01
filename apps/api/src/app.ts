@@ -15,11 +15,14 @@ import path from "path";
 import { fileURLToPath } from "node:url";
 import searchRoute from "./routes/v1/search.route.ts";
 import closeFriendRoute from "./routes/v1/closeFriend.route.ts";
+ 
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
 const app = express();
+ 
+
 const swaggerDocument = YAML.load(
   path.join(__dirname, "../docs", "swagger.yaml")
 );
@@ -30,7 +33,7 @@ app.use(express.json());
 app.use(helmet());
 app.use(cookieParser(env.COOKIE_SECRET));
 
-const allowedOrigins = env.CORS_ORIGIN.split(",");
+export const allowedOrigins = env.CORS_ORIGIN.split(",");
 app.use(
   cors({
     origin: function (origin, callback) {
@@ -51,6 +54,8 @@ app.use(
 );
 
 app.use(morgan("combined"));
+
+ 
 
 app.use(
   "/uploads/profiles",
@@ -86,5 +91,5 @@ app.use("/api/v1/notifications", notificationRoute);
 app.use("/api/v1/search", searchRoute);
 app.use("/api/v1/closeFriend", closeFriendRoute);
 
-// export { app };
+export { app };
 export default app;

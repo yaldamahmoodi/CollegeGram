@@ -3,7 +3,7 @@ import {bodyParser} from "../../middlewares/parsers.middleware.ts";
 import {insertUserSchema} from "../../db/models/user.model.ts";
 import {errorHandler} from "../../middlewares/error.middleware.ts"
 import {loginDTO} from "../../dtos/login.dto.ts";
-import {initiator} from "../../server.ts";
+import {initiator} from "../../initiator.ts";
 
 
 const router = Router();

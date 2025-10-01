@@ -1,9 +1,12 @@
 import { Router } from "express";
 import { errorHandler } from "../../middlewares/error.middleware.ts";
-import { initiator } from "../../server.ts";
+import { initiator } from "../../initiator.ts";
+import { authMiddleware } from "../../middlewares/auth.middleware.ts";
 
 const router = Router();
 const notificationController = initiator.getNotificationController();
+
+router.use(authMiddleware);
 
 router.get("/", notificationController.getNotifications);
 

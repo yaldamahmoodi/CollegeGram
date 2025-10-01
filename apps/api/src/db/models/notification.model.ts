@@ -86,7 +86,7 @@ export const updateNotificationSchema = z.object({
 export const notificationQuerySchema = z.object({
   page: z.coerce.number().min(1).default(1),
   pageSize: z.coerce.number().min(1).max(50).default(10),
-  type: z.enum(['like', 'comment', 'mention', 'follow', 'reply', 'save']).optional(),
+  type: z.enum(['like', 'comment', 'mention', 'follow', 'reply']).optional(),
   isRead: z.coerce.boolean().optional(),
 });
 
