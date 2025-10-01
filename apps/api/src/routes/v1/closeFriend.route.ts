@@ -1,7 +1,7 @@
 import {Router} from "express";
 import {authMiddleware} from "../../middlewares/auth.middleware.ts";
 import {errorHandler} from "../../middlewares/error.middleware.ts";
-import {initiator} from "../../server.ts";
+import {initiator} from "../../initiator.ts";
 
 const router = Router();
 

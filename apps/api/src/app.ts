@@ -9,16 +9,20 @@ import healthRoute from "./routes/health.route.ts";
 import authRoute from "./routes/v1/auth.route.ts";
 import userRoute from "./routes/v1/user.route.ts";
 import postRoute from "./routes/v1/post.route.ts";
+import notificationRoute from "./routes/v1/notification.route.ts";
 import env from "../env.ts";
 import path from "path";
 import { fileURLToPath } from "node:url";
 import searchRoute from "./routes/v1/search.route.ts";
 import closeFriendRoute from "./routes/v1/closeFriend.route.ts";
+ 
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
 const app = express();
+ 
+
 const swaggerDocument = YAML.load(
   path.join(__dirname, "../docs", "swagger.yaml")
 );
@@ -29,11 +33,10 @@ app.use(express.json());
 app.use(helmet());
 app.use(cookieParser(env.COOKIE_SECRET));
 
-const allowedOrigins = env.CORS_ORIGIN.split(",");
+export const allowedOrigins = env.CORS_ORIGIN.split(",");
 app.use(
   cors({
     origin: function (origin, callback) {
-      // allow requests with no origin (like mobile apps or curl requests)
       if (!origin) return callback(null, true);
 
       if (allowedOrigins.indexOf(origin) !== -1) {
@@ -51,6 +54,8 @@ app.use(
 );
 
 app.use(morgan("combined"));
+
+ 
 
 app.use(
   "/uploads/profiles",
@@ -82,10 +87,9 @@ app.use("/api/health", healthRoute);
 app.use("/api/v1/auth", authRoute);
 app.use("/api/v1/users", userRoute);
 app.use("/api/v1/posts", postRoute);
+app.use("/api/v1/notifications", notificationRoute);
 app.use("/api/v1/search", searchRoute);
 app.use("/api/v1/closeFriend", closeFriendRoute);
-
-// Uploads are now served directly by nginx at /uploads/ path
 
 export { app };
 export default app;

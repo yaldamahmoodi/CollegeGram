@@ -3,10 +3,12 @@ import { useLocation } from "react-router-dom";
 import { SidebarValue, SidebarBottomValue } from "./const";
 import SidebarItems from "./SidebarItem";
 import {useUserInfo} from "@hooks/user.hook.ts";
+import { useUnreadCount } from "@/hooks/notification.hook";
 
 const SidebarMenu = () => {
   const location = useLocation();
-  const {data:user} = useUserInfo()
+  const {data:user} = useUserInfo();
+  const {data: unreadCount} = useUnreadCount();
 
   return (
     <div className="flex flex-col ">
@@ -25,6 +27,8 @@ const SidebarMenu = () => {
           const itemSegment = item.link.replace("/", "");
 
           const isActive = pathSegments.includes(itemSegment);
+          const showBadge = item.id === "notification" && unreadCount && unreadCount > 0;
+          
           return (
             <SidebarItems
               key={item.id}
@@ -32,6 +36,7 @@ const SidebarMenu = () => {
               link={item.link}
               icon={item.icon}
               text={item.text}
+              badge={showBadge ? unreadCount : undefined}
             />
           );
         })}

@@ -3,7 +3,7 @@ import {authMiddleware} from "../../middlewares/auth.middleware.ts";
 import {errorHandler} from "../../middlewares/error.middleware.ts";
 import {paramParser, queryParser} from "../../middlewares/parsers.middleware.ts";
 import {exploreSchema, postIdSchema} from "../../dtos/posts.dto.ts";
-import {initiator} from "../../server.ts";
+import {initiator} from "../../initiator.ts";
 import {uploadProfilePhotoMiddleware} from "../../middlewares/uploadProfilePhoto.middleware.ts";
 
 const router = Router();
