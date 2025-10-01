@@ -6,15 +6,23 @@ import {BadRequestErrors} from "../utils/errors/badRequest.errors.ts";
 import {type InsertPostDto} from "../db/models/post.model.ts";
 import {ValidationError} from "../utils/errors/validation.errors.ts";
 import {InternalErrors} from "../utils/errors/internal.errors.ts";
+import type {CommentRepository} from "../repositories/comment.repository.ts";
+import type {InsertCommentDto} from "../db/models/comment.model.ts";
+import { WebSocketService } from "./websocket.service.ts";
+import type { NotificationService } from "./notification.service.ts";
 
 export class PostService {
 
     private readonly postRepository: PostRepository;
     private readonly saveRepository: SaveRepository;
+    private readonly commentRepository: CommentRepository;
+    private readonly notificationService: NotificationService;
 
-    constructor(postRepository: PostRepository, saveRepository: SaveRepository) {
+    constructor(postRepository: PostRepository, saveRepository: SaveRepository, commentRepository: CommentRepository, notificationService: NotificationService) {
         this.postRepository = postRepository;
         this.saveRepository = saveRepository;
+        this.commentRepository = commentRepository;
+        this.notificationService = notificationService;
     }
 
     async createPost(postData: InsertPostDto) {
@@ -40,7 +48,23 @@ export class PostService {
             }
         }
 
-        return await this.postRepository.createPost(postData);
+        const post = await this.postRepository.createPost(postData);
+
+        // Send mention notifications
+        for (const mention of postData.mentions) {
+            const sender = await this.postRepository.findUserDetails(postData.user_id);
+            if (sender) {
+                await this.notificationService.createMentionNotification(
+                    mention.user_id,
+                    postData.user_id,
+                    sender.username,
+                    post._id.toString(),
+                    postData.caption
+                );
+            }
+        }
+
+        return post;
     }
 
     async getUserDetails(userId: string) {
@@ -65,8 +89,25 @@ export class PostService {
     }
 
     async likePost(userId: string, postId: string) {
-        await this.getPost(postId)
-        await this.postRepository.likePost(userId, postId)
+        await this.getPost(postId);
+        await this.postRepository.likePost(userId, postId);
+
+        // Get post owner and sender details for notification
+        const post = await this.postRepository.getPostById(postId);
+        if (post && post.user_id.toString() !== userId) {
+            // Get sender username
+            const sender = await this.postRepository.findUserDetails(userId);
+            if (sender) {
+                // Create persistent notification
+                await this.notificationService.createLikeNotification(
+                    post.user_id.toString(),
+                    userId,
+                    sender.username,
+                    postId,
+                    post.caption
+                );
+            }
+        }
     }
 
     async unLikePost(userId: string, postId: string) {
@@ -121,4 +162,67 @@ export class PostService {
         return await this.postRepository.getMentionedPosts(userId, page, pageSize);
     }
 
+    async addComment(userId: string, commentData: InsertCommentDto) {
+        const post = await this.postRepository.getPostById(commentData.post_id);
+        if (!post) throw new NotFoundError("NOT_FOUND");
+
+        if (commentData.parent_comment) {
+            const parent = await this.commentRepository.findCommentById(commentData.parent_comment);
+            if (!parent) throw new NotFoundError("NOT_FOUND");
+        }
+
+        const comment = await this.commentRepository.createComment(
+            userId,
+            commentData.post_id,
+            commentData.content,
+            commentData.parent_comment || null
+        );
+
+        // Send notification to post owner
+        if (post.user_id.toString() !== userId) {
+            const sender = await this.postRepository.findUserDetails(userId);
+            if (sender) {
+                await this.notificationService.createCommentNotification(
+                    post.user_id.toString(),
+                    userId,
+                    sender.username,
+                    commentData.post_id,
+                    comment._id.toString(),
+                    commentData.content,
+                    post.caption
+                );
+            }
+        }
+
+        // If this is a reply, also notify the parent comment author
+        if (commentData.parent_comment) {
+            const parentComment = await this.commentRepository.findCommentById(commentData.parent_comment);
+            if (parentComment && parentComment.user_id.toString() !== userId) {
+                const sender = await this.postRepository.findUserDetails(userId);
+                if (sender) {
+                    await this.notificationService.createReplyNotification(
+                        parentComment.user_id.toString(),
+                        userId,
+                        sender.username,
+                        commentData.post_id,
+                        comment._id.toString(),
+                        commentData.content
+                    );
+                }
+            }
+        }
+
+        return comment;
+    }
+
+    async getCommentsByPost(postId: string, page: number, pageSize: number) {
+        const post = await this.postRepository.getPostById(postId);
+        if (!post) throw new NotFoundError("NOT_FOUND");
+
+        const skip = (page - 1) * pageSize;
+
+        const test = this.commentRepository.getCommentsByPostId(postId, skip, pageSize);
+        // console.log(test,'testy')
+        return test;
+    }
 }

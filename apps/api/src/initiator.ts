@@ -15,6 +15,10 @@ import {SearchController} from "./controllers/search.controller.ts";
 import {UserSearchService} from "./services/UserSearchService.ts";
 import {FollowRepository} from "./repositories/follow.repository.ts";
 import {CommentRepository} from "./repositories/comment.repository.ts";
+import {NotificationRepository} from "./repositories/notification.repository.ts";
+import {NotificationService} from "./services/notification.service.ts";
+import {NotificationController} from "./controllers/notification.controller.ts";
+import {WebSocketService} from "./services/websocket.service.ts";
 import {CommentService} from "./services/comment.service.ts";
 import {BlockRepository} from "./repositories/block.repository.ts";
 import {CloseFriendController} from "./controllers/closefriend.controller.ts";
@@ -37,6 +41,10 @@ export class Initiator {
     public saveRepository: SaveRepository;
     public followRepository: FollowRepository;
     public commentRepository: CommentRepository;
+    public notificationRepository: NotificationRepository;
+    public notificationService: NotificationService;
+    public notificationController: NotificationController;
+    public webSocketService: WebSocketService;
     public commentService: CommentService;
 
     public elasticClient: ElasticClient;
@@ -59,6 +67,8 @@ export class Initiator {
         this.followRepository = new FollowRepository()
         this.commentRepository = new CommentRepository();
         this.blockRepository = new BlockRepository()
+        this.notificationRepository = new NotificationRepository();
+        this.webSocketService = new WebSocketService();
 
         this.elasticClient = new ElasticClient();
         this.searchIndexManager = new SearchIndexManager(this.elasticClient);
@@ -69,8 +79,9 @@ export class Initiator {
 
     public setupServices(): void {
         this.authService = new AuthService(this.authRepository);
-        this.userService = new UserService(this.userRepository, this.profileRepository, this.followRepository , this.blockRepository, this.closeFriendRepository);
-        this.postService = new PostService(this.postRepository, this.saveRepository);
+        this.notificationService = new NotificationService(this.notificationRepository, this.webSocketService);
+        this.userService = new UserService(this.userRepository, this.profileRepository, this.followRepository , this.blockRepository, this.closeFriendRepository, this.notificationService);
+        this.postService = new PostService(this.postRepository, this.saveRepository, this.commentRepository, this.notificationService);
         this.userSearchService = new UserSearchService(this.elasticClient, this.blockRepository);
         this.commentService = new CommentService(this.postRepository, this.commentRepository);
         this.closeFriendService = new CloseFriendService(this.closeFriendRepository);
@@ -83,6 +94,7 @@ export class Initiator {
         this.userController = new UserController(this.userService, this.postService);
         this.postController = new PostController(this.postService, this.commentService);
         this.searchController = new SearchController(this.userSearchService,this.postSearchService);
+        this.notificationController = new NotificationController(this.notificationService);
         this.closeFriendController = new CloseFriendController(this.closeFriendService);
     }
 
@@ -103,6 +115,10 @@ export class Initiator {
         return this.searchController;
     }
 
+    public getNotificationController() {
+        return this.notificationController;
+    }
+    
     public getCloseFriendController() {
         return this.closeFriendController;
     }

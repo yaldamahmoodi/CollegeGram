@@ -8,6 +8,8 @@ import type {BlockRepository} from  "../repositories/block.repository.ts"
 import type {CloseFriendRepository} from "../repositories/closefriend.repository.ts";
 import {AlreadyDoneError} from "../utils/errors/alreadyDone.errors.ts";
 import {BadRequestErrors} from "../utils/errors/badRequest.errors.ts";
+import { WebSocketService } from "./websocket.service.ts";
+import type { NotificationService } from "./notification.service.ts";
 
 export class UserService {
 
@@ -16,14 +18,16 @@ export class UserService {
     private readonly followRepository: FollowRepository;
     private readonly blockRepository: BlockRepository;
     private readonly closeFriendRepository: CloseFriendRepository;
+    private readonly notificationService: NotificationService;
 
 
-    constructor(userRepository: UserRepository, profilePhotoRepository: ProfileRepository, followRepository: FollowRepository , blockRepository: BlockRepository, closeFriendRepository: CloseFriendRepository) {
+    constructor(userRepository: UserRepository, profilePhotoRepository: ProfileRepository, followRepository: FollowRepository , blockRepository: BlockRepository, closeFriendRepository: CloseFriendRepository, notificationService: NotificationService) {
         this.userRepository = userRepository;
         this.profilePhotoRepository = profilePhotoRepository;
         this.followRepository = followRepository;
         this.blockRepository = blockRepository;
         this.closeFriendRepository = closeFriendRepository;
+        this.notificationService = notificationService;
     }
 
     async getUserIdByUsername(username: string): Promise<string | null> {

@@ -35,6 +35,7 @@ export const CatalogueErrors = {
     YOU_CANNOT_FOLLOW_BLOCKEDUSER: {code: "YOU_CANNOT_FOLLOW_BLOCKEDUSER", message: "YOU_CANNOT_FOLLOW_BLOCKEDUSER"},
     YOU_CANNOT_UNFOLLOW_BLOCKEDUSER: {code: "YOU_CANNOT_UNFOLLOW_BLOCKEDUSER", message: "YOU_CANNOT_UNFOLLOW_BLOCKEDUSER"},
     NOT_BLOCKED:{code: "NOT_BLOCKED",message:"user is Not BLOCKED"},
+    NOTIFICATION_NOT_FOUND: {code: "NOTIFICATION_NOT_FOUND", message: "Notification not found"},
 } as const;
 
 export type ErrorCode = keyof typeof CatalogueErrors;
