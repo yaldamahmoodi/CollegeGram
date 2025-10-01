@@ -5,20 +5,25 @@ import type {updateProfileUserSchema} from "../db/models/user.model.ts";
 import {NotFoundError} from "../utils/errors/notFound.errors.ts";
 import type {FollowRepository} from "../repositories/follow.repository.ts";
 import type {BlockRepository} from  "../repositories/block.repository.ts"
+import type {CloseFriendRepository} from "../repositories/closefriend.repository.ts";
+import {AlreadyDoneError} from "../utils/errors/alreadyDone.errors.ts";
+import {BadRequestErrors} from "../utils/errors/badRequest.errors.ts";
 
 export class UserService {
 
     private readonly userRepository: UserRepository;
     private readonly profilePhotoRepository: ProfileRepository;
     private readonly followRepository: FollowRepository;
-    private readonly blockRepository: BlockRepository
+    private readonly blockRepository: BlockRepository;
+    private readonly closeFriendRepository: CloseFriendRepository;
 
 
-    constructor(userRepository: UserRepository, profilePhotoRepository: ProfileRepository, followRepository: FollowRepository , blockRepository: BlockRepository) {
+    constructor(userRepository: UserRepository, profilePhotoRepository: ProfileRepository, followRepository: FollowRepository , blockRepository: BlockRepository, closeFriendRepository: CloseFriendRepository) {
         this.userRepository = userRepository;
         this.profilePhotoRepository = profilePhotoRepository;
         this.followRepository = followRepository;
-        this.blockRepository = blockRepository
+        this.blockRepository = blockRepository;
+        this.closeFriendRepository = closeFriendRepository;
     }
 
     async getUserIdByUsername(username: string): Promise<string | null> {
@@ -52,10 +57,16 @@ export class UserService {
     }
 
     async followUser(userId: string, followedUserId: string) {
+        if(await this.blockRepository.blockedBefore(userId ,followedUserId)){
+            throw new NotFoundError("YOU_CANNOT_FOLLOW_BLOCKEDUSER")
+        }
         return await this.followRepository.followUser(userId, followedUserId);
     }
 
     async unfollowUser(userId: string, unfollowedUserId: string) {
+        if(await this.blockRepository.blockedBefore(userId ,unfollowedUserId)){
+            throw new NotFoundError("YOU_CANNOT_UNFOLLOW_BLOCKEDUSER")
+        }
         return await this.followRepository.unfollowUser(userId, unfollowedUserId);
     }
 
@@ -90,25 +101,23 @@ export class UserService {
             userDetails._id.toString()
         );
         
+        const isBlockedResult = await this.blockRepository.blockedBefore(
+            loggedInUserId,
+            userDetails._id.toString()
+        );
+        const isBlocked = !!isBlockedResult;
 
-        // const isBlocked = await this.blockRepository.isBlocked(
-        //     loggedInUserId,
-        //     userDetails._id.toString()
-        // );
+        const hasBlockedResult = await this.blockRepository.blockedBefore(
+            userDetails._id.toString(),
+            loggedInUserId
+        );
+        const hasBlocked = !!hasBlockedResult;
 
-        const isBlocked = false;
-
-        // const hasBlocked = await this.blockRepository.hasBlocked(
-        //     loggedInUserId,
-        //     userDetails._id.toString()
-        // );
-
-        const hasBlocked = false;
-        // const isCloseFriend = await this.followRepository.isCloseFriend(
-        //     loggedInUserId,
-        //     userDetails._id.toString()
-        // );
-        const isCloseFriend = false;
+        const isCloseFriendResult = await this.closeFriendRepository.isCloseFriend(
+            loggedInUserId,
+            userDetails._id.toString()
+        );
+        const isCloseFriend = !!isCloseFriendResult;
 
 
         return {
@@ -121,7 +130,6 @@ export class UserService {
     }
     //transaction:
     async blockUser(userId : string , blockedId: string){
-        console.log("blockUser entry point")
         const existUserId = await this.userRepository.findByUserId(userId)
         const existBlockedId = await this.userRepository.findByUserId(blockedId)
         const blokedBefore = await this.blockRepository.blockedBefore(userId,blockedId)
@@ -132,12 +140,15 @@ export class UserService {
             throw new NotFoundError("NOT_FOUND_USER" , "blockedId not found")
         }
         if(blokedBefore){
-            throw new NotFoundError("ALREADY_DONE" , "block already done")
+            throw new AlreadyDoneError("ALREADY_DONE" , "user already blocked")
         }
-
         await this.blockRepository.block(userId , blockedId)
+        if (await this.followRepository.isFollowed(userId , blockedId)){
         await this.followRepository.unfollowUser(userId,blockedId)
+        }
+        if (await this.followRepository.isFollowed(blockedId , userId)){
         await this.followRepository.unfollowUser(blockedId,userId)
+        }
     }
 
     async unBlockUser(userId : string , blockedId: string){
@@ -150,9 +161,10 @@ export class UserService {
         if(!existBlockedId){
             throw new NotFoundError("NOT_FOUND_USER" , "blockedId not found")
         }
-        if(!blokedBefore){
-            throw new NotFoundError("NOT_FOUND" , "User is not blocked")
+        if (!blokedBefore) {
+            throw new BadRequestErrors("NOT_BLOCKED", "User is not blocked");
         }
+
         await this.blockRepository.unblock(userId , blockedId)
     }
 

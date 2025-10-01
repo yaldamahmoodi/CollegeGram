@@ -625,6 +625,7 @@ paths:
                   code:
                     type: string
                     example: NOT_FOUND_USER
+  
   /api/v1/posts/like:
     post:
       summary: Like a post
@@ -1237,10 +1238,11 @@ paths:
     post:
       summary: Block a user
       description: |
-        Block another user by their user ID. When a user is blocked:
-        - The blocked user cannot see the blocker's posts or profile
-        - Any existing follow relationships between the users are automatically removed
-        - The blocked user cannot follow the blocker
+        Block another user. When a user is blocked:
+        - You won't see their posts in search results
+        - They won't see your posts in search results
+        - They won't appear in user search results for you
+        - You won't appear in user search results for them
       tags:
         - Users
       security:
@@ -1261,7 +1263,7 @@ paths:
                 properties:
                   code:
                     type: string
-                    example: USER_BLOCKED
+                    example: USER_BLOCKED_SUCCESS
                   message:
                     type: string
                     example: User successfully blocked
@@ -1279,29 +1281,7 @@ paths:
                     type: string
                     example: You cannot block yourself
         '404':
-          description: Target user not found or already blocked
-          content:
-            application/json:
-              schema:
-                oneOf:
-                  - type: object
-                    properties:
-                      code:
-                        type: string
-                        example: NOT_FOUND_USER
-                      message:
-                        type: string
-                        example: User with given ID does not exist
-                  - type: object
-                    properties:
-                      code:
-                        type: string
-                        example: ALREADY_DONE
-                      details:
-                        type: string
-                        example: block already done
-        '500':
-          description: Internal server error
+          description: User not found
           content:
             application/json:
               schema:
@@ -1309,17 +1289,30 @@ paths:
                 properties:
                   code:
                     type: string
-                    example: INTERNAL_SERVER_ERROR
+                    example: NOT_FOUND_USER
                   message:
                     type: string
-                    example: Something went wrong while blocking the user
+                    example: User with given ID does not exist
+        '409':
+          description: User already blocked
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  code:
+                    type: string
+                    example: ALREADY_DONE
+                  details:
+                    type: string
+                    example: user blocked before
+        '500':
+          description: Internal server error
 
   /api/v1/users/unblock:
     post:
       summary: Unblock a user
-      description: |
-        Unblock a previously blocked user by their user ID. 
-        This will restore the ability for the unblocked user to see the unblocker's content.
+      description: Remove a user from your blocked list.
       tags:
         - Users
       security:
@@ -1340,12 +1333,12 @@ paths:
                 properties:
                   code:
                     type: string
-                    example: USER_UNBLOCKED
+                    example: USER_UNBLOCKED_SUCCESS
                   message:
                     type: string
-                    example: User successfully UNblocked
+                    example: User successfully unblocked
         '400':
-          description: Invalid unblock request (e.g., trying to unblock yourself)
+          description: Invalid unblock request
           content:
             application/json:
               schema:
@@ -1353,34 +1346,37 @@ paths:
                 properties:
                   code:
                     type: string
-                    example: YOU_CANNOT_UNBLOCK_YOURSELF
+                    example: INVALID_REQUEST
                   message:
                     type: string
-                    example: You cannot unblock yourself
+                    example: Invalid unblock request
         '404':
-          description: Target user not found or not blocked
+          description: User not found or not blocked
           content:
             application/json:
               schema:
-                oneOf:
-                  - type: object
-                    properties:
-                      code:
-                        type: string
-                        example: NOT_FOUND_USER
-                      message:
-                        type: string
-                        example: User with given ID does not exist
-                  - type: object
-                    properties:
-                      code:
-                        type: string
-                        example: NOT_FOUND
-                      details:
-                        type: string
-                        example: User is not blocked
+                type: object
+                properties:
+                  code:
+                    type: string
+                    example: NOT_FOUND
+                  message:
+                    type: string
+                    example: User not found in blocked list
         '500':
           description: Internal server error
+
+  /api/v1/users/blocks:
+    get:
+      summary: Get blocked users list
+      description: Retrieve the list of users that the authenticated user has blocked.
+      tags:
+        - Users
+      security:
+        - cookieAuth: [ ]
+      responses:
+        '200':
+          description: Blocked users list retrieved successfully
           content:
             application/json:
               schema:
@@ -1388,11 +1384,51 @@ paths:
                 properties:
                   code:
                     type: string
-                    example: INTERNAL_SERVER_ERROR
+                    example: SUCCESS
+                  data:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        userId:
+                          type: string
+                          example: 68d2b0927698eafb14b85ed9
+                        username:
+                          type: string
+                          example: blockeduser123
+                        firstname:
+                          type: string
+                          nullable: true
+                          example: John
+                        lastname:
+                          type: string
+                          nullable: true
+                          example: Doe
+                        follower_count:
+                          type: integer
+                          example: 150
+                        following_count:
+                          type: integer
+                          example: 200
+                        profilePhoto:
+                          type: string
+                          nullable: true
+                          example: /uploads/profiles/profile-123.png
+        '401':
+          description: Unauthorized – User not logged in
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  code:
+                    type: string
+                    example: UNAUTHORIZED
                   message:
                     type: string
-                    example: Something went wrong while unblocking the user
-
+                    example: User not authenticated
+        '500':
+          description: Internal server error
   /api/v1/users/savesList:
     get:
       summary: Get saved posts for authenticated user
@@ -1497,6 +1533,7 @@ paths:
                   message:
                     type: string
                     example: Something went wrong while fetching saved posts.
+  
   /api/v1/users/followers:
     get:
       summary: Get followers list
@@ -1672,7 +1709,7 @@ paths:
                           type: array
                           items:
                             type: string
-                          example: ["/uploads/posts/photo-123.png", "/uploads/posts/photo-124.png"]
+                          example: [ "/uploads/posts/photo-123.png", "/uploads/posts/photo-124.png" ]
                         like_count:
                           type: integer
                           example: 15
@@ -2085,214 +2122,18 @@ paths:
                         type: string
                         example: User_Doesnt_liked_comment_Before
 
-  /api/v1/posts/mentions:
-    get:
-      summary: Get posts where user is mentioned
-      description: |
-        Retrieve paginated list of posts where the authenticated user has been mentioned.
-        This allows users to see all posts where they have been tagged by others.
-      tags:
-        - Posts
-      security:
-        - cookieAuth: [ ]
-      parameters:
-        - name: page
-          in: query
-          required: false
-          schema:
-            type: integer
-            default: 1
-            minimum: 1
-          description: Page number for pagination (default 1)
-          example: 1
-        - name: pageSize
-          in: query
-          required: false
-          schema:
-            type: integer
-            default: 10
-            minimum: 1
-            maximum: 50
-          description: Number of posts per page (default 10, max 50)
-          example: 10
-      responses:
-        '200':
-          description: Mentioned posts retrieved successfully
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  code:
-                    type: string
-                    example: GET_MENTIONED_POSTS_SUCCESSFULLY
-                  totalCount:
-                    type: integer
-                    description: Total number of posts where user is mentioned
-                    example: 25
-                  data:
-                    type: array
-                    items:
-                      type: object
-                      properties:
-                        _id:
-                          type: string
-                          example: 64a1b2c3d4e5f6789012345
-                        user_id:
-                          type: string
-                          description: ID of the post author
-                          example: 64a1b2c3d4e5f6789012346
-                        urls:
-                          type: array
-                          items:
-                            type: string
-                          description: Full URLs to post images
-                          example: 
-                            - "http://localhost:3000/uploads/posts/image1.jpg"
-                            - "http://localhost:3000/uploads/posts/image2.jpg"
-                        caption:
-                          type: string
-                          nullable: true
-                          description: Post caption text
-                          example: "Great post with @username mention!"
-                        like_count:
-                          type: integer
-                          example: 10
-                        save_count:
-                          type: integer
-                          example: 5
-                        mentions:
-                          type: array
-                          items:
-                            type: object
-                            properties:
-                              user_id:
-                                type: string
-                                example: 64a1b2c3d4e5f6789012347
-                              username:
-                                type: string
-                                example: mentioned_user
-                          description: List of all users mentioned in the post
-                        hashtag_array:
-                          type: array
-                          items:
-                            type: string
-                          example: ["#example", "#social"]
-                        photo_length:
-                          type: integer
-                          description: Number of photos in the post
-                          example: 2
-                        createdAt:
-                          type: string
-                          format: date-time
-                          example: "2023-01-01T00:00:00.000Z"
-                        user:
-                          type: object
-                          description: Post author information
-                          properties:
-                            _id:
-                              type: string
-                              example: 64a1b2c3d4e5f6789012346
-                            username:
-                              type: string
-                              example: post_author
-                            firstname:
-                              type: string
-                              example: John
-                            lastname:
-                              type: string
-                              example: Doe
-                        profilePhotoUrl:
-                          type: string
-                          nullable: true
-                          description: Author's profile photo URL
-                          example: profile_photo_path.jpg
-        '401':
-          description: Unauthorized (user not logged in)
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  code:
-                    type: string
-                    example: UNAUTHORIZED
-                  message:
-                    type: string
-                    example: Authentication required
-        '500':
-          description: Internal server error
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  code:
-                    type: string
-                    example: INTERNAL_SERVER_ERROR
-                  message:
-                    type: string
-                    example: Something went wrong while fetching mentioned posts
-
-
-  /api/v1/users/getUsers/{page_number}:
-      get:
-        summary: Get all users (paginated)
-        description: Retrieve a paginated list of all users (10 users per page).
-        parameters:
-          - name: page_number
-            in: path
-            required: true
-            schema:
-              type: integer
-              minimum: 1
-            description: The page number to retrieve
-            example: 1
-        responses:
-          '200':
-            description:
-            content:
-              application/json:
-                schema:
-                  type: object
-                  properties:
-                    totalCount:
-                      type: integer
-                      example: 120
-                    page:
-                      type: integer
-                      example: 1
-                    perPage:
-                      type: integer
-                      example: 10
-                    data:
-                      type: array
-                      items:
-                        type: object
-                        properties:
-                          username:
-                            type: string
-                            example: mohammad95
-                          firstName:
-                            type: string
-                            example: mohammad
-                          lastName:
-                            type: string
-                            example: asghari
-                          profilePhoto:
-                            type: string
-                            format: uri
-                            example: "monorepo/apps/api/src/middleware/uploads/m2.jpg"
-                          followersCount:
-                            type: integer
-                            example: 250
-          '500':
-            description: Internal server error
-
-  /api/v1/users/getUsers/{page_number}/{query}:
+  /api/v1/search/getUsers/{page_number}/{query}:
     get:
       summary: Search users (paginated)
-      description: Returns 10 users per page.
+      description: |
+        Returns 10 users per page.
+        **Note:** Results automatically exclude:
+        - Users you have blocked
+        - Users who have blocked you
+      tags:
+        - Search
+      security:
+        - cookieAuth: [ ]
       parameters:
         - name: page_number
           in: path
@@ -2603,6 +2444,47 @@ paths:
                   message:
                     type: string
                     example: Something went wrong while fetching close friends
+
+  /api/v1/search/getPosts/{page_number}/{query}:
+    get:
+      summary: Search posts
+      description: |
+        Returns paginated posts based on query (hashtags and captions).
+        **Note:** Results automatically exclude posts from:
+        - Users you have blocked
+        - Users who have blocked you
+      tags:
+        - Posts
+      security:
+        - cookieAuth: [ ]
+      parameters:
+        - name: page_number
+          in: path
+          required: true
+          description: Page number of the search results
+          schema:
+            type: integer
+            example: 1
+        - name: query
+          in: path
+          required: true
+          description: The search query for posts
+          schema:
+            type: string
+            example: "javascript"
+      responses:
+        "200":
+          description: A list of posts
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "monorepo/apps/api/src/db/models/post.model.ts"
+        "400":
+          description: Invalid parameters
+        "500":
+          description: Server error
 
 
 components:

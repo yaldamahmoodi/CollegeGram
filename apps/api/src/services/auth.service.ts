@@ -2,14 +2,16 @@ import {AuthRepository} from "../repositories/auth.repository.ts";
 import bcrypt from 'bcrypt';
 import jwt from "jsonwebtoken";
 import env from "../../env.ts";
-import type {insertUserZodSchema, selectUserZodSchema} from "../db/models/user.model.ts";
+import type {insertUserZodSchema} from "../db/models/user.model.ts";
 import {ValidationError} from "../utils/errors/validation.errors.ts";
 import {NotFoundError} from "../utils/errors/notFound.errors.ts";
 import {ElasticClient} from "./elasticClient.service.ts";
 import {UserSearchService} from "./UserSearchService.ts";
+import { BlockRepository } from "../repositories/block.repository.ts";
 
 const elasticClient = new ElasticClient();
-const userSearchService = new UserSearchService(elasticClient);
+const blockRepository = new BlockRepository();
+const userSearchService = new UserSearchService(elasticClient, blockRepository);
 
 export class AuthService {
 

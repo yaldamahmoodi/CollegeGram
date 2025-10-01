@@ -90,6 +90,11 @@ router.post(
     userController.unBlockUser
 );
 
+router.get(
+    "/blocks",
+    userController.getBlocksList
+)
+
 
 router.get(
     "/:username",

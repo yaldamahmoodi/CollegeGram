@@ -20,6 +20,7 @@ import {BlockRepository} from "./repositories/block.repository.ts";
 import {CloseFriendController} from "./controllers/closefriend.controller.ts";
 import {CloseFriendRepository} from "./repositories/closefriend.repository.ts";
 import {CloseFriendService} from "./services/closefriend.service.ts";
+import {PostSearchService} from "./services/PostSearchService.ts"
 
 
 export class Initiator {
@@ -46,6 +47,7 @@ export class Initiator {
     public closeFriendController: CloseFriendController;
     public closeFriendRepository: CloseFriendRepository;
     public closeFriendService: CloseFriendService;
+    public postSearchService: PostSearchService;
 
 
     constructor() {
@@ -67,18 +69,20 @@ export class Initiator {
 
     public setupServices(): void {
         this.authService = new AuthService(this.authRepository);
-        this.userService = new UserService(this.userRepository, this.profileRepository, this.followRepository , this.blockRepository);
+        this.userService = new UserService(this.userRepository, this.profileRepository, this.followRepository , this.blockRepository, this.closeFriendRepository);
         this.postService = new PostService(this.postRepository, this.saveRepository);
-        this.userSearchService = new UserSearchService(this.elasticClient);
+        this.userSearchService = new UserSearchService(this.elasticClient, this.blockRepository);
         this.commentService = new CommentService(this.postRepository, this.commentRepository);
         this.closeFriendService = new CloseFriendService(this.closeFriendRepository);
+        this.postSearchService = new PostSearchService(this.elasticClient, this.blockRepository);
+
     }
 
     public setupControllers(): void {
         this.authController = new AuthController(this.authService);
         this.userController = new UserController(this.userService, this.postService);
         this.postController = new PostController(this.postService, this.commentService);
-        this.searchController = new SearchController(this.userSearchService);
+        this.searchController = new SearchController(this.userSearchService,this.postSearchService);
         this.closeFriendController = new CloseFriendController(this.closeFriendService);
     }
 

@@ -63,4 +63,11 @@ export class CloseFriendRepository {
         ]);
     }
 
+    async isCloseFriend(userId: string, friendId: string): Promise<ICloseFriend | null> {
+        return CloseFriendModel.findOne({
+            user_id: new Types.ObjectId(userId),
+            friend_id: new Types.ObjectId(friendId),
+        }).exec();
+    }
+
 }
