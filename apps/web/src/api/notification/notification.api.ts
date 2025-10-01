@@ -7,6 +7,16 @@ export const getNotifications = async (params?: NotificationQueryParams) => {
   return data;
 };
 
+export const getMyNotifications = async (params?: Omit<NotificationQueryParams, 'tab'>) => {
+  const { data } = await api.get(NOTIFICATION_URLS.GET_MY_NOTIFICATIONS, { params });
+  return data;
+};
+
+export const getFriendsActivity = async (params?: Omit<NotificationQueryParams, 'tab'>) => {
+  const { data } = await api.get(NOTIFICATION_URLS.GET_FRIENDS_ACTIVITY, { params });
+  return data;
+};
+
 export const getNotificationById = async (id: string) => {
   const { data } = await api.get(NOTIFICATION_URLS.GET_BY_ID(id));
   return data;

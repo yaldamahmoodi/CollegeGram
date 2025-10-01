@@ -29,6 +29,8 @@ export class NotificationService {
     this.createMentionNotification = this.createMentionNotification.bind(this);
     this.createFollowNotification = this.createFollowNotification.bind(this);
     this.createReplyNotification = this.createReplyNotification.bind(this);
+    this.getMyNotifications = this.getMyNotifications.bind(this);
+    this.getFriendsActivity = this.getFriendsActivity.bind(this);
   }
 
   private isValidObjectId(id: string): boolean {
@@ -326,5 +328,13 @@ export class NotificationService {
         commentContent: commentContent || "",
       },
     });
+  }
+
+  async getMyNotifications(userId: string, query: NotificationQueryDto) {
+    return await this.notificationRepository.getMyNotifications(userId, query);
+  }
+
+  async getFriendsActivity(userId: string, query: NotificationQueryDto) {
+    return await this.notificationRepository.getFriendsActivity(userId, query);
   }
 }

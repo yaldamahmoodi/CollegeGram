@@ -71,33 +71,49 @@ const NotificationToast = () => {
   };
 
   return (
-    <div className="fixed top-4 right-4 z-50 space-y-2" dir="rtl">
+    <>
+      <style>
+        {`
+          @keyframes slideInRight {
+            from {
+              transform: translateX(100%);
+              opacity: 0;
+            }
+            to {
+              transform: translateX(0);
+              opacity: 1;
+            }
+          }
+        `}
+      </style>
+      <div className="fixed top-4 right-4 z-50 space-y-2" dir="rtl">
       {notifications.map((notification, index) => {
         const content = getNotificationContent(notification);
         
         return (
           <div
             key={notification.id}
-            className={`
-              ${content.bgColor} border rounded-lg shadow-lg p-4 max-w-sm 
-              cursor-pointer hover:shadow-xl transition-all duration-300 
-              transform hover:scale-105
-            `}
+            className="
+              bg-white border-l-4 border-blue-500 rounded-lg shadow-xl p-4 max-w-sm
+              cursor-pointer hover:shadow-2xl transition-all duration-300 
+              transform hover:scale-105 backdrop-blur-sm
+            "
             style={{
-              transform: `translateY(${index * 10}px)`,
+              transform: `translateY(${index * 8}px)`,
               zIndex: 50 - index,
+              animation: `slideInRight 0.3s ease-out ${index * 0.1}s both`,
             }}
             onClick={() => handleToastClick(notification)}
           >
-            <div className="flex items-center space-x-3">
-              <div className={`flex-shrink-0 w-10 h-10 ${content.iconBg} rounded-full flex items-center justify-center`}>
+            <div className="flex items-start space-x-3">
+              <div className="flex-shrink-0 w-10 h-10 bg-gradient-to-br from-blue-100 to-blue-200 rounded-full flex items-center justify-center border-2 border-blue-300">
                 <span className="text-lg">{content.icon}</span>
               </div>
               <div className="flex-1 min-w-0">
-                <p className="text-sm font-medium text-gray-900">
+                <p className="text-sm font-semibold text-gray-900 leading-tight">
                   {content.message}
                 </p>
-                <p className="text-xs text-gray-500">
+                <p className="text-xs text-gray-500 mt-1">
                   {new Date(notification.timestamp).toLocaleTimeString('fa-IR')}
                 </p>
               </div>
@@ -106,15 +122,18 @@ const NotificationToast = () => {
                   e.stopPropagation();
                   removeNotification(notification.id);
                 }}
-                className="flex-shrink-0 text-gray-400 hover:text-gray-600"
+                className="flex-shrink-0 text-gray-400 hover:text-red-500 transition-colors duration-200 p-1 rounded-full hover:bg-red-50"
               >
-                ✕
+                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                </svg>
               </button>
             </div>
           </div>
         );
       })}
-    </div>
+      </div>
+    </>
   );
 };
 

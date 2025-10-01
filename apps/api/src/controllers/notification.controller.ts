@@ -1,5 +1,5 @@
 import type { Authenticate } from "../middlewares/auth.middleware.ts";
-import type { NextFunction, Response } from "express";
+import type { NextFunction, Response, Request } from "express";
 import type { NotificationService } from "../services/notification.service.ts";
 import { APIError } from "../utils/errors/api.errors.ts";
 import { asyncHandler } from "../utils/asyncHandler.utils.ts";
@@ -18,15 +18,20 @@ export class NotificationController {
         this.deleteNotification = this.deleteNotification.bind(this);
         this.deleteAllNotifications = this.deleteAllNotifications.bind(this);
         this.getNotificationById = this.getNotificationById.bind(this);
+        this.getMyNotifications = this.getMyNotifications.bind(this);
+        this.getFriendsActivity = this.getFriendsActivity.bind(this);
     }
 
     async getNotifications(req: Authenticate<{}, {}, {}, NotificationQueryDto>, res: Response, next: NextFunction) {
         try {
             const notifications = await this.notificationService.getUserNotifications(req.user.id, req.query);
             
+            // Transform profile photo paths to full URLs
+            const transformedNotifications = this.transformProfilePhotoUrls(notifications, req);
+            
             return res.status(200).json({
                 code: "GET_NOTIFICATIONS_SUCCESSFULLY",
-                data: notifications
+                data: transformedNotifications
             });
         } catch (error: unknown) {
             if (error instanceof APIError) return next(error);
@@ -120,5 +125,55 @@ export class NotificationController {
             if (error instanceof APIError) return next(error);
             return next(error);
         }
+    }
+
+    async getMyNotifications(req: Authenticate<{}, {}, {}, NotificationQueryDto>, res: Response, next: NextFunction) {
+        try {
+            const notifications = await this.notificationService.getMyNotifications(req.user.id, req.query);
+            
+            // Transform profile photo paths to full URLs
+            const transformedNotifications = this.transformProfilePhotoUrls(notifications, req);
+            
+            return res.status(200).json({
+                code: "GET_MY_NOTIFICATIONS_SUCCESSFULLY",
+                data: transformedNotifications
+            });
+        } catch (error: unknown) {
+            if (error instanceof APIError) return next(error);
+            return next(error);
+        }
+    }
+
+    async getFriendsActivity(req: Authenticate<{}, {}, {}, NotificationQueryDto>, res: Response, next: NextFunction) {
+        try {
+            const notifications = await this.notificationService.getFriendsActivity(req.user.id, req.query);
+            
+            // Transform profile photo paths to full URLs
+            const transformedNotifications = this.transformProfilePhotoUrls(notifications, req);
+            
+            return res.status(200).json({
+                code: "GET_FRIENDS_ACTIVITY_SUCCESSFULLY",
+                data: transformedNotifications
+            });
+        } catch (error: unknown) {
+            if (error instanceof APIError) return next(error);
+            return next(error);
+        }
+    }
+
+    private transformProfilePhotoUrls(notifications: any, req: any) {
+        if (notifications.data && Array.isArray(notifications.data)) {
+            notifications.data = notifications.data.map((notification: any) => {
+                if (notification.senderId && notification.senderId.ProfilePhoto?.path) {
+                    const currentPath = notification.senderId.ProfilePhoto.path;
+                    // Check if the path is already a full URL
+                    if (!currentPath.startsWith('http://') && !currentPath.startsWith('https://')) {
+                        notification.senderId.ProfilePhoto.path = `${req.protocol}://${req.get("host")}/uploads/profiles/${currentPath}`;
+                    }
+                }
+                return notification;
+            });
+        }
+        return notifications;
     }
 }

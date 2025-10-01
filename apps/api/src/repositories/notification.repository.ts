@@ -1,4 +1,5 @@
 import { NotificationModel, type INotification, type CreateNotificationDto, type UpdateNotificationDto, type NotificationQueryDto } from "../db/models/notification.model.ts";
+import { FollowModel } from "../db/models/follow.model.ts";
 import { Types } from "mongoose";
 
 export class NotificationRepository {
@@ -33,7 +34,14 @@ export class NotificationRepository {
         const totalCount = await NotificationModel.countDocuments(filter);
         
         const notifications = await NotificationModel.find(filter)
-            .populate('senderId', 'username firstname lastname')
+            .populate({
+                path: 'senderId',
+                select: 'username firstname lastname',
+                populate: {
+                    path: 'ProfilePhoto',
+                    select: 'path'
+                }
+            })
             .populate('postId', 'caption urls')
             .populate('commentId', 'content')
             .sort({ createdAt: -1 })
@@ -143,5 +151,109 @@ export class NotificationRepository {
         .sort({ createdAt: -1 })
         .limit(50)
         .lean();
+    }
+
+    async getMyNotifications(userId: string, query: NotificationQueryDto) {
+        const { page, pageSize, type, isRead } = query;
+        const skip = (page - 1) * pageSize;
+
+        const filter: any = { recipientId: new Types.ObjectId(userId) };
+        
+        if (type) {
+            filter.type = type;
+        }
+        
+        if (isRead !== undefined) {
+            filter.isRead = isRead;
+        }
+
+        const totalCount = await NotificationModel.countDocuments(filter);
+        
+        const notifications = await NotificationModel.find(filter)
+            .populate({
+                path: 'senderId',
+                select: 'username firstname lastname',
+                populate: {
+                    path: 'ProfilePhoto',
+                    select: 'path'
+                }
+            })
+            .populate('postId', 'caption urls')
+            .populate('commentId', 'content')
+            .sort({ createdAt: -1 })
+            .skip(skip)
+            .limit(pageSize)
+            .lean();
+
+        return {
+            totalCount,
+            page,
+            pageSize,
+            totalPages: Math.ceil(totalCount / pageSize),
+            data: notifications
+        };
+    }
+
+    async getFriendsActivity(userId: string, query: NotificationQueryDto) {
+        const { page, pageSize, type, isRead } = query;
+        const skip = (page - 1) * pageSize;
+
+        // Get user's following list (friends)
+        const following = await FollowModel.find({
+            follower_id: new Types.ObjectId(userId),
+            status: "accepted"
+        }).select('following_id');
+
+        const friendIds = following.map(follow => follow.following_id);
+
+        if (friendIds.length === 0) {
+            return {
+                totalCount: 0,
+                page,
+                pageSize,
+                totalPages: 0,
+                data: []
+            };
+        }
+
+        // Get notifications from friends (where senderId is in friendIds)
+        const filter: any = { 
+            senderId: { $in: friendIds },
+            recipientId: { $ne: new Types.ObjectId(userId) } // Exclude notifications to self
+        };
+        
+        if (type) {
+            filter.type = type;
+        }
+        
+        if (isRead !== undefined) {
+            filter.isRead = isRead;
+        }
+
+        const totalCount = await NotificationModel.countDocuments(filter);
+        
+        const notifications = await NotificationModel.find(filter)
+            .populate({
+                path: 'senderId',
+                select: 'username firstname lastname',
+                populate: {
+                    path: 'ProfilePhoto',
+                    select: 'path'
+                }
+            })
+            .populate('postId', 'caption urls')
+            .populate('commentId', 'content')
+            .sort({ createdAt: -1 })
+            .skip(skip)
+            .limit(pageSize)
+            .lean();
+
+        return {
+            totalCount,
+            page,
+            pageSize,
+            totalPages: Math.ceil(totalCount / pageSize),
+            data: notifications
+        };
     }
 }

@@ -3,7 +3,15 @@ export type NotificationType = 'like' | 'comment' | 'mention' | 'follow' | 'repl
 export interface Notification {
   _id: string;
   recipientId: string;
-  senderId: string;
+  senderId: {
+    _id: string;
+    username: string;
+    firstname?: string;
+    lastname?: string;
+    ProfilePhoto?: {
+      path: string;
+    };
+  };
   type: NotificationType;
   postId?: string;
   commentId?: string;
@@ -18,10 +26,13 @@ export interface Notification {
   updatedAt: string;
 }
 
+export type NotificationTabType = 'myNotifs' | 'friendsActivity';
+
 export interface NotificationQueryParams {
   page?: number;
   pageSize?: number;
   type?: NotificationType;
+  tab?: NotificationTabType;
   isRead?: boolean;
 }
 

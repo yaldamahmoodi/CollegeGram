@@ -10,6 +10,10 @@ router.use(authMiddleware);
 
 router.get("/", notificationController.getNotifications);
 
+router.get("/my", notificationController.getMyNotifications);
+
+router.get("/friends-activity", notificationController.getFriendsActivity);
+
 router.get("/unread-count", notificationController.getUnreadCount);
 
 router.get("/:id", notificationController.getNotificationById);

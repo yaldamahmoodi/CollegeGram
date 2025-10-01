@@ -1,53 +1,61 @@
-import { useState } from "react";
+import { useCallback, useLayoutEffect, useState } from "react";
 import {
-  useNotifications,
+  useMyNotifications,
+  useFriendsActivity,
   useMarkAsRead,
   useMarkAllAsRead,
-  useDeleteNotification,
 } from "@/hooks/notification.hook";
-import type { NotificationType, Notification } from "@app-types/notification";
+import type {
+  NotificationTabType,
+  Notification,
+} from "@app-types/notification";
 import NotificationItem from "./NotificationItem";
 
-type TabType = "all" | NotificationType;
-
 const Notifications = () => {
-  const [activeTab, setActiveTab] = useState<TabType>("all");
+  const [activeTab, setActiveTab] = useState<NotificationTabType>("myNotifs");
   const [page, setPage] = useState(1);
 
   const queryParams = {
     page,
     pageSize: 20,
-    ...(activeTab !== "all" && { type: activeTab }),
   };
 
-  const { data, isLoading, error } = useNotifications(queryParams);
+  // Use different hooks based on active tab
+  const myNotificationsQuery = useMyNotifications(queryParams);
+  const friendsActivityQuery = useFriendsActivity(queryParams);
+
+  const { data, isLoading, error } =
+    activeTab === "myNotifs" ? myNotificationsQuery : friendsActivityQuery;
   const { mutate: markAsRead } = useMarkAsRead();
   const { mutate: markAllAsRead } = useMarkAllAsRead();
-  const { mutate: deleteNotification } = useDeleteNotification();
 
-  const tabs: { key: TabType; label: string; icon: string }[] = [
-    { key: "all", label: "همه", icon: "📱" },
-    { key: "like", label: "لایک‌ها", icon: "❤️" },
-    { key: "comment", label: "کامنت‌ها", icon: "💬" },
-    { key: "mention", label: "منشن‌ها", icon: "📢" },
-    { key: "follow", label: "فالو‌ها", icon: "👤" },
-    { key: "reply", label: "پاسخ‌ها", icon: "↩️" },
-    { key: "save", label: "ذخیره‌ها", icon: "💾" },
+  const tabs: { key: NotificationTabType; label: string; icon: string }[] = [
+    { key: "myNotifs", label: "اعلانات من", icon: "" },
+
+    { key: "friendsActivity", label: "اعلانات دوستان من", icon: "" },
   ];
 
   const handleMarkAsRead = (notificationId: string) => {
     markAsRead(notificationId);
   };
+  const [newNotification, setNewNotification] = useState<string[]>([]);
 
-  const handleDelete = (notificationId: string) => {
-    deleteNotification(notificationId);
-  };
+  const getNewNotification = useCallback(() => {
+    data?.notifications?.forEach((notification: Notification) => {
+      if (!notification.isRead) {
+        setNewNotification((prev) => [...prev, notification._id]);
+      }
+    });
+  }, [data]);
 
-  const handleMarkAllAsRead = () => {
+  console.log(newNotification);
+
+  useLayoutEffect(() => {
+    getNewNotification();
     markAllAsRead();
-  };
+  }, [markAllAsRead, getNewNotification]);
 
-  if ( error) {
+  if (error) {
     return (
       <div className="flex items-center justify-center min-h-screen">
         <div className="text-center">
@@ -74,22 +82,14 @@ const Notifications = () => {
   }
 
   return (
-    <div className="max-w-4xl mx-auto px-4 py-6" dir="rtl">
+    <div className="w-full mx-auto px-4 py-6" dir="rtl">
       {/* Header */}
       <div className="flex items-center justify-between mb-6">
         <h1 className="text-2xl font-bold">اعلانات</h1>
-        {data && data.notifications.length > 0 && (
-          <button
-            onClick={handleMarkAllAsRead}
-            className="text-sm text-blue-500 hover:text-blue-600"
-          >
-            خواندن همه
-          </button>
-        )}
       </div>
 
       {/* Tabs */}
-      <div className="flex overflow-x-auto gap-2 mb-6 pb-2 border-b">
+      <div className="flex overflow-x-auto divide-x-2 divide-gray-300 gap-2 mb-6 pb-8 ">
         {tabs.map((tab) => (
           <button
             key={tab.key}
@@ -98,12 +98,8 @@ const Notifications = () => {
               setPage(1);
             }}
             className={`
-              flex items-center gap-2 px-4 py-2 rounded-lg whitespace-nowrap transition-colors
-              ${
-                activeTab === tab.key
-                  ? "bg-orange-500 text-white"
-                  : "bg-gray-100 text-gray-700 hover:bg-gray-200"
-              }
+              flex items-center gap-2 px-4  whitespace-nowrap transition-colors
+              ${activeTab === tab.key ? " text-black  " : " text-gray-500 "}
             `}
           >
             <span>{tab.icon}</span>
@@ -128,13 +124,14 @@ const Notifications = () => {
           ))}
         </div>
       ) : data && data.notifications.length > 0 ? (
-        <div className="space-y-2">
+        <div className="space-y-8">
           {data.notifications.map((notification: Notification) => (
             <NotificationItem
+              isNew={newNotification.includes(notification._id)}
               key={notification._id}
               notification={notification}
               onMarkAsRead={handleMarkAsRead}
-              onDelete={handleDelete}
+              imageLink={notification.senderId.ProfilePhoto?.path || ""}
             />
           ))}
 
@@ -172,4 +169,3 @@ const Notifications = () => {
 };
 
 export default Notifications;
-
