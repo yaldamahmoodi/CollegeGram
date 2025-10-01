@@ -5,6 +5,7 @@ import type {updateProfileUserSchema} from "../db/models/user.model.ts";
 import {NotFoundError} from "../utils/errors/notFound.errors.ts";
 import type {FollowRepository} from "../repositories/follow.repository.ts";
 import type {BlockRepository} from  "../repositories/block.repository.ts"
+import type {CloseFriendRepository} from "../repositories/closefriend.repository.ts";
 import {AlreadyDoneError} from "../utils/errors/alreadyDone.errors.ts";
 import {BadRequestErrors} from "../utils/errors/badRequest.errors.ts";
 
@@ -13,14 +14,16 @@ export class UserService {
     private readonly userRepository: UserRepository;
     private readonly profilePhotoRepository: ProfileRepository;
     private readonly followRepository: FollowRepository;
-    private readonly blockRepository: BlockRepository
+    private readonly blockRepository: BlockRepository;
+    private readonly closeFriendRepository: CloseFriendRepository;
 
 
-    constructor(userRepository: UserRepository, profilePhotoRepository: ProfileRepository, followRepository: FollowRepository , blockRepository: BlockRepository) {
+    constructor(userRepository: UserRepository, profilePhotoRepository: ProfileRepository, followRepository: FollowRepository , blockRepository: BlockRepository, closeFriendRepository: CloseFriendRepository) {
         this.userRepository = userRepository;
         this.profilePhotoRepository = profilePhotoRepository;
         this.followRepository = followRepository;
-        this.blockRepository = blockRepository
+        this.blockRepository = blockRepository;
+        this.closeFriendRepository = closeFriendRepository;
     }
 
     async getUserIdByUsername(username: string): Promise<string | null> {
@@ -98,25 +101,23 @@ export class UserService {
             userDetails._id.toString()
         );
         
+        const isBlockedResult = await this.blockRepository.blockedBefore(
+            loggedInUserId,
+            userDetails._id.toString()
+        );
+        const isBlocked = !!isBlockedResult;
 
-        // const isBlocked = await this.blockRepository.isBlocked(
-        //     loggedInUserId,
-        //     userDetails._id.toString()
-        // );
+        const hasBlockedResult = await this.blockRepository.blockedBefore(
+            userDetails._id.toString(),
+            loggedInUserId
+        );
+        const hasBlocked = !!hasBlockedResult;
 
-        const isBlocked = false;
-
-        // const hasBlocked = await this.blockRepository.hasBlocked(
-        //     loggedInUserId,
-        //     userDetails._id.toString()
-        // );
-
-        const hasBlocked = false;
-        // const isCloseFriend = await this.followRepository.isCloseFriend(
-        //     loggedInUserId,
-        //     userDetails._id.toString()
-        // );
-        const isCloseFriend = false;
+        const isCloseFriendResult = await this.closeFriendRepository.isCloseFriend(
+            loggedInUserId,
+            userDetails._id.toString()
+        );
+        const isCloseFriend = !!isCloseFriendResult;
 
 
         return {
