@@ -8,7 +8,6 @@ import type {BlockRepository} from  "../repositories/block.repository.ts"
 import type {CloseFriendRepository} from "../repositories/closefriend.repository.ts";
 import {AlreadyDoneError} from "../utils/errors/alreadyDone.errors.ts";
 import {BadRequestErrors} from "../utils/errors/badRequest.errors.ts";
-import { WebSocketService } from "./websocket.service.ts";
 import type { NotificationService } from "./notification.service.ts";
 
 export class UserService {
@@ -64,7 +63,26 @@ export class UserService {
         if(await this.blockRepository.blockedBefore(userId ,followedUserId)){
             throw new NotFoundError("YOU_CANNOT_FOLLOW_BLOCKEDUSER")
         }
-        return await this.followRepository.followUser(userId, followedUserId);
+        
+        const result = await this.followRepository.followUser(userId, followedUserId);
+        
+        // Create follow notification
+        try {
+            // Get the follower's username for the notification
+            const follower = await this.userRepository.findByUserId(userId);
+            if (follower) {
+                await this.notificationService.createFollowNotification(
+                    followedUserId, // recipient (the person being followed)
+                    userId,         // sender (the person who followed)
+                    follower.username
+                );
+            }
+        } catch (error) {
+            // Log error but don't fail the follow operation
+            console.error("Failed to create follow notification:", error);
+        }
+        
+        return result;
     }
 
     async unfollowUser(userId: string, unfollowedUserId: string) {

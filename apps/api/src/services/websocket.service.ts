@@ -1,4 +1,4 @@
-// import { io } from '../server.ts';
+
 import { Server as SocketIOServer } from "socket.io";
 
 export interface LikeNotification {
@@ -92,14 +92,6 @@ export class WebSocketService {
             console.log(`Generic notification (${notification.type}) sent to user ${recipientId}`);
         }
     }
-
-
-    // sendNotification(recipientId: string, type: string, data: any): void {
-    //     if (io) {
-    //         io.to(`user_${recipientId}`).emit('notification', { type, data, timestamp: new Date().toISOString() });
-    //         console.log(`Generic notification (${type}) sent to user ${recipientId}`);
-    //     }
-    // }
     
     sendNotificationToUsers(userIds: string[], type: string, data: any): void {
         if (this.io) {

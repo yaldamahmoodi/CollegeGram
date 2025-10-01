@@ -38,7 +38,6 @@ export class NotificationService {
   }
 
   async createNotification(notificationData: CreateNotificationDto) {
-    // Validate ObjectIds before proceeding
     if (!this.isValidObjectId(notificationData.recipientId)) {
       console.error("Invalid recipientId:", notificationData.recipientId);
       return null;
@@ -160,16 +159,7 @@ export class NotificationService {
   }
 
   private sendRealtimeNotification(notification: any) {
-    const notificationData = {
-      _id: notification._id,
-      type: notification.type,
-      senderId: notification.senderId,
-      postId: notification.postId,
-      commentId: notification.commentId,
-      data: notification.data,
-      isRead: notification.isRead,
-      createdAt: notification.createdAt,
-    };
+   
 
     switch (notification.type) {
       case "like":
