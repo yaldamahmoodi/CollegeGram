@@ -7,6 +7,7 @@ import Register from "@pages/Register";
 import NotFound from "@pages/NotFound";
 import Explore from "@/pages/explore/Explore";
 import SavedPosts from "@/pages/SavedPosts";
+import Notifications from "@/pages/notifications/Notifications";
 import ProtectedRoute from "./ProtectedRoute";
 import TaggedPosts from "@/pages/TaggedPosts";
 
@@ -25,6 +26,7 @@ export default function AppRoutes() {
           <Route index element={<Profile />} />
           <Route path={ROUTES.TAGGED_POSTS} element={<TaggedPosts />} />
           <Route path={ROUTES.SAVED_POSTS} element={<SavedPosts />} />
+          <Route path={ROUTES.NOTIFICATIONS} element={<Notifications />} />
           {/* <Route path={ROUTES.POST_DETAIL} element={<PostDetail  />} /> */}
           <Route path={ROUTES.EXPLORE} element={<Explore />} />
         </Route>
