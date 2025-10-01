@@ -11,7 +11,7 @@ export class BlockRepository{
   }
 
   async unblock (userId: string , blockedId: string){
-    return await Block.deleteOne({
+    return await Block.deleteMany({
             user_id:userId,
             blocked_id: blockedId
         })
@@ -25,7 +25,7 @@ export class BlockRepository{
       return Block.aggregate([
             {
                 $match: {
-                    blocked_id: new mongoose.Types.ObjectId(user_id),
+                    user_id: new mongoose.Types.ObjectId(user_id),
                 },
             },
             {
