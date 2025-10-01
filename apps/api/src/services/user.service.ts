@@ -5,6 +5,8 @@ import type {updateProfileUserSchema} from "../db/models/user.model.ts";
 import {NotFoundError} from "../utils/errors/notFound.errors.ts";
 import type {FollowRepository} from "../repositories/follow.repository.ts";
 import type {BlockRepository} from  "../repositories/block.repository.ts"
+import {AlreadyDoneError} from "../utils/errors/alreadyDone.errors.ts";
+import {BadRequestErrors} from "../utils/errors/badRequest.errors.ts";
 
 export class UserService {
 
@@ -137,7 +139,7 @@ export class UserService {
             throw new NotFoundError("NOT_FOUND_USER" , "blockedId not found")
         }
         if(blokedBefore){
-            throw new NotFoundError("ALREADY_DONE" , "block already done")
+            throw new AlreadyDoneError("ALREADY_DONE" , "user already blocked")
         }
         await this.blockRepository.block(userId , blockedId)
         if (await this.followRepository.isFollowed(userId , blockedId)){
@@ -158,9 +160,10 @@ export class UserService {
         if(!existBlockedId){
             throw new NotFoundError("NOT_FOUND_USER" , "blockedId not found")
         }
-        if(!blokedBefore){
-            throw new NotFoundError("NOT_FOUND" , "User is not blocked")
+        if (!blokedBefore) {
+            throw new BadRequestErrors("NOT_BLOCKED", "User is not blocked");
         }
+
         await this.blockRepository.unblock(userId , blockedId)
     }
 

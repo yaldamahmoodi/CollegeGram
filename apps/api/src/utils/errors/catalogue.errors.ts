@@ -34,6 +34,7 @@ export const CatalogueErrors = {
     YOU_CANNOT_UNBLOCK_YOURSELF: {code: "YOU_CANNOT_UNBLOCK_YOURSELF", message: "YOU_CANNOT_UNBLOCK_YOURSELF"},
     YOU_CANNOT_FOLLOW_BLOCKEDUSER: {code: "YOU_CANNOT_FOLLOW_BLOCKEDUSER", message: "YOU_CANNOT_FOLLOW_BLOCKEDUSER"},
     YOU_CANNOT_UNFOLLOW_BLOCKEDUSER: {code: "YOU_CANNOT_UNFOLLOW_BLOCKEDUSER", message: "YOU_CANNOT_UNFOLLOW_BLOCKEDUSER"},
+    NOT_BLOCKED:{code: "NOT_BLOCKED",message:"user is Not BLOCKED"},
 } as const;
 
 export type ErrorCode = keyof typeof CatalogueErrors;

@@ -392,7 +392,6 @@ export class UserController {
     next: NextFunction
   ) {
     try {
-      console.log("6")
       const blocksList = await this.userService.getBlocks(req.user.id);
       return res.status(200).json({
         code: "SUCCESS",

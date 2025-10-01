@@ -91,7 +91,7 @@ router.post(
 );
 
 router.get(
-    "/blockslist",
+    "/blocks",
     userController.getBlocksList
 )
 

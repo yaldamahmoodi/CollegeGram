@@ -1232,167 +1232,6 @@ paths:
                   message:
                     type: string
                     example: Something went wrong while rejecting the follow request.
-
-  /api/v1/users/block:
-    post:
-      summary: Block a user
-      description: |
-        Block another user by their user ID. When a user is blocked:
-        - The blocked user cannot see the blocker's posts or profile
-        - Any existing follow relationships between the users are automatically removed
-        - The blocked user cannot follow the blocker
-      tags:
-        - Users
-      security:
-        - cookieAuth: [ ]
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/BlockUserDto'
-      responses:
-        '200':
-          description: User blocked successfully
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  code:
-                    type: string
-                    example: USER_BLOCKED
-                  message:
-                    type: string
-                    example: User successfully blocked
-        '400':
-          description: Invalid block request (e.g., trying to block yourself)
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  code:
-                    type: string
-                    example: YOU_CANNOT_BLOCK_YOURSELF
-                  message:
-                    type: string
-                    example: You cannot block yourself
-        '404':
-          description: Target user not found or already blocked
-          content:
-            application/json:
-              schema:
-                oneOf:
-                  - type: object
-                    properties:
-                      code:
-                        type: string
-                        example: NOT_FOUND_USER
-                      message:
-                        type: string
-                        example: User with given ID does not exist
-                  - type: object
-                    properties:
-                      code:
-                        type: string
-                        example: ALREADY_DONE
-                      details:
-                        type: string
-                        example: block already done
-        '500':
-          description: Internal server error
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  code:
-                    type: string
-                    example: INTERNAL_SERVER_ERROR
-                  message:
-                    type: string
-                    example: Something went wrong while blocking the user
-
-  /api/v1/users/unblock:
-    post:
-      summary: Unblock a user
-      description: |
-        Unblock a previously blocked user by their user ID. 
-        This will restore the ability for the unblocked user to see the unblocker's content.
-      tags:
-        - Users
-      security:
-        - cookieAuth: [ ]
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/BlockUserDto'
-      responses:
-        '200':
-          description: User unblocked successfully
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  code:
-                    type: string
-                    example: USER_UNBLOCKED
-                  message:
-                    type: string
-                    example: User successfully UNblocked
-        '400':
-          description: Invalid unblock request (e.g., trying to unblock yourself)
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  code:
-                    type: string
-                    example: YOU_CANNOT_UNBLOCK_YOURSELF
-                  message:
-                    type: string
-                    example: You cannot unblock yourself
-        '404':
-          description: Target user not found or not blocked
-          content:
-            application/json:
-              schema:
-                oneOf:
-                  - type: object
-                    properties:
-                      code:
-                        type: string
-                        example: NOT_FOUND_USER
-                      message:
-                        type: string
-                        example: User with given ID does not exist
-                  - type: object
-                    properties:
-                      code:
-                        type: string
-                        example: NOT_FOUND
-                      details:
-                        type: string
-                        example: User is not blocked
-        '500':
-          description: Internal server error
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  code:
-                    type: string
-                    example: INTERNAL_SERVER_ERROR
-                  message:
-                    type: string
-                    example: Something went wrong while unblocking the user
-
   /api/v1/users/savesList:
     get:
       summary: Get saved posts for authenticated user
@@ -1672,7 +1511,7 @@ paths:
                           type: array
                           items:
                             type: string
-                          example: ["/uploads/posts/photo-123.png", "/uploads/posts/photo-124.png"]
+                          example: [ "/uploads/posts/photo-123.png", "/uploads/posts/photo-124.png" ]
                         like_count:
                           type: integer
                           example: 15
@@ -2147,7 +1986,7 @@ paths:
                           items:
                             type: string
                           description: Full URLs to post images
-                          example: 
+                          example:
                             - "http://localhost:3000/uploads/posts/image1.jpg"
                             - "http://localhost:3000/uploads/posts/image2.jpg"
                         caption:
@@ -2177,7 +2016,7 @@ paths:
                           type: array
                           items:
                             type: string
-                          example: ["#example", "#social"]
+                          example: [ "#example", "#social" ]
                         photo_length:
                           type: integer
                           description: Number of photos in the post
@@ -2236,58 +2075,58 @@ paths:
 
 
   /api/v1/users/getUsers/{page_number}:
-      get:
-        summary: Get all users (paginated)
-        description: Retrieve a paginated list of all users (10 users per page).
-        parameters:
-          - name: page_number
-            in: path
-            required: true
-            schema:
-              type: integer
-              minimum: 1
-            description: The page number to retrieve
-            example: 1
-        responses:
-          '200':
-            description:
-            content:
-              application/json:
-                schema:
-                  type: object
-                  properties:
-                    totalCount:
-                      type: integer
-                      example: 120
-                    page:
-                      type: integer
-                      example: 1
-                    perPage:
-                      type: integer
-                      example: 10
-                    data:
-                      type: array
-                      items:
-                        type: object
-                        properties:
-                          username:
-                            type: string
-                            example: mohammad95
-                          firstName:
-                            type: string
-                            example: mohammad
-                          lastName:
-                            type: string
-                            example: asghari
-                          profilePhoto:
-                            type: string
-                            format: uri
-                            example: "monorepo/apps/api/src/middleware/uploads/m2.jpg"
-                          followersCount:
-                            type: integer
-                            example: 250
-          '500':
-            description: Internal server error
+    get:
+      summary: Get all users (paginated)
+      description: Retrieve a paginated list of all users (10 users per page).
+      parameters:
+        - name: page_number
+          in: path
+          required: true
+          schema:
+            type: integer
+            minimum: 1
+          description: The page number to retrieve
+          example: 1
+      responses:
+        '200':
+          description:
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  totalCount:
+                    type: integer
+                    example: 120
+                  page:
+                    type: integer
+                    example: 1
+                  perPage:
+                    type: integer
+                    example: 10
+                  data:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        username:
+                          type: string
+                          example: mohammad95
+                        firstName:
+                          type: string
+                          example: mohammad
+                        lastName:
+                          type: string
+                          example: asghari
+                        profilePhoto:
+                          type: string
+                          format: uri
+                          example: "monorepo/apps/api/src/middleware/uploads/m2.jpg"
+                        followersCount:
+                          type: integer
+                          example: 250
+        '500':
+          description: Internal server error
 
   /api/v1/users/getUsers/{page_number}/{query}:
     get:
@@ -2603,7 +2442,243 @@ paths:
                   message:
                     type: string
                     example: Something went wrong while fetching close friends
-
+  /api/v1/users/block:
+    post:
+      summary: Block a user
+      description: |
+        کاربر لاگین‌شده می‌تونه یک کاربر دیگه رو بلاک کنه.  
+        اگر فالو وجود داشته باشه، به صورت خودکار آنفالو می‌شه.
+      tags:
+        - Users
+      security:
+        - cookieAuth: [ ]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - blockUserId
+              properties:
+                blockUserId:
+                  type: string
+                  description: ID of the user to block
+                  example: 68d2b0927698eafb14b85ed9
+      responses:
+        '200':
+          description: User successfully blocked
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  code:
+                    type: string
+                    example: USER_BLOCKED
+                  message:
+                    type: string
+                    example: User successfully blocked
+        '400':
+          description: Trying to block yourself
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  code:
+                    type: string
+                    example: YOU_CANNOT_BLOCK_YOURSELF
+                  message:
+                    type: string
+                    example: You cannot block yourself
+        '401':
+          description: Unauthorized (user not logged in)
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  code:
+                    type: string
+                    example: UNAUTHORIZED
+                  message:
+                    type: string
+                    example: Authentication required
+        '404':
+          description: User not found
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  code:
+                    type: string
+                    example: NOT_FOUND_USER
+                  message:
+                    type: string
+                    example: userId not found
+        '409':
+          description: User already blocked
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  code:
+                    type: string
+                    example: ALREADY_DONE
+                  message:
+                    type: string
+                    example: user already blocked
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  code:
+                    type: string
+                    example: INTERNAL_SERVER_ERROR
+                  message:
+                    type: string
+                    example: Something went wrong while blocking user
+  /api/v1/users/unblock:
+    post:
+      summary: Unblock a user
+      description: |
+        این متد یک کاربر رو از حالت بلاک خارج می‌کنه.  
+        - کاربر نمی‌تونه خودش رو آنبلاک کنه.  
+        - اگر کاربر وجود نداشته باشه یا بلاک نشده باشه، خطا برمی‌گرده.
+      security:
+        - cookieAuth: [ ]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - blockUserId
+              properties:
+                blockUserId:
+                  type: string
+                  description: ID کاربری که باید آنبلاک بشه
+                  example: 68d2b0927698eafb14b85ed9
+      responses:
+        '200':
+          description: User successfully unblocked
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  code:
+                    type: string
+                    example: USER_UNBLOCKED
+                  message:
+                    type: string
+                    example: User successfully unblocked
+        '400':
+          description: Invalid unblock request (e.g., trying to unblock yourself or user is not blocked)
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  code:
+                    type: string
+                    example: NOT_BLOCKED
+                  message:
+                    type: string
+                    example: User is not blocked
+        '404':
+          description: Target user not found
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  code:
+                    type: string
+                    example: NOT_FOUND_USER
+                  message:
+                    type: string
+                    example: User not found
+        '401':
+          description: Unauthorized (login required)
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  code:
+                    type: string
+                    example: UNAUTHORIZED
+                  message:
+                    type: string
+                    example: Authentication required
+  /api/v1/users/blocks:
+    get:
+      summary: Get blocked users list
+      description: |
+        لیست کاربرهایی که توسط کاربر لاگین‌شده بلاک شدن رو برمی‌گردونه.
+      security:
+        - cookieAuth: [ ]
+      responses:
+        '200':
+          description: List of blocked users returned successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  code:
+                    type: string
+                    example: SUCCESS
+                  data:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        userId:
+                          type: string
+                          example: 68d2acb57698eafb14b85ed4
+                        username:
+                          type: string
+                          example: sianaki
+                        firstname:
+                          type: string
+                          nullable: true
+                          example: null
+                        lastname:
+                          type: string
+                          nullable: true
+                          example: null
+                        follower_count:
+                          type: integer
+                          example: 0
+                        following_count:
+                          type: integer
+                          example: 0
+                        profilePhoto:
+                          type: string
+                          nullable: true
+                          example: null
+        '401':
+          description: Unauthorized (login required)
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  code:
+                    type: string
+                    example: UNAUTHORIZED
+                  message:
+                    type: string
+                    example: Authentication required
 
 components:
   securitySchemes:
