@@ -1,7 +1,8 @@
 import { useEffect } from "react";
 import { useQueryClient } from "@tanstack/react-query";
-import { websocketService } from "@/services/serviceWorker";
+import { websocketService, type NotificationData } from "@/services/serviceWorker";
 import { NOTIFICATION_QUERY_KEYS } from "./notification.hook";
+import { useNotificationStore } from "./useNotificationStore";
 
 /**
  * Custom hook to manage WebSocket connection and real-time notifications
@@ -9,6 +10,7 @@ import { NOTIFICATION_QUERY_KEYS } from "./notification.hook";
  */
 export const useWebSocket = (token?: string) => {
   const queryClient = useQueryClient();
+  const { addNotification } = useNotificationStore();
 
   useEffect(() => {
     if (!token) {
@@ -30,27 +32,58 @@ export const useWebSocket = (token?: string) => {
       queryClient.invalidateQueries({ queryKey: NOTIFICATION_QUERY_KEYS.unreadCount });
     };
 
+    // Handle different notification types for toasts
+    const handleLikeNotification = (notification: NotificationData) => {
+      addNotification(notification, 'like');
+      handleNewNotification();
+    };
+
+    const handleCommentNotification = (notification: NotificationData) => {
+      addNotification(notification, 'comment');
+      handleNewNotification();
+    };
+
+    const handleMentionNotification = (notification: NotificationData) => {
+      addNotification(notification, 'mention');
+      handleNewNotification();
+    };
+
+    const handleFollowNotification = (notification: NotificationData) => {
+      addNotification(notification, 'follow');
+      handleNewNotification();
+    };
+
+    const handleSaveNotification = (notification: NotificationData) => {
+      addNotification(notification, 'save');
+      handleNewNotification();
+    };
+
+    const handleReplyNotification = (notification: NotificationData) => {
+      addNotification(notification, 'reply');
+      handleNewNotification();
+    };
+
     // Set up listeners for different notification types
-    websocketService.onLikeNotification(handleNewNotification);
-    websocketService.onCommentNotification(handleNewNotification);
-    websocketService.onMentionNotification(handleNewNotification);
-    websocketService.onFollowNotification(handleNewNotification);
-    websocketService.onSaveNotification(handleNewNotification);
-    websocketService.onReplyNotification(handleNewNotification);
+    websocketService.onLikeNotification(handleLikeNotification);
+    websocketService.onCommentNotification(handleCommentNotification);
+    websocketService.onMentionNotification(handleMentionNotification);
+    websocketService.onFollowNotification(handleFollowNotification);
+    websocketService.onSaveNotification(handleSaveNotification);
+    websocketService.onReplyNotification(handleReplyNotification);
     websocketService.onNotificationCount(handleNotificationCount);
 
     // Cleanup on unmount
     return () => {
-      websocketService.offLikeNotification(handleNewNotification);
-      websocketService.offCommentNotification(handleNewNotification);
-      websocketService.offMentionNotification(handleNewNotification);
-      websocketService.offFollowNotification(handleNewNotification);
-      websocketService.offSaveNotification(handleNewNotification);
-      websocketService.offReplyNotification(handleNewNotification);
+      websocketService.offLikeNotification(handleLikeNotification);
+      websocketService.offCommentNotification(handleCommentNotification);
+      websocketService.offMentionNotification(handleMentionNotification);
+      websocketService.offFollowNotification(handleFollowNotification);
+      websocketService.offSaveNotification(handleSaveNotification);
+      websocketService.offReplyNotification(handleReplyNotification);
       websocketService.offNotificationCount(handleNotificationCount);
       websocketService.disconnect();
     };
-  }, [token, queryClient]);
+  }, [token, queryClient, addNotification]);
 
   return {
     isConnected: websocketService.isConnected(),

@@ -8,10 +8,16 @@ import gridMenuIcon from "@assets/icons/Mobile/gridMenu.svg";
 import hamburgerMenuIcon from "@assets/icons/Mobile/hamburgerMenu.svg";
 import plusIcon from "@assets/icons/plus.svg";
 import { Outlet } from "react-router-dom";
+import { useWebSocket } from "@/hooks/useWebSocket.hook";
+import NotificationToast from "@/components/NotificationToast";
 
 const ProfileLayout = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+  
+  // Initialize WebSocket connection
+  const token = localStorage.getItem("token");
+  useWebSocket(token || undefined);
 
   return (
     <div className="profile-container h-screen w-full bg-[#f5f5f5] flex flex-col lg:p-10">
@@ -57,7 +63,7 @@ const ProfileLayout = () => {
         </button>
         <button
           onClick={() => setIsModalOpen(true)}
-          className="flex flex-col text-xs items-center justify-center text-red-500  border bg-red-500 w-10 h-10 rounded-full text-white">
+          className="flex flex-col text-xs items-center justify-center border bg-red-500 w-10 h-10 rounded-full text-white">
           ＋
         </button>
         <button className="flex flex-col items-center">
@@ -85,6 +91,10 @@ const ProfileLayout = () => {
         isOpen={isModalOpen}
         onClose={() => setIsModalOpen(false)}
       />
+      
+      
+      {/* Notification Toast Container */}
+      <NotificationToast />
     </div>
   );
 };

@@ -16,7 +16,10 @@ import { registerSocketHandlers } from "./middlewares/socketIO/socket.middleware
     const { app } = await import("./app.ts");
     const server = createServer(app);
     const io = new Server(server, {
-      cors: { origin: env.CORS_ORIGIN, credentials: true },
+      cors: { 
+        origin: env.CORS_ORIGIN.split(","), 
+        credentials: true 
+      },
     });
 
     // Initialize WebSocketService with io

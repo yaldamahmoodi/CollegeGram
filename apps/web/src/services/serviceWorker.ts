@@ -75,6 +75,8 @@ class WebSocketService {
       reconnection: true,
       reconnectionDelay: 1000,
       reconnectionAttempts: 5,
+      transports: ['websocket', 'polling'], // Try websocket first, fallback to polling
+      timeout: 20000,
     });
 
     this.socket.on("connect", () => {
