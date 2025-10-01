@@ -1233,6 +1233,202 @@ paths:
                   message:
                     type: string
                     example: Something went wrong while rejecting the follow request.
+
+  /api/v1/users/block:
+    post:
+      summary: Block a user
+      description: |
+        Block another user. When a user is blocked:
+        - You won't see their posts in search results
+        - They won't see your posts in search results
+        - They won't appear in user search results for you
+        - You won't appear in user search results for them
+      tags:
+        - Users
+      security:
+        - cookieAuth: [ ]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/BlockUserDto'
+      responses:
+        '200':
+          description: User blocked successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  code:
+                    type: string
+                    example: USER_BLOCKED_SUCCESS
+                  message:
+                    type: string
+                    example: User successfully blocked
+        '400':
+          description: Invalid block request (e.g., trying to block yourself)
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  code:
+                    type: string
+                    example: YOU_CANNOT_BLOCK_YOURSELF
+                  message:
+                    type: string
+                    example: You cannot block yourself
+        '404':
+          description: User not found
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  code:
+                    type: string
+                    example: NOT_FOUND_USER
+                  message:
+                    type: string
+                    example: User with given ID does not exist
+        '409':
+          description: User already blocked
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  code:
+                    type: string
+                    example: ALREADY_DONE
+                  details:
+                    type: string
+                    example: user blocked before
+        '500':
+          description: Internal server error
+
+  /api/v1/users/unblock:
+    post:
+      summary: Unblock a user
+      description: Remove a user from your blocked list.
+      tags:
+        - Users
+      security:
+        - cookieAuth: [ ]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/BlockUserDto'
+      responses:
+        '200':
+          description: User unblocked successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  code:
+                    type: string
+                    example: USER_UNBLOCKED_SUCCESS
+                  message:
+                    type: string
+                    example: User successfully unblocked
+        '400':
+          description: Invalid unblock request
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  code:
+                    type: string
+                    example: INVALID_REQUEST
+                  message:
+                    type: string
+                    example: Invalid unblock request
+        '404':
+          description: User not found or not blocked
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  code:
+                    type: string
+                    example: NOT_FOUND
+                  message:
+                    type: string
+                    example: User not found in blocked list
+        '500':
+          description: Internal server error
+
+  /api/v1/users/blocks:
+    get:
+      summary: Get blocked users list
+      description: Retrieve the list of users that the authenticated user has blocked.
+      tags:
+        - Users
+      security:
+        - cookieAuth: [ ]
+      responses:
+        '200':
+          description: Blocked users list retrieved successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  code:
+                    type: string
+                    example: SUCCESS
+                  data:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        userId:
+                          type: string
+                          example: 68d2b0927698eafb14b85ed9
+                        username:
+                          type: string
+                          example: blockeduser123
+                        firstname:
+                          type: string
+                          nullable: true
+                          example: John
+                        lastname:
+                          type: string
+                          nullable: true
+                          example: Doe
+                        follower_count:
+                          type: integer
+                          example: 150
+                        following_count:
+                          type: integer
+                          example: 200
+                        profilePhoto:
+                          type: string
+                          nullable: true
+                          example: /uploads/profiles/profile-123.png
+        '401':
+          description: Unauthorized – User not logged in
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  code:
+                    type: string
+                    example: UNAUTHORIZED
+                  message:
+                    type: string
+                    example: User not authenticated
+        '500':
+          description: Internal server error
   /api/v1/users/savesList:
     get:
       summary: Get saved posts for authenticated user
@@ -1929,7 +2125,15 @@ paths:
   /api/v1/search/getUsers/{page_number}/{query}:
     get:
       summary: Search users (paginated)
-      description: Returns 10 users per page.
+      description: |
+        Returns 10 users per page.
+        **Note:** Results automatically exclude:
+        - Users you have blocked
+        - Users who have blocked you
+      tags:
+        - Search
+      security:
+        - cookieAuth: [ ]
       parameters:
         - name: page_number
           in: path
@@ -2244,9 +2448,15 @@ paths:
   /api/v1/search/getPosts/{page_number}/{query}:
     get:
       summary: Search posts
-      description: Returns paginated posts based on query
+      description: |
+        Returns paginated posts based on query (hashtags and captions).
+        **Note:** Results automatically exclude posts from:
+        - Users you have blocked
+        - Users who have blocked you
       tags:
         - Posts
+      security:
+        - cookieAuth: [ ]
       parameters:
         - name: page_number
           in: path
