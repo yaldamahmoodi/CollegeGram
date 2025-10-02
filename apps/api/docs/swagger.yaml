@@ -2725,7 +2725,7 @@ paths:
         - Users you have blocked
         - Users who have blocked you
       tags:
-        - Posts
+        - Search
       security:
         - cookieAuth: [ ]
       parameters:
