@@ -148,12 +148,20 @@ paths:
               schema:
                 type: object
                 properties:
-                  code:
-                    type: string
-                    example: "OTP_VERIFIED"
+                  success:
+                    type: boolean
+                    example: true
                   message:
                     type: string
                     example: "OTP verified successfully"
+                  resetToken:
+                    type: string
+                    example: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
+                    description: "Temporary token for password reset (valid for 10 minutes)"
+                  expiresIn:
+                    type: number
+                    example: 600
+                    description: "Token expiration time in seconds"
         '400':
           description: Invalid or expired OTP
         '500':
@@ -162,7 +170,7 @@ paths:
   /api/v1/auth/reset-password:
     post:
       summary: Reset password
-      description: Reset user password after OTP verification
+      description: Reset user password using reset token from verify-otp endpoint
       requestBody:
         required: true
         content:
@@ -176,11 +184,8 @@ paths:
                   example: "user@example.com"
                 otp:
                   type: string
-                  pattern: "^\\d{6}$"
-                  minLength: 6
-                  maxLength: 6
-                  example: "123456"
-                  description: "6-digit numeric OTP code"
+                  example: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
+                  description: "Reset token received from verify-otp endpoint"
                 newPassword:
                   type: string
                   minLength: 8

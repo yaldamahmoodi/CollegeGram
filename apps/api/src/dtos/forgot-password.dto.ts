@@ -6,7 +6,7 @@ export const forgotPasswordDTO = z.object({
 
 export const resetPasswordDTO = z.object({
   email: z.email("Invalid email format"),
-  otp: z.string().length(6, "OTP must be exactly 6 digits").regex(/^\d{6}$/, "OTP must contain only numbers"),
+  otp: z.string().min(1, "Reset token is required"), // Changed to accept JWT token instead of 6-digit OTP
   newPassword: z.string().regex(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[\W_]).{8,}$/, "Password must be at least 8 characters long and contain at least one lowercase letter, one uppercase letter, one number, and one special character")
 });
 

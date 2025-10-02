@@ -9,4 +9,8 @@ export const USER_URLS = {
   FOLLOW: "users/follow",
   UNFOLLOW: "users/unfollow",
   UPDATE_PROFILE: "/users/profile/update",
+  // Forgot Password Flow
+  FORGOT_PASSWORD: "/auth/forgot-password",
+  VERIFY_OTP: "/auth/verify-otp",
+  RESET_PASSWORD: "/auth/reset-password",
 };

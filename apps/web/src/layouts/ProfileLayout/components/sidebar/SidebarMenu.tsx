@@ -11,7 +11,6 @@ const SidebarMenu = () => {
   const location = useLocation();
   const {data:user} = useUserInfo();
   const {data: unreadCount} = useUnreadCount();
-  const { data: user } = useUserInfo();
 
   const { logout } = useAuth();
 

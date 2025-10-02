@@ -5,6 +5,9 @@ import type {
   UserLoginPayload,
   followType,
   unfollowType,
+  ForgotPasswordPayload,
+  VerifyOTPPayload,
+  ResetPasswordPayload,
 } from "@app-types/user";
 
 export interface UpdateProfilePayload {
@@ -65,5 +68,21 @@ export const uploadProfileImage = async (image: File) => {
     });
 
     return data;
+};
+
+// Forgot Password Flow
+export const forgotPassword = async (payload: ForgotPasswordPayload) => {
+  const { data } = await api.post(USER_URLS.FORGOT_PASSWORD, payload);
+  return data;
+};
+
+export const verifyOTP = async (payload: VerifyOTPPayload) => {
+  const { data } = await api.post(USER_URLS.VERIFY_OTP, payload);
+  return data;
+};
+
+export const resetPassword = async (payload: ResetPasswordPayload) => {
+  const { data } = await api.post(USER_URLS.RESET_PASSWORD, payload);
+  return data;
 };
 

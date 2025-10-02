@@ -55,3 +55,24 @@ export interface followType {
 export interface unfollowType {
   unfollowedUserId: string;
 }
+
+// Forgot Password Flow
+export interface ForgotPasswordFormValues {
+  email: string;
+}
+
+export interface VerifyOTPFormValues {
+  email: string;
+  otp: string;
+}
+
+export interface ResetPasswordFormValues {
+  email: string;
+  otp: string;
+  newPassword: string;
+  confirmPassword: string;
+}
+
+export type ForgotPasswordPayload = ForgotPasswordFormValues;
+export type VerifyOTPPayload = VerifyOTPFormValues;
+export type ResetPasswordPayload = Omit<ResetPasswordFormValues, "confirmPassword">;

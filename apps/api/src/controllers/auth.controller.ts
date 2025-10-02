@@ -96,7 +96,8 @@ export class AuthController {
                 success: true,
                 message: result.message,
                 valid: result.valid,
-                userId: result.userId
+                resetToken: result.resetToken,
+                expiresIn: result.expiresIn
             });
         } catch (error: unknown) {
             if (error instanceof APIError) return next(error);

@@ -158,10 +158,25 @@ export class AuthService {
                 throw new ValidationError("INVALID_OTP", "Invalid or expired OTP");
             }
 
+            // Generate a temporary reset token (valid for 10 minutes)
+            const resetToken = jwt.sign(
+                { 
+                    email, 
+                    userId: verification.userId,
+                    purpose: 'password_reset',
+                    exp: Math.floor(Date.now() / 1000) + (10 * 60) // 10 minutes
+                }, 
+                env.ACCESS_TOKEN_SECRET
+            );
+
+            // Clean up OTP since it's been verified
+            await otpService.cleanupOTP(email);
+
             return { 
                 valid: true, 
                 message: "OTP verified successfully",
-                userId: verification.userId 
+                resetToken, // Return token instead of userId
+                expiresIn: 600 // 10 minutes
             };
         } catch (error) {
             if (error instanceof ValidationError) {
@@ -173,29 +188,31 @@ export class AuthService {
     }
 
     async resetPassword(data: ResetPasswordDTO) {
-        const { email, otp, newPassword } = data;
+        const { email, otp: resetToken, newPassword } = data; // otp field now contains resetToken
         
         try {
-            // Verify OTP first
-            const otpService = await this.getOTPService();
-            const verification = await otpService.verifyPasswordResetOTP(email, otp);
-            
-            if (!verification.valid) {
-                throw new ValidationError("INVALID_OTP", "Invalid or expired OTP");
+            // Verify reset token instead of OTP
+            let decoded;
+            try {
+                decoded = jwt.verify(resetToken, env.ACCESS_TOKEN_SECRET) as any;
+            } catch (jwtError) {
+                throw new ValidationError("INVALID_TOKEN", "Invalid or expired reset token");
+            }
+
+            // Validate token purpose and email
+            if (decoded.purpose !== 'password_reset' || decoded.email !== email) {
+                throw new ValidationError("INVALID_TOKEN", "Invalid reset token");
             }
 
             // Hash new password
             const hashedPassword = await bcrypt.hash(newPassword, 10);
             
             // Update user password
-            const updated = await this.authRepository.updatePassword(verification.userId!, hashedPassword);
+            const updated = await this.authRepository.updatePassword(decoded.userId, hashedPassword);
             
             if (!updated) {
                 throw new ValidationError("PASSWORD_UPDATE_FAILED", "Failed to update password");
             }
-
-            // Clean up OTP data
-            await otpService.cleanupOTP(email);
 
             return { 
                 message: "Password has been reset successfully" 

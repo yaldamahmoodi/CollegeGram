@@ -82,7 +82,7 @@ const Login = () => {
       />
 
       <div className="flex flex-col mt-8 gap-3">
-        <Link className="text-sm text-red-400" to="/">
+        <Link className="text-sm text-red-400" to="/forgot-password">
           {MESSAGES.forgetPassword}
         </Link>
         <Link className="text-sm text-red-400" to="/register">
