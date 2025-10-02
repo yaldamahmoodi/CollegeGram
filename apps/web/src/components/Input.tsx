@@ -22,6 +22,7 @@ const Input = (props: InputProps) => {
     ? className
     : "flex items-center bg-white border rounded-3xl px-3 py-2 mt-4 mb-1 disabled:bg-gray-100 disabled:text-gray-500";
 
+    
   return (
     <>
       {label && (

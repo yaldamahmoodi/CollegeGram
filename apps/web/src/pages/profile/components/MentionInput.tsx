@@ -1,6 +1,7 @@
 import Button from "@/components/Button";
 import React, { useState } from "react";
 import type { MentionsType } from "@app-types/post";
+import Switch from "@components/Switch";
 
 interface MentionInputProps {
   users: MentionsType[];
@@ -78,6 +79,7 @@ const MentionInput = ({
           </span>
         ))}
       </div>
+      <Switch label="فقط برای دوستان نزدیک نمایش بده" />
       <Button
         onClick={handlePostSubmit}
         label=" ثبت و انتشار پست"

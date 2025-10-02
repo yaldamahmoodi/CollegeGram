@@ -1,17 +1,20 @@
-import { useState } from "react";
+import {  useState, type ReactNode } from "react";
 import Button from "@/components/Button";
-import CraetePostModal from "./components/CreatePostModal";
+import CraetePostModal from "../../pages/profile/components/CreatePostModal";
 import ProfileSidebarMenu from "./components/sidebar/SidebarMenu";
 import profilePhoto from "@/assets/images/avatar.png";
 import searchIcon from "@assets/icons/Mobile/Search.svg";
 import gridMenuIcon from "@assets/icons/Mobile/gridMenu.svg";
 import hamburgerMenuIcon from "@assets/icons/Mobile/hamburgerMenu.svg";
 import plusIcon from "@assets/icons/plus.svg";
-import { Outlet } from "react-router-dom";
-import { useWebSocket } from "@/hooks/useWebSocket.hook";
+
+interface ProfileLayoutProps {
+  children: ReactNode;
+}import { useWebSocket } from "@/hooks/useWebSocket.hook";
 import NotificationToast from "@/components/NotificationToast";
 
-const ProfileLayout = () => {
+const ProfileLayout = (props: ProfileLayoutProps) => {
+  const { children } = props;
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   
@@ -53,7 +56,7 @@ const ProfileLayout = () => {
           <ProfileSidebarMenu />
         </div>
         <div className="left-section w-full lg:w-3/4 flex flex-col px-4 lg:px-15">
-          <Outlet />
+          {children}
         </div>
       </div>
 
