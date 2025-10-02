@@ -33,7 +33,7 @@ export class PostController {
     }
 
     async getPost(req: Authenticate, res: Response) {
-        const post = await this.postService.getPost(req.params['post_id'], req.user.id);
+        const post = await this.postService.getPost(req.params.post_id, req.user.id);
 
         const output = {
             _id: post._id,

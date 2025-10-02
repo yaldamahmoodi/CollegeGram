@@ -15,6 +15,7 @@ router.use(authMiddleware)
 
 router.get(
     "/:post_id/getPost",
+    paramParser(postIdSchema),
     postController.getPost
 )
 
