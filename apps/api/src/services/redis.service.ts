@@ -1,4 +1,4 @@
-import { createClient, RedisClientType } from 'redis';
+import { createClient, type RedisClientType } from 'redis';
 import env from '../../env.ts';
 
 class RedisService {

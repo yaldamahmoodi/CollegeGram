@@ -1,0 +1,15 @@
+# Production compose file - includes all services
+# Usage: docker-compose -f docker-compose.yaml -f docker-compose.prod.yml up
+
+services:
+  api:
+    # Inherits from main docker-compose.yaml
+    profiles: []  # Remove profile restriction for production
+    
+  web:
+    # Inherits from main docker-compose.yaml
+    profiles: []  # Remove profile restriction for production
+    
+  nginx:
+    # Inherits from main docker-compose.yaml
+    profiles: []  # Remove profile restriction for production
