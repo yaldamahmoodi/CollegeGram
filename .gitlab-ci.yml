@@ -26,6 +26,11 @@ build:
     - echo "NODE_ENV=$NODE_ENV" >> apps/api/.env
     - echo "APP_STAGE=$APP_STAGE" >> apps/api/.env
     - echo "CORS_ORIGIN=$CORS_ORIGIN" >> apps/api/.env
+    - echo "SMTP_HOST=$SMTP_HOST" >> apps/api/.env
+    - echo "SMTP_PORT=$SMTP_PORT" >> apps/api/.env
+    - echo "SMTP_USER=$SMTP_USER" >> apps/api/.env
+    - echo "SMTP_PASS=$SMTP_PASS" >> apps/api/.env
+    - echo "EMAIL_FROM=$EMAIL_FROM" >> apps/api/.env
     
     # Create .env files for Web
     - mkdir -p apps/web
