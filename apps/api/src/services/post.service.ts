@@ -8,7 +8,6 @@ import { ValidationError } from "../utils/errors/validation.errors.ts";
 import { InternalErrors } from "../utils/errors/internal.errors.ts";
 import type { CommentRepository } from "../repositories/comment.repository.ts";
 import type { InsertCommentDto } from "../db/models/comment.model.ts";
-import { WebSocketService } from "./websocket.service.ts";
 import type { NotificationService } from "./notification.service.ts";
 
 export class PostService {

@@ -29,11 +29,11 @@ router.post(
 )
 
 router.post(
-    "/savePost",
+    "/save",
     postController.savePost
 )
 router.post(
-    "/unsavePost",
+    "/unsave",
     postController.unsavePost
 )
 

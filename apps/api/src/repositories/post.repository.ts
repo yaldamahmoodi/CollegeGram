@@ -62,6 +62,7 @@ export class PostRepository {
     }
 
     async getPostById(postId: string, userId?: string): Promise<Post | null> {
+
         const post = await postModel.findOne({_id: postId})
             .populate({
                 path: "user_id",
@@ -72,6 +73,8 @@ export class PostRepository {
                 }
             })
             .exec();
+
+     
 
         if (post && userId) {
             // Check if the user has liked this post
@@ -86,7 +89,7 @@ export class PostRepository {
                 user_id: userId
             });
             
-            // Add isLiked and isSaved fields to the post object
+        
             (post as any).isLiked = !!like;
             (post as any).isSaved = !!save;
         }

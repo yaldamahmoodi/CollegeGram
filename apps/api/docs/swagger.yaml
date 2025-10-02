@@ -29,28 +29,28 @@ paths:
                   type: string
                   format: email
                   maxLength: 255
-                  example: "user@example.com"
+                  example: "amir@example.com"
                 username:
                   type: string
                   minLength: 1
                   maxLength: 255
-                  example: "username123"
+                  example: "Amir1234"
                 password:
                   type: string
                   minLength: 8
                   maxLength: 20
                   pattern: "^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)(?=.*[\\W_]).{8,}$"
-                  example: "StrongP@ssw0rd"
+                  example: "Amir@123"
                 firstname:
                   type: string
                   maxLength: 255
                   nullable: true
-                  example: "John"
+                  example: "Amir"
                 lastname:
                   type: string
                   maxLength: 255
                   nullable: true
-                  example: "Doe"
+                  example: "Samimi"
                 biography:
                   type: string
                   maxLength: 1500
@@ -369,8 +369,11 @@ paths:
 
   /api/v1/posts/getPosts:
     get:
+    
       summary: Get user posts with pagination
       description: Retrieve paginated posts for a user. Optional query parameters `page` and `pageSize` control pagination.
+      tags:
+        - Posts
       security:
         - cookieAuth: [ ]
       parameters:
@@ -936,9 +939,9 @@ paths:
             schema:
               type: object
               required:
-                - followedUserId
+                - followerUserId
               properties:
-                followedUserId:
+                followerUserId:
                   type: string
                   description: The ID of the user to follow
                   example: 68c6cbfd5bc774e86bdf4eb2
@@ -1024,9 +1027,9 @@ paths:
             schema:
               type: object
               required:
-                - unfollowedUserId
+                - followerUserId
               properties:
-                unfollowedUserId:
+                followerUserId:
                   type: string
                   description: The ID of the user to unfollow
                   example: 68c6cbfd5bc774e86bdf4eb2
