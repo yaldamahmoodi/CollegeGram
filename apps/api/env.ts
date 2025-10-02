@@ -35,6 +35,9 @@ const envSchema = z.object({
   // REDIS
   REDIS_URL: z.string().default("redis://localhost:6379"),
 
+  // ELASTICSEARCH
+  ELASTIC_URL: z.string().default("http://localhost:9200"),
+
   // SECURITY
   ACCESS_TOKEN_SECRET: z.string().default("secret"),
   ACCESS_TOKEN_EXPIRES_IN: z.coerce.number().default(54000),

@@ -222,7 +222,7 @@ export class AuthService {
 
             return {
                 message: "Email verification sent successfully",
-                expiresIn: 1800 // 30 minutes
+                expiresIn: 300 // 5 minutes
             };
         } catch (error) {
             if (error instanceof ValidationError) {

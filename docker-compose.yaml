@@ -4,9 +4,9 @@ services:
     container_name: collagegram-mongo
     restart: unless-stopped
     environment:
-      MONGO_INITDB_ROOT_USERNAME: admin
-      MONGO_INITDB_ROOT_PASSWORD: admin
-      MONGO_INITDB_DATABASE: collagegram
+      MONGO_INITDB_ROOT_USERNAME: ${MONGO_INITDB_ROOT_USERNAME:-admin}
+      MONGO_INITDB_ROOT_PASSWORD: ${MONGO_INITDB_ROOT_PASSWORD:-admin}
+      MONGO_INITDB_DATABASE: ${MONGO_INITDB_DATABASE:-collagegram}
     ports:
       - "27017:27017"
     volumes:
@@ -17,7 +17,8 @@ services:
     container_name: collagegram-elasticsearch
     environment:
       - discovery.type=single-node
-      - ES_JAVA_OPTS=-Xms512m -Xmx512m
+      - ES_JAVA_OPTS=${ES_JAVA_OPTS:--Xms512m -Xmx512m}
+      - xpack.security.enabled=false
     ports:
       - "9200:9200"
     volumes:
@@ -51,8 +52,15 @@ services:
       - mongo
       - elasticsearch
     environment:
-      - NODE_ENV=production
-      - PORT=3001
+      - NODE_ENV=${NODE_ENV:-production}
+      - PORT=${API_PORT:-3001}
+      - MONGODB_URI=${MONGODB_URI}
+      - REDIS_URL=${REDIS_URL}
+      - ELASTIC_URL=${ELASTIC_URL}
+      - SMTP_HOST=mailpit
+      - SMTP_PORT=1025
+      - ACCESS_TOKEN_SECRET=${ACCESS_TOKEN_SECRET}
+      - COOKIE_SECRET=${COOKIE_SECRET}
     env_file:
       - ./apps/api/.env
     volumes:

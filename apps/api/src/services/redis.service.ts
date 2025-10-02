@@ -85,6 +85,15 @@ class RedisService {
     }
   }
 
+  async ping(): Promise<string> {
+    try {
+      return await this.client.ping();
+    } catch (error) {
+      console.error('Redis PING error:', error);
+      throw error;
+    }
+  }
+
   async disconnect(): Promise<void> {
     try {
       await this.client.disconnect();

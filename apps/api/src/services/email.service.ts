@@ -6,10 +6,10 @@ class EmailService {
 
   constructor() {
     this.transporter = nodemailer.createTransport({
-      host: env.SMTP_HOST || "mailpit",
-      port: parseInt(env.SMTP_PORT || "1025"),
+      host: env.SMTP_HOST,
+      port: parseInt(env.SMTP_PORT),
       secure: false, // true for 465, false for other ports
-      auth: {
+      auth: (env.SMTP_HOST === "localhost" || env.SMTP_HOST === "127.0.0.1" || env.SMTP_HOST === "mailpit") ? undefined : {
         user: env.SMTP_USER || "",
         pass: env.SMTP_PASS || "",
       },
@@ -24,7 +24,7 @@ class EmailService {
   ): Promise<boolean> {
     try {
       const mailOptions = {
-        from: process.env.EMAIL_FROM || "noreply@devsyncc.ir",
+        from: env.EMAIL_FROM,
         to,
         subject,
         text,
@@ -161,7 +161,7 @@ class EmailService {
           
           <div style="background-color: #fff3cd; border: 1px solid #ffeaa7; padding: 15px; border-radius: 8px; margin-bottom: 20px;">
             <p style="margin: 0; color: #856404;">
-              <strong>مهم:</strong> این کد و لینک فقط به مدت ۳۰ دقیقه معتبر است. 
+              <strong>مهم:</strong> این کد و لینک فقط به مدت 5 دقیقه معتبر است. 
               اگر شما این درخواست را ثبت نکرده‌اید، لطفاً این ایمیل را نادیده بگیرید.
             </p>
           </div>

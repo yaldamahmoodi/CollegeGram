@@ -77,6 +77,8 @@ export class UserController {
           follower_count: userDetails.follower_count,
           following_count: userDetails.following_count,
           post_count: userDetails.post_count,
+          isPrivate: userDetails.isPrivate,
+          emailVerified: userDetails.emailVerified,
           profilePhotoUrl,
         },
       });

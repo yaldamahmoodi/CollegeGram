@@ -30,10 +30,14 @@ build:
     - echo "SMTP_USER=$SMTP_USER" >> apps/api/.env
     - echo "SMTP_PASS=$SMTP_PASS" >> apps/api/.env
     - echo "EMAIL_FROM=$EMAIL_FROM" >> apps/api/.env
+    - echo "REDIS_URL=$REDIS_URL" >> apps/api/.env
+    - echo "ELASTIC_URL=$ELASTIC_URL" >> apps/api/.env
+    - echo "COOKIE_SECRET=$COOKIE_SECRET" >> apps/api/.env
 
     - mkdir -p apps/web
     - touch apps/web/.env
     - echo "VITE_BASE_URL=$VITE_BASE_URL" >> apps/web/.env
+    - echo "VITE_SOCKET_URL=$VITE_SOCKET_URL" >> apps/web/.env
 
     - docker compose -f docker-compose.yaml -f docker-compose.prod.yml build --no-cache
   rules:

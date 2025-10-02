@@ -132,7 +132,11 @@ paths:
                   example: "user@example.com"
                 otp:
                   type: string
+                  pattern: "^\\d{6}$"
+                  minLength: 6
+                  maxLength: 6
                   example: "123456"
+                  description: "6-digit numeric OTP code"
               required:
                 - email
                 - otp
@@ -170,12 +174,22 @@ paths:
                   type: string
                   format: email
                   example: "user@example.com"
+                otp:
+                  type: string
+                  pattern: "^\\d{6}$"
+                  minLength: 6
+                  maxLength: 6
+                  example: "123456"
+                  description: "6-digit numeric OTP code"
                 newPassword:
                   type: string
                   minLength: 8
+                  pattern: "^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)(?=.*[\\W_]).{8,}$"
                   example: "NewPassword@123"
+                  description: "Password must be at least 8 characters long and contain at least one lowercase letter, one uppercase letter, one number, and one special character"
               required:
                 - email
+                - otp
                 - newPassword
       responses:
         '200':
@@ -211,12 +225,16 @@ paths:
                   type: string
                   format: email
                   example: "user@example.com"
-                verificationCode:
+                otp:
                   type: string
-                  example: "ABC123"
+                  pattern: "^\\d{6}$"
+                  minLength: 6
+                  maxLength: 6
+                  example: "123456"
+                  description: "6-digit numeric verification code"
               required:
                 - email
-                - verificationCode
+                - otp
       responses:
         '200':
           description: Email verified successfully

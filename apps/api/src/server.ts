@@ -8,10 +8,23 @@ import VerificationService from "./services/verification.service.ts";
 import { Server } from "socket.io";
 import { createServer } from "node:http";
 import { registerSocketHandlers } from "./middlewares/socketIO/socket.middleware.ts";
+import { HealthCheckerService } from "./routes/health.route.ts";
 
 (async () => {
   try {
-    // Ensure services and controllers are initialized before routes load
+    
+    const healthChecker = HealthCheckerService.getInstance();
+    const healthResult = await healthChecker.checkAllServices();
+    
+    if (healthResult.overall === 'unhealthy') {
+      console.error('❌ Cannot start API due to unhealthy services. Please fix the issues above.');
+      process.exit(1);
+    }
+    
+    if (healthResult.overall === 'warning') {
+      console.log('⚠️  Starting API with warnings. Some features may not work correctly.');
+    }
+
     initiator.setupServices();
     initiator.setupControllers();
 
