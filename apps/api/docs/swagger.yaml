@@ -774,7 +774,7 @@ paths:
                     type: string
                     example: Something went wrong while unliking the post.
 
-  /api/v1/posts/save:
+  /api/v1/posts/savePost:
     post:
       summary: Save a post
       description: Save a specific post by its ID for the authenticated user.
@@ -849,7 +849,7 @@ paths:
                     type: string
                     example: Something went wrong while saving the post.
 
-  /api/v1/posts/unsave:
+  /api/v1/posts/unsavePost:
     post:
       summary: Unsave a post
       description: Remove a saved post for the authenticated user by its ID.
