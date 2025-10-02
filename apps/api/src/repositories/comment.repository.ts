@@ -20,17 +20,50 @@ export class CommentRepository {
     });
   }
 
+
   async getCommentsByPostId(
-    postId: string,
-    page: number,
-    pageSize: number
-  ): Promise<IComment[]> {
+      postId: string,
+      page: number,
+      pageSize: number
+  ) {
     return CommentModel.aggregate([
-      { $match: { post_id: new mongoose.Types.ObjectId(postId) } },
+      {
+        $match: { post_id: new mongoose.Types.ObjectId(postId) }
+      },
+      {
+        $lookup: {
+          from: "users",
+          localField: "user_id",
+          foreignField: "_id",
+          as: "user_info"
+        }
+      },
+      {
+        $unwind: "$user_info"
+      },
+      {
+        $project: {
+          _id: 1,
+          content: 1,
+          like_count: 1,
+          parent_comment: 1,
+          createdAt: 1,
+          updatedAt: 1,
+          "user_info._id": 1,
+          "user_info.username": 1,
+          "user_info.firstname": 1,
+          "user_info.lastname": 1,
+          "user_info.profilePhoto": {
+            $ifNull: ["$user_info.ProfilePhoto.path", null]
+          }
+        }
+      },
       { $skip: (page - 1) * pageSize },
-      { $limit: pageSize },
+      { $limit: pageSize }
     ]);
   }
+
+
 
   async commentLikedBefore(userId: string, commentId: string) {
     return await commentLikeModel
