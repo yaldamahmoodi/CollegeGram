@@ -10,6 +10,8 @@ export interface IUser {
     lastname?: string | null;
     biography?: string | null;
     isPrivate?: boolean;
+    emailVerified?: boolean;
+
     ProfilePhoto?: {
         _id: Types.ObjectId;
         path: string;
@@ -31,6 +33,7 @@ const UserSchema: Schema<IUser> = new Schema(
         lastname: {type: String, maxlength: 255, default: null},
         biography: {type: String, maxlength: 1500, default: null},
         isPrivate: {type: Boolean, default: false},
+        emailVerified: {type: Boolean, default: false},
         follower_count: { type: Number, default: 0 },
         following_count: { type: Number, default: 0 },
         post_count: { type: Number, default: 0 },
@@ -62,6 +65,7 @@ export const insertUserSchema = z.object({
     lastname: z.string().max(255).optional().default(null),
     biography: z.string().max(1500).optional().default(null),
     isPrivate: z.boolean().optional().default(false),
+    emailVerified: z.boolean().optional(),
 });
 
 

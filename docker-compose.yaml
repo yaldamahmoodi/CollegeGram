@@ -28,11 +28,20 @@ services:
     container_name: collagegram-mailpit
     restart: unless-stopped
     ports:
-      - "1025:1025"  
-      - "8025:8025"  
+      - "1025:1025"  # SMTP port
+      - "8025:8025"  # Web interface port
     environment:
       - MP_SMTP_AUTH_ACCEPT_ANY=1
       - MP_SMTP_AUTH_ALLOW_INSECURE=1
+
+  redis:
+    image: redis:latest
+    container_name: collagegram-redis
+    restart: unless-stopped
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data:/data
 
   api:
     build: ./apps/api
@@ -73,9 +82,8 @@ services:
       - /home/sudouser/.acme.sh/devsyncc.ir_ecc:/etc/letsencrypt/live/devsyncc.ir:ro
       - uploads_data:/var/www/uploads
 
-
-
 volumes:
   mongo_data:
   esdata:
   uploads_data:
+  redis_data:

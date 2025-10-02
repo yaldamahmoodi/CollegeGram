@@ -15,6 +15,7 @@
     "turbo": "^2.5.6"
   },
   "dependencies": {
+    "@types/nodemailer": "^6.4.19",
     "socket.io": "^4.8.1"
   }
 }
