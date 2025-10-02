@@ -79,6 +79,199 @@ paths:
         '500':
           description: Internal Server Error
 
+  /api/v1/auth/forgot-password:
+    post:
+      summary: Initiate forgot password flow
+      description: Send OTP to user's email for password reset
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                email:
+                  type: string
+                  format: email
+                  example: "user@example.com"
+              required:
+                - email
+      responses:
+        '200':
+          description: OTP sent successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  code:
+                    type: string
+                    example: "OTP_SENT"
+                  message:
+                    type: string
+                    example: "OTP sent to your email"
+        '404':
+          description: User not found
+        '500':
+          description: Internal Server Error
+
+  /api/v1/auth/verify-otp:
+    post:
+      summary: Verify OTP for password reset
+      description: Verify the OTP sent to user's email
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                email:
+                  type: string
+                  format: email
+                  example: "user@example.com"
+                otp:
+                  type: string
+                  example: "123456"
+              required:
+                - email
+                - otp
+      responses:
+        '200':
+          description: OTP verified successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  code:
+                    type: string
+                    example: "OTP_VERIFIED"
+                  message:
+                    type: string
+                    example: "OTP verified successfully"
+        '400':
+          description: Invalid or expired OTP
+        '500':
+          description: Internal Server Error
+
+  /api/v1/auth/reset-password:
+    post:
+      summary: Reset password
+      description: Reset user password after OTP verification
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                email:
+                  type: string
+                  format: email
+                  example: "user@example.com"
+                newPassword:
+                  type: string
+                  minLength: 8
+                  example: "NewPassword@123"
+              required:
+                - email
+                - newPassword
+      responses:
+        '200':
+          description: Password reset successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  code:
+                    type: string
+                    example: "PASSWORD_RESET"
+                  message:
+                    type: string
+                    example: "Password reset successfully"
+        '400':
+          description: Invalid request
+        '500':
+          description: Internal Server Error
+
+  /api/v1/auth/verify-email:
+    post:
+      summary: Verify email address
+      description: Verify user's email address with verification code
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                email:
+                  type: string
+                  format: email
+                  example: "user@example.com"
+                verificationCode:
+                  type: string
+                  example: "ABC123"
+              required:
+                - email
+                - verificationCode
+      responses:
+        '200':
+          description: Email verified successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  code:
+                    type: string
+                    example: "EMAIL_VERIFIED"
+                  message:
+                    type: string
+                    example: "Email verified successfully"
+        '400':
+          description: Invalid verification code
+        '500':
+          description: Internal Server Error
+
+  /api/v1/auth/resend-verification:
+    post:
+      summary: Resend email verification
+      description: Resend email verification code to user
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                email:
+                  type: string
+                  format: email
+                  example: "user@example.com"
+              required:
+                - email
+      responses:
+        '200':
+          description: Verification email sent
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  code:
+                    type: string
+                    example: "VERIFICATION_SENT"
+                  message:
+                    type: string
+                    example: "Verification email sent"
+        '404':
+          description: User not found
+        '500':
+          description: Internal Server Error
+
   /api/v1/auth/login:
     post:
       summary: Login user
@@ -631,7 +824,7 @@ paths:
                     type: string
                     example: NOT_FOUND_USER
   
-  /api/v1/posts/like:
+  /api/v1/posts/Like:
     post:
       summary: Like a post
       description: Add a like to a specific post for the authenticated user.
@@ -1663,6 +1856,55 @@ paths:
                     type: string
                     example: User not authenticated
 
+  /api/v1/posts/mentions:
+    get:
+      summary: Get posts where user is mentioned
+      description: Retrieve posts where the authenticated user has been mentioned
+      tags:
+        - Posts
+      security:
+        - cookieAuth: [ ]
+      parameters:
+        - name: page
+          in: query
+          required: false
+          schema:
+            type: integer
+            default: 1
+            minimum: 1
+          description: Page number for pagination
+        - name: pageSize
+          in: query
+          required: false
+          schema:
+            type: integer
+            default: 10
+            minimum: 1
+            maximum: 50
+          description: Number of posts per page
+      responses:
+        '200':
+          description: Mentioned posts retrieved successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  code:
+                    type: string
+                    example: GET_MENTIONED_POSTS_SUCCESS
+                  totalCount:
+                    type: integer
+                    example: 15
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/PopulatedPost'
+        '401':
+          description: Unauthorized – User not logged in
+        '500':
+          description: Internal server error
+
   /api/v1/posts/explore:
     get:
       summary: Explore posts from followed users
@@ -1859,6 +2101,94 @@ paths:
                       deletedCount:
                         type: integer
                         example: 15
+        '401':
+          description: Unauthorized – User not logged in
+
+  /api/v1/notifications/my:
+    get:
+      summary: Get my notifications
+      description: Get notifications specific to the authenticated user
+      tags:
+        - Notifications
+      security:
+        - cookieAuth: [ ]
+      parameters:
+        - name: page
+          in: query
+          required: false
+          schema:
+            type: integer
+            default: 1
+            minimum: 1
+          description: Page number for pagination
+        - name: pageSize
+          in: query
+          required: false
+          schema:
+            type: integer
+            default: 10
+            minimum: 1
+            maximum: 50
+          description: Number of notifications per page
+      responses:
+        '200':
+          description: My notifications retrieved successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  code:
+                    type: string
+                    example: GET_MY_NOTIFICATIONS_SUCCESSFULLY
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Notification'
+        '401':
+          description: Unauthorized – User not logged in
+
+  /api/v1/notifications/friends-activity:
+    get:
+      summary: Get friends activity notifications
+      description: Get activity notifications from friends
+      tags:
+        - Notifications
+      security:
+        - cookieAuth: [ ]
+      parameters:
+        - name: page
+          in: query
+          required: false
+          schema:
+            type: integer
+            default: 1
+            minimum: 1
+          description: Page number for pagination
+        - name: pageSize
+          in: query
+          required: false
+          schema:
+            type: integer
+            default: 10
+            minimum: 1
+            maximum: 50
+          description: Number of notifications per page
+      responses:
+        '200':
+          description: Friends activity retrieved successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  code:
+                    type: string
+                    example: GET_FRIENDS_ACTIVITY_SUCCESSFULLY
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Notification'
         '401':
           description: Unauthorized – User not logged in
 
