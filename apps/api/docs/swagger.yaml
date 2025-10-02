@@ -2253,6 +2253,7 @@ paths:
         '404':
           description: Notification not found
 
+  /api/v1/notifications/{id}/read:
     patch:
       summary: Mark notification as read
       description: Mark a specific notification as read
@@ -2884,7 +2885,7 @@ paths:
                     example: Something went wrong while adding to close friends
 
   /api/v1/closeFriend/remove:
-    post:
+    delete:
       summary: Remove a user from close friends
       description: |
         کاربر لاگین‌شده می‌تواند یک کاربر دیگر را از لیست **دوستان نزدیک** خودش حذف کند.
