@@ -24,7 +24,7 @@ const app = express();
  
 
 const swaggerDocument = YAML.load(
-  path.join(__dirname, "../docs", "swagger.yaml")
+    path.join(__dirname, "../docs", "swagger.yaml")
 );
 app.use("/api/docs", swaggerUi.serve, swaggerUi.setup(swaggerDocument));
 
@@ -39,18 +39,18 @@ app.use(
     origin: function (origin, callback) {
       if (!origin) return callback(null, true);
 
-      if (allowedOrigins.indexOf(origin) !== -1) {
-        callback(null, true);
-      } else {
-        console.log(`CORS blocked origin: ${origin}`);
-        callback(new Error("Not allowed by CORS"));
-      }
-    },
-    credentials: true,
-    methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS", "PATCH"],
-    allowedHeaders: ["Content-Type", "Authorization", "X-Requested-With"],
-    exposedHeaders: ["Content-Type", "Authorization"],
-  })
+            if (allowedOrigins.indexOf(origin) !== -1) {
+                callback(null, true);
+            } else {
+                console.log(`CORS blocked origin: ${origin}`);
+                callback(new Error("Not allowed by CORS"));
+            }
+        },
+        credentials: true,
+        methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS", "PATCH"],
+        allowedHeaders: ["Content-Type", "Authorization", "X-Requested-With"],
+        exposedHeaders: ["Content-Type", "Authorization"],
+    })
 );
 
 app.use(morgan("combined"));
@@ -93,3 +93,4 @@ app.use("/api/v1/closeFriend", closeFriendRoute);
 
 export { app };
 export default app;
+
