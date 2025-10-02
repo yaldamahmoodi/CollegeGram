@@ -96,12 +96,9 @@ export function SectionCards() {
       </Card>
       <Card className="@container/card">
         <CardHeader className="relative">
-          <CardDescription>Total API Calls</CardDescription>
+          <CardDescription>Session API Calls</CardDescription>
           <CardTitle className="@[250px]/card:text-3xl text-2xl font-semibold tabular-nums">
-            {formatNumber(
-              (apiMetrics?.historicalMetrics?.totalRequests || 0) + 
-              (apiMetrics?.sessionMetrics?.totalRequests || 0)
-            )}
+            {formatNumber(apiMetrics?.sessionMetrics?.totalRequests || 0)}
           </CardTitle>
           <div className="absolute right-4 top-4">
             <Badge variant="outline" className="flex gap-1 rounded-lg text-xs">

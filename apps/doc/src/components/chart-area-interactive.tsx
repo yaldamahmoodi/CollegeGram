@@ -157,17 +157,20 @@ export function ChartAreaInteractive() {
     if (apiMetrics?.historicalMetrics?.dailyData && apiMetrics.historicalMetrics.dailyData.length > 0) {
       const historicalData = apiMetrics.historicalMetrics.dailyData
       
+      // Sort data by date to ensure chronological order
+      const sortedData = [...historicalData].sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime())
+      
       // If we have enough historical data, use it directly
-      if (historicalData.length >= days) {
-        return historicalData.slice(-days)
+      if (sortedData.length >= days) {
+        return sortedData.slice(-days)
       }
       
       // If we have some historical data, extend it with today's session data
-      const data = [...historicalData]
+      const data = [...sortedData]
       const today = new Date().toISOString().split('T')[0]
       
       // Add today's session data if not already included
-      const hasToday = historicalData.some(item => item.date === today)
+      const hasToday = sortedData.some(item => item.date === today)
       if (!hasToday && apiMetrics.sessionMetrics) {
         data.push({
           date: today,
