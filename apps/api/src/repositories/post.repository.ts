@@ -60,7 +60,7 @@ export class PostRepository {
     return savedPost;
   }
 
-  async getPostById(postId: string, userId: string): Promise<Post | null> {
+  async getPostById(postId: string, userId?: string): Promise<Post | null> {
 
     const post = await postModel
       .findOne({ _id: new Types.ObjectId(postId) })

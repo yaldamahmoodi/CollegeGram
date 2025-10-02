@@ -39,7 +39,7 @@ export class PostController {
             _id: post._id,
             user_id: post.user_id,
             user: post.user,
-            urls: post.urls,
+            urls: post.urls.map(file => `${req.protocol}://${req.get("host")}/uploads/posts/${file}`),
             caption: post.caption,
             like_count: post.like_count,
             save_count: post.save_count,
