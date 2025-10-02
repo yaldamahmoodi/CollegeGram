@@ -1,10 +1,13 @@
 import express from "express";
 import helmet from "helmet";
 import cors from "cors";
-import morgan from "morgan";
 import cookieParser from "cookie-parser";
+import morganMiddleware from "./middlewares/morgan.middleware.ts";
+import metricsService from "./services/metrics.service.ts";
+import logger from "./utils/logger.ts";
 import YAML from "yamljs";
 import swaggerUi from "swagger-ui-express";
+import { setupSwagger } from "./config/swagger.ts";
 import healthRoute from "./routes/health.route.ts";
 import authRoute from "./routes/v1/auth.route.ts";
 import userRoute from "./routes/v1/user.route.ts";
@@ -23,15 +26,23 @@ const __dirname = path.dirname(__filename);
 const app = express();
  
 
+// Setup Swagger documentation
 const swaggerDocument = YAML.load(
     path.join(__dirname, "../docs", "swagger.yaml")
 );
 app.use("/api/docs", swaggerUi.serve, swaggerUi.setup(swaggerDocument));
 
+// Setup additional Swagger endpoints
+setupSwagger(app);
+
 /* ---- GLOBAL MIDDLE WARES ---- */
 app.use(express.json());
 app.use(helmet());
 app.use(cookieParser(env.COOKIE_SECRET));
+
+// Add logging and metrics middleware
+app.use(morganMiddleware);
+app.use(metricsService.collectMetrics());
 
 export const allowedOrigins = env.CORS_ORIGIN.split(",");
 app.use(
@@ -53,7 +64,7 @@ app.use(
     })
 );
 
-app.use(morgan("combined"));
+// Morgan middleware is now handled by our custom morganMiddleware
 
  
 

@@ -79,6 +79,15 @@ services:
     profiles:
       - production
 
+  doc:
+    build: ./apps/doc
+    container_name: monorepo-doc
+    restart: unless-stopped
+    ports:
+      - "3002:80"
+    profiles:
+      - production
+
 
   nginx:
     image: nginx:1.25-alpine

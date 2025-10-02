@@ -16,13 +16,19 @@ import { HealthCheckerService } from "./routes/health.route.ts";
     const healthChecker = HealthCheckerService.getInstance();
     const healthResult = await healthChecker.checkAllServices();
     
-    if (healthResult.overall === 'unhealthy') {
-      console.error('❌ Cannot start API due to unhealthy services. Please fix the issues above.');
+    // Only exit if critical services (MongoDB, Redis, Email) are unhealthy
+    const criticalServices = healthResult.services.filter(s => 
+      s.name === 'MongoDB' || s.name === 'Redis' || s.name === 'Email Service'
+    );
+    const criticalUnhealthy = criticalServices.filter(s => s.status === 'unhealthy');
+    
+    if (criticalUnhealthy.length > 0) {
+      console.error('❌ Cannot start API due to critical services being unhealthy:', criticalUnhealthy.map(s => s.name).join(', '));
       process.exit(1);
     }
     
-    if (healthResult.overall === 'warning') {
-      console.log('⚠️  Starting API with warnings. Some features may not work correctly.');
+    if (healthResult.overall === 'warning' || healthResult.overall === 'unhealthy') {
+      console.log('⚠️  Starting API with some services unhealthy. Non-critical services may not work correctly.');
     }
 
     initiator.setupServices();
