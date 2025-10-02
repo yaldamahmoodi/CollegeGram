@@ -10,12 +10,12 @@ const searchController = initiator.getSearchController();
 router.use(authMiddleware)
 
 router.get(
-    "/getUsers/:page_number/:query",
+    "/getUsers/:page_number/{:query}",
     searchController.userSearch
 )
 
 router.get(
-    "/getPosts/:page_number/:query",
+    "/getPosts/:page_number/{:query}",
     searchController.postSearch
 )
 
