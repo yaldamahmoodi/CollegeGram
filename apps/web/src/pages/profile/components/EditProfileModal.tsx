@@ -1,6 +1,7 @@
-import React, { useState } from "react";
+import { useEffect, useState } from "react";
 import { useFormik } from "formik";
 import Modal from "@components/Modal";
+import BottomSheet from "@components/BottomSheet";
 import Input from "@components/Input";
 import passwordIcon from "@assets/icons/password.svg";
 import userNameIcon from "@assets/icons/username.svg";
@@ -13,67 +14,90 @@ import {
   type UpdateProfilePayload,
 } from "@/api/user/user.api";
 import { useUserInfo } from "@/hooks/user.hook";
-// import Button from "@components/Button";
+import type { UpdateProfileType } from "@/types/user.ts";
 
-
-type FormValues = {
-  firstname: string;
-  lastname: string;
-  email: string;
-  password: string;
-  confirmPassword: string;
-  bio: string;
+type User = {
+  profilePhotoUrl?: string;
+  firstname?: string;
+  lastname?: string;
+  email?: string;
+  biography?: string;
+  isPrivate?: boolean;
 };
 
-interface Props {
-  isOpen: boolean;
+type EditProfileModalProps = {
+  isOpen?: boolean;
   onClose: () => void;
-}
+};
 
-const EditProfileModal: React.FC<Props> = ({ isOpen, onClose }) => {
+const EditProfileModal = (props: EditProfileModalProps) => {
+  const { isOpen = false, onClose } = props;
+
   const [image, setImage] = useState<File | null>(null);
   const [preview, setPreview] = useState<string | null>(null);
-  const [isPrivate, setIsPrivate] = useState(false);
+  const { data: user } = useUserInfo<User>();
 
-    const { data: user } = useUserInfo();
+  const [isMobile, setIsMobile] = useState(false);
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+    const check = () => setIsMobile(window.innerWidth < 768);
+    check();
+    window.addEventListener("resize", check);
+    return () => window.removeEventListener("resize", check);
+  }, []);
 
-  const formik = useFormik<FormValues>({
+  const Container = isMobile ? BottomSheet : Modal;
+
+  useEffect(() => {
+    if (user?.profilePhotoUrl) {
+      setPreview(user.profilePhotoUrl);
+    }
+  }, [user?.profilePhotoUrl]);
+
+  const formik = useFormik<UpdateProfileType>({
+    enableReinitialize: true,
     initialValues: {
-      firstname: "",
-      lastname: "",
-      email: "",
+      firstname: user?.firstname ?? "",
+      lastname: user?.lastname ?? "",
+      email: user?.email ?? "",
       password: "",
       confirmPassword: "",
-      bio: "",
+      bio: user?.biography ?? "",
+      isPrivate: user?.isPrivate ?? false,
     },
     onSubmit: async (values, { setFieldError }) => {
-      const { confirmPassword, bio, ...rest } = values;
-      if (rest.password && rest.password !== confirmPassword) {
-        setFieldError("confirmPassword", "تکرار رمز با رمز برابر نیست");
-        return;
-      }
-      const raw = { ...rest, biography: bio };
-      const payload: UpdateProfilePayload = Object.fromEntries(
-        Object.entries(raw).filter(
-          ([, v]) => v != null && String(v).trim() !== ""
-        )
-      ) as UpdateProfilePayload;
-      if (Object.keys(payload).length > 0) {
-        await updateProfile(payload);
-      }
-      if (image) {
-        await uploadProfileImage(image);
-      }
-      if (Object.keys(payload).length === 0 && !image) {
+      try {
+        const { confirmPassword, bio, isPrivate, ...rest } = values;
+
+        if (rest.password && rest.password !== confirmPassword) {
+          setFieldError("confirmPassword", "تکرار رمز با رمز برابر نیست");
+          return;
+        }
+
+        const raw = { ...rest, biography: bio };
+        const payload = Object.fromEntries(
+          Object.entries(raw).filter(
+            ([, v]) => v != null && String(v).trim() !== ""
+          )
+        ) as Partial<UpdateProfilePayload>;
+
+        if (Object.keys(payload).length > 0) {
+          await updateProfile(payload as UpdateProfilePayload);
+        }
+
+        if (image) {
+          await uploadProfileImage(image);
+        }
+
         onClose();
-        return;
+      } catch (e) {
+        console.error("EditProfile error:", e);
       }
-      onClose();
     },
   });
 
   return (
-    <Modal
+    <Container
       isOpen={isOpen}
       onClose={onClose}
       onClickHandler={() => {
@@ -81,13 +105,15 @@ const EditProfileModal: React.FC<Props> = ({ isOpen, onClose }) => {
       }}
       labelHandler={formik.isSubmitting ? "در حال ذخیره..." : "ثبت تغییرات"}
       labelClose="پشیمون شدم"
-      className="w-96 z-auto">
+      showCloseButton
+      className={isMobile ? "" : "w-96 z-auto"}
+      buttonGroupClassName="mt-2">
       <h2 className="text-2xl flex self-center">ویرایش حساب</h2>
+
       <form onSubmit={formik.handleSubmit} className="flex flex-col gap-4">
-        <div className="relative flex flex-col self-center items-center gap-2 mb-4 rounded-full overflow-hidden w-32 h-32  cursor-pointer justify-center hover:bg-orange-50 transition">
+        <div className="relative flex flex-col self-center items-center gap-2 mb-4 rounded-full overflow-hidden w-32 h-32 cursor-pointer justify-center hover:bg-orange-50 transition">
           <label>
             {!preview && <img src={uploadImageIcon} alt="Upload" />}
-
             {preview && (
               <img
                 src={preview}
@@ -95,7 +121,6 @@ const EditProfileModal: React.FC<Props> = ({ isOpen, onClose }) => {
                 className="absolute inset-0 w-full h-full object-cover"
               />
             )}
-
             <input
               type="file"
               accept="image/*"
@@ -109,7 +134,6 @@ const EditProfileModal: React.FC<Props> = ({ isOpen, onClose }) => {
               }}
             />
           </label>
-
           {preview && <img src={refreshIcon} className="absolute top-1/2" />}
         </div>
 
@@ -117,7 +141,6 @@ const EditProfileModal: React.FC<Props> = ({ isOpen, onClose }) => {
           type="text"
           placeholder="نام"
           name="firstname"
-          defaultValue={user?.firstname}
           value={formik.values.firstname}
           onChange={formik.handleChange}
           onBlur={formik.handleBlur}
@@ -130,7 +153,6 @@ const EditProfileModal: React.FC<Props> = ({ isOpen, onClose }) => {
           type="text"
           placeholder="نام خانوادگی"
           name="lastname"
-          defaultValue={user?.lastname}
           value={formik.values.lastname}
           onChange={formik.handleChange}
           onBlur={formik.handleBlur}
@@ -143,7 +165,6 @@ const EditProfileModal: React.FC<Props> = ({ isOpen, onClose }) => {
           type="text"
           placeholder="ایمیل"
           name="email"
-          defaultValue={user?.email}
           value={formik.values.email}
           onChange={formik.handleChange}
           onBlur={formik.handleBlur}
@@ -177,15 +198,20 @@ const EditProfileModal: React.FC<Props> = ({ isOpen, onClose }) => {
           }
           errorMessage={formik.errors.confirmPassword}
         />
+
         <div className="flex items-center gap-2">
           <button
             type="button"
-            onClick={() => setIsPrivate(!isPrivate)}
-            className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors duration-300
-      ${isPrivate ? "bg-[#E7000B]" : "bg-gray-300"}`}>
+            onClick={() =>
+              formik.setFieldValue("isPrivate", !formik.values.isPrivate)
+            }
+            className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors duration-300 ${
+              formik.values.isPrivate ? "bg-[#E7000B]" : "bg-gray-300"
+            }`}>
             <span
-              className={`absolute top-0.5 left-0.5 h-5 w-5 rounded-full bg-white shadow transition-transform duration-300
-        ${isPrivate ? "translate-x-5" : "translate-x-0"}`}
+              className={`absolute top-0.5 left-0.5 h-5 w-5 rounded-full bg-white shadow transition-transform duration-300 ${
+                formik.values.isPrivate ? "translate-x-5" : "translate-x-0"
+              }`}
             />
           </button>
           <span className="text-sm select-none">پیج خصوصی باشه</span>
@@ -204,7 +230,7 @@ const EditProfileModal: React.FC<Props> = ({ isOpen, onClose }) => {
           />
         </div>
       </form>
-    </Modal>
+    </Container>
   );
 };
 
