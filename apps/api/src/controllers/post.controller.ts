@@ -53,6 +53,7 @@ export class PostController {
       isLiked: post.isLiked || false,
       isSaved: post.isSaved || false,
       createdAt: post.createdAt,
+      isClose: post.isClose || false,
     };
     return res.status(200).json({
       code: "GET_POST_SUCCESSFULLY",
@@ -91,6 +92,7 @@ export class PostController {
         isLiked: post.isLiked || false,
         isSaved: post.isSaved || false,
         createdAt: post.createdAt,
+        isClose: post.isClose || false,
       }));
 
       return res.status(200).json({

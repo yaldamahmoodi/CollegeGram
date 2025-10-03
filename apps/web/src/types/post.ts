@@ -15,6 +15,7 @@ export interface CreatePostPayload {
   photos: File[];
   caption?: string;
   mentions?: MentionsType[];
+  isClose?: boolean;
 }
 
 export type MentionsType = {
@@ -34,6 +35,7 @@ export interface PostInfo {
   hashtag_array: string[];
   isLiked?: boolean;
   isSaved?: boolean;
+  isClose?: boolean;
 }
 
 export interface Posts {

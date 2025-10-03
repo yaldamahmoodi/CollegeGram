@@ -37,13 +37,16 @@ export const getPostById = async (id: string | null): Promise<PostInfo> => {
 };
 
 export const createPost = async (payload: CreatePostPayload) => {
-  const { photos, caption, mentions } = payload;
+  const { photos, caption, mentions, isClose } = payload;
   const formData = new FormData();
   photos.forEach((photo) => {
     formData.append("photos", photo);
   });
   if (caption) {
     formData.append("caption", caption);
+  }
+  if (typeof isClose === "boolean") {
+    formData.append("isClose", String(isClose));
   }
 
   if (mentions?.length) {

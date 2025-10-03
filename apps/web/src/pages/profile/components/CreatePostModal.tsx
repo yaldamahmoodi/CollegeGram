@@ -6,6 +6,7 @@ import MentionInput from "./MentionInput";
 import { useState } from "react";
 import { useCreatePost } from "@/hooks/post.hook";
 import type { MentionsType } from "@app-types/post";
+import Switch from "@components/Switch";
 
 interface CreatePostModalProps {
   isOpen: boolean;
@@ -25,9 +26,10 @@ const CreatePostModal = (props: CreatePostModalProps) => {
   const [photos, setPhotos] = useState<File[]>([]);
   const [caption, setCaption] = useState<string>("");
   const [mentions, setMentions] = useState<MentionsType[]>([]);
+  const [isClose, setIsClose] = useState<boolean>(false);
 
   const handlePostSubmit = async () => {
-    const payload = { photos, caption, mentions };
+    const payload = { photos, caption, mentions, isClose };
     createPostMutation.mutate(payload);
     onClose();
   };
@@ -46,16 +48,20 @@ const CreatePostModal = (props: CreatePostModalProps) => {
     {
       title: "تنظیمات",
       content: (
-        <MentionInput
-          users={[
-            { user_id: "1", username: "ali" },
-            { user_id: "2", username: "zahra" },
-            { user_id: "3", username: "sara" },
-          ]}
-          mentions={mentions}
-          setMentions={setMentions}
-          handlePostSubmit={handlePostSubmit}
-        />
+        <div className="flex flex-col gap-4">
+          <MentionInput
+            mentions={mentions}
+            setMentions={setMentions}
+            handlePostSubmit={handlePostSubmit}
+          />
+          <div className="flex items-center gap-3">
+            <Switch
+              checked={isClose}
+              onChange={() => setIsClose((v) => !v)}
+              label="فقط برای دوستان نزدیک نمایش بده"
+            />
+          </div>
+        </div>
       ),
     },
   ];

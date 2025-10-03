@@ -7,6 +7,19 @@ import { useUserInfo } from "@hooks/user.hook.ts";
 import { useAuth } from "@hooks/useAuth";
 import { useUnreadCount } from "@/hooks/notification.hook";
 
+export const SidebarPopUp = ({item, isActive}) => <div className=" absolute bottom-full left-0 mb-2 z-50 min-w-48 rounded-2xl border border-gray-200 bg-white shadow-xl p-2 flex flex-col gap-1">
+{item.children.map((child) => (
+  <SidebarItems
+    key={child.id}
+    isActive={isActive(child.link)}
+    link={child.link}
+    icon={child.icon}
+    text={child.text}
+  />
+))}
+</div>
+
+
 const SidebarMenu = () => {
   const { logout } = useAuth();
   const location = useLocation();
@@ -93,17 +106,7 @@ const SidebarMenu = () => {
                 />
               </div>
               {openDropdown === item.id && item.children?.length > 0 && (
-                <div className=" absolute bottom-full left-0 mb-2 z-50 min-w-48 rounded-2xl border border-gray-200 bg-white shadow-xl p-2 flex flex-col gap-1">
-                  {item.children.map((child) => (
-                    <SidebarItems
-                      key={child.id}
-                      isActive={isActive(child.link)}
-                      link={child.link}
-                      icon={child.icon}
-                      text={child.text}
-                    />
-                  ))}
-                </div>
+                  <SidebarPopUp isActive={isActive} item={item} />
               )}
             </div>
           </div>

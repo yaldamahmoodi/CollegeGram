@@ -20,7 +20,7 @@ export interface Post extends Document {
   hashtag_array: Array<string>;
   isLiked?: boolean;
   isSaved?: boolean;
-  createdAt: Date;
+  isClose?: boolean;
 }
 
 const postSchema: Schema<Post> = new Schema({
@@ -30,6 +30,9 @@ const postSchema: Schema<Post> = new Schema({
   photo_length: { type: Number, required: false },
   like_count: { type: Number, default: 0 },
   save_count: { type: Number, default: 0 },
+  isClose: { type: Boolean, default: false },
+  isLiked: { type: Boolean, default: false },
+  isSaved: { type: Boolean, default: false },
   mentions: {
     type: [
       {
@@ -67,6 +70,7 @@ export const insertPostSchema = z.object({
   user_id: z.string(),
   urls: z.array(z.string()).min(1, "At least one URL required"),
   caption: z.string().max(500).optional(),
+  isClose: z.boolean().optional().default(false),
   mentions: z
     .array(
       z.object({
@@ -87,6 +91,9 @@ export const selectPostZodSchema = z.object({
   photo_length: z.number(),
   like_count: z.number(),
   save_count: z.number(),
+  isClose: z.boolean(),
+  isLiked: z.boolean(),
+  isSaved: z.boolean(),
   mentions: z
     .array(
       z.object({

@@ -1,40 +1,50 @@
 import Button from "@/components/Button";
-import React, { useState } from "react";
+import React, { useMemo, useState } from "react";
 import type { MentionsType } from "@app-types/post";
 import Switch from "@components/Switch";
+import { useSearchUsers } from "@/hooks/user.hook";
 
 interface MentionInputProps {
-  users: MentionsType[];
+  users?: MentionsType[];
   mentions: MentionsType[];
   setMentions: (val: MentionsType[]) => void;
   handlePostSubmit?: () => void;
 }
 
 const MentionInput = ({
-  users,
+  users = [],
   mentions,
   setMentions,
   handlePostSubmit,
 }: MentionInputProps) => {
   const [inputValue, setInputValue] = useState("");
   const [isMentioning, setIsMentioning] = useState(false);
-  const [suggestedUsers, setSuggestedUsers] = useState<MentionsType[]>([]);
+  const [mentionQuery, setMentionQuery] = useState("");
+
+  const { data: searchData } = useSearchUsers(mentionQuery, 1);
+  const suggestedUsers: MentionsType[] = useMemo(() => {
+    const fallback = Array.isArray(users) ? users : [];
+    const apiUsers = searchData?.data as Array<{ _id: string; username: string }> | undefined;
+    // Expected shape per API: { totalCount, page, perPage, data: [{ _id, username, ... }] }
+    if (Array.isArray(apiUsers)) {
+      return apiUsers
+        .filter((u) => u && u._id && u.username)
+        .map((u) => ({ user_id: u._id.toString(), username: u.username }));
+    }
+    return fallback;
+  }, [searchData, users]);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value;
     setInputValue(value);
 
     const mentionPart = value.split("@").pop()?.trim() || "";
-
     if (mentionPart.length > 0) {
       setIsMentioning(true);
-      const filteredUsers = users.filter((user) =>
-        user.username.toLowerCase().includes(mentionPart.toLowerCase())
-      );
-      setSuggestedUsers(filteredUsers);
+      setMentionQuery(mentionPart);
     } else {
       setIsMentioning(false);
-      setSuggestedUsers([]);
+      setMentionQuery("");
     }
   };
 
@@ -44,7 +54,6 @@ const MentionInput = ({
     }
     setInputValue("");
     setIsMentioning(false);
-    setSuggestedUsers([]);
   };
 
   return (
