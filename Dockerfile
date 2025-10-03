@@ -10,18 +10,11 @@ RUN npm install -g pnpm
 # Copy workspace configuration files
 COPY package.json pnpm-workspace.yaml pnpm-lock.yaml* ./
 
-# Copy all package.json files for dependency resolution
-COPY apps/api/package.json ./apps/api/
-COPY apps/web/package.json ./apps/web/
-COPY apps/doc/package.json ./apps/doc/
+# Copy all source code (including package.json files)
+COPY apps/ ./apps/
 
 # Install all dependencies
-RUN pnpm install --frozen-lockfile
-
-# Copy source code for all apps
-COPY apps/api/ ./apps/api/
-COPY apps/web/ ./apps/web/
-COPY apps/doc/ ./apps/doc/
+RUN pnpm install 
 
 # Build all applications
 RUN pnpm run build
