@@ -38,7 +38,10 @@ services:
       - redis_data:/data
 
   api:
-    build: ./apps/api
+    build:
+      context: .
+      dockerfile: Dockerfile
+      target: api
     container_name: monorepo-api
     restart: unless-stopped
     depends_on:
@@ -50,7 +53,10 @@ services:
       - uploads_data:/app/src/middlewares/uploads
 
   web:
-    build: ./apps/web
+    build:
+      context: .
+      dockerfile: Dockerfile
+      target: web
     container_name: monorepo-web
     restart: unless-stopped
     depends_on:
@@ -59,7 +65,10 @@ services:
       - ./apps/web/.env
 
   doc:
-    build: ./apps/doc
+    build:
+      context: .
+      dockerfile: Dockerfile
+      target: doc
     container_name: monorepo-doc
     restart: unless-stopped
 
