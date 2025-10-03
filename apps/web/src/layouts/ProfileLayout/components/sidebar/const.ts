@@ -24,12 +24,6 @@ export const SidebarValue = [
     id: "save",
   },
   {
-    link: ROUTES.MESSAGES,
-    icon: messsageIcon,
-    text: "پیام ها",
-    id: "message",
-  },
-  {
     link: ROUTES.NOTIFICATIONS,
     icon: notificationIcon,
     text: "اعلانات",
