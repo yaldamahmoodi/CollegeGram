@@ -16,7 +16,7 @@ const Search = () => {
 
   return (
     <div className="w-full mx-auto">
-      <div className="w-2/5 relative mb-12">
+      <div className="w-full md:w-4/5 lg:w-2/5 relative mb-12">
         <input
           type="text"
           placeholder="جستجو در افراد، تگ‌ها و واژه ها و..."
