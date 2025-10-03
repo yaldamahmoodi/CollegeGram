@@ -21,7 +21,7 @@ interface ProfileLayoutProps {
 const ProfileLayout = ({ children }: ProfileLayoutProps) => {
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [isMenuSheetOpen, setIsMenuSheetOpen] = useState(false);
-    const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   // Initialize WebSocket connection
   const token = localStorage.getItem("token");
   useWebSocket(token || undefined);
