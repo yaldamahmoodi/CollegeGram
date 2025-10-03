@@ -1,19 +1,22 @@
 import Button from "@/components/Button";
-import React, { useMemo, useState } from "react";
+import React, { useState } from "react";
 import type { MentionsType } from "@app-types/post";
-import Switch from "@components/Switch";
 import { useSearchUsers } from "@/hooks/user.hook";
+import Switch from "@/components/Switch";
 
 interface MentionInputProps {
   users?: MentionsType[];
   mentions: MentionsType[];
-  setMentions: (val: MentionsType[]) => void;
+  isClose: boolean;
+  setIsClose: (v: boolean) => void;
+  setMentions: (v: MentionsType[]) => void;
   handlePostSubmit?: () => void;
 }
 
 const MentionInput = ({
-  users = [],
   mentions,
+  isClose,
+  setIsClose,
   setMentions,
   handlePostSubmit,
 }: MentionInputProps) => {
@@ -22,17 +25,6 @@ const MentionInput = ({
   const [mentionQuery, setMentionQuery] = useState("");
 
   const { data: searchData } = useSearchUsers(mentionQuery, 1);
-  const suggestedUsers: MentionsType[] = useMemo(() => {
-    const fallback = Array.isArray(users) ? users : [];
-    const apiUsers = searchData?.data as Array<{ _id: string; username: string }> | undefined;
-    // Expected shape per API: { totalCount, page, perPage, data: [{ _id, username, ... }] }
-    if (Array.isArray(apiUsers)) {
-      return apiUsers
-        .filter((u) => u && u._id && u.username)
-        .map((u) => ({ user_id: u._id.toString(), username: u.username }));
-    }
-    return fallback;
-  }, [searchData, users]);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value;
@@ -71,17 +63,25 @@ const MentionInput = ({
       />
       {isMentioning && (
         <ul className="absolute bg-white border rounded-md shadow-lg w-full mt-1 max-h-40 overflow-auto z-10">
-          {suggestedUsers.length > 0 ? (
-            suggestedUsers.map((user) => (
+          {searchData && searchData.users.length > 0 ? (
+            searchData.users.map((user) => (
               <li
-                key={user.user_id}
-                onClick={() => handleUserSelect(user)}
-                className="p-2 cursor-pointer hover:bg-gray-200">
+                key={user.id}
+                onClick={() =>
+                  handleUserSelect({
+                    user_id: user.id,
+                    username: user.username,
+                  })
+                }
+                className="p-2 cursor-pointer hover:bg-gray-200"
+              >
                 @{user.username}
               </li>
             ))
           ) : (
-            <li className="p-2 text-sm text-gray-500 select-none">نام کاربری را تایپ کنید…</li>
+            <li className="p-2 text-sm text-gray-500 select-none">
+              نام کاربری را تایپ کنید…
+            </li>
           )}
         </ul>
       )}
@@ -89,12 +89,31 @@ const MentionInput = ({
         {mentions.map((m) => (
           <span
             key={m.user_id}
-            className="px-2 py-1 bg-orange-100 text-orange-700 rounded-xl text-sm">
+            className="px-2 py-1 bg-orange-100 text-orange-700 rounded-xl text-sm"
+          >
             @{m.username}
           </span>
         ))}
       </div>
-      <Switch label="فقط برای دوستان نزدیک نمایش بده" />
+      <div className="flex items-center gap-2">
+        <span className="text-sm select-none">
+          فقط برای دوستان نزدیک نمایش بده
+        </span>
+
+        <button
+          type="button"
+          onClick={() => setIsClose(!isClose)}
+          className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors duration-300 ${
+            isClose ? "bg-[#E7000B]" : "bg-gray-300"
+          }`}
+        >
+          <span
+            className={`absolute top-0.5 left-0.5 h-5 w-5 rounded-full bg-white shadow transition-transform duration-300 ${
+              isClose ? "translate-x-5" : "translate-x-0"
+            }`}
+          />
+        </button>
+      </div>
       <Button
         onClick={handlePostSubmit}
         label=" ثبت و انتشار پست"

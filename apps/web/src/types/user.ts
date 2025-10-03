@@ -108,6 +108,7 @@ export interface ActionFriendType {
 }
 
 export interface SearchUser {
+  id: string;
   username: string;
   firstName: string;
   lastName: string;
@@ -119,7 +120,7 @@ export interface SearchUsersResponse {
   totalCount: number;
   page: number;
   perPage: number;
-  data: SearchUser[];
+  users: SearchUser[];
 }
 
 export interface SearchPostMention {
@@ -143,7 +144,7 @@ export interface SearchPostsResponse {
   totalCount: number;
   page: number;
   perPage: number;
-  data: SearchPost[];
+  posts: SearchPost[];
 }
 
 // Forgot Password Flow

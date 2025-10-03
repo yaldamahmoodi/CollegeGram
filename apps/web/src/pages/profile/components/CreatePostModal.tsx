@@ -6,7 +6,6 @@ import MentionInput from "./MentionInput";
 import { useState } from "react";
 import { useCreatePost } from "@/hooks/post.hook";
 import type { MentionsType } from "@app-types/post";
-import Switch from "@components/Switch";
 
 interface CreatePostModalProps {
   isOpen: boolean;
@@ -20,9 +19,7 @@ export interface Mention {
 
 const CreatePostModal = (props: CreatePostModalProps) => {
   const { isOpen = false, onClose } = props;
-
   const createPostMutation = useCreatePost();
-
   const [photos, setPhotos] = useState<File[]>([]);
   const [caption, setCaption] = useState<string>("");
   const [mentions, setMentions] = useState<MentionsType[]>([]);
@@ -33,6 +30,8 @@ const CreatePostModal = (props: CreatePostModalProps) => {
     createPostMutation.mutate(payload);
     onClose();
   };
+
+ 
 
   type StepType = { title: string; content: React.ReactNode };
 
@@ -53,14 +52,10 @@ const CreatePostModal = (props: CreatePostModalProps) => {
             mentions={mentions}
             setMentions={setMentions}
             handlePostSubmit={handlePostSubmit}
+            isClose={isClose}
+            setIsClose={setIsClose}
           />
-          <div className="flex items-center gap-3">
-            <Switch
-              checked={isClose}
-              onChange={() => setIsClose((v) => !v)}
-              label="فقط برای دوستان نزدیک نمایش بده"
-            />
-          </div>
+       
         </div>
       ),
     },

@@ -17,6 +17,7 @@ export const USER_URLS = {
   ADD_BLOCK_LIST: "/users/block",
   REMOVE_BLOCK_LIST: "users/unBlock",
   SEARCH_USER: "/search/getUsers",
+  SEARCH_POST: "/search/getPosts",
   ACCEPT_FOLLOW_REQUEST: "/users/accept-follow-request",
   REJECT_FOLLOW_REQUEST: "/users/reject-follow-request",
   // Forgot Password Flow

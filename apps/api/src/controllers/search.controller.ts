@@ -42,7 +42,11 @@ export class SearchController {
       const query = req.params["query"] as string;
       const userId = req.user?.id;
       const posts = await this.postSearchService.searchPosts(query, page, userId)
-      
+      posts.posts = posts.posts.map((post) => ({
+        ...post,
+        urls: post.urls.map((url) => `${req.protocol}://${req.get("host")}/uploads/posts/${url}`),
+      }))
+
       return res.json(posts);
 
     } catch (error: unknown) {
