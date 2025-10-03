@@ -46,18 +46,18 @@ class EmailService {
     username: string
   ): Promise<boolean> {
     try {
-      const subject = "بازیابی رمز عبور - کالجگرام";
+      const subject = "بازیابی رمز عبور - کالج گرام";
       const html = `
         <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px; direction: rtl; text-align: right;">
           <div style="text-align: center; margin-bottom: 30px;">
-            <h1 style="color: #333; margin: 0;">کالجگرام</h1>
+            <h1 style="color: #333; margin: 0;">کالج گرام</h1>
             <p style="color: #666; margin: 5px 0;">درخواست بازیابی رمز عبور</p>
           </div>
           
           <div style="background-color: #f8f9fa; padding: 20px; border-radius: 8px; margin-bottom: 20px;">
             <h2 style="color: #333; margin-top: 0;">سلام ${username}!</h2>
             <p style="color: #555; line-height: 1.6;">
-              ما درخواستی برای تغییر رمز عبور حساب کالجگرام شما دریافت کردیم. 
+              ما درخواستی برای تغییر رمز عبور حساب کالج گرام شما دریافت کردیم. 
               لطفاً از کد تأیید زیر برای تکمیل فرایند بازیابی رمز عبور استفاده کنید.
             </p>
           </div>
@@ -83,17 +83,17 @@ class EmailService {
           
           <hr style="margin: 30px 0; border: none; border-top: 1px solid #eee;">
           <p style="color: #666; font-size: 12px; text-align: center;">
-            این ایمیل توسط کالجگرام ارسال شده است. در صورت داشتن هرگونه سؤال، لطفاً با تیم پشتیبانی ما تماس بگیرید.
+            این ایمیل توسط کالج گرام ارسال شده است. در صورت داشتن هرگونه سؤال، لطفاً با تیم پشتیبانی ما تماس بگیرید.
           </p>
         </div>
       `;
 
       const text = `
-        بازیابی رمز عبور - کالجگرام
+        بازیابی رمز عبور - کالج گرام
         
         سلام ${username}!
         
-        ما درخواستی برای تغییر رمز عبور حساب کالجگرام شما دریافت کردیم.
+        ما درخواستی برای تغییر رمز عبور حساب کالج گرام شما دریافت کردیم.
         لطفاً از کد تأیید زیر برای تکمیل فرایند بازیابی رمز عبور استفاده کنید:
         
         کد تأیید: ${otp}
@@ -103,7 +103,7 @@ class EmailService {
         اگر شما این درخواست را ثبت نکرده‌اید، لطفاً این پیام را نادیده بگیرید. رمز عبور شما بدون تغییر باقی خواهد ماند.
         
         با احترام،
-        تیم کالجگرام
+        تیم کالج گرام
       `;
 
       return await this.sendTestEmail(to, subject, text, html);
@@ -121,18 +121,18 @@ class EmailService {
     qrCode: string
   ): Promise<boolean> {
     try {
-      const subject = "تأیید ایمیل - کالجگرام";
+      const subject = "تأیید ایمیل - کالج گرام";
       const html = `
         <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px; direction: rtl; text-align: right;">
           <div style="text-align: center; margin-bottom: 30px;">
-            <h1 style="color: #333; margin: 0;">کالجگرام</h1>
+            <h1 style="color: #333; margin: 0;">کالج گرام</h1>
             <p style="color: #666; margin: 5px 0;">تأیید ایمیل</p>
           </div>
           
           <div style="background-color: #f8f9fa; padding: 20px; border-radius: 8px; margin-bottom: 20px;">
             <h2 style="color: #333; margin-top: 0;">سلام ${username}!</h2>
             <p style="color: #555; line-height: 1.6;">
-              خوش آمدید! برای تکمیل ثبت‌نام در کالجگرام، لطفاً ایمیل خود را تأیید کنید.
+              خوش آمدید! برای تکمیل ثبت‌نام در کالج گرام، لطفاً ایمیل خود را تأیید کنید.
               می‌توانید از روش‌های زیر استفاده کنید:
             </p>
           </div>
@@ -168,17 +168,17 @@ class EmailService {
           
           <hr style="margin: 30px 0; border: none; border-top: 1px solid #eee;">
           <p style="color: #666; font-size: 12px; text-align: center;">
-            این ایمیل توسط کالجگرام ارسال شده است. در صورت داشتن هرگونه سؤال، لطفاً با تیم پشتیبانی ما تماس بگیرید.
+            این ایمیل توسط کالج گرام ارسال شده است. در صورت داشتن هرگونه سؤال، لطفاً با تیم پشتیبانی ما تماس بگیرید.
           </p>
         </div>
       `;
       
       const text = `
-        تأیید ایمیل - کالجگرام
+        تأیید ایمیل - کالج گرام
         
         سلام ${username}!
         
-        خوش آمدید! برای تکمیل ثبت‌نام در کالجگرام، لطفاً ایمیل خود را تأیید کنید.
+        خوش آمدید! برای تکمیل ثبت‌نام در کالج گرام، لطفاً ایمیل خود را تأیید کنید.
         
         کد تأیید: ${otp}
         
@@ -189,7 +189,7 @@ class EmailService {
         اگر شما این درخواست را ثبت نکرده‌اید، لطفاً این پیام را نادیده بگیرید.
         
         با احترام،
-        تیم کالجگرام
+        تیم کالج گرام
       `;
 
       return await this.sendTestEmail(to, subject, text, html);

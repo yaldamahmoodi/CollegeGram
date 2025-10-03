@@ -8,6 +8,7 @@ WORKDIR /app
 RUN npm install -g pnpm
 
 # Copy workspace configuration files
+<<<<<<< HEAD
 COPY package.json pnpm-workspace.yaml ./
 COPY pnpm-lock.yaml* ./
 
@@ -21,6 +22,15 @@ RUN pnpm install
 
 # Copy all source code
 COPY apps/ ./apps/
+=======
+COPY package.json pnpm-workspace.yaml pnpm-lock.yaml* ./
+
+# Copy all source code (including package.json files)
+COPY apps/ ./apps/
+
+# Install all dependencies
+RUN pnpm install 
+>>>>>>> prod
 
 # Build all applications
 RUN pnpm run build

@@ -30,12 +30,12 @@ export class CommentService {
         );
     }
 
-    async getCommentsByPost(postId: string, page: number, pageSize: number) {
-        console.log("getCommentsByPost", postId);
+    async getCommentsByPost(postId: string, page: number, pageSize: number, userId?: string) {
+
         const post = await this.postRepository.getPostById(postId);
         if (!post) throw new NotFoundError("NOT_FOUND");
 
-        return this.commentRepository.getCommentsByPostId(postId, page, pageSize);
+        return this.commentRepository.getCommentsByPostId(postId, page, pageSize, userId);
     }
 
     async commentLike(userId: string, commentId: string){

@@ -3,7 +3,7 @@ import mongoose, {type Model, Schema, Types} from "mongoose";
 export interface ICommentLike {
     _id: Types.ObjectId,
     comment_id: Types.ObjectId,
-    user_id: Types.ObjectId, // liked user id
+    user_id: Types.ObjectId, 
     createdAt: Date,
 }
 

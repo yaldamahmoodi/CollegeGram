@@ -53,6 +53,9 @@ export class CloseFriendRepository {
                     "friend_info._id": 1,
                     "friend_info.username": 1,
                     "friend_info.email": 1,
+                    "friend_info.follower_count": 1,
+                    "friend_info.following_count": 1,
+                    "friend_info.post_count": 1,
                     "friend_info.firstname": 1,
                     "friend_info.lastname": 1,
                     "friend_info.profilePhoto": {

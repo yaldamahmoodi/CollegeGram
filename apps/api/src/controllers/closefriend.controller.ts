@@ -32,7 +32,7 @@ export class CloseFriendController {
             return next(new APIError("INTERNAL_SERVER_ERROR", 500));
         }
     }
-
+    
     async removeFromCloseFriend(req: Authenticate, res: Response, next: NextFunction) {
         const userId = req.user.id;
         const friendId = req.body.friendId;

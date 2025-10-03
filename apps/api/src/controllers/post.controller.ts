@@ -214,7 +214,8 @@ export class PostController {
       const comments = await this.commentService.getCommentsByPost(
         postId,
         page,
-        pageSize
+        pageSize,
+        req.user.id
       );
       return res.status(200).json({
         code: "GET_COMMENTS_SUCCESSFULLY",
