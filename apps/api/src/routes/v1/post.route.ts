@@ -34,7 +34,8 @@ router.post(
     postController.savePost
 )
 router.post(
-    "/unsave",
+    "/:post_id/unsave",
+    paramParser(postIdSchema),
     postController.unsavePost
 )
 
