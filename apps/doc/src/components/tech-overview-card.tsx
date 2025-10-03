@@ -1,11 +1,13 @@
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
+import { useGitInfo } from "@/hooks/useGitInfo"
 import { 
   Code2Icon, 
   GlobeIcon, 
   FileTextIcon,
   GitBranchIcon,
-  CalendarIcon
+  CalendarIcon,
+  RefreshCwIcon
 } from "lucide-react"
 
 interface TechOverviewCardProps {
@@ -13,8 +15,6 @@ interface TechOverviewCardProps {
   description: string
   icon: React.ReactNode
   techStack: string[]
-  latestCommit: string
-  commitDate: string
   projectUrl: string
   status: "active" | "stable" | "development"
 }
@@ -24,11 +24,10 @@ export function TechOverviewCard({
   description,
   icon,
   techStack,
-  latestCommit,
-  commitDate,
   projectUrl,
   status
 }: TechOverviewCardProps) {
+  const { branch, remoteBranch, latestCommit, isLoading, error } = useGitInfo()
   const statusColors = {
     active: "bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-300",
     stable: "bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-300",
@@ -66,17 +65,44 @@ export function TechOverviewCard({
         </div>
         
         <div className="border-t pt-3">
-          <div className="flex items-center gap-2 text-xs text-muted-foreground mb-1">
+          <div className="flex items-center gap-2 text-xs text-muted-foreground mb-2">
             <GitBranchIcon className="w-3 h-3" />
+            <span>Branch: {isLoading ? 'loading...' : branch}</span>
+            {remoteBranch && (
+              <span className="text-xs text-muted-foreground">
+                → {remoteBranch.replace('origin/', '')}
+              </span>
+            )}
+          </div>
+          
+          <div className="flex items-center gap-2 text-xs text-muted-foreground mb-1">
             <span>Latest Commit</span>
+            {isLoading && <RefreshCwIcon className="w-3 h-3 animate-spin" />}
           </div>
           <div className="flex items-center gap-2">
             <code className="bg-muted px-2 py-1 rounded text-xs font-mono">
-              {latestCommit}
+              {isLoading ? 'loading...' : latestCommit.hash}
             </code>
             <CalendarIcon className="w-3 h-3 text-muted-foreground" />
-            <span className="text-xs text-muted-foreground">{commitDate}</span>
+            <span className="text-xs text-muted-foreground">
+              {isLoading ? 'loading...' : latestCommit.date}
+            </span>
           </div>
+          {latestCommit.message && (
+            <div className="mt-1 text-xs text-muted-foreground">
+              <div className="truncate">{latestCommit.message}</div>
+              {latestCommit.author && (
+                <div className="text-xs text-muted-foreground/70 mt-1">
+                  by {latestCommit.author}
+                </div>
+              )}
+            </div>
+          )}
+          {error && (
+            <div className="mt-1 text-xs text-red-500">
+              Error: {error}
+            </div>
+          )}
         </div>
 
         <div className="pt-2">
@@ -101,9 +127,7 @@ export function TechOverviewGrid() {
       description: "Robust backend API built with Node.js, Express, and TypeScript. Features comprehensive authentication, real-time notifications via Socket.IO, advanced search with Elasticsearch, and comprehensive health monitoring with metrics collection.",
       icon: <Code2Icon className="w-6 h-6 text-blue-600" />,
       techStack: ["Node.js", "Express", "TypeScript", "MongoDB", "Redis", "Elasticsearch", "Socket.IO"],
-      latestCommit: "54fd2be",
-      commitDate: "fix: pnpm",
-      projectUrl: "/api",
+      projectUrl: "/api/docs",
       status: "active" as const
     },
     {
@@ -113,7 +137,7 @@ export function TechOverviewGrid() {
       techStack: ["React", "TypeScript", "Vite", "Tailwind CSS", "Socket.IO Client"],
       latestCommit: "54fd2be", 
       commitDate: "fix: pnpm",
-      projectUrl: "/web",
+      projectUrl: "/",
       status: "stable" as const
     },
     {
@@ -121,8 +145,6 @@ export function TechOverviewGrid() {
       description: "Interactive documentation and monitoring dashboard built with React, TanStack Router, and real-time system metrics. Features comprehensive health checks, API monitoring, and system resource tracking with beautiful data visualizations.",
       icon: <FileTextIcon className="w-6 h-6 text-purple-600" />,
       techStack: ["React", "TanStack Router", "TypeScript", "Vite", "Tailwind CSS", "Recharts"],
-      latestCommit: "54fd2be",
-      commitDate: "fix: pnpm", 
       projectUrl: "/dashboard",
       status: "development" as const
     }

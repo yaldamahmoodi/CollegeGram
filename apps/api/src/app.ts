@@ -9,6 +9,7 @@ import YAML from "yamljs";
 import swaggerUi from "swagger-ui-express";
 import { setupSwagger } from "./config/swagger.ts";
 import healthRoute from "./routes/health.route.ts";
+import gitRoute from "./routes/git.route.ts";
 import authRoute from "./routes/v1/auth.route.ts";
 import userRoute from "./routes/v1/user.route.ts";
 import postRoute from "./routes/v1/post.route.ts";
@@ -95,6 +96,7 @@ app.use(
 
 /* ---- ROUTES ---- */
 app.use("/api/health", healthRoute);
+app.use("/api", gitRoute);
 app.use("/api/v1/auth", authRoute);
 app.use("/api/v1/users", userRoute);
 app.use("/api/v1/posts", postRoute);
