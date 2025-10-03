@@ -157,8 +157,9 @@ export const searchUsers = async (
     totalCount: data.total ?? data.totalCount ?? 0,
     page: data.page ?? page,
     perPage: data.size ?? data.perPage ?? 10,
-    data: Array.isArray(data.users)
+    users: Array.isArray(data.users)
       ? data.users.map((u: any) => ({
+          id: u.id,
           username: u.username,
           firstName: u.firstname ?? "",
           lastName: u.lastname ?? "",
@@ -178,7 +179,7 @@ export const searchPosts = async (
   page: number = 1
 ): Promise<SearchPostsResponse> => {
   const { data } = await api.get<SearchPostsResponse>(
-    `${USER_URLS.SEARCH_USER}/${page}/${query}`,
+    `${USER_URLS.SEARCH_POST}/${page}/${query}`,
     { withCredentials: true }
   );
   return data;

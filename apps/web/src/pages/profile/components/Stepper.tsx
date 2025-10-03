@@ -30,14 +30,14 @@ const Stepper: React.FC<StepperProps> = ({
   };
 
   return (
-    <div className="w-full max-w-3xl mx-auto p-8 ">
-      <div className="flex items-center justify-between mb-6 mr-[20px]">
+    <div className="w-full  max-w-3xl mx-auto p-8 ">
+      <div className="flex items-center justify-center mb-6 mr-[20px]">
         {steps.map((step, index) => {
           const isActive = index === currentStep;
           const isCompleted = index < currentStep;
 
           return (
-            <div key={index} className="flex-1 flex flex-col items-center">
+            <div key={index} className="flex-1 last:flex-none flex flex-col items-center">
               <div className="flex items-center w-full">
                 <div
                   className={`
