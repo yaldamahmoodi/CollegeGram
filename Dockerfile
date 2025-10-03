@@ -19,7 +19,7 @@ COPY apps/doc/package.json ./apps/doc/
 
 # Verify pnpm version and install all dependencies
 RUN pnpm --version
-RUN pnpm install --frozen-lockfile
+RUN pnpm install 
 
 # Copy source code
 COPY apps/ ./apps/
