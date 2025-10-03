@@ -1,58 +1,55 @@
 # -----------------------------
 # Base build stage
 # -----------------------------
-FROM node:24-slim AS base
-WORKDIR /app
-
-
-COPY package.json pnpm-workspace.yaml pnpm-lock.yaml* turbo.json ./
-
-RUN corepack enable
-RUN corepack prepare pnpm@10.14.0 --activate
-
-RUN npm install -g pnpm@10.14.0
-RUN pnpm --version
-RUN pnpm install 
-
-COPY apps/ ./apps/
-
-RUN pnpm turbo run build
-
-RUN ls -la /app/apps/api/dist/
-RUN ls -la /app/apps/web/dist/
-RUN ls -la /app/apps/doc/dist/
-
-CMD ["pnpm", "turbo", "run", "start"]
-
-
-
-# # Enable corepack and prepare for pnpm 10.14.0
-# RUN corepack enable
-# RUN corepack prepare pnpm@10.14.0 --activate
-# RUN npm install -g turbo
-
-# # Copy workspace configuration files
-# COPY package.json pnpm-workspace.yaml pnpm-lock.yaml* ./
-# COPY turbo.json ./
-
-# # Copy all package.json files to respect workspace structure
-# COPY apps/api/package.json ./apps/api/
-# COPY apps/web/package.json ./apps/web/
-# COPY apps/doc/package.json ./apps/doc/
-
-# # Install all dependencies for the entire monorepo
-# RUN pnpm --version
-# RUN pnpm install --reporter=append-only
-
-# # Copy source code
-# COPY apps/ ./apps/
-
-# # Build all apps using Turbo (handles dependencies automatically)
-# RUN turbo run build
-
-# # Verify the build output
-# RUN ls -la /app/apps/api/dist/
-# RUN ls -la /app/apps/web/dist/
-# RUN ls -la /app/apps/doc/dist/
-
-# CMD ["pnpm", "turbo", "run", "start"]
+    FROM node:24-slim AS base
+    WORKDIR /app
+    
+    # Copy workspace configuration first (for better caching)
+    COPY package.json pnpm-workspace.yaml pnpm-lock.yaml* turbo.json ./
+    
+    # Install pnpm
+    RUN corepack enable && corepack prepare pnpm@10.14.0 --activate
+    
+    # Copy package.json files first (for dependency caching)
+    COPY apps/api/package.json ./apps/api/
+    COPY apps/web/package.json ./apps/web/
+    COPY apps/doc/package.json ./apps/doc/
+    
+    # Install dependencies
+    RUN pnpm install --reporter=append-only
+    
+    # Copy source code
+    COPY apps/ ./apps/
+    
+    # Build all apps
+    RUN pnpm turbo run build
+    
+    # Verify builds
+    RUN ls -la /app/apps/api/dist/ && ls -la /app/apps/web/dist/ && ls -la /app/apps/doc/dist/
+    
+    
+    # -----------------------------
+    # API final image
+    # -----------------------------
+    FROM base AS api
+    WORKDIR /app/apps/api
+    EXPOSE 3001
+    CMD ["pnpm", "start"]
+    
+    
+    # -----------------------------
+    # Web final image  
+    # -----------------------------
+    FROM base AS web
+    WORKDIR /app/apps/web
+    EXPOSE 3000
+    CMD ["pnpm", "start"]
+    
+    
+    # -----------------------------
+    # Doc final image
+    # -----------------------------
+    FROM base AS doc
+    WORKDIR /app/apps/doc
+    EXPOSE 3002
+    CMD ["pnpm", "start"]
