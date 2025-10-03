@@ -1,6 +1,9 @@
 import { NotificationModel, type INotification, type CreateNotificationDto, type UpdateNotificationDto, type NotificationQueryDto } from "../db/models/notification.model.ts";
 import { FollowModel } from "../db/models/follow.model.ts";
-import { Types } from "mongoose";
+import { Types, Document } from "mongoose";
+
+// Type for lean notification (without Mongoose document methods)
+type LeanNotification = Omit<INotification, keyof Document>;
 
 export class NotificationRepository {
 
@@ -140,7 +143,7 @@ export class NotificationRepository {
         return count > 0;
     }
 
-    async getRecentNotifications(userId: string, hours: number = 24): Promise<INotification[]> {
+    async getRecentNotifications(userId: string, hours: number = 24): Promise<LeanNotification[]> {
         const since = new Date(Date.now() - hours * 60 * 60 * 1000);
         
         return await NotificationModel.find({
