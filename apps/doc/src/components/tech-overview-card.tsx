@@ -138,7 +138,7 @@ export function TechOverviewGrid() {
       latestCommit: "54fd2be", 
       commitDate: "fix: pnpm",
       projectUrl: "/",
-      status: "stable" as const
+      status: "active" as const
     },
     {
       title: "DevSync Docs",
@@ -146,7 +146,7 @@ export function TechOverviewGrid() {
       icon: <FileTextIcon className="w-6 h-6 text-purple-600" />,
       techStack: ["React", "TanStack Router", "TypeScript", "Vite", "Tailwind CSS", "Recharts"],
       projectUrl: "/dashboard",
-      status: "development" as const
+      status: "stable" as const
     }
   ]
 

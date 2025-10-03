@@ -9,28 +9,34 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
-import { Route as WordAssistantRouteImport } from './routes/word-assistant'
 import { Route as TeamRouteImport } from './routes/team'
-import { Route as ReportsRouteImport } from './routes/reports'
+import { Route as SocketioRouteImport } from './routes/socketio'
+import { Route as ServiceWorkersRouteImport } from './routes/service-workers'
 import { Route as ProjectsRouteImport } from './routes/projects'
-import { Route as DataLibraryRouteImport } from './routes/data-library'
+import { Route as OverviewRouteImport } from './routes/overview'
+import { Route as MailpitRouteImport } from './routes/mailpit'
+import { Route as ElasticsearchRouteImport } from './routes/elasticsearch'
+import { Route as DeploymentRouteImport } from './routes/deployment'
+import { Route as DatabaseRouteImport } from './routes/database'
 import { Route as DashboardRouteImport } from './routes/dashboard'
+import { Route as ArchitectureRouteImport } from './routes/architecture'
+import { Route as ApiConventionsRouteImport } from './routes/api-conventions'
 import { Route as AnalyticsRouteImport } from './routes/analytics'
 import { Route as IndexRouteImport } from './routes/index'
 
-const WordAssistantRoute = WordAssistantRouteImport.update({
-  id: '/word-assistant',
-  path: '/word-assistant',
-  getParentRoute: () => rootRouteImport,
-} as any)
 const TeamRoute = TeamRouteImport.update({
   id: '/team',
   path: '/team',
   getParentRoute: () => rootRouteImport,
 } as any)
-const ReportsRoute = ReportsRouteImport.update({
-  id: '/reports',
-  path: '/reports',
+const SocketioRoute = SocketioRouteImport.update({
+  id: '/socketio',
+  path: '/socketio',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ServiceWorkersRoute = ServiceWorkersRouteImport.update({
+  id: '/service-workers',
+  path: '/service-workers',
   getParentRoute: () => rootRouteImport,
 } as any)
 const ProjectsRoute = ProjectsRouteImport.update({
@@ -38,14 +44,44 @@ const ProjectsRoute = ProjectsRouteImport.update({
   path: '/projects',
   getParentRoute: () => rootRouteImport,
 } as any)
-const DataLibraryRoute = DataLibraryRouteImport.update({
-  id: '/data-library',
-  path: '/data-library',
+const OverviewRoute = OverviewRouteImport.update({
+  id: '/overview',
+  path: '/overview',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const MailpitRoute = MailpitRouteImport.update({
+  id: '/mailpit',
+  path: '/mailpit',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ElasticsearchRoute = ElasticsearchRouteImport.update({
+  id: '/elasticsearch',
+  path: '/elasticsearch',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const DeploymentRoute = DeploymentRouteImport.update({
+  id: '/deployment',
+  path: '/deployment',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const DatabaseRoute = DatabaseRouteImport.update({
+  id: '/database',
+  path: '/database',
   getParentRoute: () => rootRouteImport,
 } as any)
 const DashboardRoute = DashboardRouteImport.update({
   id: '/dashboard',
   path: '/dashboard',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ArchitectureRoute = ArchitectureRouteImport.update({
+  id: '/architecture',
+  path: '/architecture',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ApiConventionsRoute = ApiConventionsRouteImport.update({
+  id: '/api-conventions',
+  path: '/api-conventions',
   getParentRoute: () => rootRouteImport,
 } as any)
 const AnalyticsRoute = AnalyticsRouteImport.update({
@@ -62,87 +98,122 @@ const IndexRoute = IndexRouteImport.update({
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/analytics': typeof AnalyticsRoute
+  '/api-conventions': typeof ApiConventionsRoute
+  '/architecture': typeof ArchitectureRoute
   '/dashboard': typeof DashboardRoute
-  '/data-library': typeof DataLibraryRoute
+  '/database': typeof DatabaseRoute
+  '/deployment': typeof DeploymentRoute
+  '/elasticsearch': typeof ElasticsearchRoute
+  '/mailpit': typeof MailpitRoute
+  '/overview': typeof OverviewRoute
   '/projects': typeof ProjectsRoute
-  '/reports': typeof ReportsRoute
+  '/service-workers': typeof ServiceWorkersRoute
+  '/socketio': typeof SocketioRoute
   '/team': typeof TeamRoute
-  '/word-assistant': typeof WordAssistantRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/analytics': typeof AnalyticsRoute
+  '/api-conventions': typeof ApiConventionsRoute
+  '/architecture': typeof ArchitectureRoute
   '/dashboard': typeof DashboardRoute
-  '/data-library': typeof DataLibraryRoute
+  '/database': typeof DatabaseRoute
+  '/deployment': typeof DeploymentRoute
+  '/elasticsearch': typeof ElasticsearchRoute
+  '/mailpit': typeof MailpitRoute
+  '/overview': typeof OverviewRoute
   '/projects': typeof ProjectsRoute
-  '/reports': typeof ReportsRoute
+  '/service-workers': typeof ServiceWorkersRoute
+  '/socketio': typeof SocketioRoute
   '/team': typeof TeamRoute
-  '/word-assistant': typeof WordAssistantRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/analytics': typeof AnalyticsRoute
+  '/api-conventions': typeof ApiConventionsRoute
+  '/architecture': typeof ArchitectureRoute
   '/dashboard': typeof DashboardRoute
-  '/data-library': typeof DataLibraryRoute
+  '/database': typeof DatabaseRoute
+  '/deployment': typeof DeploymentRoute
+  '/elasticsearch': typeof ElasticsearchRoute
+  '/mailpit': typeof MailpitRoute
+  '/overview': typeof OverviewRoute
   '/projects': typeof ProjectsRoute
-  '/reports': typeof ReportsRoute
+  '/service-workers': typeof ServiceWorkersRoute
+  '/socketio': typeof SocketioRoute
   '/team': typeof TeamRoute
-  '/word-assistant': typeof WordAssistantRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
     | '/'
     | '/analytics'
+    | '/api-conventions'
+    | '/architecture'
     | '/dashboard'
-    | '/data-library'
+    | '/database'
+    | '/deployment'
+    | '/elasticsearch'
+    | '/mailpit'
+    | '/overview'
     | '/projects'
-    | '/reports'
+    | '/service-workers'
+    | '/socketio'
     | '/team'
-    | '/word-assistant'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
     | '/analytics'
+    | '/api-conventions'
+    | '/architecture'
     | '/dashboard'
-    | '/data-library'
+    | '/database'
+    | '/deployment'
+    | '/elasticsearch'
+    | '/mailpit'
+    | '/overview'
     | '/projects'
-    | '/reports'
+    | '/service-workers'
+    | '/socketio'
     | '/team'
-    | '/word-assistant'
   id:
     | '__root__'
     | '/'
     | '/analytics'
+    | '/api-conventions'
+    | '/architecture'
     | '/dashboard'
-    | '/data-library'
+    | '/database'
+    | '/deployment'
+    | '/elasticsearch'
+    | '/mailpit'
+    | '/overview'
     | '/projects'
-    | '/reports'
+    | '/service-workers'
+    | '/socketio'
     | '/team'
-    | '/word-assistant'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   AnalyticsRoute: typeof AnalyticsRoute
+  ApiConventionsRoute: typeof ApiConventionsRoute
+  ArchitectureRoute: typeof ArchitectureRoute
   DashboardRoute: typeof DashboardRoute
-  DataLibraryRoute: typeof DataLibraryRoute
+  DatabaseRoute: typeof DatabaseRoute
+  DeploymentRoute: typeof DeploymentRoute
+  ElasticsearchRoute: typeof ElasticsearchRoute
+  MailpitRoute: typeof MailpitRoute
+  OverviewRoute: typeof OverviewRoute
   ProjectsRoute: typeof ProjectsRoute
-  ReportsRoute: typeof ReportsRoute
+  ServiceWorkersRoute: typeof ServiceWorkersRoute
+  SocketioRoute: typeof SocketioRoute
   TeamRoute: typeof TeamRoute
-  WordAssistantRoute: typeof WordAssistantRoute
 }
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
-    '/word-assistant': {
-      id: '/word-assistant'
-      path: '/word-assistant'
-      fullPath: '/word-assistant'
-      preLoaderRoute: typeof WordAssistantRouteImport
-      parentRoute: typeof rootRouteImport
-    }
     '/team': {
       id: '/team'
       path: '/team'
@@ -150,11 +221,18 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof TeamRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/reports': {
-      id: '/reports'
-      path: '/reports'
-      fullPath: '/reports'
-      preLoaderRoute: typeof ReportsRouteImport
+    '/socketio': {
+      id: '/socketio'
+      path: '/socketio'
+      fullPath: '/socketio'
+      preLoaderRoute: typeof SocketioRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/service-workers': {
+      id: '/service-workers'
+      path: '/service-workers'
+      fullPath: '/service-workers'
+      preLoaderRoute: typeof ServiceWorkersRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/projects': {
@@ -164,11 +242,39 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ProjectsRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/data-library': {
-      id: '/data-library'
-      path: '/data-library'
-      fullPath: '/data-library'
-      preLoaderRoute: typeof DataLibraryRouteImport
+    '/overview': {
+      id: '/overview'
+      path: '/overview'
+      fullPath: '/overview'
+      preLoaderRoute: typeof OverviewRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/mailpit': {
+      id: '/mailpit'
+      path: '/mailpit'
+      fullPath: '/mailpit'
+      preLoaderRoute: typeof MailpitRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/elasticsearch': {
+      id: '/elasticsearch'
+      path: '/elasticsearch'
+      fullPath: '/elasticsearch'
+      preLoaderRoute: typeof ElasticsearchRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/deployment': {
+      id: '/deployment'
+      path: '/deployment'
+      fullPath: '/deployment'
+      preLoaderRoute: typeof DeploymentRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/database': {
+      id: '/database'
+      path: '/database'
+      fullPath: '/database'
+      preLoaderRoute: typeof DatabaseRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/dashboard': {
@@ -176,6 +282,20 @@ declare module '@tanstack/react-router' {
       path: '/dashboard'
       fullPath: '/dashboard'
       preLoaderRoute: typeof DashboardRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/architecture': {
+      id: '/architecture'
+      path: '/architecture'
+      fullPath: '/architecture'
+      preLoaderRoute: typeof ArchitectureRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api-conventions': {
+      id: '/api-conventions'
+      path: '/api-conventions'
+      fullPath: '/api-conventions'
+      preLoaderRoute: typeof ApiConventionsRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/analytics': {
@@ -198,12 +318,18 @@ declare module '@tanstack/react-router' {
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AnalyticsRoute: AnalyticsRoute,
+  ApiConventionsRoute: ApiConventionsRoute,
+  ArchitectureRoute: ArchitectureRoute,
   DashboardRoute: DashboardRoute,
-  DataLibraryRoute: DataLibraryRoute,
+  DatabaseRoute: DatabaseRoute,
+  DeploymentRoute: DeploymentRoute,
+  ElasticsearchRoute: ElasticsearchRoute,
+  MailpitRoute: MailpitRoute,
+  OverviewRoute: OverviewRoute,
   ProjectsRoute: ProjectsRoute,
-  ReportsRoute: ReportsRoute,
+  ServiceWorkersRoute: ServiceWorkersRoute,
+  SocketioRoute: SocketioRoute,
   TeamRoute: TeamRoute,
-  WordAssistantRoute: WordAssistantRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

@@ -2,16 +2,22 @@ import * as React from "react"
 import {
   ArrowUpCircleIcon,
   BarChartIcon,
-  ClipboardListIcon,
   DatabaseIcon,
-  FileIcon,
   FolderIcon,
-  LayoutDashboardIcon,
   UsersIcon,
+  BuildingIcon,
+  ServerIcon,
+  FileTextIcon,
+  SearchIcon,
+  MailIcon,
+  MessageSquareIcon,
+  BellIcon,
+  BookOpenIcon,
 } from "lucide-react"
 
 import { NavDocuments } from "@/components/nav-documents"
 import { NavMain } from "@/components/nav-main"
+import { NavReadMore } from "@/components/nav-read-more"
 import {
   Sidebar,
   SidebarContent,
@@ -27,14 +33,14 @@ const data = {
 
   navMain: [
     {
-      title: "Dashboard",
-      url: "/dashboard",
-      icon: LayoutDashboardIcon,
-    },
-    {
       title: "Analytics",
       url: "/analytics",
       icon: BarChartIcon,
+    },
+    {
+      title: "Overview",
+      url: "/overview",
+      icon: BookOpenIcon,
     },
     {
       title: "Projects",
@@ -50,19 +56,46 @@ const data = {
   navSecondary: [],
   documents: [
     {
-      name: "Data Library",
-      url: "/data-library",
+      name: "System Architecture",
+      url: "/architecture",
+      icon: BuildingIcon,
+    },
+    {
+      name: "Database Schema",
+      url: "/database",
       icon: DatabaseIcon,
     },
     {
-      name: "Reports",
-      url: "/reports",
-      icon: ClipboardListIcon,
+      name: "Deployment Guide",
+      url: "/deployment",
+      icon: ServerIcon,
     },
     {
-      name: "Word Assistant",
-      url: "/word-assistant",
-      icon: FileIcon,
+      name: "API Conventions",
+      url: "/api-conventions",
+      icon: FileTextIcon,
+    },
+  ],
+  readMore: [
+    {
+      name: "Elasticsearch",
+      url: "/elasticsearch",
+      icon: SearchIcon,
+    },
+    {
+      name: "Mailpit",
+      url: "/mailpit",
+      icon: MailIcon,
+    },
+    {
+      name: "Socket.io",
+      url: "/socketio",
+      icon: MessageSquareIcon,
+    },
+    {
+      name: "Service Workers",
+      url: "/service-workers",
+      icon: BellIcon,
     },
   ],
 }
@@ -77,7 +110,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
               asChild
               className="data-[slot=sidebar-menu-button]:!p-1.5"
             >
-              <Link to="/dashboard">
+              <Link to="/analytics">
                 <ArrowUpCircleIcon className="h-5 w-5" />
                 <span className="text-base font-semibold">devsync</span>
               </Link>
@@ -88,6 +121,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
       <SidebarContent>
         <NavMain items={data.navMain} />
         <NavDocuments items={data.documents} />
+        <NavReadMore items={data.readMore} />
       </SidebarContent>
       <SidebarFooter>
         
