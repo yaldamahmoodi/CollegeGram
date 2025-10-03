@@ -49,7 +49,7 @@ const SavedPosts = () => {
                                 <ImageGroup
                                     urls={item.firstUrl ?? ""}
                                     photoCount={item.photo_length}
-                                    onClick={() => gotoDetails(item._id)}
+                                    onClick={() => gotoDetails(item.postId)}
                                 />
                             </div>
                         ))}

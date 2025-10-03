@@ -85,6 +85,7 @@ export interface ImageGroupProps {
 
 export type SavedPostItem = {
   _id: string;
+  postId: string;
   firstUrl?: string;
   like_count?: number;
   save_count?: number;
