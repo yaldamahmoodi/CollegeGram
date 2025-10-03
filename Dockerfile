@@ -33,7 +33,7 @@
     COPY apps/*/package.json apps/*/
     
     # Install only production deps for API
-    RUN pnpm install --prod --filter api...
+    RUN pnpm install --prod --filter=api
     
     # Copy built app
     COPY --from=base /app/apps/api/dist ./apps/api/dist
@@ -54,7 +54,7 @@
     COPY apps/*/package.json apps/*/
     
     # Install only production deps for Web
-    RUN pnpm install --prod --filter web...
+    RUN pnpm install --prod --filter=web
     
     COPY --from=base /app/apps/web/dist ./apps/web/dist
     
@@ -74,7 +74,7 @@
     COPY apps/*/package.json apps/*/
     
     # Install only production deps for Doc
-    RUN pnpm install --prod --filter doc...
+    RUN pnpm install --prod --filter=doc
     
     COPY --from=base /app/apps/doc/dist ./apps/doc/dist
     
