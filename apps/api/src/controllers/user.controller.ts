@@ -100,6 +100,7 @@ export class UserController {
     try {
       const files = req.files as Express.Multer.File[];
       const caption = req.body.caption;
+      const isClose = typeof req.body.isClose === 'string' ? req.body.isClose === 'true' : !!req.body.isClose;
       const filePaths: string[] = files.map((file) => file.filename);
 
       // Parse mentions from JSON string if it exists
@@ -121,6 +122,7 @@ export class UserController {
         user_id: req.user.id,
         urls: filePaths,
         caption,
+        isClose,
         mentions,
         hashtag_array,
       };
