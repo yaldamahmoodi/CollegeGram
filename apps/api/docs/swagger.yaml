@@ -1067,27 +1067,22 @@ paths:
                     type: string
                     example: Something went wrong while saving the post.
 
-  /api/v1/posts/unsave:
+  /api/v1/posts/{post_id}/unsave:
     post:
-      summary: Unsave a post
-      description: Remove a saved post for the authenticated user by its ID.
+      summary: unsave a post
+      description: Remove a like from a specific post for the authenticated user by its ID.
       tags:
         - Posts
       security:
         - cookieAuth: [ ]
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              type: object
-              required:
-                - postId
-              properties:
-                postId:
-                  type: string
-                  description: The ID of the post to unsave
-                  example: 68c416ecf90cd074f701a4f4
+      parameters:
+        - name: post_id
+          in: path
+          required: true
+          schema:
+            type: string
+          description: The ID of the post to unsave
+          example: 68c416ecf90cd074f701a4f4
       responses:
         '200':
           description: Post unsaved successfully
