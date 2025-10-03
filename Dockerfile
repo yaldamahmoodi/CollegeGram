@@ -28,56 +28,9 @@ COPY apps/ ./apps/
 # Build all apps using Turbo (handles dependencies automatically)
 RUN turbo run build
 
+# Verify the build output
+RUN ls -la /app/apps/api/dist/
+RUN ls -la /app/apps/web/dist/
+RUN ls -la /app/apps/doc/dist/
 
-# -----------------------------
-# API final image
-# -----------------------------
-FROM base AS api
-WORKDIR /app
-
-# Copy only what's needed for API runtime
-COPY --from=base /app/apps/api/dist ./apps/api/dist
-COPY --from=base /app/apps/api/src ./apps/api/src
-
-# Install only production dependencies for API
-RUN pnpm install --filter=api 
-
-WORKDIR /app
-EXPOSE 3001
-CMD ["npx", "turbo", "start", "--filter=api"]
-
-
-# -----------------------------
-# Web final image
-# -----------------------------
-FROM base AS web
-WORKDIR /app
-
-# Copy only what's needed for Web runtime
-COPY --from=base /app/apps/web/dist ./apps/web/dist
-COPY --from=base /app/apps/web/src ./apps/web/src
-
-# Install only production dependencies for Web
-RUN pnpm install --filter=web 
-
-WORKDIR /app
-EXPOSE 3000
-CMD ["npx", "turbo", "start", "--filter=web"]
-
-
-# -----------------------------
-# Doc final image
-# -----------------------------
-FROM base AS doc
-WORKDIR /app
-
-# Copy only what's needed for Doc runtime
-COPY --from=base /app/apps/doc/dist ./apps/doc/dist
-COPY --from=base /app/apps/doc/src ./apps/doc/src
-
-# Install only production dependencies for Doc
-RUN pnpm install --filter=doc 
-
-WORKDIR /app
-EXPOSE 3002
-CMD ["npx", "turbo", "start", "--filter=doc"]
+CMD ["pnpm", "turbo", "run", "start"]
