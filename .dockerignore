@@ -5,14 +5,18 @@ yarn-debug.log*
 yarn-error.log*
 pnpm-debug.log*
 
-# Build outputs
+# Build outputs - Keep dist out during COPY, built inside Docker
 dist
 build
 .next
 .nuxt
 .output
-.turbo
-.pnpm-store
+
+# Keep Turbo cache for faster builds
+# .turbo
+
+# Keep pnpm store
+# .pnpm-store
 
 # Environment files
 .env
