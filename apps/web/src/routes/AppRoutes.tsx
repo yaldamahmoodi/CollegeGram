@@ -1,22 +1,24 @@
-
 import AuthLayout from "@/layouts/AuthLayout";
 import { Routes, Route, Navigate } from "react-router-dom";
 import Login from "@pages/Login";
 import Profile from "@/pages/profile/Profile";
 import Register from "@pages/Register";
 import NotFound from "@pages/NotFound";
-import Search from "@/pages/search/Search";
-import SavedPosts from "@/pages/SavedPosts";
+import Search from "@pages/search/Search";
+import SavedPosts from "@pages/SavedPosts";
 import ProtectedRoute from "./ProtectedRoute";
-import TaggedPosts from "@/pages/TaggedPosts";
-import PostDetail from "@/pages/PostDetail";
+import TaggedPosts from "@pages/TaggedPosts";
+import PostDetail from "@pages/PostDetail";
+import CloseFriend from "@pages/friend/CloseFriend";
+import BlockedFriends from "@pages/friend/BlockList";
+
 import { ROUTES } from "./routes";
 import { useAxiosInterceptor } from "@api/axios";
 import ForgotPassword from "@/pages/ForgotPassword";
 import VerifyOTP from "@/pages/VerifyOTP";
 import ResetPassword from "@/pages/ResetPassword";
-import Explore from "@/pages/search/Search";
 import Notifications from "@/pages/notifications";
+import Explore from "@/pages/explore/Explore.tsx";
 
 export default function AppRoutes() {
   useAxiosInterceptor();
@@ -34,10 +36,13 @@ export default function AppRoutes() {
 
       <Route element={<ProtectedRoute />}>
         <Route path={ROUTES.PROFILE} element={<Profile />} />
+        <Route path={ROUTES.OTHER_USER} element={<Profile />} />
         <Route path={ROUTES.SAVED_POSTS} element={<SavedPosts />} />
         <Route path={ROUTES.TAGGED_POSTS} element={<TaggedPosts />} />
         <Route path={ROUTES.POST_DETAIL} element={<PostDetail />} />
         <Route path={ROUTES.NOTIFICATIONS} element={<Notifications />} />
+        <Route path={ROUTES.CLOSE_FRIEND} element={<CloseFriend />} />
+        <Route path={ROUTES.BLOCK_LIST} element={<BlockedFriends />} />
         <Route path={ROUTES.SEARCH} element={<Search />} />
         <Route path={ROUTES.EXPLORE} element={<Explore/>} />
       </Route>

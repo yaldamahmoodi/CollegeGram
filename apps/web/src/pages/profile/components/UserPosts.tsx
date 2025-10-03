@@ -1,64 +1,74 @@
 import Button from "@components/Button";
 import { useEffect, useState } from "react";
 import PostDetailsModal from "@/pages/profile/components/PostDetailsModal";
-import groupPhotoIcon from "@assets/icons/GroupPhotos.svg";
 import { usePosts } from "@hooks/post.hook.ts";
 import type { postData } from "@api/post/post.api.ts";
+import ImageGroup from "@components/ImageGroup.tsx";
+import { MESSAGES } from "@/const/message.ts";
+import type { OtherUserType } from "@/types/user";
 
 interface UserPostsProps {
   onChangeModal: () => void;
+  otherUser: OtherUserType | null;
 }
 
-const UserPosts = (props: UserPostsProps) => {
-  const { onChangeModal } = props;
-  const { data = [] } = usePosts();
+const UserPosts = ({ otherUser, onChangeModal }: UserPostsProps) => {
+  const userId = otherUser?.userId;
+
+  const { data: otherUserPosts } = usePosts<postData[]>(userId);
+  const { data: posts } = usePosts<postData[]>();
+
+  const postList: postData[] | undefined = otherUser ? otherUserPosts : posts;
+
   const [selectedPost, setSelectedPost] = useState<postData | null>(null);
+
   useEffect(() => {
-    if (selectedPost && data) {
-      const updated = data.find((p) => p._id === selectedPost._id);
+    if (selectedPost && postList) {
+      const updated = postList.find(
+        (post: postData) => post._id === selectedPost._id
+      );
       if (updated) {
         setSelectedPost(updated);
       }
     }
-  }, [data, selectedPost]);
+  }, [postList, selectedPost]);
+
   return (
-    <div className="profile-posts w-full h-full flex-auto border border-gray-400 p-4 overflow-y-auto rounded-4xl">
-      {data.length > 0 ? (
-        <div className="flex flex-wrap gap-8 justify-start">
-          {data.map((item) => (
-            <div className="relative ">
-              {item.urls.length > 1 && (
-                <img
-                  src={groupPhotoIcon}
-                  className="absolute top-5 left-5 w-10 h-10"
-                />
-              )}
-              <img
-                key={item._id}
-                src={item.urls[0] || ""}
-                className="w-100 h-100 rounded-4xl cursor-pointer object-cover"
+    <div className="profile-posts w-full h-full flex-auto border border-gray-400 p-4 overflow-y-auto rounded-2xl">
+      {postList?.length > 0 ? (
+        <div className="grid grid-cols-12 gap-6">
+          {postList.map((item: postData) => (
+            <div
+              key={item._id}
+              className="col-span-6 sm:col-span-6 md:col-span-4 lg:col-span-3">
+              <ImageGroup
+                urls={item.urls}
                 onClick={() => setSelectedPost(item)}
+                showIcon={!selectedPost}
               />
             </div>
           ))}
         </div>
       ) : (
         <div className="flex flex-col justify-center items-center gap-2 w-full h-full">
-          <span>هنوز هیچ پستی توی صفحه ات نذاشتی!</span>
-          <span>بجنب تا دیر نشده</span>
-          <Button
-            type="button"
-            label="+ ایجاد پست جدید"
-            variant="danger"
-            className="text-basis py-1 text-xs rounded-4xl w-[197px] h-[52px] mt-5"
-            onClick={onChangeModal}
-          />
+          <span>{MESSAGES.userNotPosts}</span>
+          <span>{MESSAGES.userNotPostsParagraph}</span>
+
+          {!otherUser && (
+            <Button
+              type="button"
+              label="+ ایجاد پست جدید"
+              variant="danger"
+              className="text-basis py-1 text-xs rounded-2xl w-[197px] h-[52px] mt-5"
+              onClick={onChangeModal}
+            />
+          )}
         </div>
       )}
 
       {selectedPost && (
         <PostDetailsModal
-          isOpen={!!selectedPost}
+          isOpen={true}
           close={() => setSelectedPost(null)}
           data={selectedPost}
         />

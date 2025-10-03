@@ -1,4 +1,22 @@
-//Register
+
+export interface OtherUserType {
+  userId: string;
+  username: string;
+  email: string;
+  firstname?: string;
+  lastname?: string;
+  biography?: string;
+  follower_count: number;
+  following_count: number;
+  post_count: number;
+  profilePhotoUrl?: string;
+  isFollowed: boolean;
+  followStatus?: "accepted" | "pending" | "rejected";
+  followedAt?: string;
+  isBlocked: boolean;
+  hasBlocked: boolean;
+  isCloseFriend: boolean;
+}
 
 export interface UserRegisterFormValues {
   username: string;
@@ -54,6 +72,54 @@ export interface followType {
 
 export interface unfollowType {
   unfollowedUserId: string;
+}
+
+export interface FriendInfo {
+  _id: string;
+  email: string;
+  username: string;
+  firstname?: string;
+  lastname?: string;
+  profilePhoto?: string;
+  followerCount: number;
+}
+
+interface FriendRelation {
+  _id: string;
+  createdAt: Date;
+  updatedAt: Date;
+  friend_info: FriendInfo;
+}
+
+export type CloseFriend = FriendRelation;
+export type BlockList = FriendRelation;
+export type UpdateProfileType = {
+  firstname: string;
+  lastname: string;
+  email: string;
+  password: string;
+  confirmPassword: string;
+  bio: string;
+  isPrivate: boolean;
+};
+
+export interface ActionFriendType {
+  friendId: string;
+}
+
+export interface SearchUser {
+  username: string;
+  firstName: string;
+  lastName: string;
+  profilePhoto: string;
+  followersCount: number;
+}
+
+export interface SearchUsersResponse {
+  totalCount: number;
+  page: number;
+  perPage: number;
+  data: SearchUser[];
 }
 
 // Forgot Password Flow

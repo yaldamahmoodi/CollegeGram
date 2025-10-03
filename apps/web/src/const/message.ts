@@ -25,6 +25,17 @@ export const MESSAGES = {
   following: "دنبال کننده",
   follower: "دنبال شونده",
   post: "پست",
+  exploreHedging: "سلام به کالج گرام خوش آمدی!",
+  exploreParagraph:
+    "برای دیدن پست‌ها در  این صفحه باید کالج‌گرامی‌ها رو دنبال کنی. آماده‌ای؟",
+  userNotPosts: "هنوز هیچ پستی توی صفحه‌ات نذاشتی!",
+  userNotPostsParagraph: "بجنب تا دیر نشده",
+  savePage: "ذخیره‌ها",
+  savePageHeading: "هنوز پستی ذخیره نکردی!",
+  savePageParagraph: "اینجا تمام پست‌هایی که ذخیره کردی رو می‌تونی ببینی.",
+  taggedPage: "تگ شده‌ها",
+  taggedPageHeading: "هنوز کسی تگ ات نکرده!",
+  taggedPageParagraph: "اینجا تمام پست‌هایی که توشون تگ شدی رو می‌تونی ببینی.",
   // Forgot Password Flow
   forgotPasswordTitle: "فراموشی رمز عبور",
   forgotPasswordMessage: "برای بازیابی رمز عبور، ایمیل خود را وارد کنید:",
