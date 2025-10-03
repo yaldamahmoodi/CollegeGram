@@ -214,6 +214,7 @@ export class UserController {
       const transformedData = savedPosts.data.map((item) => {
         return {
           _id: item._id,
+          post_id: item.postId,
           postOwner: item.postOwner.username,
           createdAt: item.createdAt,
           updatedAt: item.updatedAt,
