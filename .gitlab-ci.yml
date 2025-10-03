@@ -39,7 +39,7 @@ build:
     - echo "VITE_BASE_URL=$VITE_BASE_URL" >> apps/web/.env
     - echo "VITE_SOCKET_URL=$VITE_SOCKET_URL" >> apps/web/.env
   
-    - docker compose --profile production build --no-cache
+    - docker compose --profile production build 
   rules:
     - if: '$CI_COMMIT_BRANCH == "prod"'
   artifacts:
