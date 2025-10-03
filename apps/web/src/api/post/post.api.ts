@@ -1,15 +1,16 @@
 import api from "../axios";
+import type { AxiosResponse } from "axios";
 import { POST_URLS } from "./urls";
 import type {
-  CreateLikePostPayload,
   CreatePostPayload,
-  CreateUnLikePostPayload,
-  CreateSavePostPayload,
-  CreateUnSavePostPayload,
   Posts,
   PostInfo,
   CreateCommentResponseType,
   CreateCommentPayloadType,
+  GetCommentsResponse,
+  ActionCommentType,
+  PostActionPayloadType,
+  GetPostsPayload,
 } from "@app-types/post";
 
 export interface postData {
@@ -25,24 +26,28 @@ export interface postData {
   createdAt: string;
 }
 
-export const getPosts = async (): Promise<Posts> => {
-  const { data } = await api.get(`/posts/getPosts`);
-  return data.data;
+export const getPosts = async (payload: GetPostsPayload) => {
+  const { data } = await api.get(POST_URLS.POSTS_LIST, payload);
+  return data;
 };
 
-export const getPostById = async (id: string): Promise<PostInfo> => {
+export const getPostById = async (id: string | null): Promise<PostInfo> => {
   const { data } = await api.get(`/posts/${id}/getPost`);
   return data.data;
 };
 
 export const createPost = async (payload: CreatePostPayload) => {
-  const { photos, caption } = payload;
+  const { photos, caption, mentions } = payload;
   const formData = new FormData();
   photos.forEach((photo) => {
     formData.append("photos", photo);
   });
   if (caption) {
     formData.append("caption", caption);
+  }
+
+  if (mentions?.length) {
+    formData.append("mentions", JSON.stringify(mentions));
   }
   const { data } = await api.post(POST_URLS.CREATE_POST, formData, {
     headers: {
@@ -52,20 +57,20 @@ export const createPost = async (payload: CreatePostPayload) => {
   return data;
 };
 
-export const likePost = async (payload: CreateLikePostPayload) => {
+export const likePost = async (payload: PostActionPayloadType) => {
   return await api.post(POST_URLS.LIKE_POST, payload);
 };
 
-export const unLikePost = async (payload: CreateUnLikePostPayload) => {
+export const unLikePost = async (payload: PostActionPayloadType) => {
   const { postId } = payload;
   return await api.post(`/posts/${postId}/unlike`);
 };
 
-export const savePost = async (payload: CreateSavePostPayload) => {
+export const savePost = async (payload: PostActionPayloadType) => {
   return await api.post(POST_URLS.SAVE_POST, payload);
 };
 
-export const unSavePost = async (payload: CreateUnSavePostPayload) => {
+export const unSavePost = async (payload: PostActionPayloadType) => {
   const { postId } = payload;
   return await api.post(`/posts/${postId}/unsave`);
 };
@@ -75,9 +80,44 @@ export const getSavedPosts = async () => {
   return data;
 };
 
+export const getExplorePosts = async (page = 1, pageSize = 10) => {
+  const { data } = await api.get("/posts/explore", {
+    params: { page, pageSize },
+  });
+};
+
+export const getTaggedPosts = async () => {
+  const { data } = await api.get(POST_URLS.TAGGED_POST_LIST);
+  return data;
+};
+
 export const createComment = async (
   payload: CreateCommentPayloadType
 ): Promise<CreateCommentResponseType> => {
   const { data } = await api.post(POST_URLS.CREATE_COMMENT, payload);
+  return data;
+};
+
+export const getPostComments = async (
+  postId: string,
+  page: number = 1,
+  pageSize: number = 10
+): Promise<GetCommentsResponse> => {
+  const { data }: AxiosResponse<GetCommentsResponse> = await api.get(
+    POST_URLS.COMMENT_LIST,
+    {
+      params: { postId, page, pageSize },
+    }
+  );
+  return data;
+};
+
+export const likeComment = async (payload: ActionCommentType) => {
+  const { data } = await api.post(POST_URLS.LIKE_COMMENT, payload);
+  return data;
+};
+
+export const unlikeComment = async (payload: ActionCommentType) => {
+  const { data } = await api.post(POST_URLS.UNLIKE_COMMENT, payload);
   return data;
 };

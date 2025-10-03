@@ -71,7 +71,7 @@ app.use(
 
 app.use(
   "/uploads/profiles",
-  express.static(path.join(__dirname, "middlewares/uploads/profiles"), {
+  express.static(path.join(__dirname, "middlewares/uploads"), {
     setHeaders: (res) => {
       res.setHeader("Cross-Origin-Resource-Policy", "cross-origin");
       res.setHeader("Access-Control-Allow-Origin", allowedOrigins[0] || "*");

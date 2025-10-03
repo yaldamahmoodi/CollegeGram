@@ -1,4 +1,3 @@
-// utils/apiClient.ts
 import { ApiError } from "./ApiError";
 import { getErrorMessage } from "./errorMessage";
 import { toast } from "./toastManager";
@@ -17,7 +16,7 @@ export async function apiClient<T>(
         status: response.status,
         details: data,
       });
-      toast.error(error.message); 
+      toast.error(error.message);
       throw error;
     }
 

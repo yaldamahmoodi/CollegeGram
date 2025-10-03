@@ -1,7 +1,8 @@
 export const ROUTES = {
   LOGIN: "/login",
   REGISTER: "/register",
-  PROFILE: "/profile",
+  PROFILE: "/profile/",
+  OTHER_USER: "/user/:username",
   NOT_FOUND: "/notFound",
   SAVED_POSTS: "/savedPosts",
   TAGGED_POSTS: "/taggedPosts",

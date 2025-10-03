@@ -2,15 +2,17 @@ import { useState } from "react";
 import UserCard from "./components/UserCard";
 import PostCard from "./components/PostCard";
 import SearchIcon from "@/assets/icons/search.svg";
-import { users, posts } from "./const";
+import { posts } from "./const";
+import { useSearchUsers } from "@/hooks/user.hook";
+import type { SearchUser } from "@/types/user";
 
-const Explore = () => {
+const Search = () => {
   const [activeTab, setActiveTab] = useState<"users" | "posts">("posts");
   const [search, setSearch] = useState("");
 
-  const filteredUsers = users.filter((user) =>
-    user.name.toLowerCase().includes(search.toLowerCase())
-  );
+  const { data: usersResult } = useSearchUsers(search, 1);
+
+  const filteredUsers: SearchUser[] = usersResult?.users || [];
 
   return (
     <div className="w-full mx-auto">
@@ -53,12 +55,13 @@ const Explore = () => {
         </div>
       ) : (
         <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 gap-5">
-          {filteredUsers.map((user) => (
-            <UserCard user={user} />
+          {filteredUsers.map((user: SearchUser) => (
+            <UserCard key={user.userId} user={user} />
           ))}
         </div>
       )}
     </div>
   );
 };
-export default Explore;
+
+export default Search;

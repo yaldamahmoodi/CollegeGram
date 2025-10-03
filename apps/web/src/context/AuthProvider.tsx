@@ -3,11 +3,13 @@ import type { ReactNode } from "react";
 import { useNavigate } from "react-router-dom";
 import { ROUTES } from "@/routes/routes";
 import { AuthContext } from "./AuthContext";
+import { useLogout } from "@/hooks/user.hook";
 
 export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const [token, setTokenState] = useState<string | null>(
     localStorage.getItem("token")
   );
+  const { mutate: userLogout } = useLogout();
   const navigate = useNavigate();
 
   const setToken = useCallback((newToken: string | null) => {
@@ -19,6 +21,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const logout = useCallback(() => {
     localStorage.removeItem("token");
     setTokenState(null);
+    userLogout();
     navigate(ROUTES.LOGIN);
   }, [navigate]);
 
