@@ -202,11 +202,7 @@ const PostDetail = () => {
           </p>
 
           <div className="flex flex-wrap gap-2 mb-6 mt-3">
-<<<<<<< Updated upstream
             {post?.mentions?.map((mention: MentionsType, i: number) => (
-=======
-            {post?.mentions?.map((mention, i) => (
->>>>>>> Stashed changes
               <span
                 key={i}
                 className="px-2 py-1 text-xs md:text-sm text-white rounded-md cursor-pointer bg-orange-500 hover:bg-orange-600">
@@ -264,7 +260,6 @@ const PostDetail = () => {
           </div>
 
           <div className="space-y-4 pt-2 text-sm max-h-80 overflow-y-auto pr-2">
-<<<<<<< Updated upstream
             {mainComments.length
               ? mainComments.map((comment) => (
                   <div key={comment._id} className="pb-3 mb-2 last:border-none">
@@ -388,21 +383,6 @@ const PostDetail = () => {
                       </div>
                     ))}
                   </div>
-=======
-            {mainComments?.length
-              ? mainComments?.map((comment) => (
-                  <CommentItem
-                    key={comment._id}
-                    comment={comment}
-                    repliesMap={repliesMap}
-                    replyingTo={replyingTo}
-                    setReplyingTo={setReplyingTo}
-                    replyContent={replyContent}
-                    setReplyContent={setReplyContent}
-                    handleReplyComment={handleReplyComment}
-                    handleToggleLikeComment={handleToggleLikeComment}
-                  />
->>>>>>> Stashed changes
                 ))
               : "برای این پست هنوز نظری ثبت نشده"}
           </div>

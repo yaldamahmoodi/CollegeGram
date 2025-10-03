@@ -183,11 +183,7 @@ export const useAcceptFollowRequest = (username: string) => {
   });
 };
 
-<<<<<<< Updated upstream
-export const useRejectFollowRequest = (username: string) => {
-=======
 export const useRejectFollowRequest = (username: string | null) => {
->>>>>>> Stashed changes
   const queryClient = useQueryClient();
 
   return useMutation({

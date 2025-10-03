@@ -1,4 +1,4 @@
-import { useState, useMemo } from "react";
+import {  useMemo } from "react";
 import ImageSlider from "@/components/ImageSlider";
 import Modal from "@components/Modal.tsx";
 import Button from "@components/Button.tsx";
@@ -18,11 +18,8 @@ import {
   useUnSavePost,
 } from "@hooks/post.hook.ts";
 import type { PostInfo, PostActionPayloadType } from "@/types/post";
-<<<<<<< Updated upstream
-=======
 import type { OtherUserType } from "@/types/user";
 import { formatRelativeTime } from "@/utils/formatRelativeTime";
->>>>>>> Stashed changes
 
 interface PostDetailsModalProps {
   isOpen: boolean;
@@ -51,12 +48,8 @@ const Caption = ({ text }: { text: string }) => {
   );
 };
 
-<<<<<<< Updated upstream
-// تبدیل mentions به string[]
+
 const Mentions = ({ items }: { items?: {username: string; user_id: string}[] }) => {
-=======
-const Mentions = ({ items }: { items?: string[] }) => {
->>>>>>> Stashed changes
   if (!items || items.length === 0) return null;
   return (
     <div className="flex flex-wrap gap-2 justify-end">
@@ -73,15 +66,6 @@ const Mentions = ({ items }: { items?: string[] }) => {
 };
 
 const PostDetailsModal = ({ isOpen, close, data }: PostDetailsModalProps) => {
-<<<<<<< Updated upstream
-  const created = Date.parse(((data as unknown) as { createdAt?: string }).createdAt || new Date().toISOString());
-  if (Number.isNaN(created)) throw new Error("Invalid createdAt");
-  const diffMs = Math.max(0, Date.now() - created);
-  const diffMin = Math.floor(diffMs / 60000);
-  const [comentsCount] = useState(12);
-
-=======
->>>>>>> Stashed changes
   const likePostMutation = useLikePost();
   const unLikePostMutation = useUnLikePost();
   const savePostMutation = useSavePost();
@@ -108,12 +92,7 @@ const PostDetailsModal = ({ isOpen, close, data }: PostDetailsModalProps) => {
   const navigate = useNavigate();
   const handleCommentClick = () => navigate(`/postDetail/${data?._id}`);
 
-<<<<<<< Updated upstream
-  // مشخص کردن تایپ user
-  const { data: user } = useUserInfo();
-=======
   const { data: user } = useUserInfo<OtherUserType>();
->>>>>>> Stashed changes
 
   if (!isOpen) return null;
 
