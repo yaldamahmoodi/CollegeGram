@@ -5,7 +5,7 @@ import {z} from "zod";
 export interface ISave {
     _id: Types.ObjectId,
     post_id: Types.ObjectId,
-    user_id: Types.ObjectId, // saved user id
+    user_id: Types.ObjectId, 
     createdAt: Date,
 }
 
@@ -17,7 +17,7 @@ const SaveSchema: Schema<ISave> = new Schema<ISave>({
         timestamps: {createdAt: 'createdAt'}
     })
 
-// تا جلوی رکورد تکراری رو بگیریم
+
 SaveSchema.index({user_id: 1, post_id: 1}, {unique: true});
 
 export const SaveModel: Model<ISave> = mongoose.model<ISave>('Saves', SaveSchema);

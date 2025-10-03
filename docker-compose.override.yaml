@@ -3,15 +3,22 @@
 # To use production setup, run: docker-compose -f docker-compose.yaml up
 
 services:
+  # Infrastructure services run in development (no profile restrictions)
   mongo:
   elasticsearch:
   redis:
   mailpit:
+  
+  # Application services are excluded in development (kept in production profile)
   api:
     profiles:
       - production
       
   web:
+    profiles:
+      - production
+      
+  doc:
     profiles:
       - production
       
