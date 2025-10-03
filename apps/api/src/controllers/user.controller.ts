@@ -217,7 +217,7 @@ export class UserController {
           postOwner: item.postOwner.username,
           createdAt: item.createdAt,
           updatedAt: item.updatedAt,
-          firstUrl: item.post.urls[0] || null,
+          firstUrl: `${req.protocol}://${req.get("host")}/uploads/posts/${item.post.urls[0]}` || null,
           like_count: item.post.like_count,
           save_count: item.post.save_count,
           mentions: item.post.mentions,
