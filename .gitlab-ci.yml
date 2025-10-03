@@ -27,8 +27,7 @@ install:
   stage: install
   script:
     - echo "📦 Installing dependencies..."
-    - corepack enable
-    - corepack prepare pnpm@10.14.0 --activate
+    - npm install -g pnpm@10.14.0
     - pnpm --version
     - pnpm install
   cache:
@@ -52,8 +51,6 @@ build:
   needs: ["install"]
   script:
     - echo "🔨 Building applications..."
-    - corepack enable
-    - corepack prepare pnpm@10.14.0 --activate
     - npm install -g turbo
     - pnpm --version
     - pnpm turbo run build
