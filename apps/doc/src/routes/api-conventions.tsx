@@ -86,18 +86,24 @@ function ApiConventions() {
               Swagger Documentation
             </CardTitle>
             <CardDescription>
-              Interactive API documentation available at /api-docs endpoint
+              Interactive API documentation embedded below. Opens from the /docs endpoint.
             </CardDescription>
           </CardHeader>
           <CardContent>
-            <div className="text-center p-8">
-              <FileTextIcon className="w-16 h-16 text-muted-foreground mx-auto mb-4" />
-              <h3 className="text-lg font-semibold mb-2">Swagger Documentation</h3>
-              <p className="text-muted-foreground mb-4">
-                Interactive API documentation is available at the /api-docs endpoint when the API server is running.
-              </p>
+            <div className="space-y-4">
               <div className="text-sm text-muted-foreground">
-                <p>Access the Swagger UI at: <code>http://localhost:3001/api-docs</code></p>
+                <p>
+                  UI: <code>http://localhost:3001/docs</code> · JSON: <code>http://localhost:3001/api-docs</code>
+                </p>
+              </div>
+              <div className="border rounded-md overflow-hidden" style={{ height: 800 }}>
+                <iframe
+                  title="Swagger UI"
+                  src="http://localhost:3001/docs"
+                  width="100%"
+                  height="100%"
+                  style={{ border: 0 }}
+                />
               </div>
             </div>
           </CardContent>

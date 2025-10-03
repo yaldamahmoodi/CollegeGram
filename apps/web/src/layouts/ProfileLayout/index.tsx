@@ -21,7 +21,7 @@ interface ProfileLayoutProps {
 const ProfileLayout = ({ children }: ProfileLayoutProps) => {
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [isMenuSheetOpen, setIsMenuSheetOpen] = useState(false);
-  
+    const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   // Initialize WebSocket connection
   const token = localStorage.getItem("token");
   useWebSocket(token || undefined);
@@ -95,7 +95,21 @@ const ProfileLayout = ({ children }: ProfileLayoutProps) => {
                 <MobileSidebarMenu />
             </BottomSheet>
 
-            
+            {isSidebarOpen && (
+        <div className="fixed inset-0 z-40 flex">
+          <div
+            className="fixed inset-0 bg-black opacity-40"
+            onClick={() => setIsSidebarOpen(false)}></div>
+          <div className="relative bg-white w-64 h-full shadow-lg p-4 z-50">
+            <button
+              className="absolute top-4 right-4 text-gray-600"
+              onClick={() => setIsSidebarOpen(false)}>
+              ✕
+            </button>
+            <ProfileSidebarMenu />
+          </div>
+        </div>
+      )}
 
             <CraetePostModal
                 isOpen={isModalOpen}
