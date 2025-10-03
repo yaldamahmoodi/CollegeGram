@@ -1,5 +1,4 @@
 stages:
-  - install
   - build
   - deploy
 
@@ -9,23 +8,8 @@ default:
 variables:
   DOCKER_HOST: unix:///var/run/docker.sock
 
-install:
-  stage: install
-  script:
-    - echo "📦 Installing dependencies..."
-    - npm install -g pnpm@10.14.0
-    - pnpm --version
-    - pnpm install
-  rules:
-    - if: '$CI_COMMIT_BRANCH == "prod"'
-  artifacts:
-    paths:
-      - node_modules/
-    expire_in: 1 hour
-
 build:
   stage: build
-  needs: ["install"]
   script:
     - echo "🔨 Building Docker images..."
     - mkdir -p apps/api apps/web
