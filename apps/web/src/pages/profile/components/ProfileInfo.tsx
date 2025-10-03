@@ -94,7 +94,7 @@ const ProfileInfo = (props: ProfileInfoProps) => {
 
   return (
     <div className="profile-info-container w-full flex flex-col lg:flex-row lg:items-start gap-6 py-4 flex-justify">
-      <div className="flex justify-center lg:justify-start">
+      <div className="justify-center lg:justify-start hidden md:flex">
         <div className="bg-white rounded-full bg-cover object-cover ">
           <img
             src={
@@ -108,8 +108,24 @@ const ProfileInfo = (props: ProfileInfoProps) => {
       </div>
 
       <div className="flex flex-col flex-1 mt-4">
-        <div className="flex flex-col lg:flex-row lg:items-center lg:gap-6">
-          <div className="flex flex-row items-center gap-2 mb-3">
+          <div className="flex items-center gap-3 p-2 rounded-xl md:hidden">
+              <img
+                  src={userInfo?.profilePhotoUrl ? userInfo?.profilePhotoUrl : UsernameIcon}
+                  alt="user"
+                  className="w-14 h-14 sm:w-14 sm:h-14 rounded-full object-cover"
+              />
+              <div className="flex flex-col">
+                    <span className="text-sm sm:text-base font-semibold text-gray-800">
+                        {userInfo?.firstname && userInfo?.lastname
+                        ? `${userInfo?.firstname} ${userInfo?.lastname}`
+                         : "کاربر کالج گرام"}
+                     </span>
+                  <span className="text-xs sm:text-sm text-gray-500">@{userInfo?.username}</span>
+              </div>
+          </div>
+
+        <div className=" flex-col lg:flex-row lg:items-center lg:gap-6 hidden md:flex">
+          <div className="flex flex-row items-center gap-2 mb-3 justify-center lg:justify-start">
             <div className="text-lg md:text-2xl font-bold mb-1">
               {userInfo?.firstname && userInfo?.lastname
                 ? `${userInfo?.firstname}  ${userInfo?.lastname}`
