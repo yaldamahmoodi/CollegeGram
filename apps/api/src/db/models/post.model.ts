@@ -20,6 +20,7 @@ export interface Post extends Document {
   hashtag_array: Array<string>;
   isLiked?: boolean;
   isSaved?: boolean;
+  createdAt: Date;
 }
 
 const postSchema: Schema<Post> = new Schema({
@@ -39,6 +40,8 @@ const postSchema: Schema<Post> = new Schema({
     default: [],
   },
   hashtag_array: { type: [String], default: [] },
+}, {
+  timestamps: {createdAt: 'createdAt', updatedAt: 'updatedAt'},
 });
 
 postSchema.virtual("user", {
@@ -94,6 +97,7 @@ export const selectPostZodSchema = z.object({
     .optional()
     .default([]),
   hashtag_array: z.array(z.string()).optional().default([]),
+  createdAt: z.date(),
 });
 
 export type InsertPostDto = z.infer<typeof insertPostSchema>;

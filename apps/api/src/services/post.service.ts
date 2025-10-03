@@ -170,9 +170,6 @@ export class PostService {
       page,
       pageSize
     );
-    if (savePosts.data.length === 0) {
-      throw new NotFoundError("SAVE_NOT_FOUND");
-    }
     return savePosts;
   }
 

@@ -122,6 +122,30 @@ export interface SearchUsersResponse {
   data: SearchUser[];
 }
 
+export interface SearchPostMention {
+  user_id: string;
+  username: string;
+}
+
+export interface SearchPost {
+  id: string;
+  user_id: string;
+  urls: string[];
+  caption?: string;
+  photo_length: number;
+  like_count: number;
+  save_count: number;
+  mentions: SearchPostMention[];
+  hashtag_array: string[];
+}
+
+export interface SearchPostsResponse {
+  totalCount: number;
+  page: number;
+  perPage: number;
+  data: SearchPost[];
+}
+
 // Forgot Password Flow
 export interface ForgotPasswordFormValues {
   email: string;

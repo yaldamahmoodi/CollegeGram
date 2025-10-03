@@ -48,6 +48,7 @@ export class PostController {
             photo_length: post.photo_length,
             isLiked: post.isLiked || false,
             isSaved: post.isSaved || false,
+            createdAt: post.createdAt
         }
         return res.status(200).json({
             code: 'GET_POST_SUCCESSFULLY',

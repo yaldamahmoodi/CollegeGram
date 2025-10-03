@@ -5,7 +5,6 @@ import { SidebarValue, SidebarBottomValue, SidebarFooterValue } from "./const";
 import SidebarItems from "./SidebarItem";
 import { useUserInfo } from "@hooks/user.hook.ts";
 import { useAuth } from "@hooks/useAuth";
-import Button from "@/components/Button";
 import { useUnreadCount } from "@/hooks/notification.hook";
 
 const SidebarMenu = () => {

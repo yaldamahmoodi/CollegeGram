@@ -3,16 +3,17 @@ import UserCard from "./components/UserCard";
 import PostCard from "./components/PostCard";
 import SearchIcon from "@/assets/icons/search.svg";
 import { posts } from "./const";
-import { useSearchUsers } from "@/hooks/user.hook";
-import type { SearchUser } from "@/types/user";
+import { usePostSearch, useSearchUsers } from "@/hooks/user.hook";
+import type { SearchPost, SearchUser } from "@/types/user";
 
 const Search = () => {
   const [activeTab, setActiveTab] = useState<"users" | "posts">("posts");
   const [search, setSearch] = useState("");
 
   const { data: usersResult } = useSearchUsers(search, 1);
-
+  const { data: postsResult } = usePostSearch(search, 1);
   const filteredUsers: SearchUser[] = usersResult?.users || [];
+  const filteredPosts: SearchPost[] = postsResult?.posts || [];
 
   return (
     <div className="w-full mx-auto">
@@ -49,8 +50,8 @@ const Search = () => {
 
       {activeTab === "posts" ? (
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
-          {posts.map((post) => (
-            <PostCard key={post.id} image={post.image} />
+          {filteredPosts.map((post) => (
+            <PostCard key={post.id} image={post.urls[0]} />
           ))}
         </div>
       ) : (

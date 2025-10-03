@@ -21,6 +21,7 @@ import {
   forgotPassword,
   verifyOTP,
   resetPassword,
+  searchPosts,
 } from "@/api/user/user.api";
 import { useNavigate } from "react-router-dom";
 import { ROUTES } from "@/routes/routes";
@@ -335,3 +336,12 @@ export const useSearchUsers = (query: string, page: number = 1) => {
     enabled: !!query,
   });
 };
+
+export const usePostSearch = (query: string, page: number = 1) => {
+  return useQuery({
+    queryKey: ["searchPosts", query, page],
+    queryFn: () => searchPosts(query, page),
+    enabled: !!query,
+  });
+};
+

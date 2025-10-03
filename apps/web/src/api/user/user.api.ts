@@ -5,13 +5,12 @@ import type {
   UserLoginPayload,
   followType,
   unfollowType,
-  UserInfoResponse,
-  FriendInfo,
   ActionFriendType,
   SearchUsersResponse,
   ForgotPasswordPayload,
   VerifyOTPPayload,
   ResetPasswordPayload,
+  SearchPostsResponse,
 } from "@app-types/user";
 
 export interface UpdateProfilePayload {
@@ -149,6 +148,18 @@ export const searchUsers = async (
   page: number = 1
 ): Promise<SearchUsersResponse> => {
   const { data } = await api.get<SearchUsersResponse>(
+    `${USER_URLS.SEARCH_USER}/${page}/${query}`,
+    { withCredentials: true }
+  );
+  return data;
+};
+
+
+export const searchPosts = async (
+  query: string,
+  page: number = 1
+): Promise<SearchPostsResponse> => {
+  const { data } = await api.get<SearchPostsResponse>(
     `${USER_URLS.SEARCH_USER}/${page}/${query}`,
     { withCredentials: true }
   );
