@@ -38,9 +38,10 @@ const UserPosts = ({ otherUser, onChangeModal }: UserPostsProps) => {
       {postList?.length > 0 ? (
         <div className="grid grid-cols-12 gap-6">
           {postList.map((item: postData) => (
-            <div
-              key={item._id}
-              className="col-span-6 sm:col-span-6 md:col-span-4 lg:col-span-3">
+              <div
+                  key={item._id}
+                  className="col-span-6 md:col-span-4 lg:col-span-4"
+              >
               <ImageGroup
                 urls={item.urls}
                 onClick={() => setSelectedPost(item)}

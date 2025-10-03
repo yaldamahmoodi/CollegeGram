@@ -2,7 +2,6 @@ import Button from "@/components/Button";
 import React, { useState } from "react";
 import type { MentionsType } from "@app-types/post";
 import { useSearchUsers } from "@/hooks/user.hook";
-import Switch from "@/components/Switch";
 
 interface MentionInputProps {
   users?: MentionsType[];

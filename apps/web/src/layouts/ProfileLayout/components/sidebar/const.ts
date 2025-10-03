@@ -1,7 +1,6 @@
 import { ROUTES } from "@/routes/routes";
 import pinIcon from "@assets/icons/pin.svg";
 import saveIcon from "@assets/icons/save.svg";
-import messsageIcon from "@assets/icons/message.svg";
 import notificationIcon from "@assets/icons/notification.svg";
 import tagIcon from "@assets/icons/tah.svg";
 import exploreIcon from "@assets/icons/explore.svg";
@@ -88,12 +87,6 @@ export const SidebarValueMobile = [
         icon: saveIcon,
         text: "ذخیره ها",
         id: "save",
-    },
-    {
-        link: ROUTES.MESSAGES,
-        icon: messsageIcon,
-        text: "پیام ها",
-        id: "message",
     },
     {
         link: ROUTES.NOTIFICATIONS,

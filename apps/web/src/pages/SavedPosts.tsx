@@ -30,7 +30,7 @@ const SavedPosts = () => {
             ) : posts.length === 0 ? (
                 <div className="w-full h-full flex justify-center items-center">
                     <div className="flex flex-col justify-center items-center gap-2">
-                        <div className="font-semibold mb-2 text-4xl">
+                        <div className="font-semibold mb-2 text-4xl text-center">
                             {MESSAGES.savePageHeading}
                         </div>
                         <p className="max-w-md text-2xl text-center">{MESSAGES.savePageParagraph}</p>

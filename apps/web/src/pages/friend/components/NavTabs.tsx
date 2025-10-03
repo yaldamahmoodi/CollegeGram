@@ -6,7 +6,7 @@ const checkIsActive = (isActive: boolean) =>
 
 const NavTabs = () => {
   return (
-    <nav className="w-1/2 flex flex-row justify-around text-xl gap-3 mb-15">
+    <nav className="w-3xs flex flex-row justify-around text-xl gap-3 mb-15">
       <NavLink
         to={ROUTES.CLOSE_FRIEND}
         className={({ isActive }) => checkIsActive(isActive)}>

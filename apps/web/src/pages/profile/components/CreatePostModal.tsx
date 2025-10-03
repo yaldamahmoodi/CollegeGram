@@ -62,7 +62,11 @@ const CreatePostModal = (props: CreatePostModalProps) => {
   ];
 
   return (
-    <Modal isOpen={isOpen} size={"medium"}>
+    <Modal
+        isOpen={isOpen}
+        size={"medium"}
+        className="w-full max-w-md md:max-w-lg lg:max-w-xl xl:max-w-2/6 mx-auto"
+    >
       <Stepper steps={steps} callbackHandler={onClose} />
     </Modal>
   );
