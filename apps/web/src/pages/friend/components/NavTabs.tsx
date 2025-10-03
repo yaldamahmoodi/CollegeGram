@@ -6,13 +6,13 @@ const checkIsActive = (isActive: boolean) =>
 
 const NavTabs = () => {
   return (
-    <nav className="w-1/2 flex flex-row justify-around text-xl gap-3 mb-15">
+    <nav className="w-1/2 flex flex-row justify-around text-xl mb-15">
       <NavLink
         to={ROUTES.CLOSE_FRIEND}
         className={({ isActive }) => checkIsActive(isActive)}>
         دوستان نزدیک
       </NavLink>
-      <span className="text-normal text-gray-500 mx-2">|</span>
+      <span className="text-normal text-gray-500">|</span>
       <NavLink
         to={ROUTES.BLOCK_LIST}
         className={({ isActive }) => checkIsActive(isActive)}>

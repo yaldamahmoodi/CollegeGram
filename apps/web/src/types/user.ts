@@ -1,4 +1,3 @@
-
 export interface OtherUserType {
   userId: string;
   username: string;
@@ -66,12 +65,12 @@ export interface UserRelationType {
 export type FollowersType = UserRelationType;
 export type FollowingType = UserRelationType;
 
-export interface followType {
+export interface actionFollowType {
   followedUserId: string;
 }
 
 export interface unfollowType {
-  unfollowedUserId: string;
+  followerUserId: string;
 }
 
 export interface FriendInfo {
@@ -107,13 +106,17 @@ export interface ActionFriendType {
   friendId: string;
 }
 
+export interface ActionBlockType {
+  blockUserId: string;
+}
+
 export interface SearchUser {
   id: string;
   username: string;
-  firstName: string;
-  lastName: string;
-  profilePhoto: string;
-  followersCount: number;
+  firstname: string;
+  lastname: string;
+  profilePhotoPath: string;
+  follower_count: number;
 }
 
 export interface SearchUsersResponse {
@@ -166,4 +169,7 @@ export interface ResetPasswordFormValues {
 
 export type ForgotPasswordPayload = ForgotPasswordFormValues;
 export type VerifyOTPPayload = VerifyOTPFormValues;
-export type ResetPasswordPayload = Omit<ResetPasswordFormValues, "confirmPassword">;
+export type ResetPasswordPayload = Omit<
+  ResetPasswordFormValues,
+  "confirmPassword"
+>;

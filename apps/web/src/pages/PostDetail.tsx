@@ -27,6 +27,89 @@ import {
 } from "@/hooks/post.hook";
 import { useState } from "react";
 
+const CommentItem = ({
+  comment,
+  repliesMap,
+  replyingTo,
+  setReplyingTo,
+  replyContent,
+  setReplyContent,
+  handleReplyComment,
+  handleToggleLikeComment,
+}: any) => {
+  return (
+    <div className="pb-3 mb-2 last:border-none">
+      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between w-full mb-2">
+        <div className="flex items-center gap-2">
+          <p className="font-medium">{comment?.user_info?.username}</p>
+          <span className="text-xs text-gray-500">
+            {formatRelativeTime(comment?.updatedAt || comment?.createdAt)}
+          </span>
+        </div>
+
+        <div className="flex gap-4 mt-2 sm:mt-0 text-red-500 items-center">
+          <button
+            className="flex gap-1 hover:opacity-80"
+            onClick={() => handleToggleLikeComment(comment._id)}>
+            <span>{comment.like_count}</span>
+            <img src={LikeIcon} className="w-4 h-4" />
+          </button>
+          <button
+            className="flex gap-1 hover:opacity-80 text-gray-500"
+            onClick={() =>
+              setReplyingTo(replyingTo === comment._id ? null : comment._id)
+            }>
+            <img src={replayComment} className="w-4 h-4" />
+            <span className="text-red-500">پاسخ</span>
+          </button>
+        </div>
+      </div>
+
+      <p className="text-gray-700 mt-1">{comment.content}</p>
+
+      {replyingTo === comment._id && (
+        <div className="flex items-center gap-2 mt-2 ml-6">
+          <img
+            src={noAvatarIcon}
+            alt="me"
+            className="w-6 h-6 rounded-full object-cover"
+          />
+          <input
+            type="text"
+            placeholder="پاسخ خود را بنویسید..."
+            className="flex-1 border border-gray-300 bg-white rounded-full px-3 py-1 text-xs focus:outline-none focus:ring-1 focus:ring-orange-400"
+            value={replyContent}
+            onChange={(e) => setReplyContent(e.target.value)}
+            onKeyDown={(e) =>
+              e.key === "Enter" && handleReplyComment(comment._id)
+            }
+          />
+          <button
+            onClick={() => handleReplyComment(comment._id)}
+            className="text-orange-500 hover:text-orange-600">
+            <img src={sendIcon} className="w-4 h-4" />
+          </button>
+        </div>
+      )}
+
+      {repliesMap[comment._id]?.map((reply: any) => (
+        <div key={reply._id} className="ml-6 mt-2 pr-5">
+          <CommentItem
+            comment={reply}
+            repliesMap={repliesMap}
+            replyingTo={replyingTo}
+            setReplyingTo={setReplyingTo}
+            replyContent={replyContent}
+            setReplyContent={setReplyContent}
+            handleReplyComment={handleReplyComment}
+            handleToggleLikeComment={handleToggleLikeComment}
+          />
+        </div>
+      ))}
+    </div>
+  );
+};
+
 const PostDetail = () => {
   const [newComment, setNewComment] = useState("");
   const [replyContent, setReplyContent] = useState("");
@@ -81,7 +164,6 @@ const PostDetail = () => {
     likeCommentMutation.mutate({ commentId: id });
   };
 
-  // گروه‌بندی کامنت‌ها و ریپلای‌ها
   const mainComments = comments?.filter((c) => c.parent_comment === null) || [];
   const repliesMap =
     comments?.reduce((acc: Record<string, (typeof comments)[0][]>, c) => {
@@ -120,7 +202,11 @@ const PostDetail = () => {
           </p>
 
           <div className="flex flex-wrap gap-2 mb-6 mt-3">
+<<<<<<< Updated upstream
             {post?.mentions?.map((mention: MentionsType, i: number) => (
+=======
+            {post?.mentions?.map((mention, i) => (
+>>>>>>> Stashed changes
               <span
                 key={i}
                 className="px-2 py-1 text-xs md:text-sm text-white rounded-md cursor-pointer bg-orange-500 hover:bg-orange-600">
@@ -178,6 +264,7 @@ const PostDetail = () => {
           </div>
 
           <div className="space-y-4 pt-2 text-sm max-h-80 overflow-y-auto pr-2">
+<<<<<<< Updated upstream
             {mainComments.length
               ? mainComments.map((comment) => (
                   <div key={comment._id} className="pb-3 mb-2 last:border-none">
@@ -301,6 +388,21 @@ const PostDetail = () => {
                       </div>
                     ))}
                   </div>
+=======
+            {mainComments?.length
+              ? mainComments?.map((comment) => (
+                  <CommentItem
+                    key={comment._id}
+                    comment={comment}
+                    repliesMap={repliesMap}
+                    replyingTo={replyingTo}
+                    setReplyingTo={setReplyingTo}
+                    replyContent={replyContent}
+                    setReplyContent={setReplyContent}
+                    handleReplyComment={handleReplyComment}
+                    handleToggleLikeComment={handleToggleLikeComment}
+                  />
+>>>>>>> Stashed changes
                 ))
               : "برای این پست هنوز نظری ثبت نشده"}
           </div>

@@ -13,7 +13,7 @@ export const USER_URLS = {
   CLOSE_FRIEND_LIST: "/closeFriend/list",
   ADD_CLOSE_FRIEND: "/closeFriend/add",
   REMOVE_CLOSE_FRIEND: "closeFriend/remove",
-  BLOCK_LIST: "/blocks",
+  BLOCK_LIST: "/users/blocks",
   ADD_BLOCK_LIST: "/users/block",
   REMOVE_BLOCK_LIST: "users/unBlock",
   SEARCH_USER: "/search/getUsers",

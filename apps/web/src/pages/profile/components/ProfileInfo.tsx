@@ -111,9 +111,9 @@ const ProfileInfo = (props: ProfileInfoProps) => {
         <div className="flex flex-col lg:flex-row lg:items-center lg:gap-6">
           <div className="flex flex-row items-center gap-2 mb-3">
             <div className="text-lg md:text-2xl font-bold mb-1">
-              {userInfo?.firstname && userInfo?.lastname
-                ? `${userInfo?.firstname}  ${userInfo?.lastname}`
-                : "کاربر کالج گرام"}
+              {userInfo?.firstname === null && userInfo?.lastname === null
+                ? "کاربر کالج گرام"
+                : `${userInfo?.firstname || ""}  ${userInfo?.lastname || ""}`}
             </div>
             <span className="text-sm lg:text-base font-light mr-3 ">
               {userInfo?.username}

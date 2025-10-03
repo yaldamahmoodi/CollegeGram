@@ -3,7 +3,7 @@ import Stepper from "./Stepper";
 import UserPostUploader from "./UserPostUploader";
 import CaptionWithEmojis from "./CaptionWithEmojis";
 import MentionInput from "./MentionInput";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useCreatePost } from "@/hooks/post.hook";
 import type { MentionsType } from "@app-types/post";
 
@@ -19,7 +19,7 @@ export interface Mention {
 
 const CreatePostModal = (props: CreatePostModalProps) => {
   const { isOpen = false, onClose } = props;
-  const createPostMutation = useCreatePost();
+  const { mutate: createPostMutation, isSuccess } = useCreatePost();
   const [photos, setPhotos] = useState<File[]>([]);
   const [caption, setCaption] = useState<string>("");
   const [mentions, setMentions] = useState<MentionsType[]>([]);
@@ -27,11 +27,15 @@ const CreatePostModal = (props: CreatePostModalProps) => {
 
   const handlePostSubmit = async () => {
     const payload = { photos, caption, mentions, isClose };
-    createPostMutation.mutate(payload);
+    createPostMutation(payload);
+
     onClose();
   };
-
- 
+  useEffect(() => {
+    setPhotos([]);
+    setCaption("");
+    setMentions([]);
+  }, [onClose]);
 
   type StepType = { title: string; content: React.ReactNode };
 
@@ -55,7 +59,6 @@ const CreatePostModal = (props: CreatePostModalProps) => {
             isClose={isClose}
             setIsClose={setIsClose}
           />
-       
         </div>
       ),
     },

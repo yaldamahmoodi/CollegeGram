@@ -53,4 +53,5 @@ export const MESSAGES = {
   newPasswordRequired: "رمز عبور جدید الزامی است.",
   resetPasswordButton: "تغییر رمز عبور",
   backToLogin: "بازگشت به صفحه ورود",
+  exploreTitle: "اکسپلور",
 };

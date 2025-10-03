@@ -18,6 +18,11 @@ import {
   useUnSavePost,
 } from "@hooks/post.hook.ts";
 import type { PostInfo, PostActionPayloadType } from "@/types/post";
+<<<<<<< Updated upstream
+=======
+import type { OtherUserType } from "@/types/user";
+import { formatRelativeTime } from "@/utils/formatRelativeTime";
+>>>>>>> Stashed changes
 
 interface PostDetailsModalProps {
   isOpen: boolean;
@@ -46,8 +51,12 @@ const Caption = ({ text }: { text: string }) => {
   );
 };
 
+<<<<<<< Updated upstream
 // تبدیل mentions به string[]
 const Mentions = ({ items }: { items?: {username: string; user_id: string}[] }) => {
+=======
+const Mentions = ({ items }: { items?: string[] }) => {
+>>>>>>> Stashed changes
   if (!items || items.length === 0) return null;
   return (
     <div className="flex flex-wrap gap-2 justify-end">
@@ -64,19 +73,22 @@ const Mentions = ({ items }: { items?: {username: string; user_id: string}[] }) 
 };
 
 const PostDetailsModal = ({ isOpen, close, data }: PostDetailsModalProps) => {
+<<<<<<< Updated upstream
   const created = Date.parse(((data as unknown) as { createdAt?: string }).createdAt || new Date().toISOString());
   if (Number.isNaN(created)) throw new Error("Invalid createdAt");
   const diffMs = Math.max(0, Date.now() - created);
   const diffMin = Math.floor(diffMs / 60000);
   const [comentsCount] = useState(12);
 
+=======
+>>>>>>> Stashed changes
   const likePostMutation = useLikePost();
   const unLikePostMutation = useUnLikePost();
   const savePostMutation = useSavePost();
   const unSavePostMutation = useUnSavePost();
 
   const handleLikeToggle = () => {
-    const payload: PostActionPayloadType = { postId: data._id };
+    const payload: PostActionPayloadType = { postId: data?._id };
     if (data?.isLiked) {
       unLikePostMutation.mutate(payload);
     } else {
@@ -85,7 +97,7 @@ const PostDetailsModal = ({ isOpen, close, data }: PostDetailsModalProps) => {
   };
 
   const handleSaveToggle = () => {
-    const payload: PostActionPayloadType = { postId: data._id };
+    const payload: PostActionPayloadType = { postId: data?._id };
     if (data?.isSaved) {
       unSavePostMutation.mutate(payload);
     } else {
@@ -94,10 +106,14 @@ const PostDetailsModal = ({ isOpen, close, data }: PostDetailsModalProps) => {
   };
 
   const navigate = useNavigate();
-  const handleCommentClick = () => navigate(`/postDetail/${data._id}`);
+  const handleCommentClick = () => navigate(`/postDetail/${data?._id}`);
 
+<<<<<<< Updated upstream
   // مشخص کردن تایپ user
   const { data: user } = useUserInfo();
+=======
+  const { data: user } = useUserInfo<OtherUserType>();
+>>>>>>> Stashed changes
 
   if (!isOpen) return null;
 
@@ -110,7 +126,7 @@ const PostDetailsModal = ({ isOpen, close, data }: PostDetailsModalProps) => {
         <div className="flex items-center justify-between px-4 py-2">
           <Expand
             className="text-red-500 cursor-pointer"
-            onClick={() => navigate(`/postDetail/${data._id}`)}
+            onClick={() => navigate(`/postDetail/${data?._id}`)}
           />
           <XCircle onClick={close} className="text-red-500 cursor-pointer" />
         </div>
@@ -126,7 +142,7 @@ const PostDetailsModal = ({ isOpen, close, data }: PostDetailsModalProps) => {
           <div className="min-w-0">
             <div className="relative w-full">
               <div className="w-full max-h-[65vh] lg:max-h-[60vh] xl:max-h-[58vh] 2xl:max-h-[55vh] overflow-hidden">
-                <ImageSlider images={data.urls} />
+                <ImageSlider images={data?.urls} />
               </div>
             </div>
           </div>
@@ -146,15 +162,16 @@ const PostDetailsModal = ({ isOpen, close, data }: PostDetailsModalProps) => {
             </div>
 
             <div className="flex flex-col gap-3 min-w-0">
-              <span className="text-xs text-gray-500">{diffMin} دقیقه پیش</span>
+              <span className="text-xs text-gray-500">
+                {formatRelativeTime(data?.createdAt)}
+              </span>
 
               <div className="max-h-[40vh] overflow-auto pr-1">
-                <Caption text={data.caption} />
+                <Caption text={data?.caption} />
               </div>
 
-              {/* فرض گرفته شد که mentions از نوع string[] است */}
               <Mentions
-                items={Array.isArray(data.mentions) ? data.mentions : []}
+                items={Array.isArray(data?.mentions) ? data?.mentions : []}
               />
             </div>
 
@@ -163,7 +180,7 @@ const PostDetailsModal = ({ isOpen, close, data }: PostDetailsModalProps) => {
                 type="button"
                 onClick={handleCommentClick}
                 icon={<img src={comment} />}
-                label={String(comentsCount)}
+                label={data?.comment_count?.toString() || "0"}
                 className="flex flex-col items-center bg-transparent hover:bg-transparent !text-[#EA5A69]"
                 style={{
                   minWidth: "auto",
@@ -174,8 +191,8 @@ const PostDetailsModal = ({ isOpen, close, data }: PostDetailsModalProps) => {
               <Button
                 type="button"
                 onClick={handleLikeToggle}
-                label={data.like_count.toString()}
-                icon={<img src={data.isLiked ? likedIcon : unLikeIcon} />}
+                label={data?.like_count?.toString() || "0"}
+                icon={<img src={data?.isLiked ? likedIcon : unLikeIcon} />}
                 className="flex flex-col items-center bg-transparent hover:bg-transparent !text-[#EA5A69]"
                 style={{
                   minWidth: "auto",
@@ -186,8 +203,8 @@ const PostDetailsModal = ({ isOpen, close, data }: PostDetailsModalProps) => {
               <Button
                 type="button"
                 onClick={handleSaveToggle}
-                icon={<img src={data.isSaved ? savedIcon : unSaveIcon} />}
-                label={data.save_count.toString()}
+                icon={<img src={data?.isSaved ? savedIcon : unSaveIcon} />}
+                label={data?.save_count?.toString() || "0"}
                 className="flex flex-col items-center bg-transparent hover:bg-transparent !text-[#EA5A69]"
                 style={{
                   minWidth: "auto",

@@ -11,6 +11,7 @@ import type {
   VerifyOTPPayload,
   ResetPasswordPayload,
   SearchPostsResponse,
+  ActionBlockType
 } from "@app-types/user";
 
 export interface UpdateProfilePayload {
@@ -133,12 +134,12 @@ export const getBlockList = async () => {
   return data;
 };
 
-export const addUserBlockList = async (payload: ActionFriendType) => {
+export const addUserBlockList = async (payload: ActionBlockType) => {
   const { data } = await api.post(USER_URLS.ADD_BLOCK_LIST, payload);
   return data;
 };
 
-export const removeUserBlockList = async (payload: ActionFriendType) => {
+export const removeUserBlockList = async (payload: ActionBlockType) => {
   const { data } = await api.post(USER_URLS.REMOVE_BLOCK_LIST, payload);
   return data;
 };

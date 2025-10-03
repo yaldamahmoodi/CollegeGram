@@ -1,7 +1,9 @@
 import { useState, useRef, useEffect } from "react";
 import actionMenuImage from "@/assets/icons/actionMenu.svg";
 import type { FriendInfo } from "@/types/user";
-import noUserIcon from "@assets/images/notFound.jpeg";
+import noUserIcon from "@assets/images/username.png";
+import { useNavigate } from "react-router-dom";
+
 type Action = {
   label: string;
   icon: React.ReactNode;
@@ -17,6 +19,8 @@ const UserListItem = ({ user, actions }: UserItemProps) => {
   const [openMenu, setOpenMenu] = useState(false);
   const menuRef = useRef<HTMLDivElement | null>(null);
 
+  const navigate = useNavigate();
+
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
       if (menuRef.current && !menuRef.current.contains(event.target as Node)) {
@@ -31,7 +35,9 @@ const UserListItem = ({ user, actions }: UserItemProps) => {
 
   return (
     <div className="flex items-center relative w-[350px] py-3" ref={menuRef}>
-      <div className="w-full flex items-center gap-3 justify-start">
+      <div
+        className="w-full flex items-center gap-3 justify-start hover:cursor-pointer"
+        onClick={() => navigate(`/user/${user?.username}`)}>
         <img
           src={user.profilePhoto || noUserIcon}
           alt={user.username}

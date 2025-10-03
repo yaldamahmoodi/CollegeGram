@@ -22,6 +22,7 @@ import {
   verifyOTP,
   resetPassword,
   searchPosts,
+  updateProfile,
 } from "@/api/user/user.api";
 import { useNavigate } from "react-router-dom";
 import { ROUTES } from "@/routes/routes";
@@ -93,6 +94,21 @@ export const useUserInfo = () => {
   });
 };
 
+export const useEditProfile = () => {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: updateProfile,
+    onSuccess: () => {
+      toast.success("ویرایش کاربر با موفقیت انجام شد!");
+      queryClient.invalidateQueries({ queryKey: ["userInfo"] });
+    },
+    onError: (error: unknown) => {
+      const message = getErrorMessageByCode(error);
+      toast.error(message);
+    },
+  });
+};
+
 export const useGetOtherUser = (username: string | null) => {
   return useQuery({
     queryKey: ["getOtherUser", username],
@@ -122,10 +138,12 @@ export const useFollowersList = (enabled: boolean) => {
 };
 
 export const useFollow = () => {
+  const queryClient = useQueryClient();
   return useMutation({
     mutationFn: follow,
     onSuccess: () => {
       toast.success("دنبال کردن با موفقیت انجام شد!");
+      queryClient.invalidateQueries({ queryKey: ["followings"] });
     },
     onError: (error: unknown) => {
       const message = getErrorMessageByCode(error);
@@ -135,10 +153,12 @@ export const useFollow = () => {
 };
 
 export const useUnFollow = () => {
+  const queryClient = useQueryClient();
   return useMutation({
     mutationFn: unFollow,
     onSuccess: () => {
       toast.success("لغو دنبال کردن با موفقیت انجام شد!");
+      queryClient.invalidateQueries({ queryKey: ["followings"] });
     },
     onError: (error: unknown) => {
       const message = getErrorMessageByCode(error);
@@ -163,13 +183,17 @@ export const useAcceptFollowRequest = (username: string) => {
   });
 };
 
+<<<<<<< Updated upstream
 export const useRejectFollowRequest = (username: string) => {
+=======
+export const useRejectFollowRequest = (username: string | null) => {
+>>>>>>> Stashed changes
   const queryClient = useQueryClient();
 
   return useMutation({
     mutationFn: rejectFollowRequest,
     onSuccess: () => {
-      toast.success("درخواست دنبال کردن با موفقیت پذیرفته شد!");
+      toast.success(" لغو درخواست دنبال کردن با موفقیت ارسال شد!");
       queryClient.invalidateQueries({ queryKey: ["getOtherUser", username] });
     },
     onError: (error: unknown) => {
@@ -189,10 +213,12 @@ export const useCloseFiendList = () => {
 };
 
 export const useAddCloseFriend = () => {
+  const queryClient = useQueryClient();
   return useMutation({
     mutationFn: addCloseFriend,
     onSuccess: () => {
       toast.success("یک دوست نزدیک به دوستانت اضافه شد");
+      queryClient.invalidateQueries({ queryKey: ["closeFriendList"] });
     },
     onError: (error: unknown) => {
       const message = getErrorMessageByCode(error);
@@ -202,10 +228,12 @@ export const useAddCloseFriend = () => {
 };
 
 export const useRemoveCloseFriend = () => {
+  const queryClient = useQueryClient();
   return useMutation({
     mutationFn: removeCloseFriend,
     onSuccess: () => {
       toast.success("یک دوست نزدیک از دوستانت حذف شد");
+      queryClient.invalidateQueries({ queryKey: ["closeFriendList"] });
     },
     onError: (error: unknown) => {
       const message = getErrorMessageByCode(error);
@@ -241,11 +269,11 @@ export const useVerifyOTP = () => {
       console.log("Verify OTP Success - Full data:", data);
       console.log("Reset token:", data.resetToken);
       toast.success("کد تایید با موفقیت تأیید شد!");
-      navigate(ROUTES.RESET_PASSWORD, { 
-        state: { 
-          email: variables.email, 
-          resetToken: data.resetToken
-        } 
+      navigate(ROUTES.RESET_PASSWORD, {
+        state: {
+          email: variables.email,
+          resetToken: data.resetToken,
+        },
       });
     },
     onError: (error: unknown) => {
@@ -268,7 +296,7 @@ export const useResetPassword = () => {
     },
     onError: (error: unknown) => {
       console.error("Reset Password Error - Full error:", error);
-      console.error("Error response:", (error as AxiosError).response?.data ) ;
+      console.error("Error response:", (error as AxiosError).response?.data);
       const message = getErrorMessageByCode(error);
       toast.error(message);
     },
@@ -285,10 +313,12 @@ export const useBlockList = () => {
 };
 
 export const useAddUserBlockList = () => {
+  const queryClient = useQueryClient();
   return useMutation({
     mutationFn: addUserBlockList,
     onSuccess: () => {
       toast.success("یک دوست به لیست سیاه اضافه شد");
+      queryClient.invalidateQueries({ queryKey: ["blockList"] });
     },
     onError: (error: unknown) => {
       const message = getErrorMessageByCode(error);
@@ -298,10 +328,12 @@ export const useAddUserBlockList = () => {
 };
 
 export const useRemoveUserBlockList = () => {
+  const queryClient = useQueryClient();
   return useMutation({
     mutationFn: removeUserBlockList,
     onSuccess: () => {
       toast.success("یک دوست از لیست سیاه حذف شد");
+      queryClient.invalidateQueries({ queryKey: ["blockList"] });
     },
     onError: (error: unknown) => {
       const message = getErrorMessageByCode(error);
@@ -315,6 +347,10 @@ export const useSearchUsers = (query: string, page: number = 1) => {
     queryKey: ["searchUsers", query, page],
     queryFn: () => searchUsers(query, page),
     enabled: !!query,
+    onError: (error: unknown) => {
+      const message = getErrorMessageByCode(error);
+      toast.error(message);
+    },
   });
 };
 
@@ -323,6 +359,9 @@ export const usePostSearch = (query: string, page: number = 1) => {
     queryKey: ["searchPosts", query, page],
     queryFn: () => searchPosts(query, page),
     enabled: !!query,
+    onError: (error: unknown) => {
+      const message = getErrorMessageByCode(error);
+      toast.error(message);
+    },
   });
 };
-

@@ -7,13 +7,21 @@ import type { SearchPost, SearchUser } from "@/types/user";
 
 const SearchUser = ({ search }: { search: string }) => {
   const { data: usersResult } = useSearchUsers(search, 1);
- 
+
   return (
-    <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 gap-5">
-      {usersResult?.users.map((user) => (
-        <UserCard key={user.id} user={user} />
-      ))}
-    </div>
+    <>
+      {usersResult ? (
+        <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 gap-5">
+          {usersResult?.users.map((user) => (
+            <UserCard key={user.id} user={user} />
+          ))}
+        </div>
+      ) : (
+        <div className="w-full flex justify-center items-center h-[30vh] text-2xl font-bold">
+          کاربری با این اطلاعات وجود ندارد
+        </div>
+      )}
+    </>
   );
 };
 
@@ -21,11 +29,19 @@ const SearchPost = ({ search }: { search: string }) => {
   const { data: postsResult } = usePostSearch(search, 1);
 
   return (
-    <div  className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 gap-5">
-      {postsResult?.posts.map((post) => (
-        <PostCard key={post.id} image={post.urls[0]} />
-      ))}
-    </div>
+    <>
+      {postsResult ? (
+        <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 gap-5">
+          {postsResult?.posts.map((post) => (
+            <PostCard key={post.id} image={post.urls[0]} />
+          ))}
+        </div>
+      ) : (
+        <div className="w-full flex justify-center items-center h-[30vh] text-2xl font-bold">
+          پستی با این اطلاعات وجود ندارد
+        </div>
+      )}
+    </>
   );
 };
 
@@ -53,8 +69,7 @@ const Search = () => {
           className={`pl-8 py-2 ${
             activeTab === "users" ? "font-bold" : "text-gray-400"
           }`}
-          onClick={() => setActiveTab("users")}
-        >
+          onClick={() => setActiveTab("users")}>
           افراد
         </button>
         <span className="border-l h-5" />
@@ -62,8 +77,7 @@ const Search = () => {
           className={`px-8 py-2 ${
             activeTab === "posts" ? "font-bold" : "text-gray-400"
           }`}
-          onClick={() => setActiveTab("posts")}
-        >
+          onClick={() => setActiveTab("posts")}>
           پست‌ها
         </button>
       </div>

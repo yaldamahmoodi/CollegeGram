@@ -3,7 +3,7 @@ import NavTabs from "./components/NavTabs";
 import removeUserIcon from "@assets/icons/removeUser.svg";
 import blockUserIcon from "@assets/icons/blockUser.svg";
 import {
-  useAddCloseFriend,
+  useAddUserBlockList,
   useCloseFiendList,
   useRemoveCloseFriend,
 } from "@/hooks/user.hook";
@@ -11,7 +11,7 @@ import type { CloseFriend as CloseFriendType } from "@/types/user";
 
 const CloseFriends = () => {
   const { data: closeFriendList } = useCloseFiendList();
-  const addCloseFirendMutation = useAddCloseFriend();
+  const addUserBlockList = useAddUserBlockList();
   const removeCloseFriendMutation = useRemoveCloseFriend();
 
   return (
@@ -28,8 +28,8 @@ const CloseFriends = () => {
                     label: "حذف از دوستان نزدیک",
                     icon: <img src={removeUserIcon} />,
                     onClick: () => {
-                      addCloseFirendMutation.mutate({
-                        friendId: friend.friend_info?._id,
+                      removeCloseFriendMutation.mutate({
+                        friendId: friend?.friend_info?._id,
                       });
                     },
                   },
@@ -37,8 +37,8 @@ const CloseFriends = () => {
                     label: "بلاک کردن",
                     icon: <img src={blockUserIcon} />,
                     onClick: () => {
-                      removeCloseFriendMutation.mutate({
-                        friendId: friend?.friend_info?._id,
+                      addUserBlockList.mutate({
+                        blockUserId: friend?.friend_info?._id,
                       });
                     },
                   },

@@ -13,7 +13,7 @@ import {
   uploadProfileImage,
   type UpdateProfilePayload,
 } from "@/api/user/user.api";
-import { useUserInfo } from "@/hooks/user.hook";
+import { useUserInfo, useEditProfile } from "@/hooks/user.hook";
 import type { UpdateProfileType } from "@/types/user.ts";
 
 type EditProfileModalProps = {
@@ -45,6 +45,8 @@ const EditProfileModal = (props: EditProfileModalProps) => {
     }
   }, [user?.profilePhotoUrl]);
 
+  const useEditProfileMutation = useEditProfile();
+
   const formik = useFormik<UpdateProfileType>({
     enableReinitialize: true,
     initialValues: {
@@ -72,9 +74,11 @@ const EditProfileModal = (props: EditProfileModalProps) => {
           )
         ) as Partial<UpdateProfilePayload>;
 
-        if (Object.keys(payload).length > 0) {
-          await updateProfile(payload as UpdateProfilePayload);
-        }
+        useEditProfileMutation.mutate(payload);
+
+        // if (Object.keys(payload).length > 0) {
+        //   await updateProfile(payload as UpdateProfilePayload);
+        // }
 
         if (image) {
           await uploadProfileImage(image);

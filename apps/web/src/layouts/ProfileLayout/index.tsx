@@ -28,7 +28,7 @@ const ProfileLayout = ({ children }: ProfileLayoutProps) => {
     const { data: user } = useUserInfo();
 
     return (
-        <div className="profile-container min-h-screen h-full w-full bg-[#f5f5f5] flex flex-col lg:p-10">
+        <div className="profile-container min-h-screen h-full w-full bg-[#f5f5f5] flex flex-col lg:p-10"  onClick={() => setIsSidebarOpen(false)}>
             <div className="header w-full h-[60px] bg-transparent mb-4 flex items-center justify-between px-4">
                 <div className="lg:hidden flex items-center justify-center">
                     <img

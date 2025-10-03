@@ -122,3 +122,18 @@ export interface GetPostsPayload {
   page?: number;
   pageSize?: number;
 }
+export type ExplorePostType = {
+  post_id: string;
+  username: string;
+  firstname: string;
+  lastname: string;
+  following_count: string;
+  userAvatar?: string;
+  urls: string;
+  profilePhotoUrl: string;
+  like_count: number;
+  save_count: number;
+  comment_count?: number;
+  isLiked?: boolean;
+  isSaved?: boolean;
+};
