@@ -147,11 +147,29 @@ export const searchUsers = async (
   query: string,
   page: number = 1
 ): Promise<SearchUsersResponse> => {
-  const { data } = await api.get<SearchUsersResponse>(
+  const { data } = await api.get<any>(
     `${USER_URLS.SEARCH_USER}/${page}/${query}`,
     { withCredentials: true }
   );
-  return data;
+  // Backend returns { total, page, size, users: [{ id, username, ... }] }
+  // Normalize to SearchUsersResponse shape used by the UI
+  const normalized: SearchUsersResponse = {
+    totalCount: data.total ?? data.totalCount ?? 0,
+    page: data.page ?? page,
+    perPage: data.size ?? data.perPage ?? 10,
+    data: Array.isArray(data.users)
+      ? data.users.map((u: any) => ({
+          username: u.username,
+          firstName: u.firstname ?? "",
+          lastName: u.lastname ?? "",
+          profilePhoto: u.profilePhotoPath ?? "",
+          followersCount: u.follower_count ?? 0,
+        }))
+      : Array.isArray(data.data)
+      ? data.data
+      : [],
+  };
+  return normalized;
 };
 
 
