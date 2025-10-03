@@ -7,7 +7,7 @@ WORKDIR /app
 # Enable corepack and prepare for pnpm 10.14.0
 RUN corepack enable
 RUN corepack prepare pnpm@10.14.0 --activate
-RUN npm install -g turbo
+RUN npm install -g pnpm@10.14.0 turbo
 
 # Copy workspace configuration files
 COPY package.json pnpm-workspace.yaml pnpm-lock.yaml* ./
