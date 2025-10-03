@@ -2,9 +2,11 @@ import {type IUser, UserModel, type updateProfileUserSchema} from "../db/models/
 import {NotFoundError} from "../utils/errors/notFound.errors.ts";
 import {ElasticClient} from "../services/elasticClient.service.ts";
 import {UserSearchService} from "../services/UserSearchService.ts";
+import { BlockRepository } from "./block.repository.ts";
 
 const elasticClient = new ElasticClient();
-const userSearchService = new UserSearchService(elasticClient);
+const blockRepository = new BlockRepository();
+const userSearchService = new UserSearchService(elasticClient, blockRepository);
 
 export class UserRepository {
 

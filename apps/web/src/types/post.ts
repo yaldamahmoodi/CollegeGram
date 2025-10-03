@@ -1,3 +1,16 @@
+export interface PostDataType {
+  _id: string;
+  user_id: string;
+  urls: string[];
+  caption: string;
+  like_count: number;
+  save_count: number;
+  mentions: string[];
+  hashtag_array: string[];
+  photo_length: number;
+  createdAt: string;
+}
+
 export interface CreatePostPayload {
   photos: File[];
   caption?: string;
@@ -19,6 +32,8 @@ export interface PostInfo {
   save_count: number;
   mentions: MentionsType[];
   hashtag_array: string[];
+  isLiked?: boolean;
+  isSaved?: boolean;
 }
 
 export interface Posts {
@@ -26,19 +41,10 @@ export interface Posts {
   totalCount: number;
 }
 
-export interface CreateLikePostPayload {
-  postId: string;
-}
-export interface CreateUnLikePostPayload {
-  postId: string;
+export interface PostActionPayloadType {
+  postId: string | undefined;
 }
 
-export interface CreateSavePostPayload {
-  postId: string;
-}
-export interface CreateUnSavePostPayload {
-  postId: string;
-}
 export interface SavedPostType {
   _id: string;
   postOwner: string;
@@ -67,4 +73,48 @@ export interface CreateCommentResponseType {
   parent_comment: string;
   createdAt: string;
   updatedAt: string;
+}
+
+export interface ImageGroupProps {
+  urls: string | string[];
+  onClick?: () => void;
+  showIcon?: boolean;
+  photoCount?: number;
+  className?: string;
+}
+
+export type SavedPostItem = {
+  _id: string;
+  firstUrl?: string;
+  like_count?: number;
+  save_count?: number;
+  photo_length?: number;
+  createdAt?: string;
+  photoCount?: number;
+};
+
+export interface Comment {
+  _id: string;
+  post_id: string;
+  user_id: string;
+  content: string;
+  like_count: number;
+  parent_comment: string | null;
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface GetCommentsResponse {
+  code: string;
+  data: Comment[];
+}
+
+export interface ActionCommentType {
+  commentId: string;
+}
+
+export interface GetPostsPayload {
+  id?: string;
+  page?: number;
+  pageSize?: number;
 }

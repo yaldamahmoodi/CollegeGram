@@ -1,0 +1,11 @@
+# Usage: docker-compose -f docker-compose.yaml -f docker-compose.prod.yml up
+
+services:
+  api:
+    profiles: []  
+    
+  web:
+    profiles: []  
+    
+  nginx:
+    profiles: []

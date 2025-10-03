@@ -77,6 +77,8 @@ export class UserController {
           follower_count: userDetails.follower_count,
           following_count: userDetails.following_count,
           post_count: userDetails.post_count,
+          isPrivate: userDetails.isPrivate,
+          emailVerified: userDetails.emailVerified,
           profilePhotoUrl,
         },
       });
@@ -212,10 +214,11 @@ export class UserController {
       const transformedData = savedPosts.data.map((item) => {
         return {
           _id: item._id,
+          post_id: item.postId,
           postOwner: item.postOwner.username,
           createdAt: item.createdAt,
           updatedAt: item.updatedAt,
-          firstUrl: item.post.urls[0] || null,
+          firstUrl: `${req.protocol}://${req.get("host")}/uploads/posts/${item.post.urls[0]}` || null,
           like_count: item.post.like_count,
           save_count: item.post.save_count,
           mentions: item.post.mentions,

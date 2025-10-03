@@ -35,6 +35,26 @@ export const CatalogueErrors = {
     YOU_CANNOT_FOLLOW_BLOCKEDUSER: {code: "YOU_CANNOT_FOLLOW_BLOCKEDUSER", message: "YOU_CANNOT_FOLLOW_BLOCKEDUSER"},
     YOU_CANNOT_UNFOLLOW_BLOCKEDUSER: {code: "YOU_CANNOT_UNFOLLOW_BLOCKEDUSER", message: "YOU_CANNOT_UNFOLLOW_BLOCKEDUSER"},
     NOT_BLOCKED:{code: "NOT_BLOCKED",message:"user is Not BLOCKED"},
+    NOTIFICATION_NOT_FOUND: {code: "NOTIFICATION_NOT_FOUND", message: "Notification not found"},
+    // Forgot Password Flow Errors
+    EMAIL_SEND_FAILED: {code: "EMAIL_SEND_FAILED", message: "Failed to send email"},
+    FORGOT_PASSWORD_FAILED: {code: "FORGOT_PASSWORD_FAILED", message: "Failed to process password reset request"},
+    INVALID_OTP: {code: "INVALID_OTP", message: "Invalid or expired OTP"},
+    OTP_VERIFICATION_FAILED: {code: "OTP_VERIFICATION_FAILED", message: "Failed to verify OTP"},
+    PASSWORD_UPDATE_FAILED: {code: "PASSWORD_UPDATE_FAILED", message: "Failed to update password"},
+    PASSWORD_RESET_FAILED: {code: "PASSWORD_RESET_FAILED", message: "Failed to reset password"},
+    OTP_ALREADY_SENT: {code: "OTP_ALREADY_SENT", message: "OTP already sent, please wait before requesting a new one"},
+    RATE_LIMIT_EXCEEDED: {code: "RATE_LIMIT_EXCEEDED", message: "Too many requests, please try again later"},
+    OTP_GENERATION_FAILED: {code: "OTP_GENERATION_FAILED", message: "Failed to generate OTP"},
+    // Email Verification Flow Errors
+    EMAIL_VERIFICATION_FAILED: {code: "EMAIL_VERIFICATION_FAILED", message: "Failed to send email verification"},
+    EMAIL_ALREADY_VERIFIED: {code: "EMAIL_ALREADY_VERIFIED", message: "Email is already verified"},
+    EMAIL_NOT_VERIFIED: {code: "EMAIL_NOT_VERIFIED", message: "Email is not verified"},
+    VERIFICATION_LINK_EXPIRED: {code: "VERIFICATION_LINK_EXPIRED", message: "Verification link has expired"},
+    INVALID_VERIFICATION_LINK: {code: "INVALID_VERIFICATION_LINK", message: "Invalid verification link"},
+    USER_ALREADY_EXISTS: {code: "USER_ALREADY_EXISTS", message: "User already exists"},
+    QR_CODE_GENERATION_FAILED: {code: "QR_CODE_GENERATION_FAILED", message: "Failed to generate QR code"},
+ 
 } as const;
 
 export type ErrorCode = keyof typeof CatalogueErrors;

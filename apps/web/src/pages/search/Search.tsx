@@ -2,19 +2,22 @@ import { useState } from "react";
 import UserCard from "./components/UserCard";
 import PostCard from "./components/PostCard";
 import SearchIcon from "@/assets/icons/search.svg";
-import { users, posts } from "./const";
+import { posts } from "./const";
+import { usePostSearch, useSearchUsers } from "@/hooks/user.hook";
+import type { SearchPost, SearchUser } from "@/types/user";
 
-const Explore = () => {
+const Search = () => {
   const [activeTab, setActiveTab] = useState<"users" | "posts">("posts");
   const [search, setSearch] = useState("");
 
-  const filteredUsers = users.filter((user) =>
-    user.name.toLowerCase().includes(search.toLowerCase())
-  );
+  const { data: usersResult } = useSearchUsers(search, 1);
+  const { data: postsResult } = usePostSearch(search, 1);
+  const filteredUsers: SearchUser[] = usersResult?.users || [];
+  const filteredPosts: SearchPost[] = postsResult?.posts || [];
 
   return (
     <div className="w-full mx-auto">
-      <div className="w-2/5 relative mb-12">
+      <div className="w-full md:w-4/5 lg:w-2/5 relative mb-12">
         <input
           type="text"
           placeholder="جستجو در افراد، تگ‌ها و واژه ها و..."
@@ -47,18 +50,19 @@ const Explore = () => {
 
       {activeTab === "posts" ? (
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
-          {posts.map((post) => (
-            <PostCard key={post.id} image={post.image} />
+          {filteredPosts.map((post) => (
+            <PostCard key={post.id} image={post.urls[0]} />
           ))}
         </div>
       ) : (
         <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 gap-5">
-          {filteredUsers.map((user) => (
-            <UserCard user={user} />
+          {filteredUsers.map((user: SearchUser) => (
+            <UserCard key={user.userId} user={user} />
           ))}
         </div>
       )}
     </div>
   );
 };
-export default Explore;
+
+export default Search;

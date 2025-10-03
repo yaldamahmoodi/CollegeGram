@@ -4,7 +4,7 @@ import {uploadProfilePhotoMiddleware} from "../../middlewares/uploadProfilePhoto
 import {errorHandler} from "../../middlewares/error.middleware.ts";
 import {bodyParser} from "../../middlewares/parsers.middleware.ts";
 import {updateProfileUserSchema} from "../../db/models/user.model.ts";
-import {initiator} from "../../server.ts";
+import {initiator} from "../../initiator.ts";
 import {uploadPostPhotosMiddleware} from "../../middlewares/uploadPost.middleware.ts";
 import {followSchema, acceptFollowRequestSchema, rejectFollowRequestSchema, blockUserSchema} from "../../dtos/user.dto.ts";
 

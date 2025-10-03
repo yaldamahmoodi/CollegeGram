@@ -1,69 +1,63 @@
-import { useState } from "react";
-// import PostDetailsModal from "@/layouts/ProfileLayout/components/PostDetailsModal.tsx";
+import { useTaggedPostList } from "@/hooks/post.hook";
+import { useNavigate, generatePath } from "react-router-dom";
+import { ROUTES } from "@/routes/routes";
+import type { SavedPostItem } from "@/types/post.ts";
+import { MESSAGES } from "@/const/message.ts";
+import ImageGroup from "@components/ImageGroup.tsx";
 
-interface Post {
-  id: string;
-  url: string;
-  caption: string;
-}
+const SavedPosts = () => {
+    const { data, isLoading } = useTaggedPostList();
+    const navigate = useNavigate();
 
-const TaggedPosts = () => {
-  const mockPosts: Post[] = [
-    {
-      id: "1",
-      url: "https://picsum.photos/400/300?random=1",
-      caption: "پست اول",
-    },
-    {
-      id: "2",
-      url: "https://picsum.photos/400/300?random=2",
-      caption: "پست دوم",
-    },
-    {
-      id: "3",
-      url: "https://picsum.photos/400/300?random=3",
-      caption: "پست سوم",
-    },
-  ];
+    const posts: SavedPostItem[] = data?.savedPosts ?? [];
 
-  const [posts] = useState<Post[]>(mockPosts);
-  const [_, setSelectedPost] = useState<Post | null>(null);
+    const gotoDetails = (id: string) => {
+        const path = generatePath(ROUTES.POST_DETAIL, { id });
+        navigate(path);
+    };
 
-  return (
-    <div className="tag-page w-full p-4">
-      {posts.length === 0 ? (
-        <div className="flex flex-col justify-center items-center gap-2">
-          <h3 className="text-lg font-bold">هنوز کسی تگت نکرده!</h3>
-          <p>اینجا تمام پست‌هایی که توشون تگ شدی رو میتونی ببینی.</p>
+    return (
+        <div className="tag-page w-full h-full p-4 grid-cols-3">
+            {isLoading ? (
+                <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+                    {Array.from({ length: 6 }).map((_, i) => (
+                        <div
+                            key={i}
+                            className="w-64 h-64 bg-gray-100 animate-pulse rounded-2xl"
+                        />
+                    ))}
+                </div>
+            ) : posts.length === 0 ? (
+                <div className="w-full h-full flex justify-center items-center">
+                    <div className="flex flex-col justify-center items-center gap-2">
+                        <div className="font-semibold mb-2 text-4xl">
+                       {MESSAGES.taggedPageHeading}
+                        </div>
+                        <p className="max-w-md text-2xl text-center">{MESSAGES.taggedPageParagraph}</p>
+                    </div>
+                </div>
+            ) : (
+                <div>
+                    <h2 className="text-xl font-bold mb-4">{MESSAGES.taggedPage}</h2>
+                    <div className="grid grid-cols-12 gap-6">
+                        {posts.map((item) => (
+                            <div
+                                key={item._id}
+                                className="col-span-6 sm:col-span-6 md:col-span-4 lg:col-span-4"
+                            >
+                                <ImageGroup
+                                    urls={item.firstUrl ?? ""}
+                                    photoCount={item.photo_length}
+                                    onClick={() => gotoDetails(item._id)}
+                                />
+                            </div>
+
+                        ))}
+                    </div>
+                </div>
+            )}
         </div>
-      ) : (
-        <div>
-          <h2 className="text-xl font-bold mb-4">تگ شده‌ها</h2>
-          <div className="flex flex-wrap gap-6">
-            {posts.map((post) => (
-              <img
-                key={post.id}
-                src={post.url}
-                alt={post.caption}
-                className="w-64 h-64 rounded-2xl cursor-pointer object-cover"
-                onClick={() => setSelectedPost(post)}
-              />
-            ))}
-          </div>
-        </div>
-      )}
-
-      {/*
-      {selectedPost && (
-        <PostDetailsModal
-          isOpen={!!selectedPost}
-          onClose={() => setSelectedPost(null)}
-          images={[selectedPost.url]}
-        />
-      )}
-      */}
-    </div>
-  );
+    );
 };
 
-export default TaggedPosts;
+export default SavedPosts;

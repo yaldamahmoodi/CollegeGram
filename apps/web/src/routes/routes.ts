@@ -1,7 +1,8 @@
 export const ROUTES = {
   LOGIN: "/login",
   REGISTER: "/register",
-  PROFILE: "/profile",
+  PROFILE: "/profile/",
+  OTHER_USER: "/user/:username",
   NOT_FOUND: "/notFound",
   SAVED_POSTS: "/savedPosts",
   TAGGED_POSTS: "/taggedPosts",
@@ -9,6 +10,11 @@ export const ROUTES = {
   NOTIFICATIONS: "/notifications",
   SEARCH: "/search",
   EXPLORE: "/explore",
+  CLOSE_FRIEND: "/closefriend",
+  BLOCK_LIST: "/blocklist",
   POST_DETAIL: "/postDetail/:id",
+  FORGOT_PASSWORD: "/forgot-password",
+  VERIFY_OTP: "/verify-otp",
+  RESET_PASSWORD: "/reset-password",
   CATCH_ALL: "*",
 } as const;

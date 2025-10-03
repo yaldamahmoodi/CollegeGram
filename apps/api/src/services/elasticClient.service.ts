@@ -1,9 +1,10 @@
 import { Client } from "@elastic/elasticsearch";
+import env from "../../env.ts";
 
 export class ElasticClient {
     private client: Client;
 
-    constructor(node = process.env.ELASTIC_URL ?? "http://localhost:9200") {
+    constructor(node = env.ELASTIC_URL) {
         this.client = new Client({ node });
     }
 
