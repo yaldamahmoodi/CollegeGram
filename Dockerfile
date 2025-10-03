@@ -4,8 +4,10 @@
 FROM node:24-slim AS base
 WORKDIR /app
 
-# Install pnpm and turbo globally
-RUN npm install -g pnpm turbo
+# Enable corepack and prepare for pnpm 10.14.0
+RUN corepack enable
+RUN corepack prepare pnpm@10.14.0 --activate
+RUN npm install -g turbo
 
 # Copy workspace configuration files
 COPY package.json pnpm-workspace.yaml pnpm-lock.yaml* ./
@@ -15,8 +17,10 @@ COPY apps/api/package.json ./apps/api/
 COPY apps/web/package.json ./apps/web/
 COPY apps/doc/package.json ./apps/doc/
 
-# Install all dependencies (including Turbo)
-RUN pnpm install 
+# Verify pnpm version and install all dependencies
+RUN pnpm --version
+RUN pnpm install --frozen-lockfile
+
 # Copy source code
 COPY apps/ ./apps/
 COPY turbo.json ./
@@ -31,15 +35,18 @@ RUN turbo run build
 FROM node:24-slim AS api
 WORKDIR /app
 
-# Install pnpm and turbo
-RUN npm install -g pnpm turbo
+# Enable corepack and prepare for pnpm 10.14.0
+RUN corepack enable
+RUN corepack prepare pnpm@10.14.0 --activate
+RUN npm install -g turbo
 
 # Copy workspace metadata
 COPY package.json pnpm-workspace.yaml pnpm-lock.yaml* ./
 COPY apps/api/package.json ./apps/api/
 
-# Install all dependencies for API (needed for turbo)
-RUN pnpm install --filter=collegegram
+# Verify pnpm version and install all dependencies for API
+RUN pnpm --version
+RUN pnpm install --filter=api
 
 # Copy built app and source from base stage
 COPY --from=base /app/apps/api/dist ./apps/api/dist
@@ -59,14 +66,17 @@ CMD ["npx", "turbo", "start", "--filter=api"]
 FROM node:24-slim AS web
 WORKDIR /app
 
-# Install pnpm and turbo
-RUN npm install -g pnpm turbo
+# Enable corepack and prepare for pnpm 10.14.0
+RUN corepack enable
+RUN corepack prepare pnpm@10.14.0 --activate
+RUN npm install -g turbo
 
 # Copy workspace metadata
 COPY package.json pnpm-workspace.yaml pnpm-lock.yaml* ./
 COPY apps/web/package.json ./apps/web/
 
-# Install all dependencies for Web (needed for turbo)
+# Verify pnpm version and install all dependencies for Web
+RUN pnpm --version
 RUN pnpm install --filter=web
 
 # Copy built app and source from base stage
@@ -87,14 +97,17 @@ CMD ["npx", "turbo", "start", "--filter=web"]
 FROM node:24-slim AS doc
 WORKDIR /app
 
-# Install pnpm and turbo
-RUN npm install -g pnpm turbo
+# Enable corepack and prepare for pnpm 10.14.0
+RUN corepack enable
+RUN corepack prepare pnpm@10.14.0 --activate
+RUN npm install -g turbo
 
 # Copy workspace metadata
 COPY package.json pnpm-workspace.yaml pnpm-lock.yaml* ./
 COPY apps/doc/package.json ./apps/doc/
 
-# Install all dependencies for Doc (needed for turbo)
+# Verify pnpm version and install all dependencies for Doc
+RUN pnpm --version
 RUN pnpm install --filter=doc
 
 # Copy built app and source from base stage
