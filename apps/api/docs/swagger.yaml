@@ -4,8 +4,8 @@ info:
   version: 1.0.0
   description: API documentation for Auth, Users, and Posts
 servers:
-  - url: http://188.121.102.156
   - url: http://localhost:3001
+  - url: http://188.121.102.156
 
 paths:
   /api/health:
@@ -29,28 +29,28 @@ paths:
                   type: string
                   format: email
                   maxLength: 255
-                  example: "user@example.com"
+                  example: "amir@example.com"
                 username:
                   type: string
                   minLength: 1
                   maxLength: 255
-                  example: "username123"
+                  example: "Amir1234"
                 password:
                   type: string
                   minLength: 8
                   maxLength: 20
                   pattern: "^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)(?=.*[\\W_]).{8,}$"
-                  example: "StrongP@ssw0rd"
+                  example: "Amir@123"
                 firstname:
                   type: string
                   maxLength: 255
                   nullable: true
-                  example: "John"
+                  example: "Amir"
                 lastname:
                   type: string
                   maxLength: 255
                   nullable: true
-                  example: "Doe"
+                  example: "Samimi"
                 biography:
                   type: string
                   maxLength: 1500
@@ -76,6 +76,222 @@ paths:
                     example: "User created successfully"
         '400':
           description: Bad Request – Invalid input
+        '500':
+          description: Internal Server Error
+
+  /api/v1/auth/forgot-password:
+    post:
+      summary: Initiate forgot password flow
+      description: Send OTP to user's email for password reset
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                email:
+                  type: string
+                  format: email
+                  example: "user@example.com"
+              required:
+                - email
+      responses:
+        '200':
+          description: OTP sent successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  code:
+                    type: string
+                    example: "OTP_SENT"
+                  message:
+                    type: string
+                    example: "OTP sent to your email"
+        '404':
+          description: User not found
+        '500':
+          description: Internal Server Error
+
+  /api/v1/auth/verify-otp:
+    post:
+      summary: Verify OTP for password reset
+      description: Verify the OTP sent to user's email
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                email:
+                  type: string
+                  format: email
+                  example: "user@example.com"
+                otp:
+                  type: string
+                  pattern: "^\\d{6}$"
+                  minLength: 6
+                  maxLength: 6
+                  example: "123456"
+                  description: "6-digit numeric OTP code"
+              required:
+                - email
+                - otp
+      responses:
+        '200':
+          description: OTP verified successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                  message:
+                    type: string
+                    example: "OTP verified successfully"
+                  resetToken:
+                    type: string
+                    example: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
+                    description: "Temporary token for password reset (valid for 10 minutes)"
+                  expiresIn:
+                    type: number
+                    example: 600
+                    description: "Token expiration time in seconds"
+        '400':
+          description: Invalid or expired OTP
+        '500':
+          description: Internal Server Error
+
+  /api/v1/auth/reset-password:
+    post:
+      summary: Reset password
+      description: Reset user password using reset token from verify-otp endpoint
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                email:
+                  type: string
+                  format: email
+                  example: "user@example.com"
+                otp:
+                  type: string
+                  example: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
+                  description: "Reset token received from verify-otp endpoint"
+                newPassword:
+                  type: string
+                  minLength: 8
+                  pattern: "^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)(?=.*[\\W_]).{8,}$"
+                  example: "NewPassword@123"
+                  description: "Password must be at least 8 characters long and contain at least one lowercase letter, one uppercase letter, one number, and one special character"
+              required:
+                - email
+                - otp
+                - newPassword
+      responses:
+        '200':
+          description: Password reset successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  code:
+                    type: string
+                    example: "PASSWORD_RESET"
+                  message:
+                    type: string
+                    example: "Password reset successfully"
+        '400':
+          description: Invalid request
+        '500':
+          description: Internal Server Error
+
+  /api/v1/auth/verify-email:
+    post:
+      summary: Verify email address
+      description: Verify user's email address with verification code
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                email:
+                  type: string
+                  format: email
+                  example: "user@example.com"
+                otp:
+                  type: string
+                  pattern: "^\\d{6}$"
+                  minLength: 6
+                  maxLength: 6
+                  example: "123456"
+                  description: "6-digit numeric verification code"
+              required:
+                - email
+                - otp
+      responses:
+        '200':
+          description: Email verified successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  code:
+                    type: string
+                    example: "EMAIL_VERIFIED"
+                  message:
+                    type: string
+                    example: "Email verified successfully"
+        '400':
+          description: Invalid verification code
+        '500':
+          description: Internal Server Error
+
+  /api/v1/auth/resend-verification:
+    post:
+      summary: Resend email verification
+      description: Resend email verification code to user
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                email:
+                  type: string
+                  format: email
+                  example: "user@example.com"
+              required:
+                - email
+      responses:
+        '200':
+          description: Verification email sent
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  code:
+                    type: string
+                    example: "VERIFICATION_SENT"
+                  message:
+                    type: string
+                    example: "Verification email sent"
+        '404':
+          description: User not found
         '500':
           description: Internal Server Error
 
@@ -109,6 +325,31 @@ paths:
                   userId:
                     type: string
                     example: 64f2a7b9e0c0f123456789ab
+
+  /api/v1/auth/logout:
+    post:
+      summary: Logout user
+      description: Logout the authenticated user by clearing the access token cookie
+      security:
+        - cookieAuth: [ ]
+      responses:
+        '200':
+          description: Logout successful
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  code:
+                    type: string
+                    example: LOGOUT_SUCCESSFUL
+                  message:
+                    type: string
+                    example: User logged out successfully
+        '401':
+          description: Unauthorized – User not logged in
+        '500':
+          description: Internal Server Error
 
   /api/v1/users/profile:
     get:
@@ -164,12 +405,136 @@ paths:
                         nullable: true
                         example: /uploads/profile/johndoe.png
 
+  /api/v1/users/{username}:
+    get:
+      summary: Get other user's profile
+      description: |
+        پروفایل یک کاربر دیگر را بر اساس **username** برمی‌گرداند.
+        - اگر کاربر لاگین کرده باشد، فیلدهای `isFollowed`، `followStatus` و `followedAt` مشخص می‌کنند که آیا کاربر جاری این کاربر را فالو کرده یا نه و وضعیت آن.
+        - `followStatus` می‌تواند "accepted" (تایید شده)، "pending" (در انتظار) یا null (فالو نکرده) باشد.
+      tags:
+        - Users
+      security:
+        - cookieAuth: [ ]
+      parameters:
+        - name: username
+          in: path
+          required: true
+          schema:
+            type: string
+          description: Username of the target user
+          example: yaldoomaldoo1
+      responses:
+        '200':
+          description: User profile returned successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  code:
+                    type: string
+                    example: GET_USER_PROFILE_SUCCESSFULLY
+                  data:
+                    type: object
+                    properties:
+                      userId:
+                        type: string
+                        example: 68d2b0927698eafb14b85ed9
+                      username:
+                        type: string
+                        example: yaldoomaldoo1
+                      email:
+                        type: string
+                        format: email
+                        example: yaldoomaldoo101@gamil.com
+                      firstname:
+                        type: string
+                        nullable: true
+                        example: null
+                      lastname:
+                        type: string
+                        nullable: true
+                        example: null
+                      biography:
+                        type: string
+                        nullable: true
+                        example: null
+                      follower_count:
+                        type: integer
+                        example: 1
+                      following_count:
+                        type: integer
+                        example: 0
+                      post_count:
+                        type: integer
+                        example: 0
+                      profilePhotoUrl:
+                        type: string
+                        nullable: true
+                        example: null
+                      isFollowed:
+                        type: boolean
+                        description: Whether the logged-in user is following this user
+                        example: true
+                      followStatus:
+                        type: string
+                        nullable: true
+                        description: The status of the follow relationship (accepted, pending, or null if not following)
+                        example: "accepted"
+                      followedAt:
+                        type: string
+                        format: date-time
+                        nullable: true
+                        description: When the follow relationship was established
+                        example: "2024-01-15T10:30:00.000Z"
+                      isBlocked:
+                        type: boolean
+                        description: Whether the logged-in user is blocked by this user
+                        example: false
+                      hasBlocked:
+                        type: boolean
+                        description: Whether the logged-in user has blocked this user
+                        example: false
+                      isCloseFriend:
+                        type: boolean
+                        description: Whether this user is a close friend of the logged-in user
+                        example: false
+        '401':
+          description: Unauthorized (user not logged in)
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  code:
+                    type: string
+                    example: UNAUTHORIZED
+                  message:
+                    type: string
+                    example: Authentication required
+        '404':
+          description: User not found
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  code:
+                    type: string
+                    example: NOT_FOUND_USER
+                  message:
+                    type: string
+                    example: User with given username does not exist
+
+
+
   /api/v1/users/profile/upload:
     post:
       summary: Upload profile photo
       description: Upload or update the authenticated user's profile photo.
       security:
-        - cookieAuth: []
+        - cookieAuth: [ ]
       requestBody:
         required: true
         content:
@@ -209,7 +574,7 @@ paths:
                         example: 68c2b1db8d9f319250cd0f8c
                       path:
                         type: string
-                        example: /Users/yaldamahmoodi/Desktop/Git/Yaldoo/backmani/src/middlewares/uploads/profile-1757668980932-77093819.png
+                        example: /Users/yaldamahmoodi/Desktop/Git/Yaldoo/backmani/src/middlewares/uploads/profiles/profile-1757668980932-77093819.png
                       uploadedAt:
                         type: string
                         format: date-time
@@ -220,10 +585,13 @@ paths:
 
   /api/v1/posts/getPosts:
     get:
+    
       summary: Get user posts with pagination
       description: Retrieve paginated posts for a user. Optional query parameters `page` and `pageSize` control pagination.
+      tags:
+        - Posts
       security:
-        - cookieAuth: []
+        - cookieAuth: [ ]
       parameters:
         - in: query
           name: id
@@ -332,9 +700,12 @@ paths:
           description: Unauthorized
 
 
-  /api/v1/posts/:post_id/getPost:
+  /api/v1/posts/{post_id}/getPost:
     get:
+      tags:
+        - Posts
       summary: Get a single post by ID
+      description: Retrieve a single post with populated user information including profile photo
       security:
         - cookieAuth: [ ]
       parameters:
@@ -356,41 +727,7 @@ paths:
                     type: string
                     example: GET_POST_SUCCESSFULLY
                   data:
-                    type: object
-                    properties:
-                      _id:
-                        type: string
-                        example: "68c4153c7187a49aafe14e71"
-                      user_id:
-                        type: string
-                        example: "68c2b1db8d9f319250cd0f8c"
-                      urls:
-                        type: array
-                        items:
-                          type: string
-                          example: "/uploads/posts/photos-1757680956872-723233089.png"
-                      caption:
-                        type: string
-                        example: "jhdskjfhljds"
-                      like_count:
-                        type: integer
-                        example: 0
-                      save_count:
-                        type: integer
-                        example: 0
-                      mentions:
-                        type: array
-                        items:
-                          type: string
-                        example: [ ]
-                      hashtag_array:
-                        type: array
-                        items:
-                          type: string
-                        example: [ ]
-                      photo_length:
-                        type: integer
-                        example: 2
+                    $ref: '#/components/schemas/PopulatedPost'
         '404':
           description: Post not found
         '500':
@@ -399,7 +736,7 @@ paths:
   /api/v1/users/profile/update:
     patch:
       summary: Update user profile
-      description: Update profile fields such as email, password, firstname, lastname, and biography.
+      description: Update profile fields such as email, password, firstname, lastname, biography, and privacy settings.
       security:
         - cookieAuth: [ ]
       requestBody:
@@ -436,6 +773,10 @@ paths:
                   maxLength: 1500
                   nullable: true
                   example: "This is my new bio"
+                isPrivate:
+                  type: boolean
+                  description: "Whether the user's profile is private (default: false)"
+                  example: false
       responses:
         '200':
           description: User profile updated successfully
@@ -505,7 +846,8 @@ paths:
                   code:
                     type: string
                     example: NOT_FOUND_USER
-  /api/v1/posts/like:
+  
+  /api/v1/posts/Like:
     post:
       summary: Like a post
       description: Add a like to a specific post for the authenticated user.
@@ -725,27 +1067,22 @@ paths:
                     type: string
                     example: Something went wrong while saving the post.
 
-  /api/v1/posts/unsave:
+  /api/v1/posts/{post_id}/unsave:
     post:
-      summary: Unsave a post
-      description: Remove a saved post for the authenticated user by its ID.
+      summary: unsave a post
+      description: Remove a like from a specific post for the authenticated user by its ID.
       tags:
         - Posts
       security:
         - cookieAuth: [ ]
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              type: object
-              required:
-                - postId
-              properties:
-                postId:
-                  type: string
-                  description: The ID of the post to unsave
-                  example: 68c416ecf90cd074f701a4f4
+      parameters:
+        - name: post_id
+          in: path
+          required: true
+          schema:
+            type: string
+          description: The ID of the post to unsave
+          example: 68c416ecf90cd074f701a4f4
       responses:
         '200':
           description: Post unsaved successfully
@@ -803,7 +1140,7 @@ paths:
   /api/v1/users/follow:
     post:
       summary: Follow a user
-      description: Follow another user by their user ID.
+      description: Follow another user by their user ID. If the target user has a private account, this will send a follow request that needs to be accepted.
       tags:
         - Users
       security:
@@ -815,15 +1152,15 @@ paths:
             schema:
               type: object
               required:
-                - followedUserId
+                - followerUserId
               properties:
-                followedUserId:
+                followerUserId:
                   type: string
                   description: The ID of the user to follow
                   example: 68c6cbfd5bc774e86bdf4eb2
       responses:
         '200':
-          description: User followed successfully
+          description: User followed successfully or follow request sent
           content:
             application/json:
               schema:
@@ -835,6 +1172,19 @@ paths:
                   message:
                     type: string
                     example: User successfully Followed
+        '201':
+          description: Follow request sent to private user
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  code:
+                    type: string
+                    example: FOLLOW_REQUEST_SENT
+                  message:
+                    type: string
+                    example: Follow request sent
         '400':
           description: Invalid follow request (e.g., trying to follow yourself)
           content:
@@ -890,9 +1240,9 @@ paths:
             schema:
               type: object
               required:
-                - unfollowedUserId
+                - followerUserId
               properties:
-                unfollowedUserId:
+                followerUserId:
                   type: string
                   description: The ID of the user to unfollow
                   example: 68c6cbfd5bc774e86bdf4eb2
@@ -950,6 +1300,351 @@ paths:
                     type: string
                     example: user unfollowed before
 
+  /api/v1/users/accept-follow-request:
+    post:
+      summary: Accept follow request
+      description: Accept a pending follow request from another user.
+      tags:
+        - Users
+      security:
+        - cookieAuth: [ ]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - followerUserId
+              properties:
+                followerUserId:
+                  type: string
+                  description: The ID of the user who sent the follow request
+                  example: 68c6cbfd5bc774e86bdf4eb2
+      responses:
+        '200':
+          description: Follow request accepted successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  code:
+                    type: string
+                    example: FOLLOW_REQUEST_ACCEPTED
+                  message:
+                    type: string
+                    example: Follow request successfully accepted
+        '400':
+          description: Invalid accept request (e.g., trying to accept yourself)
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  code:
+                    type: string
+                    example: YOU_CANNOT_ACCEPT_YOURSELF
+                  message:
+                    type: string
+                    example: You cannot accept yourself
+        '404':
+          description: Follow request not found
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  code:
+                    type: string
+                    example: NOT_FOUND
+                  message:
+                    type: string
+                    example: Follow request not found
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  code:
+                    type: string
+                    example: INTERNAL_SERVER_ERROR
+                  message:
+                    type: string
+                    example: Something went wrong while accepting the follow request.
+
+  /api/v1/users/reject-follow-request:
+    post:
+      summary: Reject follow request
+      description: Reject a pending follow request from another user.
+      tags:
+        - Users
+      security:
+        - cookieAuth: [ ]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - followerUserId
+              properties:
+                followerUserId:
+                  type: string
+                  description: The ID of the user who sent the follow request
+                  example: 68c6cbfd5bc774e86bdf4eb2
+      responses:
+        '200':
+          description: Follow request rejected successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  code:
+                    type: string
+                    example: FOLLOW_REQUEST_REJECTED
+                  message:
+                    type: string
+                    example: Follow request successfully rejected
+        '400':
+          description: Invalid reject request (e.g., trying to reject yourself)
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  code:
+                    type: string
+                    example: YOU_CANNOT_REJECT_YOURSELF
+                  message:
+                    type: string
+                    example: You cannot reject yourself
+        '404':
+          description: Follow request not found
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  code:
+                    type: string
+                    example: NOT_FOUND
+                  message:
+                    type: string
+                    example: Follow request not found
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  code:
+                    type: string
+                    example: INTERNAL_SERVER_ERROR
+                  message:
+                    type: string
+                    example: Something went wrong while rejecting the follow request.
+
+  /api/v1/users/block:
+    post:
+      summary: Block a user
+      description: |
+        Block another user. When a user is blocked:
+        - You won't see their posts in search results
+        - They won't see your posts in search results
+        - They won't appear in user search results for you
+        - You won't appear in user search results for them
+      tags:
+        - Users
+      security:
+        - cookieAuth: [ ]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/BlockUserDto'
+      responses:
+        '200':
+          description: User blocked successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  code:
+                    type: string
+                    example: USER_BLOCKED_SUCCESS
+                  message:
+                    type: string
+                    example: User successfully blocked
+        '400':
+          description: Invalid block request (e.g., trying to block yourself)
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  code:
+                    type: string
+                    example: YOU_CANNOT_BLOCK_YOURSELF
+                  message:
+                    type: string
+                    example: You cannot block yourself
+        '404':
+          description: User not found
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  code:
+                    type: string
+                    example: NOT_FOUND_USER
+                  message:
+                    type: string
+                    example: User with given ID does not exist
+        '409':
+          description: User already blocked
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  code:
+                    type: string
+                    example: ALREADY_DONE
+                  details:
+                    type: string
+                    example: user blocked before
+        '500':
+          description: Internal server error
+
+  /api/v1/users/unblock:
+    post:
+      summary: Unblock a user
+      description: Remove a user from your blocked list.
+      tags:
+        - Users
+      security:
+        - cookieAuth: [ ]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/BlockUserDto'
+      responses:
+        '200':
+          description: User unblocked successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  code:
+                    type: string
+                    example: USER_UNBLOCKED_SUCCESS
+                  message:
+                    type: string
+                    example: User successfully unblocked
+        '400':
+          description: Invalid unblock request
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  code:
+                    type: string
+                    example: INVALID_REQUEST
+                  message:
+                    type: string
+                    example: Invalid unblock request
+        '404':
+          description: User not found or not blocked
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  code:
+                    type: string
+                    example: NOT_FOUND
+                  message:
+                    type: string
+                    example: User not found in blocked list
+        '500':
+          description: Internal server error
+
+  /api/v1/users/blocks:
+    get:
+      summary: Get blocked users list
+      description: Retrieve the list of users that the authenticated user has blocked.
+      tags:
+        - Users
+      security:
+        - cookieAuth: [ ]
+      responses:
+        '200':
+          description: Blocked users list retrieved successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  code:
+                    type: string
+                    example: SUCCESS
+                  data:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        userId:
+                          type: string
+                          example: 68d2b0927698eafb14b85ed9
+                        username:
+                          type: string
+                          example: blockeduser123
+                        firstname:
+                          type: string
+                          nullable: true
+                          example: John
+                        lastname:
+                          type: string
+                          nullable: true
+                          example: Doe
+                        follower_count:
+                          type: integer
+                          example: 150
+                        following_count:
+                          type: integer
+                          example: 200
+                        profilePhoto:
+                          type: string
+                          nullable: true
+                          example: /uploads/profiles/profile-123.png
+        '401':
+          description: Unauthorized – User not logged in
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  code:
+                    type: string
+                    example: UNAUTHORIZED
+                  message:
+                    type: string
+                    example: User not authenticated
+        '500':
+          description: Internal server error
   /api/v1/users/savesList:
     get:
       summary: Get saved posts for authenticated user
@@ -1054,11 +1749,13 @@ paths:
                   message:
                     type: string
                     example: Something went wrong while fetching saved posts.
+  
   /api/v1/users/followers:
     get:
       summary: Get followers list
-      description: |
-        followers list
+      description: لیست کاربرانی که کاربر لاگین‌شده را دنبال می‌کنند.
+      tags:
+        - Users
       security:
         - cookieAuth: [ ]
       responses:
@@ -1077,17 +1774,32 @@ paths:
                     items:
                       type: object
                       properties:
+                        userId:
+                          type: string
+                          example: 68d2b0927698eafb14b85ed9
                         username:
                           type: string
                           example: yaldoomaldoo1
+                        firstname:
+                          type: string
+                          nullable: true
+                          example: null
+                        lastname:
+                          type: string
+                          nullable: true
+                          example: null
                         follower_count:
                           type: integer
-                          example: 0
+                          example: 1
                         following_count:
                           type: integer
-                          example: 1
+                          example: 0
+                        profilePhoto:
+                          type: string
+                          nullable: true
+                          example: null
         '401':
-          description: Unauthorized – User not authenticated
+          description: Unauthorized – User not logged in
           content:
             application/json:
               schema:
@@ -1098,12 +1810,14 @@ paths:
                     example: UNAUTHORIZED
                   message:
                     type: string
-                    example: Authentication required
+                    example: User not authenticated
+
   /api/v1/users/followings:
     get:
       summary: Get followings list
-      description: |
-        followings list
+      description: لیست کاربرانی که کاربر لاگین‌شده آن‌ها را دنبال می‌کند.
+      tags:
+        - Users
       security:
         - cookieAuth: [ ]
       responses:
@@ -1122,17 +1836,742 @@ paths:
                     items:
                       type: object
                       properties:
+                        userId:
+                          type: string
+                          example: 68d2b0927698eafb14b85ed9
                         username:
                           type: string
-                          example: yaldaMahmoodi
+                          example: yaldoomaldoo1
+                        firstname:
+                          type: string
+                          nullable: true
+                          example: null
+                        lastname:
+                          type: string
+                          nullable: true
+                          example: null
                         follower_count:
                           type: integer
                           example: 1
                         following_count:
                           type: integer
                           example: 0
+                        profilePhoto:
+                          type: string
+                          nullable: true
+                          example: null
         '401':
-          description: Unauthorized – User not authenticated
+          description: Unauthorized – User not logged in
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  code:
+                    type: string
+                    example: UNAUTHORIZED
+                  message:
+                    type: string
+                    example: User not authenticated
+
+  /api/v1/posts/mentions:
+    get:
+      summary: Get posts where user is mentioned
+      description: Retrieve posts where the authenticated user has been mentioned
+      tags:
+        - Posts
+      security:
+        - cookieAuth: [ ]
+      parameters:
+        - name: page
+          in: query
+          required: false
+          schema:
+            type: integer
+            default: 1
+            minimum: 1
+          description: Page number for pagination
+        - name: pageSize
+          in: query
+          required: false
+          schema:
+            type: integer
+            default: 10
+            minimum: 1
+            maximum: 50
+          description: Number of posts per page
+      responses:
+        '200':
+          description: Mentioned posts retrieved successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  code:
+                    type: string
+                    example: GET_MENTIONED_POSTS_SUCCESS
+                  totalCount:
+                    type: integer
+                    example: 15
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/PopulatedPost'
+        '401':
+          description: Unauthorized – User not logged in
+        '500':
+          description: Internal server error
+
+  /api/v1/posts/explore:
+    get:
+      summary: Explore posts from followed users
+      description: |
+        Retrieve posts from users that the authenticated user follows.
+        Posts are returned in chronological order (newest first) with pagination support.
+        This endpoint provides a personalized feed based on the user's following list.
+      tags:
+        - Posts
+      security:
+        - cookieAuth: [ ]
+      parameters:
+        - name: page
+          in: query
+          required: false
+          schema:
+            type: integer
+            default: 1
+            minimum: 1
+          description: Page number for pagination (default 1)
+        - name: pageSize
+          in: query
+          required: false
+          schema:
+            type: integer
+            default: 10
+            minimum: 10
+          description: Number of posts per page (default 10, minimum 10)
+      responses:
+        '200':
+          description: Posts from followed users retrieved successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  code:
+                    type: string
+                    example: EXPLORE_SUCCESSFULY
+                  data:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        post_id:
+                          type: string
+                          example: 68c4153c7187a49aafe14e71
+                        urls:
+                          type: array
+                          items:
+                            type: string
+                          example: [ "/uploads/posts/photo-123.png", "/uploads/posts/photo-124.png" ]
+                        like_count:
+                          type: integer
+                          example: 15
+                        save_count:
+                          type: integer
+                          example: 8
+                        comment_count:
+                          type: integer
+                          example: 3
+                        createdAt:
+                          type: string
+                          format: date-time
+                          example: "2025-01-15T10:30:00.000Z"
+                        userId:
+                          type: string
+                          example: 68c2b1db8d9f319250cd0f8c
+                        firstname:
+                          type: string
+                          nullable: true
+                          example: "John"
+                        lastname:
+                          type: string
+                          nullable: true
+                          example: "Doe"
+                        following_count:
+                          type: integer
+                          example: 150
+                        profilePhotoUrl:
+                          type: string
+                          nullable: true
+                          example: "/uploads/profiles/profile-123.png"
+        '401':
+          description: Unauthorized – User not logged in
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  code:
+                    type: string
+                    example: UNAUTHORIZED
+                  message:
+                    type: string
+                    example: User not authenticated
+
+  /api/v1/notifications:
+    get:
+      summary: Get user notifications
+      description: Retrieve paginated notifications for the authenticated user with optional filtering
+      tags:
+        - Notifications
+      security:
+        - cookieAuth: [ ]
+      parameters:
+        - name: page
+          in: query
+          required: false
+          schema:
+            type: integer
+            default: 1
+            minimum: 1
+          description: Page number for pagination
+        - name: pageSize
+          in: query
+          required: false
+          schema:
+            type: integer
+            default: 10
+            minimum: 1
+            maximum: 50
+          description: Number of notifications per page
+        - name: type
+          in: query
+          required: false
+          schema:
+            type: string
+            enum: [like, comment, mention, follow, reply, save]
+          description: Filter by notification type
+        - name: isRead
+          in: query
+          required: false
+          schema:
+            type: boolean
+          description: Filter by read status
+      responses:
+        '200':
+          description: Notifications retrieved successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  code:
+                    type: string
+                    example: GET_NOTIFICATIONS_SUCCESSFULLY
+                  data:
+                    type: object
+                    properties:
+                      totalCount:
+                        type: integer
+                        example: 25
+                      page:
+                        type: integer
+                        example: 1
+                      pageSize:
+                        type: integer
+                        example: 10
+                      totalPages:
+                        type: integer
+                        example: 3
+                      data:
+                        type: array
+                        items:
+                          $ref: '#/components/schemas/Notification'
+        '401':
+          description: Unauthorized – User not logged in
+
+    delete:
+      summary: Delete all notifications
+      description: Delete all notifications for the authenticated user
+      tags:
+        - Notifications
+      security:
+        - cookieAuth: [ ]
+      responses:
+        '200':
+          description: All notifications deleted successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  code:
+                    type: string
+                    example: ALL_NOTIFICATIONS_DELETED
+                  message:
+                    type: string
+                    example: All notifications deleted successfully
+                  data:
+                    type: object
+                    properties:
+                      deletedCount:
+                        type: integer
+                        example: 15
+        '401':
+          description: Unauthorized – User not logged in
+
+  /api/v1/notifications/my:
+    get:
+      summary: Get my notifications
+      description: Get notifications specific to the authenticated user
+      tags:
+        - Notifications
+      security:
+        - cookieAuth: [ ]
+      parameters:
+        - name: page
+          in: query
+          required: false
+          schema:
+            type: integer
+            default: 1
+            minimum: 1
+          description: Page number for pagination
+        - name: pageSize
+          in: query
+          required: false
+          schema:
+            type: integer
+            default: 10
+            minimum: 1
+            maximum: 50
+          description: Number of notifications per page
+      responses:
+        '200':
+          description: My notifications retrieved successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  code:
+                    type: string
+                    example: GET_MY_NOTIFICATIONS_SUCCESSFULLY
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Notification'
+        '401':
+          description: Unauthorized – User not logged in
+
+  /api/v1/notifications/friends-activity:
+    get:
+      summary: Get friends activity notifications
+      description: Get activity notifications from friends
+      tags:
+        - Notifications
+      security:
+        - cookieAuth: [ ]
+      parameters:
+        - name: page
+          in: query
+          required: false
+          schema:
+            type: integer
+            default: 1
+            minimum: 1
+          description: Page number for pagination
+        - name: pageSize
+          in: query
+          required: false
+          schema:
+            type: integer
+            default: 10
+            minimum: 1
+            maximum: 50
+          description: Number of notifications per page
+      responses:
+        '200':
+          description: Friends activity retrieved successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  code:
+                    type: string
+                    example: GET_FRIENDS_ACTIVITY_SUCCESSFULLY
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Notification'
+        '401':
+          description: Unauthorized – User not logged in
+
+  /api/v1/notifications/unread-count:
+    get:
+      summary: Get unread notification count
+      description: Get the count of unread notifications for the authenticated user
+      tags:
+        - Notifications
+      security:
+        - cookieAuth: [ ]
+      responses:
+        '200':
+          description: Unread count retrieved successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  code:
+                    type: string
+                    example: GET_UNREAD_COUNT_SUCCESSFULLY
+                  data:
+                    type: object
+                    properties:
+                      unreadCount:
+                        type: integer
+                        example: 5
+        '401':
+          description: Unauthorized – User not logged in
+
+  /api/v1/notifications/{id}:
+    get:
+      summary: Get notification by ID
+      description: Get a specific notification by its ID
+      tags:
+        - Notifications
+      security:
+        - cookieAuth: [ ]
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+          description: Notification ID
+      responses:
+        '200':
+          description: Notification retrieved successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  code:
+                    type: string
+                    example: GET_NOTIFICATION_SUCCESSFULLY
+                  data:
+                    $ref: '#/components/schemas/Notification'
+        '401':
+          description: Unauthorized – User not logged in
+        '404':
+          description: Notification not found
+
+  /api/v1/notifications/{id}/read:
+    patch:
+      summary: Mark notification as read
+      description: Mark a specific notification as read
+      tags:
+        - Notifications
+      security:
+        - cookieAuth: [ ]
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+          description: Notification ID
+      responses:
+        '200':
+          description: Notification marked as read successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  code:
+                    type: string
+                    example: NOTIFICATION_MARKED_AS_READ
+                  message:
+                    type: string
+                    example: Notification marked as read successfully
+                  data:
+                    $ref: '#/components/schemas/Notification'
+        '401':
+          description: Unauthorized – User not logged in
+        '404':
+          description: Notification not found
+
+    delete:
+      summary: Delete notification
+      description: Delete a specific notification
+      tags:
+        - Notifications
+      security:
+        - cookieAuth: [ ]
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+          description: Notification ID
+      responses:
+        '200':
+          description: Notification deleted successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  code:
+                    type: string
+                    example: NOTIFICATION_DELETED
+                  message:
+                    type: string
+                    example: Notification deleted successfully
+                  data:
+                    type: object
+                    properties:
+                      success:
+                        type: boolean
+                        example: true
+        '401':
+          description: Unauthorized – User not logged in
+        '404':
+          description: Notification not found
+
+  /api/v1/notifications/read-all:
+    patch:
+      summary: Mark all notifications as read
+      description: Mark all notifications as read for the authenticated user
+      tags:
+        - Notifications
+      security:
+        - cookieAuth: [ ]
+      responses:
+        '200':
+          description: All notifications marked as read successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  code:
+                    type: string
+                    example: ALL_NOTIFICATIONS_MARKED_AS_READ
+                  message:
+                    type: string
+                    example: All notifications marked as read successfully
+                  data:
+                    type: object
+                    properties:
+                      modifiedCount:
+                        type: integer
+                        example: 8
+        '401':
+          description: Unauthorized – User not logged in
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  code:
+                    type: string
+                    example: INTERNAL_SERVER_ERROR
+                  message:
+                    type: string
+                    example: Something went wrong while fetching explore posts
+
+  /api/v1/posts/comment:
+    post:
+      summary: Add a comment to a post
+      description: |
+        یک کامنت جدید به پست اضافه می‌کند.  
+        - در صورت ارسال `parent_comment`، کامنت به عنوان **ریپلای** ثبت می‌شود.  
+        - نیاز به احراز هویت دارد.
+      tags:
+        - Comments
+      security:
+        - cookieAuth: [ ]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - post_id
+                - content
+              properties:
+                post_id:
+                  type: string
+                  description: شناسه پست
+                  example: 68d50f8ca54197555078bf31
+                content:
+                  type: string
+                  description: متن کامنت
+                  example: this post is perfect
+                parent_comment:
+                  type: string
+                  nullable: true
+                  description: شناسه کامنت والد (برای ریپلای)
+                  example: null
+      responses:
+        '201':
+          description: Comment added successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  code:
+                    type: string
+                    example: COMMENT_ADDED_SUCCESSFULLY
+                  data:
+                    type: object
+                    properties:
+                      _id:
+                        type: string
+                        example: 68d511b117a16012d74a14a0
+                      post_id:
+                        type: string
+                        example: 68d50f8ca54197555078bf31
+                      user_id:
+                        type: string
+                        example: 68d2acb57698eafb14b85ed4
+                      content:
+                        type: string
+                        example: this post is perfect
+                      like_count:
+                        type: integer
+                        example: 0
+                      parent_comment:
+                        type: string
+                        nullable: true
+                        example: null
+                      createdAt:
+                        type: string
+                        format: date-time
+                        example: 2025-09-25T09:56:01.038Z
+                      updatedAt:
+                        type: string
+                        format: date-time
+                        example: 2025-09-25T09:56:01.038Z
+        '400':
+          description: Bad request (invalid input)
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  code:
+                    type: string
+                    example: INVALID_POST_ID
+                  message:
+                    type: string
+                    example: Invalid post ID
+        '401':
+          description: Unauthorized – User not logged in
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  code:
+                    type: string
+                    example: UNAUTHORIZED
+                  message:
+                    type: string
+                    example: User not authenticated
+
+  /api/v1/posts/comments:
+    get:
+      summary: Get comments of a post
+      description: |
+        لیست کامنت‌های یک پست رو برمی‌گردونه.  
+        - نیاز به لاگین (کوکی) داره.  
+        - از query params برای صفحه‌بندی استفاده می‌کنه.
+      tags:
+        - Comments
+      security:
+        - cookieAuth: [ ]
+      parameters:
+        - name: postId
+          in: query
+          required: true
+          schema:
+            type: string
+          description: ID of the post to get comments for
+          example: 68d50f8ca54197555078bf31
+        - name: page
+          in: query
+          required: false
+          schema:
+            type: integer
+            default: 1
+          description: Page number for pagination
+          example: 1
+        - name: pageSize
+          in: query
+          required: false
+          schema:
+            type: integer
+            default: 10
+          description: Number of comments per page
+          example: 10
+      responses:
+        '200':
+          description: Comments fetched successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  code:
+                    type: string
+                    example: GET_COMMENTS_SUCCESSFULLY
+                  data:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        _id:
+                          type: string
+                          example: 68d511b117a16012d74a14a0
+                        post_id:
+                          type: string
+                          example: 68d50f8ca54197555078bf31
+                        user_id:
+                          type: string
+                          example: 68d2acb57698eafb14b85ed4
+                        content:
+                          type: string
+                          example: this post is perfect
+                        like_count:
+                          type: integer
+                          example: 0
+                        parent_comment:
+                          type: string
+                          nullable: true
+                          example: null
+                        createdAt:
+                          type: string
+                          format: date-time
+                          example: 2025-09-25T09:56:01.038Z
+                        updatedAt:
+                          type: string
+                          format: date-time
+                          example: 2025-09-25T09:56:01.038Z
+        '401':
+          description: Unauthorized (user not logged in)
           content:
             application/json:
               schema:
@@ -1144,6 +2583,531 @@ paths:
                   message:
                     type: string
                     example: Authentication required
+        '404':
+          description: Post not found
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  code:
+                    type: string
+                    example: NOT_FOUND
+                  message:
+                    type: string
+                    example: Post with given ID does not exist
+
+  /api/v1/posts/comment/like:
+    post:
+      summary: Like a comment
+      description: Like a comment by its ID. Requires authentication.
+      tags:
+        - Comments
+      security:
+        - cookieAuth: [ ]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - commentId
+              properties:
+                commentId:
+                  type: string
+                  description: ID of the comment to like
+                  example: 68d511b117a16012d74a14a0
+      responses:
+        '200':
+          description: Comment liked successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  code:
+                    type: string
+                    example: LIKED_SUCCESSFULY
+                  message:
+                    type: string
+                    example: comment 68d511b117a16012d74a14a0 liked successfully.
+        '401':
+          description: Unauthorized (user not logged in)
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  code:
+                    type: string
+                    example: UNAUTHORIZED
+                  message:
+                    type: string
+                    example: Authentication required
+        '404':
+          description: Comment not found
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  code:
+                    type: string
+                    example: NOT_FOUND
+                  details:
+                    type: string
+                    example: Comment_not_find
+        '409':
+          description: Comment already liked by the user
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  code:
+                    type: string
+                    example: ALREADY_DONE
+                  details:
+                    type: string
+                    example: User_liked_comment_Before
+
+  /api/v1/posts/comment/unlike:
+    post:
+      summary: Unlike a comment
+      description: Remove a like from a comment by its ID. Requires authentication.
+      tags:
+        - Comments
+      security:
+        - cookieAuth: [ ]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - commentId
+              properties:
+                commentId:
+                  type: string
+                  description: ID of the comment to unlike
+                  example: 68d511b117a16012d74a14a0
+      responses:
+        '200':
+          description: Comment unliked successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  code:
+                    type: string
+                    example: UNLIKED_SUCCESSFULY
+                  message:
+                    type: string
+                    example: comment 68d511b117a16012d74a14a0 unliked successfully.
+        '401':
+          description: Unauthorized (user not logged in)
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  code:
+                    type: string
+                    example: UNAUTHORIZED
+                  message:
+                    type: string
+                    example: Authentication required
+        '404':
+          description: Comment not found or not liked by the user
+          content:
+            application/json:
+              schema:
+                type: object
+                oneOf:
+                  - type: object
+                    properties:
+                      code:
+                        type: string
+                        example: NOT_FOUND
+                      details:
+                        type: string
+                        example: Comment_not_find
+                  - type: object
+                    properties:
+                      code:
+                        type: string
+                        example: NO_DATA_PROVIDED
+                      details:
+                        type: string
+                        example: User_Doesnt_liked_comment_Before
+
+  /api/v1/search/getUsers/{page_number}/{query}:
+    get:
+      summary: Search users (paginated)
+      description: |
+        Returns 10 users per page.
+        **Note:** Results automatically exclude:
+        - Users you have blocked
+        - Users who have blocked you
+      tags:
+        - Search
+      security:
+        - cookieAuth: [ ]
+      parameters:
+        - name: page_number
+          in: path
+          required: true
+          schema:
+            type: integer
+            minimum: 1
+          description: The page number to retrieve
+          example: 1
+        - name: query
+          in: path
+          required: true
+          schema:
+            type: string
+          description:
+          example: mohammad
+      responses:
+        '200':
+          description: Successful response with users
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  totalCount:
+                    type: integer
+                    example: 5
+                  page:
+                    type: integer
+                    example: 1
+                  perPage:
+                    type: integer
+                    example: 10
+                  data:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        username:
+                          type: string
+                          example: mohammad95
+                        firstName:
+                          type: string
+                          example: mohammad
+                        lastName:
+                          type: string
+                          example: asghari
+                        profilePhoto:
+                          type: string
+                          format: uri
+                          example: "monorepo/apps/api/src/middleware/uploads/m2.jpg"
+                        followersCount:
+                          type: integer
+                          example: 320
+        '500':
+          description: Internal server error
+
+  /api/v1/closeFriend/add:
+    post:
+      summary: Add a user to close friends
+      description: |
+        کاربر لاگین‌شده می‌تواند یک کاربر دیگر را به لیست **دوستان نزدیک** اضافه کند.
+      tags:
+        - CloseFriends
+      security:
+        - cookieAuth: [ ]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - friendId
+              properties:
+                friendId:
+                  type: string
+                  description: ID of the user to add as a close friend
+                  example: 68d6cbfd5bc774e86bdf4eb2
+      responses:
+        '201':
+          description: Friend added successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  code:
+                    type: string
+                    example: FRIEND_ADDED_SUCCESS
+                  message:
+                    type: string
+                    example: Friend added to close friends successfully.
+        '400':
+          description: Cannot add yourself to close friends
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  code:
+                    type: string
+                    example: CAN_NOT_ADD_YOURSELF_TO_CLOSE_FRIEND
+                  message:
+                    type: string
+                    example: You cannot add yourself to close friends
+        '401':
+          description: Unauthorized (user not logged in)
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  code:
+                    type: string
+                    example: UNAUTHORIZED
+                  message:
+                    type: string
+                    example: Authentication required
+        '409':
+          description: Already exists in close friends
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  code:
+                    type: string
+                    example: ALREADY_DONE
+                  details:
+                    type: string
+                    example: user already exists in closeFriend
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  code:
+                    type: string
+                    example: INTERNAL_SERVER_ERROR
+                  message:
+                    type: string
+                    example: Something went wrong while adding to close friends
+
+  /api/v1/closeFriend/remove:
+    delete:
+      summary: Remove a user from close friends
+      description: |
+        کاربر لاگین‌شده می‌تواند یک کاربر دیگر را از لیست **دوستان نزدیک** خودش حذف کند.
+      tags:
+        - CloseFriends
+      security:
+        - cookieAuth: [ ]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - friendId
+              properties:
+                friendId:
+                  type: string
+                  description: ID of the user to remove from close friends
+                  example: 68d6cbfd5bc774e86bdf4eb2
+      responses:
+        '200':
+          description: Friend removed successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  code:
+                    type: string
+                    example: FRIEND_REMOVED_SUCCESS
+                  message:
+                    type: string
+                    example: Friend removed from close friends successfully.
+        '401':
+          description: Unauthorized (user not logged in)
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  code:
+                    type: string
+                    example: UNAUTHORIZED
+                  message:
+                    type: string
+                    example: Authentication required
+        '404':
+          description: Friend not found in close friends list
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  code:
+                    type: string
+                    example: NOT_FOUND
+                  message:
+                    type: string
+                    example: user does not exists in closeFriend
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  code:
+                    type: string
+                    example: INTERNAL_SERVER_ERROR
+                  message:
+                    type: string
+                    example: Something went wrong while removing from close friends
+
+  /api/v1/closeFriend/list:
+    get:
+      summary: Get close friends list
+      description: |
+        برمی‌گردونه لیست **دوستان نزدیک** کاربر لاگین‌شده همراه با اطلاعات کاربر هر دوست.
+      tags:
+        - CloseFriends
+      security:
+        - cookieAuth: [ ]
+      responses:
+        '200':
+          description: List of close friends retrieved successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  code:
+                    type: string
+                    example: GET_CLOSE_FRIENDS_SUCCESS
+                  data:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        _id:
+                          type: string
+                          description: Close friend relationship ID
+                          example: 68d95206a276ca8a18ad3dfe
+                        createdAt:
+                          type: string
+                          format: date-time
+                          example: 2025-09-28T15:19:34.812Z
+                        updatedAt:
+                          type: string
+                          format: date-time
+                          example: 2025-09-28T15:19:36.905Z
+                        friend_info:
+                          type: object
+                          properties:
+                            _id:
+                              type: string
+                              example: 68d2b0927698eafb14b85ed9
+                            email:
+                              type: string
+                              format: email
+                              example: yaldoomaldoo101@gamil.com
+                            username:
+                              type: string
+                              example: yaldoomaldoo1
+                            firstname:
+                              type: string
+                              nullable: true
+                              example: null
+                            lastname:
+                              type: string
+                              nullable: true
+                              example: null
+                            profilePhoto:
+                              type: string
+                              nullable: true
+                              example: null
+        '401':
+          description: Unauthorized (user not logged in)
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  code:
+                    type: string
+                    example: UNAUTHORIZED
+                  message:
+                    type: string
+                    example: Authentication required
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  code:
+                    type: string
+                    example: INTERNAL_SERVER_ERROR
+                  message:
+                    type: string
+                    example: Something went wrong while fetching close friends
+
+  /api/v1/search/getPosts/{page_number}/{query}:
+    get:
+      summary: Search posts
+      description: |
+        Returns paginated posts based on query (hashtags and captions).
+        **Note:** Results automatically exclude posts from:
+        - Users you have blocked
+        - Users who have blocked you
+      tags:
+        - Search
+      security:
+        - cookieAuth: [ ]
+      parameters:
+        - name: page_number
+          in: path
+          required: true
+          description: Page number of the search results
+          schema:
+            type: integer
+            example: 1
+        - name: query
+          in: path
+          required: true
+          description: The search query for posts
+          schema:
+            type: string
+            example: "javascript"
+      responses:
+        "200":
+          description: A list of posts
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "monorepo/apps/api/src/db/models/post.model.ts"
+        "400":
+          description: Invalid parameters
+        "500":
+          description: Server error
+
 
 components:
   securitySchemes:
@@ -1198,6 +3162,44 @@ components:
           type: string
         biography:
           type: string
+        isPrivate:
+          type: boolean
+
+    BlockUserDto:
+      type: object
+      required:
+        - blockUserId
+      properties:
+        blockUserId:
+          type: string
+          description: The ID of the user to block/unblock
+          example: 68c6cbfd5bc774e86bdf4eb2
+
+    User:
+      type: object
+      properties:
+        _id:
+          type: string
+          example: "64bfc67e2b3c5a001e9e8c11"
+        username:
+          type: string
+          example: "john_doe"
+        firstname:
+          type: string
+          example: "John"
+        lastname:
+          type: string
+          example: "Doe"
+        ProfilePhoto:
+          type: object
+          nullable: true
+          properties:
+            _id:
+              type: string
+              example: "64bfc67e2b3c5a001e9e8c99"
+            path:
+              type: string
+              example: "profile-1694582321.jpg"
 
     Post:
       type: object
@@ -1242,3 +3244,137 @@ components:
           items:
             type: string
           example: [ "#fun", "#travel" ]
+
+    Notification:
+      type: object
+      properties:
+        _id:
+          type: string
+          example: "64bfc67e2b3c5a001e9e8c21"
+        recipientId:
+          type: string
+          example: "64bfc67e2b3c5a001e9e8c11"
+        senderId:
+          type: object
+          properties:
+            _id:
+              type: string
+              example: "64bfc67e2b3c5a001e9e8c22"
+            username:
+              type: string
+              example: "john_doe"
+            firstname:
+              type: string
+              example: "John"
+            lastname:
+              type: string
+              example: "Doe"
+        type:
+          type: string
+          enum: [like, comment, mention, follow, reply, save]
+          example: "like"
+          description: "Type of notification"
+        postId:
+          type: object
+          nullable: true
+          properties:
+            _id:
+              type: string
+              example: "64bfc67e2b3c5a001e9e8c33"
+            caption:
+              type: string
+              example: "Check out this amazing photo!"
+            urls:
+              type: array
+              items:
+                type: string
+              example: ["uploads/photo-123.jpg"]
+        commentId:
+          type: object
+          nullable: true
+          properties:
+            _id:
+              type: string
+              example: "64bfc67e2b3c5a001e9e8c44"
+            content:
+              type: string
+              example: "Great post!"
+        isRead:
+          type: boolean
+          example: false
+        data:
+          type: object
+          properties:
+            senderUsername:
+              type: string
+              example: "john_doe"
+            postCaption:
+              type: string
+              nullable: true
+              example: "Check out this amazing photo!"
+            commentContent:
+              type: string
+              nullable: true
+              example: "Great post!"
+        createdAt:
+          type: string
+          format: date-time
+          example: "2024-01-15T10:30:00.000Z"
+        updatedAt:
+          type: string
+          format: date-time
+          example: "2024-01-15T10:30:00.000Z"
+
+    PopulatedPost:
+      type: object
+      properties:
+        _id:
+          type: string
+          example: "64bfc67e2b3c5a001e9e8c21"
+        user_id:
+          type: string
+          description: ID of the user who created the post
+          example: "64bfc67e2b3c5a001e9e8c11"
+        user:
+          $ref: '#/components/schemas/User'
+        urls:
+          type: array
+          items:
+            type: string
+          example: [ "uploads/photo-1694582321.png" ]
+        caption:
+          type: string
+          example: "My first post 🎉"
+        photo_length:
+          type: integer
+          example: 3
+        like_count:
+          type: integer
+          example: 10
+        save_count:
+          type: integer
+          example: 5
+        mentions:
+          type: array
+          items:
+            type: object
+            properties:
+              user_id:
+                type: string
+                example: "64bfc67e2b3c5a001e9e8c77"
+              username:
+                type: string
+                example: "ali123"
+        hashtag_array:
+          type: array
+          items:
+            type: string
+          example: [ "#fun", "#travel" ]
+        isLiked:
+          type: boolean
+          description: Whether the authenticated user has liked this post
+          example: true
+        isSaved:
+          type: boolean
+          description: Whether the authenticated user has saved this post
+          example: false

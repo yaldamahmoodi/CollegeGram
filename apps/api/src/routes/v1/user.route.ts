@@ -1,17 +1,17 @@
 import {Router} from "express";
-import {Initiator} from "../../initiator.ts";
 import {authMiddleware} from "../../middlewares/auth.middleware.ts";
 import {uploadProfilePhotoMiddleware} from "../../middlewares/uploadProfilePhoto.middleware.ts";
 import {errorHandler} from "../../middlewares/error.middleware.ts";
-import {bodyParser} from "../../middlewares/parsers.middleware.ts";
+import {bodyParser, paramParser} from "../../middlewares/parsers.middleware.ts";
 import {updateProfileUserSchema} from "../../db/models/user.model.ts";
-import {initiator} from "../../server.ts";
+import {initiator} from "../../initiator.ts";
 import {uploadPostPhotosMiddleware} from "../../middlewares/uploadPost.middleware.ts";
-import {followSchema} from "../../dtos/user.dto.ts";
+import {followSchema, acceptFollowRequestSchema, rejectFollowRequestSchema, blockUserSchema, usernameSchema} from "../../dtos/user.dto.ts";
 
 const router = Router();
 
 const userController = initiator.getUserController();
+
 
 router.use(authMiddleware)
 
@@ -23,7 +23,7 @@ router.post(
 
 router.get(
     "/profile",
-    userController.getUserDetails
+    userController.getProfile
 );
 
 router.post(
@@ -51,6 +51,18 @@ router.post(
     userController.unfollowUser
 );
 
+router.post(
+    "/accept-follow-request",
+    bodyParser(acceptFollowRequestSchema),
+    userController.acceptFollowRequest
+);
+
+router.post(
+    "/reject-follow-request",
+    bodyParser(rejectFollowRequestSchema),
+    userController.rejectFollowRequest
+);
+
 router.get(
     '/savesList',
     userController.getUserSavesList
@@ -65,6 +77,31 @@ router.get(
     "/followings",
     userController.getFollowingsList
 )
+
+router.post(
+    "/block",
+    bodyParser(blockUserSchema),
+    userController.BlockUser
+);
+
+router.post(
+    "/unblock",
+    bodyParser(blockUserSchema),
+    userController.unBlockUser
+);
+
+router.get(
+    "/blocks",
+    userController.getBlocksList
+)
+
+
+router.get(
+    "/:username",
+    paramParser(usernameSchema),
+    userController.getOtherProfile
+);
+
 
 
 router.use(errorHandler);

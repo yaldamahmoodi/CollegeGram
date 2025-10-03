@@ -32,6 +32,12 @@ const envSchema = z.object({
   MIN_POOL_SIZE: z.coerce.number().min(5).max(15).default(5),
   MAX_POOL_SIZE: z.coerce.number().min(15).max(25).default(25),
 
+  // REDIS
+  REDIS_URL: z.string().default("redis://localhost:6379"),
+
+  // ELASTICSEARCH
+  ELASTIC_URL: z.string().default("http://localhost:9200"),
+
   // SECURITY
   ACCESS_TOKEN_SECRET: z.string().default("secret"),
   ACCESS_TOKEN_EXPIRES_IN: z.coerce.number().default(54000),

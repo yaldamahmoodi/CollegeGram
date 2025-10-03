@@ -1,64 +1,94 @@
-import { useState } from "react";
-import UserCard from "./components/UserCard";
-import PostCard from "./components/PostCard";
-import SearchIcon from "@/assets/icons/search.svg";
-import { users, posts } from "./const";
+import { useNavigate, generatePath } from "react-router-dom";
+import { ROUTES } from "@/routes/routes";
+import PostCard from "@/pages/explore/PostCard";
+import type { PostCardType } from "@/pages/explore/PostCard";
+import { MESSAGES } from "@/const/message";
+import Button from "@components/Button.tsx";
+import { useExplorePosts, useLikePost, useSavePost } from "@/hooks/post.hook.ts";
+import { useMemo } from "react";
 
-const Explore = () => {
-  const [activeTab, setActiveTab] = useState<"users" | "posts">("posts");
-  const [search, setSearch] = useState("");
+function Explore() {
+    const navigate = useNavigate();
+    const { data, isLoading } = useExplorePosts(1, 12);
 
-  const filteredUsers = users.filter((user) =>
-    user.name.toLowerCase().includes(search.toLowerCase())
-  );
+    const likeMut = useLikePost();
+    const saveMut = useSavePost();
 
-  return (
-    <div className="w-full mx-auto">
-      <div className="w-2/5 relative mb-12">
-        <input
-          type="text"
-          placeholder="جستجو در افراد، تگ‌ها و واژه ها و..."
-          value={search}
-          onChange={(e) => setSearch(e.target.value)}
-          className="w-full bg-white py-3 px-10 rounded-3xl focus:outline-none focus:ring-2 focus:ring-gray-300"
-        />
-        <span className="absolute left-3 top-2.5 text-gray-300">
-          <img src={SearchIcon} />
-        </span>
-      </div>
+    const posts: PostCardType[] = useMemo(
+        () =>
+            (data?.data ?? []).map((item: Record<string, any>) => ({
+                _id: item.post_id,
+                username: `${item.firstname} ${item.lastname}`,
+                followerCount: `${item.following_count ?? 0} نفر دنبال کننده`,
+                userAvatar: item.profilePhotoUrl,
+                imageUrl: item.urls?.[0] ?? "",
+                like_count: item.like_count ?? 0,
+                save_count: item.save_count ?? 0,
+                comment_count: item.comment_count ?? 0,
+                isLiked: false,
+                isSaved: false,
+            })),
+        [data]
+    );
 
-      <div className="flex mb-12 text-xl flex flex-row items-center">
-        <button
-          className={`pl-8 py-2 ${
-            activeTab === "users" ? "font-bold" : "text-gray-400"
-          }`}
-          onClick={() => setActiveTab("users")}>
-          افراد
-        </button>
-        <span className="border-l h-5" />
-        <button
-          className={`px-8 py-2 ${
-            activeTab === "posts" ? "font-bold" : "text-gray-400"
-          }`}
-          onClick={() => setActiveTab("posts")}>
-          پست‌ها
-        </button>
-      </div>
+    const goPost = (id: string) => {
+        const path = generatePath(ROUTES.POST_DETAIL, { id });
+        navigate(path);
+    };
 
-      {activeTab === "posts" ? (
-        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
-          {posts.map((post) => (
-            <PostCard key={post.id} image={post.image} />
-          ))}
+    const toggleLike = (id: string) => {
+        const current = posts.find((p) => p._id === id);
+        likeMut.mutate({ postId: id, isLiked: current?.isLiked } as any);
+    };
+
+    const toggleSave = (id: string) => {
+        const current = posts.find((p) => p._id === id);
+        saveMut.mutate({ postId: id, isSaved: current?.isSaved } as any);
+    };
+
+    return (
+        <div className="px-4 py-6">
+            {isLoading && (
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
+                    {Array.from({ length: 6 }).map((_, i) => (
+                        <div key={i} className="h-[360px] rounded-3xl bg-gray-100 animate-pulse" />
+                    ))}
+                </div>
+            )}
+
+            {!isLoading && posts.length === 0 && (
+                <div className="flex items-center justify-center h-[70vh]">
+                    <div className="flex flex-col items-center justify-center gap-6 text-center">
+                        <div className="font-semibold mb-2 text-4xl">
+                            {MESSAGES.exploreHedging}
+                        </div>
+                        <p className="max-w-md text-xl">{MESSAGES.exploreParagraph}</p>
+                        <Button type="button" label="جستجوی کالچ گرامی ها" />
+                    </div>
+                </div>
+            )}
+
+            {!isLoading && posts.length > 0 && (
+                <>
+                    <div className="w-full flex mb-6">
+                        <h1 className="text-3xl font-bold">اکسپلور</h1>
+                    </div>
+
+                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
+                        {posts.map((post) => (
+                            <PostCard
+                                key={post._id}
+                                post={post}
+                                onOpen={goPost}
+                                onLike={toggleLike}
+                                onSave={toggleSave}
+                            />
+                        ))}
+                    </div>
+                </>
+            )}
         </div>
-      ) : (
-        <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 gap-5">
-          {filteredUsers.map((user) => (
-            <UserCard user={user} />
-          ))}
-        </div>
-      )}
-    </div>
-  );
-};
+    );
+}
+
 export default Explore;
