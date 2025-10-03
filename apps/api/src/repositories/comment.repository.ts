@@ -24,9 +24,10 @@ export class CommentRepository {
   async getCommentsByPostId(
       postId: string,
       page: number,
-      pageSize: number
+      pageSize: number,
+      userId?: string
   ) {
-    return CommentModel.aggregate([
+    const pipeline: any[] = [
       {
         $match: { post_id: new mongoose.Types.ObjectId(postId) }
       },
@@ -40,27 +41,57 @@ export class CommentRepository {
       },
       {
         $unwind: "$user_info"
-      },
-      {
-        $project: {
-          _id: 1,
-          content: 1,
-          like_count: 1,
-          parent_comment: 1,
-          createdAt: 1,
-          updatedAt: 1,
-          "user_info._id": 1,
-          "user_info.username": 1,
-          "user_info.firstname": 1,
-          "user_info.lastname": 1,
-          "user_info.profilePhoto": {
-            $ifNull: ["$user_info.ProfilePhoto.path", null]
-          }
+      }
+    ];
+
+    // Add isLiked lookup if userId is provided
+    if (userId) {
+      pipeline.push({
+        $lookup: {
+          from: "commentlikes",
+          let: { commentId: "$_id", userId: new mongoose.Types.ObjectId(userId) },
+          pipeline: [
+            {
+              $match: {
+                $expr: {
+                  $and: [
+                    { $eq: ["$comment_id", "$$commentId"] },
+                    { $eq: ["$user_id", "$$userId"] }
+                  ]
+                }
+              }
+            }
+          ],
+          as: "user_like"
         }
-      },
+      });
+    }
+
+    pipeline.push({
+      $project: {
+        _id: 1,
+        content: 1,
+        like_count: 1,
+        parent_comment: 1,
+        createdAt: 1,
+        updatedAt: 1,
+        isLiked: userId ? { $gt: [{ $size: "$user_like" }, 0] } : false,
+        "user_info._id": 1,
+        "user_info.username": 1,
+        "user_info.firstname": 1,
+        "user_info.lastname": 1,
+        "user_info.profilePhoto": {
+          $ifNull: ["$user_info.ProfilePhoto.path", null]
+        }
+      }
+    });
+
+    pipeline.push(
       { $skip: (page - 1) * pageSize },
       { $limit: pageSize }
-    ]);
+    );
+
+    return CommentModel.aggregate(pipeline);
   }
 
 

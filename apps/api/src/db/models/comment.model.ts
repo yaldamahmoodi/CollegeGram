@@ -3,11 +3,12 @@ import {z} from "zod";
 
 export interface IComment extends Document {
     _id: Types.ObjectId;
-    post_id: Types.ObjectId;         // رفرنس به Post
-    user_id: Types.ObjectId;         // کسی که کامنت گذاشته
-    content: string;                 // متن کامنت
-    like_count: number;              // تعداد لایک
-    parent_comment?: Types.ObjectId | null; // اگر ریپلای باشه
+    post_id: Types.ObjectId;        
+    user_id: Types.ObjectId;       
+    content: string;                
+    like_count: number;              
+    parent_comment?: Types.ObjectId | null; 
+    isLiked?: boolean;
     createdAt: Date;
     updatedAt: Date;
 }
