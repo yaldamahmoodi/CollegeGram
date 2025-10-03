@@ -38,8 +38,8 @@ build:
     - touch apps/web/.env
     - echo "VITE_BASE_URL=$VITE_BASE_URL" >> apps/web/.env
     - echo "VITE_SOCKET_URL=$VITE_SOCKET_URL" >> apps/web/.env
-
-    - docker compose -f docker-compose.yaml -f docker-compose.prod.yml build --no-cache
+    - docker compose ps --services --filter "profile=production"
+    - docker compose -f docker-compose.yaml -f docker-compose.prod.yaml build --no-cache
   rules:
     - if: '$CI_COMMIT_BRANCH == "prod"'
   artifacts:
@@ -55,7 +55,7 @@ deploy:
       artifacts: true
   script:
     - echo "🚀 Deploying..."
-    - docker compose -f docker-compose.yaml -f docker-compose.prod.yml down
-    - docker compose -f docker-compose.yaml -f docker-compose.prod.yml up -d --remove-orphans
+    - docker compose -f docker-compose.yaml -f docker-compose.prod.yaml down
+    - docker compose -f docker-compose.yaml -f docker-compose.prod.yaml up -d --remove-orphans
   rules:
     - if: '$CI_COMMIT_BRANCH == "prod"'
