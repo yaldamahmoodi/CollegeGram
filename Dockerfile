@@ -16,7 +16,7 @@ COPY apps/web/package.json ./apps/web/
 COPY apps/doc/package.json ./apps/doc/
 
 # Install all dependencies (including Turbo)
-RUN pnpm install --no-frozen-lockfile
+RUN pnpm install --frozen-lockfile
 
 # Copy source code
 COPY apps/ ./apps/
