@@ -7,7 +7,7 @@ WORKDIR /app
 # Enable corepack and prepare for pnpm 10.14.0
 RUN corepack enable
 RUN corepack prepare pnpm@10.14.0 --activate
-RUN npm install -g pnpm turbo
+RUN npm install -g turbo
 
 # Copy workspace configuration files
 COPY package.json pnpm-workspace.yaml pnpm-lock.yaml* ./
@@ -40,7 +40,7 @@ COPY --from=base /app/apps/api/dist ./apps/api/dist
 COPY --from=base /app/apps/api/src ./apps/api/src
 
 # Install only production dependencies for API
-RUN pnpm install --filter=api --prod --reporter=append-only
+RUN pnpm install --filter=api 
 
 WORKDIR /app
 EXPOSE 3001
@@ -58,7 +58,7 @@ COPY --from=base /app/apps/web/dist ./apps/web/dist
 COPY --from=base /app/apps/web/src ./apps/web/src
 
 # Install only production dependencies for Web
-RUN pnpm install --filter=web --prod --reporter=append-only
+RUN pnpm install --filter=web 
 
 WORKDIR /app
 EXPOSE 3000
@@ -76,7 +76,7 @@ COPY --from=base /app/apps/doc/dist ./apps/doc/dist
 COPY --from=base /app/apps/doc/src ./apps/doc/src
 
 # Install only production dependencies for Doc
-RUN pnpm install --filter=doc --prod --reporter=append-only
+RUN pnpm install --filter=doc 
 
 WORKDIR /app
 EXPOSE 3002
