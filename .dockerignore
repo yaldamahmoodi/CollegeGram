@@ -11,6 +11,8 @@ build
 .next
 .nuxt
 .output
+.turbo
+.pnpm-store
 
 # Environment files
 .env
