@@ -2,25 +2,16 @@ import * as React from "react"
 import {
   ArrowUpCircleIcon,
   BarChartIcon,
-  CameraIcon,
   ClipboardListIcon,
   DatabaseIcon,
-  FileCodeIcon,
   FileIcon,
-  FileTextIcon,
   FolderIcon,
-  HelpCircleIcon,
   LayoutDashboardIcon,
-  ListIcon,
-  SearchIcon,
-  SettingsIcon,
   UsersIcon,
 } from "lucide-react"
 
 import { NavDocuments } from "@/components/nav-documents"
 import { NavMain } from "@/components/nav-main"
-import { NavSecondary } from "@/components/nav-secondary"
-import { NavUser } from "@/components/nav-user"
 import {
   Sidebar,
   SidebarContent,
@@ -30,119 +21,47 @@ import {
   SidebarMenuButton,
   SidebarMenuItem,
 } from "@/components/ui/sidebar"
+import { Link } from "@tanstack/react-router"
 
 const data = {
-  user: {
-    name: "shadcn",
-    email: "m@example.com",
-    avatar: "/avatars/shadcn.jpg",
-  },
+
   navMain: [
     {
       title: "Dashboard",
-      url: "#",
+      url: "/dashboard",
       icon: LayoutDashboardIcon,
     },
     {
-      title: "Lifecycle",
-      url: "#",
-      icon: ListIcon,
-    },
-    {
       title: "Analytics",
-      url: "#",
+      url: "/analytics",
       icon: BarChartIcon,
     },
     {
       title: "Projects",
-      url: "#",
+      url: "/projects",
       icon: FolderIcon,
     },
     {
       title: "Team",
-      url: "#",
+      url: "/team",
       icon: UsersIcon,
     },
   ],
-  navClouds: [
-    {
-      title: "Capture",
-      icon: CameraIcon,
-      isActive: true,
-      url: "#",
-      items: [
-        {
-          title: "Active Proposals",
-          url: "#",
-        },
-        {
-          title: "Archived",
-          url: "#",
-        },
-      ],
-    },
-    {
-      title: "Proposal",
-      icon: FileTextIcon,
-      url: "#",
-      items: [
-        {
-          title: "Active Proposals",
-          url: "#",
-        },
-        {
-          title: "Archived",
-          url: "#",
-        },
-      ],
-    },
-    {
-      title: "Prompts",
-      icon: FileCodeIcon,
-      url: "#",
-      items: [
-        {
-          title: "Active Proposals",
-          url: "#",
-        },
-        {
-          title: "Archived",
-          url: "#",
-        },
-      ],
-    },
-  ],
-  navSecondary: [
-    {
-      title: "Settings",
-      url: "#",
-      icon: SettingsIcon,
-    },
-    {
-      title: "Get Help",
-      url: "#",
-      icon: HelpCircleIcon,
-    },
-    {
-      title: "Search",
-      url: "#",
-      icon: SearchIcon,
-    },
-  ],
+  navSecondary: [],
   documents: [
     {
       name: "Data Library",
-      url: "#",
+      url: "/data-library",
       icon: DatabaseIcon,
     },
     {
       name: "Reports",
-      url: "#",
+      url: "/reports",
       icon: ClipboardListIcon,
     },
     {
       name: "Word Assistant",
-      url: "#",
+      url: "/word-assistant",
       icon: FileIcon,
     },
   ],
@@ -150,7 +69,7 @@ const data = {
 
 export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
   return (
-    <Sidebar collapsible="none" {...props}>
+    <Sidebar collapsible="icon" {...props} >
       <SidebarHeader>
         <SidebarMenu>
           <SidebarMenuItem>
@@ -158,10 +77,10 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
               asChild
               className="data-[slot=sidebar-menu-button]:!p-1.5"
             >
-              <a href="#">
+              <Link to="/dashboard">
                 <ArrowUpCircleIcon className="h-5 w-5" />
-                <span className="text-base font-semibold">Acme Inc.</span>
-              </a>
+                <span className="text-base font-semibold">devsync</span>
+              </Link>
             </SidebarMenuButton>
           </SidebarMenuItem>
         </SidebarMenu>
@@ -169,10 +88,9 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
       <SidebarContent>
         <NavMain items={data.navMain} />
         <NavDocuments items={data.documents} />
-        <NavSecondary items={data.navSecondary} className="mt-auto" />
       </SidebarContent>
       <SidebarFooter>
-        <NavUser user={data.user} />
+        
       </SidebarFooter>
     </Sidebar>
   )

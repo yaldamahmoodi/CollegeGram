@@ -159,13 +159,15 @@ class MetricsService {
 
   // Get API metrics
   getApiMetrics(): ApiMetrics {
-    // Ensure math consistency - derive successful/failed from status codes
+    // Ensure math consistency - derive all counts from status codes (the source of truth)
     let calculatedSuccessful = 0;
     let calculatedFailed = 0;
+    let calculatedTotal = 0;
     
     // Count successful and failed requests from status codes
     for (const [statusCode, count] of Object.entries(this.metrics.statusCodes)) {
       const code = parseInt(statusCode);
+      calculatedTotal += count;
       if (code >= 200 && code < 400) {
         calculatedSuccessful += count;
       } else {
@@ -173,9 +175,10 @@ class MetricsService {
       }
     }
     
-    // Return metrics with corrected counts
+    // Return metrics with corrected counts based on actual status codes
     return {
       ...this.metrics,
+      totalRequests: calculatedTotal,        // Use actual completed requests
       successfulRequests: calculatedSuccessful,
       failedRequests: calculatedFailed,
     };

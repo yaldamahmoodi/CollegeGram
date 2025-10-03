@@ -94,8 +94,7 @@ const ApiRequestLogSchema = new Schema<IApiRequestLog>({
   },
   timestamp: {
     type: Date,
-    default: Date.now,
-    index: true
+    default: Date.now
   },
   error: {
     type: String,
@@ -167,8 +166,7 @@ const DailyApiMetricsSchema = new Schema<IDailyApiMetrics>({
 const SystemMetricsLogSchema = new Schema<ISystemMetricsLog>({
   timestamp: {
     type: Date,
-    default: Date.now,
-    index: true
+    default: Date.now
   },
   cpu: {
     usage: { type: Number, required: true },
@@ -202,13 +200,10 @@ const SystemMetricsLogSchema = new Schema<ISystemMetricsLog>({
 });
 
 // Add indexes for better query performance
-ApiRequestLogSchema.index({ timestamp: -1 });
 ApiRequestLogSchema.index({ endpoint: 1, timestamp: -1 });
 ApiRequestLogSchema.index({ statusCode: 1, timestamp: -1 });
 
 DailyApiMetricsSchema.index({ date: -1 });
-
-SystemMetricsLogSchema.index({ timestamp: -1 });
 
 // Add TTL index to automatically delete old logs (keep for 30 days)
 ApiRequestLogSchema.index({ timestamp: 1 }, { expireAfterSeconds: 30 * 24 * 60 * 60 });
