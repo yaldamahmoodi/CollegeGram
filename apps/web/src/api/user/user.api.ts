@@ -94,7 +94,7 @@ export const uploadProfileImage = async (image: File) => {
     headers: { "Content-Type": "multipart/form-data" },
   });
 
-    return data;
+  return data;
 };
 
 // Forgot Password Flow
@@ -147,18 +147,27 @@ export const searchUsers = async (
   query: string,
   page: number = 1
 ): Promise<SearchUsersResponse> => {
-  const { data } = await api.get<any>(
-    `${USER_URLS.SEARCH_USER}/${page}/${query}`,
-    { withCredentials: true }
-  );
+  const { data } = await api.get<{
+    total?: number;
+    page?: number;
+    size?: number;
+    users?: Array<{
+      id: string;
+      username: string;
+      firstname?: string;
+      lastname?: string;
+      profilePhotoPath?: string;
+      follower_count?: number;
+    }>;
+  }>(`${USER_URLS.SEARCH_USER}/${page}/${query}`, { withCredentials: true });
   // Backend returns { total, page, size, users: [{ id, username, ... }] }
   // Normalize to SearchUsersResponse shape used by the UI
   const normalized: SearchUsersResponse = {
-    totalCount: data.total ?? data.totalCount ?? 0,
+    totalCount: (data.total as number) ?? 0,
     page: data.page ?? page,
-    perPage: data.size ?? data.perPage ?? 10,
+    perPage: data.size ?? 10,
     users: Array.isArray(data.users)
-      ? data.users.map((u: any) => ({
+      ? data.users.map((u) => ({
           id: u.id,
           username: u.username,
           firstName: u.firstname ?? "",
@@ -166,13 +175,11 @@ export const searchUsers = async (
           profilePhoto: u.profilePhotoPath ?? "",
           followersCount: u.follower_count ?? 0,
         }))
-      : Array.isArray(data.data)
-      ? data.data
-      : [],
+      : []
+     
   };
   return normalized;
 };
-
 
 export const searchPosts = async (
   query: string,

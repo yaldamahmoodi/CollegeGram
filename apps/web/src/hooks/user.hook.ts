@@ -89,11 +89,7 @@ export const useUserInfo = () => {
     queryKey: ["userInfo"],
     queryFn: getUserInfo,
     select: (response) => response.data,
-    onError: (error: unknown) => {
-      const message = getErrorMessageByCode(error);
-      toast.error(message);
-      console.error("UserInfo Error:", error);
-    },
+    retry: 1,
   });
 };
 
@@ -111,13 +107,7 @@ export const useFollowingList = (enabled: boolean) => {
     queryFn: getFollowings,
     select: (response) => response.data,
     enabled,
-    onError: (error: unknown) => {
-      if (error instanceof Error) {
-        const message = getErrorMessageByCode(error);
-        toast.error(message);
-        console.error("Followings Error:", error);
-      }
-    },
+    retry: 1,
   });
 };
 
@@ -127,10 +117,7 @@ export const useFollowersList = (enabled: boolean) => {
     queryFn: getFollowers,
     select: (response) => response.data,
     enabled,
-    onError: (error: unknown) => {
-      const message = getErrorMessageByCode(error);
-      toast.error(message);
-    },
+    retry: 1,
   });
 };
 
@@ -176,7 +163,7 @@ export const useAcceptFollowRequest = (username: string) => {
   });
 };
 
-export const useRejectFollowRequest = (username) => {
+export const useRejectFollowRequest = (username: string) => {
   const queryClient = useQueryClient();
 
   return useMutation({
@@ -197,10 +184,7 @@ export const useCloseFiendList = () => {
     queryKey: ["closeFriendList"],
     queryFn: getCloseFriendList,
     select: (response) => response.data,
-    onError: (error: unknown) => {
-      const message = getErrorMessageByCode(error);
-      toast.error(message);
-    },
+    retry: 1,
   });
 };
 
@@ -296,10 +280,7 @@ export const useBlockList = () => {
     queryKey: ["blockList"],
     queryFn: getBlockList,
     select: (response) => response.data,
-    onError: (error: unknown) => {
-      const message = getErrorMessageByCode(error);
-      toast.error(message);
-    },
+    retry: 1,
   });
 };
 

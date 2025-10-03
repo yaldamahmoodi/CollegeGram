@@ -2,7 +2,7 @@ import Button from "@components/Button";
 import { useEffect, useState } from "react";
 import PostDetailsModal from "@/pages/profile/components/PostDetailsModal";
 import { usePosts } from "@hooks/post.hook.ts";
-import type { postData } from "@api/post/post.api.ts";
+import type { PostInfo } from "@/types/post";
 import ImageGroup from "@components/ImageGroup.tsx";
 import { MESSAGES } from "@/const/message.ts";
 import type { OtherUserType } from "@/types/user";
@@ -15,18 +15,16 @@ interface UserPostsProps {
 const UserPosts = ({ otherUser, onChangeModal }: UserPostsProps) => {
   const userId = otherUser?.userId;
 
-  const { data: otherUserPosts } = usePosts<postData[]>(userId);
-  const { data: posts } = usePosts<postData[]>();
+  const { data: otherUserPosts } = usePosts(userId);
+  const { data: posts } = usePosts();
 
-  const postList: postData[] | undefined = otherUser ? otherUserPosts : posts;
+  const postList: PostInfo[] | undefined = otherUser ? otherUserPosts : posts;
   console.log(postList);
-  const [selectedPost, setSelectedPost] = useState<postData | null>(null);
+  const [selectedPost, setSelectedPost] = useState<PostInfo | null>(null);
 
   useEffect(() => {
     if (selectedPost && postList) {
-      const updated = postList.find(
-        (post: postData) => post._id === selectedPost._id
-      );
+      const updated = postList.find((post) => post._id === selectedPost._id);
       if (updated) {
         setSelectedPost(updated);
       }
@@ -35,9 +33,9 @@ const UserPosts = ({ otherUser, onChangeModal }: UserPostsProps) => {
 
   return (
     <div className="profile-posts w-full h-full flex-auto border border-gray-400 p-4 overflow-y-auto rounded-2xl">
-      {postList?.length > 0 ? (
+      {Array.isArray(postList) && postList.length > 0 ? (
         <div className="grid grid-cols-12 gap-6">
-          {postList.map((item: postData) => (
+          {postList?.map((item) => (
             <div
               key={item._id}
               className="col-span-6 sm:col-span-6 md:col-span-4 lg:col-span-3">

@@ -3,7 +3,6 @@ import {
   getPosts,
   createPost,
   likePost,
-  type postDataType,
   unLikePost,
   getSavedPosts,
   getExplorePosts,
@@ -23,7 +22,7 @@ export const usePosts = (userId?: string, page = 1, pageSize = 10) => {
   console.log(userId);
   return useQuery({
     queryKey: ["posts", userId, page, pageSize],
-    queryFn: () => getPosts({ userId, page, pageSize }),
+    queryFn: () => getPosts({ id: userId, page, pageSize }),
     select: (response) => response.data,
   });
 };

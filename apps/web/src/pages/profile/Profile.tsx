@@ -8,7 +8,7 @@ import { useGetOtherUser } from "@/hooks/user.hook";
 const Profile = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const { username } = useParams<{ username: string }>();
-  const { data: otherUser } = useGetOtherUser(username);
+  const { data: otherUser } = useGetOtherUser(username ?? null);
   return (
     <>
       <div className="title w-full bg-transparent pb-6">

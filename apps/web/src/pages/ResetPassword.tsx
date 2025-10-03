@@ -2,7 +2,6 @@ import { useFormik } from "formik";
 import * as Yup from "yup";
 import { useEffect } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
-import emailIcon from "@assets/icons/username.svg";
 import passwordIcon from "@assets/icons/password.svg";
 import Button from "@components/Button";
 import Input from "@components/Input";

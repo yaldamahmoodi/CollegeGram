@@ -3,7 +3,6 @@ import type { AxiosResponse } from "axios";
 import { POST_URLS } from "./urls";
 import type {
   CreatePostPayload,
-  Posts,
   PostInfo,
   CreateCommentResponseType,
   CreateCommentPayloadType,
@@ -27,7 +26,7 @@ export interface postData {
 }
 
 export const getPosts = async (payload: GetPostsPayload) => {
-  const { data } = await api.get(POST_URLS.POSTS_LIST, payload);
+  const { data } = await api.get(POST_URLS.POSTS_LIST, { params: payload });
   return data;
 };
 
@@ -87,6 +86,7 @@ export const getExplorePosts = async (page = 1, pageSize = 10) => {
   const { data } = await api.get("/posts/explore", {
     params: { page, pageSize },
   });
+  return data;
 };
 
 export const getTaggedPosts = async () => {

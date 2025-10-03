@@ -17,7 +17,7 @@ const BlockedFriends = () => {
       <NavTabs />
       <div className="1/3">
         {blockList?.length > 0
-          ? blockList?.map((blocked) => (
+          ? blockList?.map((blocked: any) => (
               <UserListItem
                 key={blocked.id}
                 user={blocked}

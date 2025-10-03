@@ -32,10 +32,10 @@ const ProfileInfo = (props: ProfileInfoProps) => {
   const { mutate: follow } = useFollow();
   const { mutate: unFollow } = useUnFollow();
   const { mutate: acceptFollowRequest } = useAcceptFollowRequest(
-    otherUser?.username
+    otherUser?.username ?? ""
   );
   const { mutate: rejectFollowRequest } = useRejectFollowRequest(
-    otherUser?.username
+    otherUser?.username ?? ""
   );
 
   const renderFollowButton = () => {

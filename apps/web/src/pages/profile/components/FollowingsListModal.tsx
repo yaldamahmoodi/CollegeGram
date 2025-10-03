@@ -24,7 +24,7 @@ const FollowingListModal = (props: FollowingListModalProps) => {
 
   const [openMenu, setOpenMenu] = useState<string | null>(null);
 
-  const { data: followings } = useFollowingList<FollowingType[]>(isOpen);
+  const { data: followings } = useFollowingList(isOpen);
   const navigate = useNavigate();
   const unFollowMutation = useUnFollow();
 

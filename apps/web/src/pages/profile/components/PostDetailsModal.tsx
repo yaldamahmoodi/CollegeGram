@@ -18,7 +18,6 @@ import {
   useUnSavePost,
 } from "@hooks/post.hook.ts";
 import type { PostInfo, PostActionPayloadType } from "@/types/post";
-import type { OtherUserType } from "@/types/user";
 
 interface PostDetailsModalProps {
   isOpen: boolean;
@@ -65,7 +64,7 @@ const Mentions = ({ items }: { items?: {username: string; user_id: string}[] }) 
 };
 
 const PostDetailsModal = ({ isOpen, close, data }: PostDetailsModalProps) => {
-  const created = Date.parse(data.createdAt || new Date().toISOString());
+  const created = Date.parse(((data as unknown) as { createdAt?: string }).createdAt || new Date().toISOString());
   if (Number.isNaN(created)) throw new Error("Invalid createdAt");
   const diffMs = Math.max(0, Date.now() - created);
   const diffMin = Math.floor(diffMs / 60000);
@@ -98,7 +97,7 @@ const PostDetailsModal = ({ isOpen, close, data }: PostDetailsModalProps) => {
   const handleCommentClick = () => navigate(`/postDetail/${data._id}`);
 
   // مشخص کردن تایپ user
-  const { data: user } = useUserInfo<OtherUserType>();
+  const { data: user } = useUserInfo();
 
   if (!isOpen) return null;
 

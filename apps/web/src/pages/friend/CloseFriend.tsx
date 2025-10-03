@@ -18,7 +18,7 @@ const CloseFriends = () => {
       <NavTabs />
       <div className="1/3">
         {closeFriendList?.length > 0
-          ? closeFriendList?.map((friend) => (
+          ? closeFriendList?.map((friend: any) => (
               <UserListItem
                 key={friend.friend_info._id}
                 user={friend.friend_info}

@@ -36,6 +36,7 @@ export interface PostInfo {
   isLiked?: boolean;
   isSaved?: boolean;
   isClose?: boolean;
+  createdAt: string;
 }
 
 export interface Posts {

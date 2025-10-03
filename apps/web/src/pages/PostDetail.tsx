@@ -34,9 +34,9 @@ const PostDetail = () => {
   const queryClient = useQueryClient();
   const user = queryClient.getQueryData(["userInfo"]);
 
-  const { id } = useParams<{ id: string }>();
-  const { data: post } = useGetPostById(id);
-  const { data: comments } = usePostComments(post?._id);
+  const { id } = useParams();
+  const { data: post } = useGetPostById(id as string | undefined);
+  const { data: comments } = usePostComments(post?._id ?? "", 1, 10);
 
   const addCommentMutation = useCreateComment();
   const likeCommentMutation = useLikeComment();
@@ -67,13 +67,13 @@ const PostDetail = () => {
   };
 
   const handleLikeToggle = () => {
-    const payload: PostActionPayloadType = { postId: post?._id! };
+    const payload: PostActionPayloadType = { postId: post?._id ?? "" };
     if (post?.isLiked) unLikePostMutation.mutate(payload);
     else likePostMutation.mutate(payload);
   };
 
   const handleSaveToggle = () => {
-    const payload: PostActionPayloadType = { postId: post?._id! };
+    const payload: PostActionPayloadType = { postId: post?._id ?? "" };
     if (post?.isSaved) unSavePostMutation.mutate(payload);
     else savePostMutation.mutate(payload);
   };
@@ -109,25 +109,23 @@ const PostDetail = () => {
             />
             <div>
               <p className="font-semibold text-orange-500">
-                {user?.data?.username}
+                {(user as any)?.username ?? ""}
               </p>
             </div>
           </div>
 
-          <p className="text-xs text-gray-500">
-            {formatRelativeTime(user?.data?.createdAt)}
-          </p>
+              {/* createdAt not available here reliably; hide or compute from post later */}
 
           <p className="text-sm md:text-base leading-6 text-gray-700">
             {post?.caption}
           </p>
 
           <div className="flex flex-wrap gap-2 mb-6 mt-3">
-            {post?.mentions.map((mention, i) => (
+            {post?.mentions?.map((mention: any, i: number) => (
               <span
                 key={i}
                 className="px-2 py-1 text-xs md:text-sm text-white rounded-md cursor-pointer bg-orange-500 hover:bg-orange-600">
-                {mention}
+                @{mention?.username ?? mention}
               </span>
             ))}
           </div>
@@ -185,8 +183,8 @@ const PostDetail = () => {
               ? mainComments.map((comment) => (
                   <div key={comment._id} className="pb-3 mb-2 last:border-none">
                     <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between w-full mb-2">
-                      <div className="flex items-center gap-2">
-                        <p className="font-medium">{comment.username}</p>
+                        <div className="flex items-center gap-2">
+                          <p className="font-medium">{(comment as any).username ?? ""}</p>
                         <span className="text-xs text-gray-500">
                           {formatRelativeTime(
                             comment.updatedAt || comment.createdAt
@@ -244,8 +242,8 @@ const PostDetail = () => {
                     {repliesMap[comment._id]?.map((reply) => (
                       <div key={reply._id} className="ml-6 mt-2 pr-5">
                         <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between w-full mb-2">
-                          <div className="flex items-center gap-2">
-                            <p className="font-medium">{reply.username}</p>
+                        <div className="flex items-center gap-2">
+                          <p className="font-medium">{(reply as any).username ?? ""}</p>
                             <span className="text-xs text-gray-500">
                               {formatRelativeTime(
                                 reply.updatedAt || reply.createdAt

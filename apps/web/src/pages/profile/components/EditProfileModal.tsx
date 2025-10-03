@@ -16,15 +16,6 @@ import {
 import { useUserInfo } from "@/hooks/user.hook";
 import type { UpdateProfileType } from "@/types/user.ts";
 
-type User = {
-  profilePhotoUrl?: string;
-  firstname?: string;
-  lastname?: string;
-  email?: string;
-  biography?: string;
-  isPrivate?: boolean;
-};
-
 type EditProfileModalProps = {
   isOpen?: boolean;
   onClose: () => void;
@@ -35,7 +26,7 @@ const EditProfileModal = (props: EditProfileModalProps) => {
 
   const [image, setImage] = useState<File | null>(null);
   const [preview, setPreview] = useState<string | null>(null);
-  const { data: user } = useUserInfo<User>();
+  const { data: user } = useUserInfo();
 
   const [isMobile, setIsMobile] = useState(false);
   useEffect(() => {
@@ -67,7 +58,7 @@ const EditProfileModal = (props: EditProfileModalProps) => {
     },
     onSubmit: async (values, { setFieldError }) => {
       try {
-        const { confirmPassword, bio, isPrivate, ...rest } = values;
+        const { confirmPassword, bio, ...rest } = values;
 
         if (rest.password && rest.password !== confirmPassword) {
           setFieldError("confirmPassword", "تکرار رمز با رمز برابر نیست");

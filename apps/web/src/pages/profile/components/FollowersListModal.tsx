@@ -23,7 +23,7 @@ const FollowersListModal = (props: FollowersListModalProps) => {
     onItemAction,
   } = props;
 
-  const { data: followers } = useFollowersList<FollowersType[]>(isOpen);
+  const { data: followers } = useFollowersList(isOpen);
 
   if (!isOpen) return null;
 
