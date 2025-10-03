@@ -12,6 +12,7 @@ import { FollowModel } from "../db/models/follow.model.ts";
 import { ElasticClient } from "../services/elasticClient.service.ts";
 import { PostSearchService } from "../services/PostSearchService.ts";
 import { BlockRepository } from "./block.repository.ts";
+import type { ExplorePost } from "../dtos/posts.dto.ts";
 
 const elasticClient = new ElasticClient();
 const blockRepository = new BlockRepository();
@@ -40,6 +41,14 @@ export class PostRepository {
     };
   }
 
+  async incrementCommentCount(postId: string) {
+    await postModel.findByIdAndUpdate(postId, { $inc: { comment_count: 1 } });
+  }
+
+  async decrementCommentCount(postId: string) {
+    await postModel.findByIdAndUpdate(postId, { $inc: { comment_count: -1 } });
+  }
+
   async findUserDetails(userId: string): Promise<IUser | null> {
     return await UserModel.findById(userId).populate("ProfilePhoto", "path");
   }
@@ -61,7 +70,6 @@ export class PostRepository {
   }
 
   async getPostById(postId: string, userId?: string): Promise<Post | null> {
-
     const post = await postModel
       .findOne({ _id: new Types.ObjectId(postId) })
       .populate({
@@ -73,8 +81,6 @@ export class PostRepository {
         },
       })
       .exec();
-
-
 
     if (post && userId) {
       // Check if the user has liked this post
@@ -164,7 +170,11 @@ export class PostRepository {
     return result;
   }
 
-  async explore(userId: string, page: number, pageSize: number) {
+  async explore(
+    userId: string,
+    page: number,
+    pageSize: number
+  ): Promise<ExplorePost[]> {
     const skip = (page - 1) * pageSize;
 
     return FollowModel.aggregate([
@@ -199,7 +209,44 @@ export class PostRepository {
           as: "profilePhoto",
         },
       },
-
+      {
+        $lookup: {
+          from: "likes",
+          let: { postId: "$posts._id", userId: new Types.ObjectId(userId) },
+          pipeline: [
+            {
+              $match: {
+                $expr: {
+                  $and: [
+                    { $eq: ["$post_id", "$$postId"] },
+                    { $eq: ["$user_id", "$$userId"] },
+                  ],
+                },
+              },
+            },
+          ],
+          as: "userLike",
+        },
+      },
+      {
+        $lookup: {
+          from: "saves",
+          let: { postId: "$posts._id", userId: new Types.ObjectId(userId) },
+          pipeline: [
+            {
+              $match: {
+                $expr: {
+                  $and: [
+                    { $eq: ["$post_id", "$$postId"] },
+                    { $eq: ["$user_id", "$$userId"] },
+                  ],
+                },
+              },
+            },
+          ],
+          as: "userSave",
+        },
+      },
       { $sort: { "posts.createdAt": -1 } },
 
       { $skip: skip },
@@ -212,9 +259,14 @@ export class PostRepository {
           urls: "$posts.urls",
           like_count: "$posts.like_count",
           save_count: "$posts.save_count",
-          comment_count: "$posts.comment_count",
+          comment_count: { $ifNull: ["$posts.comment_count", 0] },
           createdAt: "$posts.createdAt",
-
+          user_id: "$posts.user_id",
+          caption: "$posts.caption",
+          hashtag_array: "$posts.hashtag_array",
+          photo_length: "$posts.photo_length",
+          mentions: "$posts.mentions",
+          isClose: "$posts.isClose",
           userId: "$user._id",
           firstname: "$user.firstname",
           lastname: "$user.lastname",
@@ -226,6 +278,9 @@ export class PostRepository {
               else: null,
             },
           },
+          
+          isLiked: { $gt: [{ $size: "$userLike" }, 0] },
+          isSaved: { $gt: [{ $size: "$userSave" }, 0] },
         },
       },
     ]);

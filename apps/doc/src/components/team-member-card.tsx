@@ -276,6 +276,9 @@ export function TeamGrid() {
         "C++",
         "SQLServer",
       ],
+      linkedin: "https://www.linkedin.com/in/mohammad-asghari-4b3091200/",
+      email: "mohammad.asghari1955@gmail.com",
+      resumePdf: "/MohammadAsghari.pdf",
     },
     {
       name: "Nima Elahi Manesh",
