@@ -12,7 +12,7 @@
     COPY apps/*/package.json apps/*/
     
     # Install all deps (cached if lockfile unchanged)
-    RUN pnpm install --frozen-lockfile
+    RUN pnpm install --no-frozen-lockfile
     
     # Copy full source code
     COPY . .
