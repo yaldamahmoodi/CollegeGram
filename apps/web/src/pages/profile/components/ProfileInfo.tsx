@@ -93,7 +93,7 @@ const ProfileInfo = (props: ProfileInfoProps) => {
   };
 
   return (
-    <div className="profile-info-container w-full flex flex-col lg:flex-row lg:items-start gap-6 py-4  flex flex-justify">
+    <div className="profile-info-container w-full flex flex-col lg:flex-row lg:items-start gap-6 py-4 flex-justify">
       <div className="flex justify-center lg:justify-start">
         <div className="bg-white rounded-full bg-cover object-cover ">
           <img
