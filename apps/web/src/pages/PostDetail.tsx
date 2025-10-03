@@ -10,7 +10,8 @@ import savedIcon from "@assets/icons/saved.svg";
 import likedIcon from "@assets/icons/liked.svg";
 import Button from "@/components/Button";
 import { useParams } from "react-router-dom";
-import { useQueryClient } from "@tanstack/react-query";
+import { useUserInfo } from "@/hooks/user.hook";
+import type { MentionsType } from "@/types/post";
 import type { PostActionPayloadType } from "@app-types/post";
 import { formatRelativeTime } from "@/utils/formatRelativeTime";
 
@@ -30,9 +31,7 @@ const PostDetail = () => {
   const [newComment, setNewComment] = useState("");
   const [replyContent, setReplyContent] = useState("");
   const [replyingTo, setReplyingTo] = useState<string | null>(null);
-
-  const queryClient = useQueryClient();
-  const user = queryClient.getQueryData(["userInfo"]);
+  const { data: currentUser } = useUserInfo();
 
   const { id } = useParams();
   const { data: post } = useGetPostById(id as string | undefined);
@@ -109,7 +108,7 @@ const PostDetail = () => {
             />
             <div>
               <p className="font-semibold text-orange-500">
-                {(user as any)?.username ?? ""}
+                {currentUser?.username ?? ""}
               </p>
             </div>
           </div>
@@ -121,11 +120,11 @@ const PostDetail = () => {
           </p>
 
           <div className="flex flex-wrap gap-2 mb-6 mt-3">
-            {post?.mentions?.map((mention: any, i: number) => (
+            {post?.mentions?.map((mention: MentionsType, i: number) => (
               <span
                 key={i}
                 className="px-2 py-1 text-xs md:text-sm text-white rounded-md cursor-pointer bg-orange-500 hover:bg-orange-600">
-                @{mention?.username ?? mention}
+                @{mention.username}
               </span>
             ))}
           </div>

@@ -7,8 +7,10 @@ import { useUserInfo } from "@hooks/user.hook.ts";
 import { useAuth } from "@hooks/useAuth";
 import { useUnreadCount } from "@/hooks/notification.hook";
 
-export const SidebarPopUp = ({ item, isActive }: { item: any; isActive: (link: string) => boolean }) => <div className=" absolute bottom-full left-0 mb-2 z-50 min-w-48 rounded-2xl border border-gray-200 bg-white shadow-xl p-2 flex flex-col gap-1">
-{item.children.map((child: any) => (
+type SidebarItem = { id: string; link: string; icon: string; text: string };
+type SidebarGroup = { id: string; children: SidebarItem[] };
+export const SidebarPopUp = ({ item, isActive }: { item: SidebarGroup; isActive: (link: string) => boolean }) => <div className=" absolute bottom-full left-0 mb-2 z-50 min-w-48 rounded-2xl border border-gray-200 bg-white shadow-xl p-2 flex flex-col gap-1">
+{item.children.map((child: SidebarItem) => (
   <SidebarItems
     key={child.id}
     isActive={isActive(child.link)}

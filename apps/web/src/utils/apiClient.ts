@@ -21,14 +21,14 @@ export async function apiClient<T>(
     }
 
     return data as T;
-  } catch (err: any) {
+  } catch (err: unknown) {
     if (err instanceof ApiError) {
       toast.error(err.message);
       throw err;
     }
 
     const fallbackError = new ApiError({
-      message: getErrorMessage(undefined, err.message),
+      message: getErrorMessage(undefined, err instanceof Error ? err.message : undefined),
     });
     toast.error(fallbackError.message);
     throw fallbackError;

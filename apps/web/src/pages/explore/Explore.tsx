@@ -16,7 +16,7 @@ function Explore() {
 
     const posts: PostCardType[] = useMemo(
         () =>
-            (data?.data ?? []).map((item: any) => ({
+            (data?.data ?? []).map((item: Record<string, any>) => ({
                 _id: item.post_id,
                 username: `${item.firstname} ${item.lastname}`,
                 followerCount: `${item.following_count ?? 0} نفر دنبال کننده`,

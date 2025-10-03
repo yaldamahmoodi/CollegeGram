@@ -7,6 +7,7 @@ import {
   useBlockList,
   useRemoveUserBlockList,
 } from "@/hooks/user.hook";
+import type { BlockList as BlockListItemType } from "@/types/user";
 
 const BlockedFriends = () => {
   const { data: blockList } = useBlockList();
@@ -17,10 +18,10 @@ const BlockedFriends = () => {
       <NavTabs />
       <div className="1/3">
         {blockList?.length > 0
-          ? blockList?.map((blocked: any) => (
+          ? blockList?.map((blocked: BlockListItemType) => (
               <UserListItem
-                key={blocked.id}
-                user={blocked}
+                key={blocked.friend_info._id}
+                user={blocked.friend_info}
                 actions={[
                   {
                     label: "افزودن به دوستان نزدیک",

@@ -7,6 +7,7 @@ import {
   useCloseFiendList,
   useRemoveCloseFriend,
 } from "@/hooks/user.hook";
+import type { CloseFriend as CloseFriendType } from "@/types/user";
 
 const CloseFriends = () => {
   const { data: closeFriendList } = useCloseFiendList();
@@ -18,7 +19,7 @@ const CloseFriends = () => {
       <NavTabs />
       <div className="1/3">
         {closeFriendList?.length > 0
-          ? closeFriendList?.map((friend: any) => (
+          ? closeFriendList?.map((friend: CloseFriendType) => (
               <UserListItem
                 key={friend.friend_info._id}
                 user={friend.friend_info}

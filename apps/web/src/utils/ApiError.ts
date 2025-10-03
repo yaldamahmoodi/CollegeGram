@@ -2,12 +2,12 @@
 export interface ApiErrorOptions {
   message: string;
   status?: number;
-  details?: any;
+  details?: unknown;
 }
 
 export class ApiError extends Error {
   status?: number;
-  details?: any;
+  details?: unknown;
 
   constructor({ message, status, details }: ApiErrorOptions) {
     super(message || "خطای ناشناخته‌ای رخ داده است.");
