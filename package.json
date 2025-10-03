@@ -4,8 +4,17 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "dev": "pnpm -r dev",
-    "build": "pnpm -r build"
+    "dev": "turbo run dev",
+    "build": "turbo run build",
+    "build:api": "turbo run build --filter=collegegram",
+    "build:web": "turbo run build --filter=project-devsync-rc",
+    "build:doc": "turbo run build --filter=doc",
+    "lint": "turbo run lint",
+    "type-check": "turbo run type-check",
+    "clean": "turbo run clean && rm -rf node_modules/.cache",
+    "docker:build": "docker compose --profile production build --parallel",
+    "docker:up": "docker compose --profile production up -d",
+    "docker:down": "docker compose --profile production down"
   },
   "keywords": [],
   "author": "",

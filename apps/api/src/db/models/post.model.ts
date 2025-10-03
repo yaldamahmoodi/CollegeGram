@@ -13,6 +13,7 @@ export interface Post extends Document {
   user: Partial<IUser>;
   urls: Array<string>;
   caption?: string;
+  comment_count: number;
   photo_length: number;
   like_count: number;
   save_count: number;
@@ -33,6 +34,7 @@ const postSchema: Schema<Post> = new Schema({
   like_count: { type: Number, default: 0 },
   save_count: { type: Number, default: 0 },
   isClose: { type: Boolean, default: false },
+  comment_count: { type: Number, default: 0 },
   isLiked: { type: Boolean, default: false },
   isSaved: { type: Boolean, default: false },
   mentions: {

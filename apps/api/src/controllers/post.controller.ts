@@ -47,6 +47,7 @@ export class PostController {
       caption: post.caption,
       like_count: post.like_count,
       save_count: post.save_count,
+      comment_count: post.comment_count || 0,
       mentions: post.mentions,
       hashtag_array: post.hashtag_array,
       photo_length: post.photo_length,
@@ -86,6 +87,7 @@ export class PostController {
         caption: post.caption,
         like_count: post.like_count,
         save_count: post.save_count,
+        comment_count: post.comment_count || 0,
         mentions: post.mentions,
         hashtag_array: post.hashtag_array,
         photo_length: post.photo_length,
@@ -166,9 +168,16 @@ export class PostController {
       const userId: string = req.user.id;
 
       const output = await this.postService.explore(userId, page, pageSize);
+      const normalized = output.map((post) => ({
+        ...post,
+        urls: post.urls.map(
+          (url: string) =>
+            `${req.protocol}://${req.get("host")}/uploads/posts/${url}`
+        )
+      }));
       return res.status(200).json({
         code: "EXPLORE_SUCCESSFULY",
-        data: output,
+        data: normalized,
       });
     }
   );

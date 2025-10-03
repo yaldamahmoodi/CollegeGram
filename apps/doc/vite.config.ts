@@ -22,7 +22,7 @@ export default defineConfig({
     port: 3002,
     strictPort: true,
     allowedHosts: [
-      "web",
+      "doc",
       "188.121.102.156",
       "https://devsyncc.ir",
       "devsyncc.ir",

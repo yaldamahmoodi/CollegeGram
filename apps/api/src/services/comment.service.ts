@@ -22,12 +22,17 @@ export class CommentService {
             if (!parent) throw new NotFoundError("NOT_FOUND");
         }
 
-        return this.commentRepository.createComment(
+        const comment = await this.commentRepository.createComment(
             userId,
             commentData.post_id,
             commentData.content,
             commentData.parent_comment || null
         );
+
+        // Increment comment_count in the post
+        await this.postRepository.incrementCommentCount(commentData.post_id);
+
+        return comment;
     }
 
     async getCommentsByPost(postId: string, page: number, pageSize: number, userId?: string) {

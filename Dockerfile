@@ -1,54 +1,56 @@
-# Multi-stage Dockerfile for monorepo
-FROM node:24-slim AS base
-
-# Set working directory
-WORKDIR /app
-
-# Install pnpm globally
-RUN npm install -g pnpm
-
-# Copy workspace configuration files
-<<<<<<< HEAD
-COPY package.json pnpm-workspace.yaml ./
-COPY pnpm-lock.yaml* ./
-
-# Copy all package.json files for dependency resolution
-COPY apps/api/package.json ./apps/api/
-COPY apps/web/package.json ./apps/web/
-COPY apps/doc/package.json ./apps/doc/
-
-# Install all dependencies
-RUN pnpm install
-
-# Copy all source code
-COPY apps/ ./apps/
-=======
-COPY package.json pnpm-workspace.yaml pnpm-lock.yaml* ./
-
-# Copy all source code (including package.json files)
-COPY apps/ ./apps/
-
-# Install all dependencies
-RUN pnpm install 
->>>>>>> prod
-
-# Build all applications
-RUN pnpm run build
-
-# API stage
-FROM base AS api
-WORKDIR /app/apps/api
-EXPOSE 3001
-CMD ["pnpm", "start"]
-
-# Web stage
-FROM base AS web
-WORKDIR /app/apps/web
-EXPOSE 3000
-CMD ["pnpm", "start"]
-
-# Doc stage
-FROM base AS doc
-WORKDIR /app/apps/doc
-EXPOSE 3002
-CMD ["pnpm", "start"]
+# -----------------------------
+# Base build stage
+# -----------------------------
+    FROM node:24-slim AS base
+    WORKDIR /app
+    
+    # Copy workspace configuration first (for better caching)
+    COPY package.json pnpm-workspace.yaml pnpm-lock.yaml* turbo.json ./
+    
+    # Install pnpm
+    RUN corepack enable && corepack prepare pnpm@10.14.0 --activate
+    RUN npm i -g turbo
+    
+    # Copy package.json files first (for dependency caching)
+    COPY apps/api/package.json ./apps/api/
+    COPY apps/web/package.json ./apps/web/
+    COPY apps/doc/package.json ./apps/doc/
+    
+    # Install dependencies
+    RUN pnpm install --reporter=append-only
+    
+    # Copy source code
+    COPY apps/ ./apps/
+    
+    # Build all apps
+    RUN pnpm turbo run build
+    
+    # Verify builds
+    RUN ls -la /app/apps/api/dist/ && ls -la /app/apps/web/dist/ && ls -la /app/apps/doc/dist/
+    
+    
+    # -----------------------------
+    # API final image
+    # -----------------------------
+    FROM base AS api
+    WORKDIR /app/apps/api
+    EXPOSE 3001
+    CMD ["pnpm", "run", "start"]
+    
+    
+    # -----------------------------
+    # Web final image  
+    # -----------------------------
+    FROM base AS web
+    WORKDIR /app/apps/web
+    EXPOSE 3000
+    CMD ["pnpm", "turbo", "run", "start","--filter=web"]
+    
+    
+    # -----------------------------
+    # Doc final image
+    # -----------------------------
+    FROM base AS doc
+    WORKDIR /app/apps/doc
+    EXPOSE 3002
+    CMD ["pnpm", "turbo", "run", "start","--filter=doc"]
