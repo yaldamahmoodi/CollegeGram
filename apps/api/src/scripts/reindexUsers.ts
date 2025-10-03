@@ -3,15 +3,17 @@ import {SearchIndexManager} from "../services/SearchIndexManager.service.ts";
 import {ElasticClient} from "../services/elasticClient.service.ts";
 import {UserModel} from "../db/models/user.model.ts";
 import {UserSearchService} from "../services/UserSearchService.ts";
+import { BlockRepository } from "../repositories/block.repository.ts";
 
 
 async function reindexUsers() {
     const elasticClient = new ElasticClient();
+    const blockRepository = new BlockRepository();
     // Ensure user index exists
     const indexManager = new SearchIndexManager(elasticClient);
     await indexManager.createUsersIndex();
 
-    const userSearch = new UserSearchService(elasticClient);
+    const userSearch = new UserSearchService(elasticClient, blockRepository);
 
     // -----------------------------
     // Reindex Users

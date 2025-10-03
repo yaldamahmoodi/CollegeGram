@@ -34,9 +34,11 @@ export class ServiceHealthService {
   async checkSwagger(): Promise<ServiceHealthStatus> {
     try {
       // Try the actual Swagger endpoint first
+      const ac = new AbortController();
+      setTimeout(() => ac.abort(), 3000);
       const response = await fetch('http://localhost:3001/api/docs', {
         method: 'GET',
-        timeout: 3000
+        signal: ac.signal
       });
       
       if (response.ok) {
@@ -83,9 +85,11 @@ export class ServiceHealthService {
     
     for (const port of frontendPorts) {
       try {
+        const ac = new AbortController();
+        setTimeout(() => ac.abort(), 3000);
         const response = await fetch(`http://localhost:${port}`, {
           method: 'GET',
-          timeout: 3000
+          signal: ac.signal
         });
         
         if (response.ok) {

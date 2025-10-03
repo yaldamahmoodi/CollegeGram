@@ -21,6 +21,8 @@ export interface Post extends Document {
   isLiked?: boolean;
   isSaved?: boolean;
   isClose?: boolean;
+  createdAt?: Date;
+  updatedAt?: Date;
 }
 
 const postSchema: Schema<Post> = new Schema({
@@ -104,7 +106,8 @@ export const selectPostZodSchema = z.object({
     .optional()
     .default([]),
   hashtag_array: z.array(z.string()).optional().default([]),
-  createdAt: z.date(),
+  createdAt: z.date().optional(),
+  updatedAt: z.date().optional(),
 });
 
 export type InsertPostDto = z.infer<typeof insertPostSchema>;

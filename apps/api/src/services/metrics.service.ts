@@ -42,7 +42,7 @@ interface SystemMetrics {
     totalIn: number;
     totalOut: number;
     connections: number;
-    interfaces: any[];
+    interfaces: Record<string, any[] | undefined>;
   };
   system: {
     platform: string;
@@ -91,7 +91,7 @@ class MetricsService {
 
       // Override res.end to capture response metrics
       const originalEnd = res.end;
-      res.end = function(chunk?: any, encoding?: any) {
+      res.end = function(this: Response, chunk?: any, encoding?: any, cb?: any) {
         const responseTime = Date.now() - startTime;
         const statusCode = res.statusCode.toString();
 
@@ -150,7 +150,16 @@ class MetricsService {
         });
 
         // Call original end method
-        originalEnd.call(this, chunk, encoding);
+        if (arguments.length === 0) {
+          return originalEnd.call(this);
+        }
+        if (arguments.length === 1) {
+          return originalEnd.call(this, chunk as any);
+        }
+        if (arguments.length === 2) {
+          return originalEnd.call(this, chunk as any, encoding as any);
+        }
+        return originalEnd.call(this, chunk as any, encoding as any, cb as any);
       };
 
       next();

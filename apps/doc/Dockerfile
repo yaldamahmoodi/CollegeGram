@@ -1,4 +1,4 @@
-FROM node:24-alpine
+FROM node:24-slim
 
 WORKDIR /app
 
@@ -15,4 +15,4 @@ RUN  pnpm run build
 
 EXPOSE 3002
 # Run Turbo preview for ERP app
-CMD ["pnpm","run","preview"]
+CMD ["pnpm","start"]
