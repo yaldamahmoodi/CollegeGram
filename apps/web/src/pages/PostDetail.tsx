@@ -93,12 +93,50 @@ const PostDetail = () => {
     return (
         <div className="max-w-5xl mx-auto p-2 sm:p-4">
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6">
+                <div className=" right-2 flex items-center gap-3  p-1 md:hidden">
+                    <img
+                        src={noAvatarIcon}
+                        alt="user"
+                        className="w-10 h-10 rounded-full object-cover"
+                    />
+                    <p className="font-semibold text-orange-500 truncate">
+                        {user?.data?.username}
+                    </p>
+                </div>
+
                 <div className="w-full md:h-[500px] h-[300px]">
                     <ImageSlider images={post?.urls || []} />
                 </div>
 
-                <div className="flex flex-col space-y-4">
-                    <div className="flex items-center gap-3">
+                <div className="flex justify-end items-center gap-4 md:hidden px-2 mt-2 sm:mt-10">
+                    <Button
+                        type="button"
+                        label={comments?.length.toString() || "0"}
+                        onClick={handleAddComment}
+                        icon={<img src={commentIcon} />}
+                        className="flex flex-col items-center bg-transparent hover:bg-transparent !text-[#EA5A69]"
+                        style={{ minWidth: "auto", paddingLeft: 0, paddingRight: 0 }}
+                    />
+                    <Button
+                        type="button"
+                        onClick={handleLikeToggle}
+                        label={post?.like_count.toString() || "0"}
+                        icon={<img src={post?.isLiked ? likedIcon : unLikeIcon} />}
+                        className="flex flex-col items-center bg-transparent hover:bg-transparent !text-[#EA5A69]"
+                        style={{ minWidth: "auto", paddingLeft: 0, paddingRight: 0 }}
+                    />
+                    <Button
+                        type="button"
+                        onClick={handleSaveToggle}
+                        icon={<img src={post?.isSaved ? savedIcon : unSaveIcon} />}
+                        label={post?.save_count.toString() || "0"}
+                        className="flex flex-col items-center bg-transparent hover:bg-transparent !text-[#EA5A69]"
+                        style={{ minWidth: "auto", paddingLeft: 0, paddingRight: 0 }}
+                    />
+                </div>
+
+                <div className="flex flex-col space-y-4 ">
+                    <div className="flex items-center gap-3 hidden md:flex">
                         <img
                             src={noAvatarIcon}
                             alt="user"
@@ -129,7 +167,7 @@ const PostDetail = () => {
                         ))}
                     </div>
 
-                    <div className="flex flex-wrap justify-start md:justify-end items-center gap-4 md:gap-6">
+                    <div className="flex flex-wrap justify-start md:justify-end items-center gap-4 md:gap-6 hidden md:flex">
                         <Button
                             type="button"
                             label={comments?.length.toString() || "0"}
