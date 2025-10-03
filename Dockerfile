@@ -9,6 +9,7 @@
     
     # Install pnpm
     RUN corepack enable && corepack prepare pnpm@10.14.0 --activate
+    RUN npm i -g turbo
     
     # Copy package.json files first (for dependency caching)
     COPY apps/api/package.json ./apps/api/
@@ -34,7 +35,7 @@
     FROM base AS api
     WORKDIR /app/apps/api
     EXPOSE 3001
-    CMD ["pnpm", "start"]
+    CMD ["pnpm", "run", "start"]
     
     
     # -----------------------------
@@ -43,7 +44,7 @@
     FROM base AS web
     WORKDIR /app/apps/web
     EXPOSE 3000
-    CMD ["pnpm", "start"]
+    CMD ["pnpm", "turbo", "run", "start","--filter=web"]
     
     
     # -----------------------------
@@ -52,4 +53,4 @@
     FROM base AS doc
     WORKDIR /app/apps/doc
     EXPOSE 3002
-    CMD ["pnpm", "start"]
+    CMD ["pnpm", "turbo", "run", "start","--filter=doc"]
