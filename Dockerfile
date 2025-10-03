@@ -3,22 +3,21 @@
 # -----------------------------
     FROM node:24-slim AS base
     WORKDIR /app
-    
-    # Install pnpm globally
     RUN npm install -g pnpm
     
-    # Copy dependency files (for caching)
+    # Copy only manifests for caching
     COPY package.json pnpm-workspace.yaml pnpm-lock.yaml* ./
     COPY apps/*/package.json apps/*/
     
-    # Install all deps (cached if lockfile unchanged)
-    RUN pnpm install --no-frozen-lockfile
+    # Install all deps
+    RUN pnpm install --frozen-lockfile
     
-    # Copy full source code
+    # Copy everything else (excluding node_modules/.turbo via .dockerignore)
     COPY . .
     
-    # Build all apps (Turbo or pnpm build)
+    # Build all apps
     RUN pnpm run build
+    
     
     
     # -----------------------------
