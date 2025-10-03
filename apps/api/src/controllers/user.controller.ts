@@ -211,10 +211,12 @@ export class UserController {
         pageSize
       );
 
+      
+
       const transformedData = savedPosts.data.map((item) => {
         return {
           _id: item._id,
-          post_id: item.postId,
+          postId: item.post._id,
           postOwner: item.postOwner.username,
           createdAt: item.createdAt,
           updatedAt: item.updatedAt,
