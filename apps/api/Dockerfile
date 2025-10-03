@@ -16,6 +16,9 @@ RUN pnpm install --frozen-lockfile
 # Copy the rest of your app
 COPY . .
 
+# Build the application
+RUN pnpm run build
+
 # Expose the port your app runs on
 EXPOSE 3001
 
