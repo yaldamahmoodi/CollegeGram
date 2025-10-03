@@ -39,9 +39,11 @@ const MentionInput = ({
     setInputValue(value);
 
     const mentionPart = value.split("@").pop()?.trim() || "";
-    if (mentionPart.length > 0) {
+    const endsWithAt = value.endsWith("@");
+
+    if (endsWithAt || mentionPart.length > 0) {
       setIsMentioning(true);
-      setMentionQuery(mentionPart);
+      setMentionQuery(mentionPart.length > 0 ? mentionPart : "");
     } else {
       setIsMentioning(false);
       setMentionQuery("");
@@ -67,16 +69,20 @@ const MentionInput = ({
         value={inputValue}
         onChange={handleChange}
       />
-      {isMentioning && suggestedUsers.length > 0 && (
+      {isMentioning && (
         <ul className="absolute bg-white border rounded-md shadow-lg w-full mt-1 max-h-40 overflow-auto z-10">
-          {suggestedUsers.map((user) => (
-            <li
-              key={user.user_id}
-              onClick={() => handleUserSelect(user)}
-              className="p-2 cursor-pointer hover:bg-gray-200">
-              @{user.username}
-            </li>
-          ))}
+          {suggestedUsers.length > 0 ? (
+            suggestedUsers.map((user) => (
+              <li
+                key={user.user_id}
+                onClick={() => handleUserSelect(user)}
+                className="p-2 cursor-pointer hover:bg-gray-200">
+                @{user.username}
+              </li>
+            ))
+          ) : (
+            <li className="p-2 text-sm text-gray-500 select-none">نام کاربری را تایپ کنید…</li>
+          )}
         </ul>
       )}
       <div className="flex flex-wrap gap-2 mb-4">

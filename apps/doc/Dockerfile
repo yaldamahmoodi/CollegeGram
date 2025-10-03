@@ -1,28 +1,18 @@
-# Build stage
-FROM node:18-alpine AS builder
+FROM node:24-alpine
 
 WORKDIR /app
 
-# Copy package files
-COPY package*.json ./
-RUN npm ci
-
-# Copy source code
+# Copy monorepo config files
 COPY . .
 
-# Build the application
-RUN npm run build
+# Install pnpm and dependencies
+RUN npm install -g pnpm
+RUN pnpm install
 
-# Production stage
-FROM nginx:alpine
 
-# Copy built files to nginx
-COPY --from=builder /app/dist /usr/share/nginx/html
+# Build only the ERP app using Turbo
+RUN  pnpm run build
 
-# Copy nginx configuration
-COPY nginx.conf /etc/nginx/conf.d/default.conf
-
-# Expose port
-EXPOSE 80
-
-CMD ["nginx", "-g", "daemon off;"]
+EXPOSE 3002
+# Run Turbo preview for ERP app
+CMD ["pnpm","run","preview"]
