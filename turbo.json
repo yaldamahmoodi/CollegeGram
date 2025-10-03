@@ -3,14 +3,26 @@
   "tasks": {
     "build": {
       "dependsOn": ["^build"],
-      "outputs": ["dist/**"]
+      "outputs": ["dist/**", "build/**"],
+      "cache": true,
+      "inputs": ["src/**/*", "package.json", "tsconfig.json", "vite.config.ts", "tailwind.config.js"]
     },
     "start": {
       "dependsOn": ["^build"],
       "cache": false
     },
     "dev": {
-      "cache": false
+      "cache": false,
+      "persistent": true
+    },
+    "lint": {
+      "outputs": [],
+      "cache": true
+    },
+    "type-check": {
+      "outputs": [],
+      "cache": true
     }
-  }
+  },
+  "globalDependencies": ["package.json", "pnpm-lock.yaml", "turbo.json"]
 }
