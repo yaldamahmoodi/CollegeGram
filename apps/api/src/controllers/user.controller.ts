@@ -275,18 +275,19 @@ export class UserController {
   }
 
   async getOtherProfile(
-    req: Authenticate & Request<{ username: string }>,
+    req: Authenticate,
     res: Response,
     next: NextFunction
   ) {
     try {
       const username = req.params.username;
       const loggedInUserId = req.user.id;
-
+      
       const userDetails = await this.userService.getOtherProfile(
         loggedInUserId,
         username
       );
+      console.log(userDetails)
 
       const profilePhotoUrl = userDetails.ProfilePhoto?.path
         ? `${req.protocol}://${req.get("host")}/uploads/profiles/${
@@ -307,7 +308,7 @@ export class UserController {
           following_count: userDetails.following_count ?? 0,
           post_count: userDetails.post_count ?? 0,
           profilePhotoUrl: profilePhotoUrl || null,
-          followStatus: userDetails.followStatus.status,
+          followStatus: userDetails.followStatus?.status ?? null,
           isBlocked: userDetails.isBlocked ?? false,
           hasBlocked: userDetails.hasBlocked ?? false,
           isCloseFriend: userDetails.isCloseFriend ?? false,

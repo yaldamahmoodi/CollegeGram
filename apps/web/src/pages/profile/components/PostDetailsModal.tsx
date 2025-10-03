@@ -7,7 +7,7 @@ import unSaveIcon from "@assets/icons/savePost.svg";
 import comment from "@assets/icons/comment.svg";
 import savedIcon from "@assets/icons/saved.svg";
 import likedIcon from "@assets/icons/liked.svg";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { Expand, XCircle } from "lucide-react";
 import profilePhoto from "@assets/images/username.png";
 import { useUserInfo } from "@hooks/user.hook.ts";
@@ -29,7 +29,7 @@ interface PostDetailsModalProps {
 const Caption = ({ text }: { text: string }) => {
   const parts = useMemo(
     () =>
-      text.split(/(\s+)/).map((p, i) =>
+      text?.split(/(\s+)/).map((p, i) =>
         /^#[^\s#]+$/.test(p) ? (
           <strong key={i} className="font-bold text-black">
             {p}
@@ -48,17 +48,17 @@ const Caption = ({ text }: { text: string }) => {
 };
 
 // تبدیل mentions به string[]
-const Mentions = ({ items }: { items?: string[] }) => {
+const Mentions = ({ items }: { items?: {username: string; user_id: string}[] }) => {
   if (!items || items.length === 0) return null;
   return (
     <div className="flex flex-wrap gap-2 justify-end">
       {items.map((m, i) => (
-        <span
+        <Link to={`/user/${m.username}`}
           key={`${m}-${i}`}
           className="px-2 py-1 rounded-full bg-orange-500 text-white text-xs leading-none"
           dir="rtl">
-          {m}
-        </span>
+          @{m.username}
+        </Link>
       ))}
     </div>
   );

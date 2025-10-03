@@ -2,11 +2,11 @@ import {Router} from "express";
 import {authMiddleware} from "../../middlewares/auth.middleware.ts";
 import {uploadProfilePhotoMiddleware} from "../../middlewares/uploadProfilePhoto.middleware.ts";
 import {errorHandler} from "../../middlewares/error.middleware.ts";
-import {bodyParser} from "../../middlewares/parsers.middleware.ts";
+import {bodyParser, paramParser} from "../../middlewares/parsers.middleware.ts";
 import {updateProfileUserSchema} from "../../db/models/user.model.ts";
 import {initiator} from "../../initiator.ts";
 import {uploadPostPhotosMiddleware} from "../../middlewares/uploadPost.middleware.ts";
-import {followSchema, acceptFollowRequestSchema, rejectFollowRequestSchema, blockUserSchema} from "../../dtos/user.dto.ts";
+import {followSchema, acceptFollowRequestSchema, rejectFollowRequestSchema, blockUserSchema, usernameSchema} from "../../dtos/user.dto.ts";
 
 const router = Router();
 
@@ -98,6 +98,7 @@ router.get(
 
 router.get(
     "/:username",
+    paramParser(usernameSchema),
     userController.getOtherProfile
 );
 

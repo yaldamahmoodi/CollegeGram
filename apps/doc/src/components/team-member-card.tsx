@@ -1,109 +1,148 @@
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
-import { Badge } from "@/components/ui/badge"
-import { Button } from "@/components/ui/button"
-import { 
-  DownloadIcon, 
-  MailIcon, 
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
+import {
+  DownloadIcon,
+  MailIcon,
   LinkedinIcon,
   GithubIcon,
   MapPinIcon,
-  BriefcaseIcon
-} from "lucide-react"
+  BriefcaseIcon,
+} from "lucide-react";
+import { useState } from "react";
 
 interface TeamMember {
-  name: string
-  role: string
-  department: string
-  location: string
-  experience: string
-  skills: string[]
-  email: string
-  linkedin?: string
-  github?: string
-  resumePdf: string
-  avatar?: string
+  name: string;
+  role: string;
+  department: string;
+  location: string;
+  experience: string;
+  skills: string[];
+  email?: string;
+  linkedin?: string;
+  github?: string;
+  resumePdf?: string;
+  avatar?: string;
 }
 
 interface TeamMemberCardProps {
-  member: TeamMember
+  member: TeamMember;
 }
 
 export function TeamMemberCard({ member }: TeamMemberCardProps) {
+  const [showAllSkills, setShowAllSkills] = useState(false);
+  const hasResume = !!member.resumePdf && member.resumePdf !== "#";
+  const hasEmail = !!member.email && member.email !== "#";
+  const hasLinkedin = !!member.linkedin && member.linkedin !== "#";
+  const hasGithub = !!member.github && member.github !== "#";
   const handleDownload = () => {
-    const link = document.createElement('a')
-    link.href = member.resumePdf
-    link.download = `${member.name.replace(' ', '_')}_Resume.pdf`
-    document.body.appendChild(link)
-    link.click()
-    document.body.removeChild(link)
-  }
+    if (!hasResume) return;
+    const link = document.createElement("a");
+    link.href = member.resumePdf as string;
+    link.download = `${member.name.replace(" ", "_")}_Resume.pdf`;
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+  };
 
   return (
     <Card className="hover:shadow-lg transition-shadow duration-200 group">
       <CardHeader className="pb-4">
         <div className="flex items-start justify-between">
           <div className="flex items-center gap-3">
-            <div className="w-12 h-12 rounded-full bg-gradient-to-br from-blue-500 to-purple-600 flex items-center justify-center text-white font-semibold text-lg">
-              {member.name.split(' ').map(n => n[0]).join('')}
-            </div>
+            {member.avatar ? (
+              <img
+                src={`${member.avatar}`}
+                alt={member.name}
+                className="w-12 h-12 rounded-full object-cover"
+              />
+            ) : (
+              <div className="w-12 h-12 rounded-full bg-gradient-to-br from-blue-500 to-purple-600 flex items-center justify-center text-white font-semibold text-lg">
+                {member.name
+                  .split(" ")
+                  .map((n) => n[0])
+                  .join("")}
+              </div>
+            )}
             <div>
               <CardTitle className="text-lg">{member.name}</CardTitle>
-              <CardDescription className="text-sm">{member.role}</CardDescription>
+              <CardDescription className="text-sm">
+                {member.role}
+              </CardDescription>
             </div>
           </div>
-          <Button 
-            size="sm" 
-            variant="outline" 
-            onClick={handleDownload}
-            className="opacity-0 group-hover:opacity-100 transition-opacity"
-          >
-            <DownloadIcon className="w-4 h-4 mr-2" />
-            Resume
-          </Button>
+          {hasResume && (
+            <Button
+              size="sm"
+              variant="outline"
+              onClick={handleDownload}
+              className="opacity-0 group-hover:opacity-100 transition-opacity"
+            >
+              <DownloadIcon className="w-4 h-4 mr-2" />
+              Resume
+            </Button>
+          )}
         </div>
       </CardHeader>
-      
+
       <CardContent className="space-y-4">
         <div className="flex items-center gap-2 text-sm text-muted-foreground">
           <BriefcaseIcon className="w-4 h-4" />
           <span>{member.department}</span>
         </div>
-        
+
         <div className="flex items-center gap-2 text-sm text-muted-foreground">
           <MapPinIcon className="w-4 h-4" />
           <span>{member.location}</span>
         </div>
-        
+
         <div className="text-sm text-muted-foreground">
           <span className="font-medium">Experience:</span> {member.experience}
         </div>
-        
+
         <div>
           <h4 className="text-sm font-medium mb-2">Key Skills</h4>
           <div className="flex flex-wrap gap-1">
-            {member.skills.slice(0, 4).map((skill) => (
-              <Badge key={skill} variant="secondary" className="text-xs">
-                {skill}
-              </Badge>
-            ))}
+            {(showAllSkills ? member.skills : member.skills.slice(0, 4)).map(
+              (skill) => (
+                <Badge key={skill} variant="secondary" className="text-xs">
+                  {skill}
+                </Badge>
+              )
+            )}
             {member.skills.length > 4 && (
-              <Badge variant="outline" className="text-xs">
-                +{member.skills.length - 4} more
-              </Badge>
+              <Button
+                variant="ghost"
+                size="sm"
+                className="h-6 px-2 text-xs"
+                onClick={() => setShowAllSkills((v) => !v)}
+              >
+                {showAllSkills
+                  ? "Show less"
+                  : `+${member.skills.length - 4} more`}
+              </Button>
             )}
           </div>
         </div>
-        
+
         <div className="flex items-center gap-3 pt-2 border-t">
-          <a 
-            href={`mailto:${member.email}`}
-            className="text-muted-foreground hover:text-primary transition-colors"
-            title="Send email"
-          >
-            <MailIcon className="w-4 h-4" />
-          </a>
-          {member.linkedin && (
-            <a 
+          {hasEmail && (
+            <a
+              href={`mailto:${member.email}`}
+              className="text-muted-foreground hover:text-primary transition-colors"
+              title="Send email"
+            >
+              <MailIcon className="w-4 h-4" />
+            </a>
+          )}
+          {hasLinkedin && (
+            <a
               href={member.linkedin}
               target="_blank"
               rel="noopener noreferrer"
@@ -113,8 +152,8 @@ export function TeamMemberCard({ member }: TeamMemberCardProps) {
               <LinkedinIcon className="w-4 h-4" />
             </a>
           )}
-          {member.github && (
-            <a 
+          {hasGithub && (
+            <a
               href={member.github}
               target="_blank"
               rel="noopener noreferrer"
@@ -127,7 +166,7 @@ export function TeamMemberCard({ member }: TeamMemberCardProps) {
         </div>
       </CardContent>
     </Card>
-  )
+  );
 }
 
 export function TeamGrid() {
@@ -138,71 +177,151 @@ export function TeamGrid() {
       department: "Engineering",
       location: "Tehran, Iran",
       experience: "5+ years",
-      skills: ["React", "Node.js", "TypeScript", "MongoDB", "Docker", "AWS", "GraphQL", "Python"],
-      email: "amir@devsync.com",
+      avatar: "/AmirSamimi.jpg",
+      skills: [
+        // Core & Backend
+        "TypeScript",
+        "JavaScript",
+        "FP-TS ( functional Programing)",
+        "DDD",
+        "TDD",
+        "SOLID",
+        "Node.js",
+        "Express.js",
+        // Frontend
+        "React",
+        "Vue.js",
+        "Nuxt.js",
+        // Databases & ORM
+        "MongoDB",
+        "Mongoose",
+        "PostgreSQL",
+        "Prisma",
+        "Drizzle",
+        // Infra & DevOps
+        "Docker",
+        "CI/CD",
+        // Caching & Search & Realtime
+        "Redis",
+        "Elasticsearch",
+        "Socket.io",
+        // Tooling & Libs
+        "ZOD",
+        "Axios",
+        "Tanstack Query",
+        "Tanstack Router",
+        "Jest",
+        "Vitest",
+        // Styling & UI
+        "Tailwind CSS",
+        "MUI",
+        "StyledComponents",
+        "CSS Modules",
+        "Sass/Less",
+        // State/Forms
+        "Redux JS",
+        "Zustand",
+        "Formik",
+        "YUP",
+        "React Hook Form",
+        // PM & Collab
+        "Git",
+        "GitHub",
+        "Hamgit",
+        "Notion",
+        "Jira",
+        "Github Workflows",
+        // Misc
+        "Figma",
+        "Chart.js",
+        "Python",
+      ],
+      email: "amirnsamimi@gmail.com",
       linkedin: "https://linkedin.com/in/amirnsamimi",
       github: "https://github.com/amirnsamimi",
-      resumePdf: "/AmirSamimi.pdf"
+      resumePdf: "/AmirSamimi.pdf",
     },
     {
-      name: "Sarah Johnson",
-      role: "Frontend Developer",
+      name: "Yalda Mahmoodi",
+      role: "Backend Engineer",
       department: "Engineering",
-      location: "San Francisco, CA",
-      experience: "4+ years",
-      skills: ["React", "Vue.js", "TypeScript", "Tailwind CSS", "Figma", "Jest", "Webpack"],
-      email: "sarah@devsync.com",
-      linkedin: "https://linkedin.com/in/sarahjohnson",
-      github: "https://github.com/sarahjohnson",
-      resumePdf: "/AmirSamimi.pdf"
+      location: "Tehran, Iran",
+      experience: "3+ years",
+      skills: [
+        "php",
+        "TypeScript",
+        "JavaScript",
+        "Node.js",
+        "MongoDB",
+        "PostgreSQL",
+        "Redis",
+      ],
     },
     {
-      name: "Michael Chen",
+      name: "Mohammad Asghari",
       role: "Backend Developer",
       department: "Engineering",
-      location: "New York, NY",
+      location: "Tehran, Iran",
+      experience: "Junior Developer",
+      skills: [
+        "TypeScript",
+        "JavaScript",
+        "Node.js",
+        "MongoDB",
+        "PostgreSQL",
+        "Redis",
+        "Docker",
+        "Socket.io",
+        "Elasticsearch",
+        "C++",
+        "SQLServer",
+      ],
+    },
+    {
+      name: "Nima Elahi Manesh",
+      role: "Backend Developer",
+      department: "Engineering",
+      location: "Tehran, Iran",
+      experience: "Junior Developer",
+      skills: ["TypeScript", "JavaScript", "Node.js", "MongoDB"],
+    },
+    {
+      name: "Sepideh Shabrang",
+      role: "Frontend Engineer",
+      department: "Engineering",
+      location: "Tehran, Iran",
       experience: "6+ years",
-      skills: ["Node.js", "Python", "PostgreSQL", "Redis", "Kubernetes", "Microservices", "Go"],
-      email: "michael@devsync.com",
-      linkedin: "https://linkedin.com/in/michaelchen",
-      github: "https://github.com/michaelchen",
-      resumePdf: "/AmirSamimi.pdf"
+      skills: [
+        "React",
+        "TypeScript",
+        "Tailwind CSS",
+        "Figma",
+        "JavaScript",
+        "HTML",
+        "CSS",
+      ],
     },
     {
-      name: "Emily Rodriguez",
-      role: "DevOps Engineer",
-      department: "Infrastructure",
-      location: "Austin, TX",
-      experience: "5+ years",
-      skills: ["AWS", "Docker", "Kubernetes", "Terraform", "Jenkins", "Linux", "Monitoring"],
-      email: "emily@devsync.com",
-      linkedin: "https://linkedin.com/in/emilyrodriguez",
-      github: "https://github.com/emilyrodriguez",
-      resumePdf: "/AmirSamimi.pdf"
+      name: "Abolfazl Abdollahi",
+      role: "Frontend Developer",
+      department: "Engineering",
+      location: "Tehran, Iran",
+      experience: "Junior Developer",
+      skills: [
+        "React",
+        "TypeScript",
+        "Tailwind CSS",
+        "Figma",
+        "JavaScript",
+        "HTML",
+        "CSS",
+      ],
+      email: "aabolfazlabdollahi@gmail.com",
+      linkedin: "https://www.linkedin.com/in/abolfazl-abdollah-i",
+      github: "https://github.com/abolfazlabdollahii/",
+      resumePdf: "/AbolfazlAbdollahi.pdf",
     },
-    {
-      name: "David Kim",
-      role: "UI/UX Designer",
-      department: "Design",
-      location: "Seattle, WA",
-      experience: "4+ years",
-      skills: ["Figma", "Sketch", "Adobe Creative Suite", "Prototyping", "User Research", "Design Systems"],
-      email: "david@devsync.com",
-      linkedin: "https://linkedin.com/in/davidkim",
-      resumePdf: "/AmirSamimi.pdf"
-    },
-    {
-      name: "Lisa Thompson",
-      role: "Product Manager",
-      department: "Product",
-      location: "Boston, MA",
-      experience: "7+ years",
-      skills: ["Product Strategy", "Agile", "User Stories", "Analytics", "A/B Testing", "Stakeholder Management"],
-      email: "lisa@devsync.com",
-      linkedin: "https://linkedin.com/in/lisathompson",
-      resumePdf: "/AmirSamimi.pdf"
-    }
-  ]
+  ];
 
   return (
     <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
@@ -210,5 +329,5 @@ export function TeamGrid() {
         <TeamMemberCard key={member.name} member={member} />
       ))}
     </div>
-  )
+  );
 }

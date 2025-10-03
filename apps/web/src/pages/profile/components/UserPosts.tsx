@@ -19,7 +19,7 @@ const UserPosts = ({ otherUser, onChangeModal }: UserPostsProps) => {
   const { data: posts } = usePosts<postData[]>();
 
   const postList: postData[] | undefined = otherUser ? otherUserPosts : posts;
-
+  console.log(postList);
   const [selectedPost, setSelectedPost] = useState<postData | null>(null);
 
   useEffect(() => {
