@@ -27,6 +27,7 @@ import { ROUTES } from "@/routes/routes";
 import { useAuth } from "@hooks/useAuth";
 import { toast } from "@/utils/toastManager";
 import { getErrorMessageByCode } from "@/utils/errorHandler";
+import type { AxiosError } from "axios";
 
 export const useRegister = () => {
   const navigate = useNavigate();
@@ -37,7 +38,6 @@ export const useRegister = () => {
       navigate(ROUTES.LOGIN);
       console.log("Register Success:", data);
     },
-    onError: (error: unknown) => {
     onError: (error: unknown) => {
       const message = getErrorMessageByCode(error);
       toast.error(message);
@@ -59,7 +59,6 @@ export const useLogin = () => {
       console.log("Login Success:", data);
     },
     onError: (error: unknown) => {
-    onError: (error: unknown) => {
       const message = getErrorMessageByCode(error);
       toast.error(message);
       console.error("Login Error:", error);
@@ -75,7 +74,7 @@ export const useLogout = () => {
     mutationFn: logout,
     onSuccess: () => {
       toast.success("با موفقیت از حساب خارج شدید!");
-      queryClient.removeQueries(["userInfo"]);
+      queryClient.removeQueries({ queryKey: ["userInfo"] });
     },
     onError: (error: unknown) => {
       const message = getErrorMessageByCode(error);
@@ -89,7 +88,6 @@ export const useUserInfo = () => {
     queryKey: ["userInfo"],
     queryFn: getUserInfo,
     select: (response) => response.data,
-    onError: (error: unknown) => {
     onError: (error: unknown) => {
       const message = getErrorMessageByCode(error);
       toast.error(message);
@@ -142,7 +140,6 @@ export const useFollow = () => {
       toast.success("دنبال کردن با موفقیت انجام شد!");
     },
     onError: (error: unknown) => {
-    onError: (error: unknown) => {
       const message = getErrorMessageByCode(error);
       toast.error(message);
     },
@@ -162,14 +159,14 @@ export const useUnFollow = () => {
   });
 };
 
-export const useAcceptFollowRequest = (username) => {
+export const useAcceptFollowRequest = (username: string) => {
   const queryClient = useQueryClient();
 
   return useMutation({
     mutationFn: acceptFollowRequest,
     onSuccess: () => {
       toast.success("درخواست دنبال کردن با موفقیت پذیرفته شد!");
-      queryClient.invalidateQueries(["getOtherUser", username]);
+      queryClient.invalidateQueries({ queryKey: ["getOtherUser", username] });
     },
     onError: (error: unknown) => {
       const message = getErrorMessageByCode(error);
@@ -185,7 +182,7 @@ export const useRejectFollowRequest = (username) => {
     mutationFn: rejectFollowRequest,
     onSuccess: () => {
       toast.success("درخواست دنبال کردن با موفقیت پذیرفته شد!");
-      queryClient.invalidateQueries(["getOtherUser", username]);
+      queryClient.invalidateQueries({ queryKey: ["getOtherUser", username] });
     },
     onError: (error: unknown) => {
       const message = getErrorMessageByCode(error);
@@ -262,7 +259,7 @@ export const useVerifyOTP = () => {
       navigate(ROUTES.RESET_PASSWORD, { 
         state: { 
           email: variables.email, 
-          resetToken: data.resetToken // Use resetToken instead of otp
+          resetToken: data.resetToken
         } 
       });
     },
@@ -286,7 +283,7 @@ export const useResetPassword = () => {
     },
     onError: (error: unknown) => {
       console.error("Reset Password Error - Full error:", error);
-      console.error("Error response:", error.response?.data);
+      console.error("Error response:", (error as AxiosError).response?.data ) ;
       const message = getErrorMessageByCode(error);
       toast.error(message);
     },
