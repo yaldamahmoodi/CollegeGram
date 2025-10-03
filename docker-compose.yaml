@@ -84,7 +84,7 @@ services:
     container_name: monorepo-doc
     restart: unless-stopped
     ports:
-      - "3002:80"
+      - "3002:3002"
     profiles:
       - production
 

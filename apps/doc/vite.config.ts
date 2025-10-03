@@ -17,7 +17,38 @@ export default defineConfig({
       "@": path.resolve(__dirname, "./src"),
     },
   },
-  server: {
+  preview: {
+    host: "0.0.0.0",
     port: 3002,
+    strictPort: true,
+    allowedHosts: [
+      "web",
+      "188.121.102.156",
+      "https://devsyncc.ir",
+      "devsyncc.ir",
+      "https://devsyncc.ir/",
+      "devsync.rahnemacollege.ir",
+      "https://devsync.rahnemacollege.ir",
+    ],
+  },
+  server: {
+    host: "0.0.0.0", // listen on all interfaces
+    port: 3002,
+    allowedHosts: [
+      "web",
+      "188.121.102.156",
+      "https://devsyncc.ir",
+      "devsyncc.ir",
+      "https://devsyncc.ir/",
+      "devsync.rahnemacollege.ir",
+      "https://devsync.rahnemacollege.ir",
+    ],
+    hmr: {
+      host: "188.121.102.156",
+      protocol: "wss", // if using HTTPS in Nginx
+    },
+    fs: {
+      strict: false, // allow monorepo access
+    },
   },
 })
