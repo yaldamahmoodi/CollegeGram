@@ -1,14 +1,4 @@
-import type { UserRepository } from "../repositories/user.repository.ts";
-import type { ProfileRepository } from "../repositories/profile.repository.ts";
-import bcrypt from "bcrypt";
-import type { updateProfileUserSchema } from "../db/models/user.model.ts";
-import { NotFoundError } from "../utils/errors/notFound.errors.ts";
-import type { FollowRepository } from "../repositories/follow.repository.ts";
-import type { BlockRepository } from "../repositories/block.repository.ts";
-import type { CloseFriendRepository } from "../repositories/closefriend.repository.ts";
-import { AlreadyDoneError } from "../utils/errors/alreadyDone.errors.ts";
-import { BadRequestErrors } from "../utils/errors/badRequest.errors.ts";
-import type { NotificationService } from "./notification.service.ts";
+<<<<<<< HEAD
 import type {UserRepository} from "../repositories/user.repository.ts";
 import type {ProfileRepository} from "../repositories/profile.repository.ts";
 import bcrypt from 'bcrypt';
@@ -19,6 +9,18 @@ import type {BlockRepository} from  "../repositories/block.repository.ts"
 import type {CloseFriendRepository} from "../repositories/closefriend.repository.ts";
 import {AlreadyDoneError} from "../utils/errors/alreadyDone.errors.ts";
 import {BadRequestErrors} from "../utils/errors/badRequest.errors.ts";
+=======
+import type { UserRepository } from "../repositories/user.repository.ts";
+import type { ProfileRepository } from "../repositories/profile.repository.ts";
+import bcrypt from "bcrypt";
+import type { updateProfileUserSchema } from "../db/models/user.model.ts";
+import { NotFoundError } from "../utils/errors/notFound.errors.ts";
+import type { FollowRepository } from "../repositories/follow.repository.ts";
+import type { BlockRepository } from "../repositories/block.repository.ts";
+import type { CloseFriendRepository } from "../repositories/closefriend.repository.ts";
+import { AlreadyDoneError } from "../utils/errors/alreadyDone.errors.ts";
+import { BadRequestErrors } from "../utils/errors/badRequest.errors.ts";
+>>>>>>> prod
 import type { NotificationService } from "./notification.service.ts";
 
 export class UserService {
@@ -29,6 +31,14 @@ export class UserService {
   private readonly closeFriendRepository: CloseFriendRepository;
   private readonly notificationService: NotificationService;
 
+<<<<<<< HEAD
+    private readonly userRepository: UserRepository;
+    private readonly profilePhotoRepository: ProfileRepository;
+    private readonly followRepository: FollowRepository;
+    private readonly blockRepository: BlockRepository;
+    private readonly closeFriendRepository: CloseFriendRepository;
+    private readonly notificationService: NotificationService;
+=======
   constructor(
     userRepository: UserRepository,
     profilePhotoRepository: ProfileRepository,
@@ -44,19 +54,13 @@ export class UserService {
     this.closeFriendRepository = closeFriendRepository;
     this.notificationService = notificationService;
   }
+>>>>>>> prod
 
   async getUserIdByUsername(username: string): Promise<string | null> {
     return await this.userRepository.findUserIdByUsername(username);
   }
 
-    private readonly userRepository: UserRepository;
-    private readonly profilePhotoRepository: ProfileRepository;
-    private readonly followRepository: FollowRepository;
-    private readonly blockRepository: BlockRepository;
-    private readonly closeFriendRepository: CloseFriendRepository;
-    private readonly notificationService: NotificationService;
-
-
+<<<<<<< HEAD
     constructor(userRepository: UserRepository, profilePhotoRepository: ProfileRepository, followRepository: FollowRepository , blockRepository: BlockRepository, closeFriendRepository: CloseFriendRepository, notificationService: NotificationService) {
         this.userRepository = userRepository;
         this.profilePhotoRepository = profilePhotoRepository;
@@ -68,12 +72,12 @@ export class UserService {
 
     async getUserIdByUsername(username: string): Promise<string | null> {
         return await this.userRepository.findUserIdByUsername(username);
-    }
-
+=======
   async uploadProfile(filePath: string, userId: string) {
     const findUserById = await this.userRepository.findByUserId(userId);
     if (!findUserById) {
       throw new NotFoundError("NOT_FOUND_USER");
+>>>>>>> prod
     }
 
     return await this.profilePhotoRepository.upsertProfilePhoto(
@@ -89,25 +93,27 @@ export class UserService {
     }
     return userDetails;
   }
-    async getProfile(userId: string) {
-        const userDetails = await this.userRepository.findUserDetails(userId);
-        if (!userDetails) {
-            throw new NotFoundError("NOT_FOUND_USER");
-        }
-        return userDetails;
-    }
 
   async updateProfile(userId: string, userData: updateProfileUserSchema) {
     if (userData.password) {
       userData.password = await bcrypt.hash(userData.password, 10);
     }
 
+<<<<<<< HEAD
+    async getProfile(userId: string) {
+        const userDetails = await this.userRepository.findUserDetails(userId);
+        if (!userDetails) {
+            throw new NotFoundError("NOT_FOUND_USER");
+        }
+        return userDetails;
+=======
     return await this.userRepository.updateUser(userId, userData);
   }
 
   async followUser(userId: string, followedUserId: string) {
     if (await this.blockRepository.blockedBefore(userId, followedUserId)) {
       throw new NotFoundError("YOU_CANNOT_FOLLOW_BLOCKEDUSER");
+>>>>>>> prod
     }
 
     const result = await this.followRepository.followUser(
@@ -131,8 +137,7 @@ export class UserService {
       console.error("Failed to create follow notification:", error);
     }
 
-    return result;
-  }
+<<<<<<< HEAD
     async followUser(userId: string, followedUserId: string) {
         if(await this.blockRepository.blockedBefore(userId ,followedUserId)){
             throw new NotFoundError("YOU_CANNOT_FOLLOW_BLOCKEDUSER")
@@ -159,18 +164,21 @@ export class UserService {
         return result;
     }
 
+    async unfollowUser(userId: string, unfollowedUserId: string) {
+        if(await this.blockRepository.blockedBefore(userId ,unfollowedUserId)){
+            throw new NotFoundError("YOU_CANNOT_UNFOLLOW_BLOCKEDUSER")
+        }
+        return await this.followRepository.unfollowUser(userId, unfollowedUserId);
+=======
+    return result;
+  }
+
   async unfollowUser(userId: string, unfollowedUserId: string) {
     if (await this.blockRepository.blockedBefore(userId, unfollowedUserId)) {
       throw new NotFoundError("YOU_CANNOT_UNFOLLOW_BLOCKEDUSER");
     }
     return await this.followRepository.unfollowUser(userId, unfollowedUserId);
   }
-    async unfollowUser(userId: string, unfollowedUserId: string) {
-        if(await this.blockRepository.blockedBefore(userId ,unfollowedUserId)){
-            throw new NotFoundError("YOU_CANNOT_UNFOLLOW_BLOCKEDUSER")
-        }
-        return await this.followRepository.unfollowUser(userId, unfollowedUserId);
-    }
 
   async getFollowings(userId: string) {
     return this.followRepository.getFollowings(userId);
@@ -254,6 +262,7 @@ export class UserService {
     );
     if (closeFriendBefore) {
       await this.closeFriendRepository.removeFromCloseFriend(userId, blockedId);
+>>>>>>> prod
     }
 
     if (!existUserId) {
@@ -294,15 +303,7 @@ export class UserService {
     await this.blockRepository.unblock(userId, blockedId);
   }
 
-  async getBlocks(userId: string) {
-    return this.blockRepository.getblocks(userId);
-  }
-}
-
-    async getFollowers(userId: string) {
-        return this.followRepository.getFollowers(userId)
-    }
-
+<<<<<<< HEAD
     async acceptFollowRequest(userId: string, followerUserId: string) {
         return await this.followRepository.acceptFollowRequest(followerUserId, userId);
     }
@@ -399,3 +400,9 @@ export class UserService {
 
 
 }
+=======
+  async getBlocks(userId: string) {
+    return this.blockRepository.getblocks(userId);
+  }
+}
+>>>>>>> prod
