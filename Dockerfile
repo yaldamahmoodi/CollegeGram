@@ -16,7 +16,7 @@ COPY apps/web/package.json ./apps/web/
 COPY apps/doc/package.json ./apps/doc/
 
 # Install all dependencies (including Turbo)
-RUN pnpm install --frozen-lockfile
+RUN pnpm install --no-frozen-lockfile
 
 # Copy source code
 COPY apps/ ./apps/
@@ -40,7 +40,7 @@ COPY package.json pnpm-workspace.yaml pnpm-lock.yaml* ./
 COPY apps/api/package.json ./apps/api/
 
 # Install only production deps for API
-RUN pnpm install --prod --filter=collegegram
+RUN pnpm install --prod --filter=api
 
 # Copy built app from base stage
 COPY --from=base /app/apps/api/dist ./apps/api/dist
@@ -67,7 +67,7 @@ COPY package.json pnpm-workspace.yaml pnpm-lock.yaml* ./
 COPY apps/web/package.json ./apps/web/
 
 # Install only production deps for Web (Vite needs to be available for preview)
-RUN pnpm install --filter=project-devsync-rc
+RUN pnpm install --filter=web
 
 # Copy built app from base stage
 COPY --from=base /app/apps/web/dist ./apps/web/dist
