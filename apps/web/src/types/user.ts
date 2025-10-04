@@ -66,7 +66,7 @@ export type FollowersType = UserRelationType;
 export type FollowingType = UserRelationType;
 
 export interface actionFollowType {
-  followedUserId: string;
+    followerUserId: string;
 }
 
 export type followType = actionFollowType;

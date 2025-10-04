@@ -8,7 +8,7 @@ interface UserCardProps {
 }
 
 const UserCard = ({ user }: UserCardProps) => {
-  const { username, profilePhotoPath, follower_count, id } = user;
+  const { username, follower_count, id } = user;
 
   const navigate = useNavigate();
 
@@ -22,7 +22,7 @@ const UserCard = ({ user }: UserCardProps) => {
     if (isFollowing) {
       unFollow({ followerUserId: id });
     } else {
-      follow({ followedUserId: id });
+      follow({ followerUserId: id });
     }
   };
 
@@ -32,7 +32,7 @@ const UserCard = ({ user }: UserCardProps) => {
         className="flex items-center w-full mb-4 px-5 py-8 hover:cursor-pointer"
         onClick={() => navigate(`/user/${username}`)}>
         <img
-          src={profilePhotoPath ? profilePhotoPath : NoUserIcon}
+          src={NoUserIcon}
           alt={username}
           className="w-[64px] h-[64px] rounded-full ml-3"
         />

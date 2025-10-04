@@ -54,7 +54,7 @@ const ProfileInfo = (props: ProfileInfoProps) => {
         <Button
           label="دنبال کردن"
           className="px-5 py-1 mr-5 rounded-4xl"
-          onClick={() => follow({ followedUserId: otherUser.userId })}
+          onClick={() => follow({ followerUserId: otherUser.userId })}
         />
       );
     }
@@ -89,8 +89,14 @@ const ProfileInfo = (props: ProfileInfoProps) => {
         />
       );
     }
-    return null;
-  };
+
+      return (
+          <Button
+              label="دنبال کردن"
+              className="px-5 py-1 mr-5 rounded-4xl bg-gray-400 text-white cursor-not-allowed"
+              disabled
+          />
+      );  };
 
   return (
     <div className="profile-info-container w-full flex flex-col lg:flex-row lg:items-start gap-6 py-4 flex-justify">
@@ -164,7 +170,7 @@ const ProfileInfo = (props: ProfileInfoProps) => {
               <span>{MESSAGES.post} </span>
             </div>
           </div>
-          <div className="hidden lg:block lg:w-1/6 flex justify-end">
+          <div className=" lg:block lg:w-1/6 justify-end">
             {otherUser ? (
               <img src={actionMenuIcon} className="flex justify-end" />
             ) : (
@@ -181,16 +187,6 @@ const ProfileInfo = (props: ProfileInfoProps) => {
 
         <div className="text-center lg:text-right text-xs lg:text-sm text-[#b5b5b5] mt-2">
           {userInfo?.biography}
-        </div>
-
-        <div className="lg:hidden mt-4">
-          <Button
-            type="button"
-            label="ویرایش پروفایل"
-            variant="danger"
-            className="w-full px-4 py-2 text-sm rounded-3xl h-[40px]"
-            onClick={() => setIsModalOpen(true)}
-          />
         </div>
       </div>
 

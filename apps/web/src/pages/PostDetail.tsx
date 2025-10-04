@@ -69,7 +69,7 @@ const CommentItem = ({
       {replyingTo === comment._id && (
         <div className="flex items-center gap-2 mt-2 ml-6">
           <img
-            src={noAvatarIcon}
+            src={comment.user_info.profilePhoto || noAvatarIcon}
             alt="me"
             className="w-6 h-6 rounded-full object-cover"
           />
@@ -185,7 +185,7 @@ const PostDetail = () => {
         <div className="flex flex-col space-y-4">
           <div className="flex items-center gap-3">
             <img
-              src={noAvatarIcon}
+              src={ noAvatarIcon}
               alt="user"
               className="w-10 h-10 md:w-12 md:h-12 rounded-full object-cover"
             />
