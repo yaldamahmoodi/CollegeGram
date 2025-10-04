@@ -9,7 +9,7 @@ export interface OtherUserType {
   following_count: number;
   post_count: number;
   profilePhotoUrl?: string;
-  isFollowed: boolean;
+  isFollowed?: boolean;
   followStatus?: "accepted" | "pending" | "rejected";
   followedAt?: string;
   isBlocked: boolean;

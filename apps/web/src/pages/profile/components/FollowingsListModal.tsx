@@ -75,7 +75,7 @@ const FollowingListModal = (props: FollowingListModalProps) => {
                   />
                   <div className="text-right">
                     <p className="text-sm font-medium text-gray-800 pb-1">
-                      {`${user.firstname} ${user.lastname}`}
+                        {user.username}
                     </p>
                     <p className="text-xs text-gray-500">
                       {user.following_count || 0} دنبال‌کننده‌ها

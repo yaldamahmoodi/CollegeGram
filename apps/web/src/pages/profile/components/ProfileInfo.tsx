@@ -2,9 +2,7 @@ import Button from "@components/Button";
 import EditProfileModal from "@/pages/profile/components/EditProfileModal";
 import { useState } from "react";
 import {
-  useAcceptFollowRequest,
   useFollow,
-  useRejectFollowRequest,
   useUnFollow,
   useUserInfo,
 } from "@hooks/user.hook";
@@ -31,72 +29,73 @@ const ProfileInfo = (props: ProfileInfoProps) => {
 
   const { mutate: follow } = useFollow();
   const { mutate: unFollow } = useUnFollow();
-  const { mutate: acceptFollowRequest } = useAcceptFollowRequest(
-    otherUser?.username ?? ""
-  );
-  const { mutate: rejectFollowRequest } = useRejectFollowRequest(
-    otherUser?.username ?? ""
-  );
+  // const { mutate: acceptFollowRequest } = useAcceptFollowRequest(
+  //   otherUser?.username ?? ""
+  // );
+  // const { mutate: rejectFollowRequest } = useRejectFollowRequest(
+  //   otherUser?.username ?? ""
+  // );
 
   const renderFollowButton = () => {
-    if (!otherUser) return null;
-    if (otherUser.hasBlocked) {
-      return (
-        <Button
-          label="دنبال کردن"
-          className="px-5 py-1 mr-5 rounded-4xl bg-gray-400 text-white cursor-not-allowed"
-          disabled
-        />
-      );
-    }
-    if (otherUser.followStatus === null && otherUser.isFollowed === false) {
-      return (
-        <Button
-          label="دنبال کردن"
-          className="px-5 py-1 mr-5 rounded-4xl"
-          onClick={() => follow({ followerUserId: otherUser.userId })}
-        />
-      );
-    }
-    if (otherUser.followStatus === null && otherUser.isFollowed === true) {
-      return (
-        <Button
-          label="دنبال نکردن"
-          className="px-5 py-1 mr-5 rounded-4xl"
-          onClick={() => unFollow({ followerUserId: otherUser.userId })}
-        />
-      );
-    }
-    if (otherUser.followStatus === "pending") {
-      return (
-        <Button
-          label="لغو درخواست"
-          className="px-5 py-1 mr-5 rounded-4xl"
-          onClick={() =>
-            acceptFollowRequest({ followerUserId: otherUser.userId })
-          }
-        />
-      );
-    }
-    if (otherUser.followStatus === "accepted") {
-      return (
-        <Button
-          label="دنبال نکردن"
-          className="px-5 py-1 mr-5 rounded-4xl"
-          onClick={() =>
-            rejectFollowRequest({ followerUserId: otherUser.userId })
-          }
-        />
-      );
-    }
+      if (!otherUser) return null;
+      // if (otherUser.hasBlocked) {
+      //   return (
+      //     <Button
+      //       label="دنبال کردن"
+      //       className="px-5 py-1 mr-5 rounded-4xl bg-gray-400 text-white cursor-not-allowed"
+      //       disabled
+      //     />
+      //   );
+      // }
+      if (otherUser.isFollowed === false) {
+          return (
+              <Button
+                  label="دنبال کردن"
+                  className="px-5 py-1 mr-5 rounded-4xl"
+                  onClick={() => follow({followerUserId: otherUser.userId})}
+              />
+          );
+      }
+      if (otherUser.isFollowed === true) {
+          return (
+              <Button
+                  label="دنبال نکردن"
+                  className="px-5 py-1 mr-5 rounded-4xl"
+                  onClick={() => unFollow({followerUserId: otherUser.userId})}
+              />
+          );
+      }
+      // if (otherUser.followStatus === "pending") {
+      //   return (
+      //     <Button
+      //       label="لغو درخواست"
+      //       className="px-5 py-1 mr-5 rounded-4xl"
+      //       onClick={() =>
+      //         acceptFollowRequest({ followerUserId: otherUser.userId })
+      //       }
+      //     />
+      //   );
+      // }
+      // if (otherUser.followStatus === "accepted") {
+      //   return (
+      //     <Button
+      //       label="دنبال نکردن"
+      //       className="px-5 py-1 mr-5 rounded-4xl"
+      //       onClick={() =>
+      //         rejectFollowRequest({ followerUserId: otherUser.userId })
+      //       }
+      //     />
+      //   );
+      // }
 
       return (
           <Button
-              label="دنبال کردن"
-              className="px-5 py-1 mr-5 rounded-4xl bg-gray-400 text-white cursor-not-allowed"
-              disabled
+              label="دنبال نکردن"
+              className="px-5 py-1 mr-5 rounded-4xl bg-gray-400 text-white"
+              onClick={() => unFollow({followerUserId: otherUser.userId})}
           />
-      );  };
+      );
+  };
 
   return (
     <div className="profile-info-container w-full flex flex-col lg:flex-row lg:items-start gap-6 py-4 flex-justify">

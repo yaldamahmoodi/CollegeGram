@@ -110,10 +110,11 @@ export const useEditProfile = () => {
 };
 
 export const useGetOtherUser = (username: string | null) => {
-  return useQuery({
+    return useQuery({
     queryKey: ["getOtherUser", username],
     queryFn: () => getOtherUser(username!),
     enabled: !!username,
+
   });
 };
 

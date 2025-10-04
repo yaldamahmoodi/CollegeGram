@@ -69,7 +69,7 @@ const CommentItem = ({
       {replyingTo === comment._id && (
         <div className="flex items-center gap-2 mt-2 ml-6">
           <img
-            src={comment.user_info.profilePhoto || noAvatarIcon}
+            src={noAvatarIcon}
             alt="me"
             className="w-6 h-6 rounded-full object-cover"
           />
@@ -195,11 +195,7 @@ const PostDetail = () => {
               </p>
             </div>
           </div>
-
-          <p className="text-xs text-gray-500">
-            {formatRelativeTime((user as any)?.data?.createdAt)}
-          </p>
-
+            
           <p className="text-sm md:text-base leading-6 text-gray-700">
             {post?.caption}
           </p>
