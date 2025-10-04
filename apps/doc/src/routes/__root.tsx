@@ -1,14 +1,28 @@
 import { createRootRoute, Outlet } from "@tanstack/react-router";
+import { ThemeProvider } from "next-themes";
 import { AppSidebar } from "@/components/app-sidebar";
-import { SidebarProvider, SidebarInset } from "@/components/ui/sidebar";
+import {  SidebarProvider } from "@/components/ui/sidebar";
 
 export const Route = createRootRoute({
   component: () => (
-    <SidebarProvider defaultOpen={false}>
-      <AppSidebar variant="floating" />
-      <SidebarInset>
-        <Outlet />
-      </SidebarInset>
-    </SidebarProvider>
+    <ThemeProvider
+      attribute="class"
+      defaultTheme="light"
+      enableSystem
+      disableTransitionOnChange
+    >
+      <SidebarProvider defaultOpen={false}>
+        
+          <AppSidebar variant="floating" />
+         
+            <main className="flex-1">
+            
+              <Outlet />
+            </main>
+         
+        
+      </SidebarProvider>
+      
+    </ThemeProvider>
   ),
 });

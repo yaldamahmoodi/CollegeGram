@@ -36,7 +36,7 @@ export class ServiceHealthService {
       // Try the actual Swagger endpoint first
       const ac = new AbortController();
       setTimeout(() => ac.abort(), 3000);
-      const response = await fetch('http://localhost:3001/api/docs', {
+      const response = await fetch('http://devsync.rahnemacollege.ir/api/docs', {
         method: 'GET',
         signal: ac.signal
       });
@@ -48,7 +48,7 @@ export class ServiceHealthService {
           message: 'API documentation accessible',
           port: '3001/api/docs',
           details: {
-            url: 'http://localhost:3001/api/docs',
+            url: 'http://devsync.rahnemacollege.ir/api/docs',
             statusCode: response.status
           }
         };
@@ -59,7 +59,7 @@ export class ServiceHealthService {
           message: `Documentation not accessible (${response.status})`,
           port: '3001/api/docs',
           details: {
-            url: 'http://localhost:3001/api/docs',
+            url: 'http://devsync.rahnemacollege.ir/api/docs',
             statusCode: response.status,
             error: 'Documentation endpoint not found'
           }
@@ -70,7 +70,7 @@ export class ServiceHealthService {
         name: 'Swagger API Docs',
         status: 'unhealthy',
         message: 'Documentation service unavailable',
-        port: '3001/api/docs',
+        port: '/api/docs',
         details: {
           error: error instanceof Error ? error.message : 'Unknown error'
         }
@@ -87,7 +87,7 @@ export class ServiceHealthService {
       try {
         const ac = new AbortController();
         setTimeout(() => ac.abort(), 3000);
-        const response = await fetch(`http://localhost:${port}`, {
+        const response = await fetch(`https://devsync.rahnemacollege.ir`, {
           method: 'GET',
           signal: ac.signal
         });
@@ -99,7 +99,7 @@ export class ServiceHealthService {
             message: 'React development server running',
             port: port.toString(),
             details: {
-              url: `http://localhost:${port}`,
+              url: `https://devsync.rahnemacollege.ir`,
               statusCode: response.status,
               server: 'React Dev Server'
             }
