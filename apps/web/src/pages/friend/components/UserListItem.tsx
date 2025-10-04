@@ -39,16 +39,16 @@ const UserListItem = ({ user, actions }: UserItemProps) => {
         className="w-full flex items-center gap-3 justify-start hover:cursor-pointer"
         onClick={() => navigate(`/user/${user?.username}`)}>
         <img
-          src={user.profilePhoto || noUserIcon}
-          alt={user.username}
+          src={user?.profilePhoto || noUserIcon}
+          alt={user?.username}
           className="w-20 h-20 rounded-full object-cover"
         />
         <div className="flex flex-col text-sm text-gray-700 mr-5">
           <span className="pb-2 font-bold">
-            {user.firstname} {user.lastname}
+            {user?.firstname} {user?.lastname}
           </span>
           <span className="text-xs text-gray-600">
-            {user.followerCount | 0} دنبال کننده
+            {user?.followerCount | 0} دنبال کننده
           </span>
         </div>
       </div>

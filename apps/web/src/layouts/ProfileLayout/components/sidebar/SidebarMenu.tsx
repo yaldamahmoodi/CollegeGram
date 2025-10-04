@@ -9,24 +9,31 @@ import { useUnreadCount } from "@/hooks/notification.hook";
 
 type SidebarItem = { id: string; link: string; icon: string; text: string };
 type SidebarGroup = { id: string; children: SidebarItem[] };
-export const SidebarPopUp = ({ item, isActive }: { item: SidebarGroup; isActive: (link: string) => boolean }) => <div className=" absolute bottom-full left-0 mb-2 z-50 min-w-48 rounded-2xl border border-gray-200 bg-white shadow-xl p-2 flex flex-col gap-1">
-{item.children.map((child: SidebarItem) => (
-  <SidebarItems
-    key={child.id}
-    isActive={isActive(child.link)}
-    link={child.link}
-    icon={child.icon}
-    text={child.text}
-  />
-))}
-</div>
-
+export const SidebarPopUp = ({
+  item,
+  isActive,
+}: {
+  item: SidebarGroup;
+  isActive: (link: string) => boolean;
+}) => (
+  <div className=" absolute bottom-0 right-25 mb-2 z-1 min-w-48 rounded-2xl border border-gray-200 bg-white shadow-xl p-2 flex flex-col gap-1">
+    {item.children.map((child: SidebarItem) => (
+      <SidebarItems
+        key={child.id}
+        isActive={isActive(child.link)}
+        link={child.link}
+        icon={child.icon}
+        text={child.text}
+      />
+    ))}
+  </div>
+);
 
 const SidebarMenu = () => {
   const { logout } = useAuth();
   const location = useLocation();
-  const {data:user} = useUserInfo();
-  const {data: unreadCount} = useUnreadCount();
+  const { data: user } = useUserInfo();
+  const { data: unreadCount } = useUnreadCount();
   const [openDropdown, setOpenDropdown] = useState<string | null>(null);
 
   const isActive = (link: string) => {
@@ -67,8 +74,9 @@ const SidebarMenu = () => {
           const itemSegment = item.link.replace("/", "");
 
           const isActive = pathSegments.includes(itemSegment);
-          const showBadge = item.id === "notification" && unreadCount && unreadCount > 0;
-          
+          const showBadge =
+            item.id === "notification" && unreadCount && unreadCount > 0;
+
           return (
             <SidebarItems
               key={item.id}
@@ -108,7 +116,7 @@ const SidebarMenu = () => {
                 />
               </div>
               {openDropdown === item.id && item.children?.length > 0 && (
-                  <SidebarPopUp isActive={isActive} item={item} />
+                <SidebarPopUp isActive={isActive} item={item} />
               )}
             </div>
           </div>

@@ -7,7 +7,7 @@ import { useNavigate } from "react-router-dom";
 import actionMenuImage from "@/assets/icons/actionMenu.svg";
 
 type UnfollowPayload = {
-  unfollowedUserId: string;
+  followerUserId: string;
 };
 
 type FollowingListModalProps = {
@@ -29,7 +29,7 @@ const FollowingListModal = (props: FollowingListModalProps) => {
   const unFollowMutation = useUnFollow();
 
   const handleUnFollowUser = (user: FollowingType) => {
-    const payload: UnfollowPayload = { unfollowedUserId: user.userId };
+    const payload: UnfollowPayload = { followerUserId: user.userId };
     unFollowMutation.mutate(payload);
   };
 

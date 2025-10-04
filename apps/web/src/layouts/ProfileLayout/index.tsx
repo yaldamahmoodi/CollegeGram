@@ -1,4 +1,4 @@
-import {  useState, type ReactNode } from "react";
+import { useState, type ReactNode } from "react";
 import Button from "@/components/Button";
 import CraetePostModal from "../../pages/profile/components/CreatePostModal";
 import ProfileSidebarMenu from "./components/sidebar/SidebarMenu";
@@ -14,94 +14,94 @@ import MobileSidebarMenu from "@/layouts/ProfileLayout/components/sidebar/Mobile
 import { useWebSocket } from "@/hooks/useWebSocket.hook";
 import NotificationToast from "@/components/NotificationToast";
 import { useNavigate } from "react-router-dom";
-import {ROUTES} from "@/routes/routes.ts";
+import { ROUTES } from "@/routes/routes.ts";
 
 interface ProfileLayoutProps {
-    children: ReactNode;
+  children: ReactNode;
 }
 
 const ProfileLayout = ({ children }: ProfileLayoutProps) => {
-    const [isModalOpen, setIsModalOpen] = useState(false);
-    const [isMenuSheetOpen, setIsMenuSheetOpen] = useState(false);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isMenuSheetOpen, setIsMenuSheetOpen] = useState(false);
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   // Initialize WebSocket connection
   const token = localStorage.getItem("token");
   useWebSocket(token || undefined);
-    const { data: user } = useUserInfo();
-    const navigate = useNavigate();
+  const { data: user } = useUserInfo();
+  const navigate = useNavigate();
 
-    return (
-        <div className="profile-container min-h-screen h-full w-full bg-[#f5f5f5] flex flex-col lg:p-10"  onClick={() => setIsSidebarOpen(false)}>
-            <div className="header w-full h-[60px] bg-transparent mb-4 flex items-center justify-between px-4">
-                <div className="lg:hidden flex items-center justify-center">
-                    <img
-                        src={user?.profilePhotoUrl || avatar}
-                        alt="profile"
-                        className="w-10 h-10 rounded-full object-cover"
-                    />
-                </div>
+  return (
+    <div
+      className="profile-container min-h-screen h-full w-full bg-[#f5f5f5] flex flex-col lg:p-10"
+      onClick={() => setIsSidebarOpen(false)}>
+      <div className="header w-full h-[60px] bg-transparent mb-4 flex items-center justify-between px-4">
+        <div className="lg:hidden flex items-center justify-center">
+          <img
+            src={user?.profilePhotoUrl || avatar}
+            alt="profile"
+            className="w-10 h-10 rounded-full object-cover"
+          />
+        </div>
 
-                <button
-                    className="lg:hidden flex items-center justify-center m-0 p-0 bg-transparent"
-                    onClick={() => setIsMenuSheetOpen(true)}
-                    aria-label="open menu"
-                >
-                    <img src={hamburgerMenuIcon} className="h-7" />
-                </button>
+        <button
+          className="lg:hidden flex items-center justify-center m-0 p-0 bg-transparent"
+          onClick={() => setIsMenuSheetOpen(true)}
+          aria-label="open menu">
+          <img src={hamburgerMenuIcon} className="h-7" />
+        </button>
 
-                <div className="hidden lg:flex w-1/4 justify-between items-center">
-                    <Button
-                        type="button"
-                        label=" پست جدید"
-                        icon={<img src={plusIcon} />}
-                        variant="danger"
-                        className="flex justify-center items-center text-sm rounded-4xl lg:w-[300px] lg:h-[44px] gap-4"
-                        onClick={() => setIsModalOpen(true)}
-                    />
-                </div>
+        <div className="hidden lg:flex w-1/4 justify-between items-center">
+          <Button
+            type="button"
+            label=" پست جدید"
+            icon={<img src={plusIcon} />}
+            variant="danger"
+            className="flex justify-center items-center text-sm rounded-4xl lg:w-[300px] lg:h-[44px] gap-4"
+            onClick={() => setIsModalOpen(true)}
+          />
+        </div>
 
-                <img src={logo} className="hidden lg:block h-max w-auto" />
-            </div>
+        <img src={logo} className="hidden lg:block h-max w-auto" />
+      </div>
 
-            <div className="flex flex-auto gap-4 flex-row">
-                <div className="hidden lg:block bg-white right-sidebar w-1/4 p-4 border border-gray-400 rounded-4xl">
-                    <ProfileSidebarMenu />
-                </div>
-                <div className="left-section w-full mb-[76px] md:mb-0 lg:w-3/4 flex flex-col px-4 lg:px-15">
-                    {children}
-                </div>
-            </div>
+      <div className="flex flex-auto gap-4 flex-row">
+        <div className="hidden lg:block bg-white right-sidebar w-1/4 p-4 border border-gray-400 rounded-4xl">
+          <ProfileSidebarMenu />
+        </div>
+        <div className="left-section w-full mb-[76px] md:mb-0 lg:w-3/4 flex flex-col px-4 lg:px-15">
+          {children}
+        </div>
+      </div>
 
-            <div className="lg:hidden fixed bottom-0 left-0 w-full h-[60px] bg-white border-t border-gray-300 flex justify-around items-center z-30">
-                <Button
-                    className="flex flex-col items-center bg-transparent hover:bg-transparent"
-                    onClick={() => navigate(ROUTES.SEARCH)}
-                    icon={<img src={searchIcon} className="h-5" />}
-                />
-                <Button
-                    className="!p-0 !min-w-10 w-10 h-10 rounded-full flex !items-center !justify-center bg-red-500 text-white"
-                    onClick={() => setIsModalOpen(true)}
-                    icon={<span className="text-lg">＋</span>}
-                    aria-label="new post"
-                />
-                <Button
-                    className="flex flex-col items-center bg-transparent hover:bg-transparent"
-                    onClick={() => navigate(ROUTES.EXPLORE)}
-                    icon={<img src={gridMenuIcon} className="h-5" />}
-                />
-            </div>
+      <div className="lg:hidden fixed bottom-0 left-0 w-full h-[60px] bg-white border-t border-gray-300 flex justify-around items-center z-30">
+        <Button
+          className="flex flex-col items-center bg-transparent hover:bg-transparent"
+          onClick={() => navigate(ROUTES.SEARCH)}
+          icon={<img src={searchIcon} className="h-5" />}
+        />
+        <Button
+          className="!p-0 !min-w-10 w-10 h-10 rounded-full flex !items-center !justify-center bg-red-500 text-white"
+          onClick={() => setIsModalOpen(true)}
+          icon={<span className="text-lg">＋</span>}
+          aria-label="new post"
+        />
+        <Button
+          className="flex flex-col items-center bg-transparent hover:bg-transparent"
+          onClick={() => navigate(ROUTES.EXPLORE)}
+          icon={<img src={gridMenuIcon} className="h-5" />}
+        />
+      </div>
 
-            <BottomSheet
-                isOpen={isMenuSheetOpen}
-                onClose={() => setIsMenuSheetOpen(false)}
-                className="px-0"
-                buttonGroupClassName="px-4"
-                labelClose="بستن"
-            >
-                <MobileSidebarMenu />
-            </BottomSheet>
+      <BottomSheet
+        isOpen={isMenuSheetOpen}
+        onClose={() => setIsMenuSheetOpen(false)}
+        className="px-0"
+        buttonGroupClassName="px-4"
+        labelClose="بستن">
+        <MobileSidebarMenu />
+      </BottomSheet>
 
-            {isSidebarOpen && (
+      {isSidebarOpen && (
         <div className="fixed inset-0 z-40 flex">
           <div
             className="fixed inset-0 bg-black opacity-40"
@@ -117,16 +117,15 @@ const ProfileLayout = ({ children }: ProfileLayoutProps) => {
         </div>
       )}
 
-            <CraetePostModal
-                isOpen={isModalOpen}
-                onClose={() => setIsModalOpen(false)}
-            />
-      
-      
+      <CraetePostModal
+        isOpen={isModalOpen}
+        onClose={() => setIsModalOpen(false)}
+      />
+
       {/* Notification Toast Container */}
       <NotificationToast />
-        </div>
-    );
+    </div>
+  );
 };
 
 export default ProfileLayout;

@@ -20,7 +20,7 @@ const BlockedFriends = () => {
         {blockList?.length > 0
           ? blockList?.map((blocked: BlockListItemType) => (
               <UserListItem
-                key={blocked.friend_info._id}
+                key={blocked.friend_info?._id}
                 user={blocked.friend_info}
                 actions={[
                   {

@@ -63,7 +63,7 @@ const ProfileInfo = (props: ProfileInfoProps) => {
         <Button
           label="دنبال نکردن"
           className="px-5 py-1 mr-5 rounded-4xl"
-          onClick={() => unFollow({ unfollowedUserId: otherUser.userId })}
+          onClick={() => unFollow({ followerUserId: otherUser.userId })}
         />
       );
     }
@@ -108,21 +108,27 @@ const ProfileInfo = (props: ProfileInfoProps) => {
       </div>
 
       <div className="flex flex-col flex-1 mt-4">
-          <div className="flex items-center gap-3 p-2 rounded-xl md:hidden">
-              <img
-                  src={userInfo?.profilePhotoUrl ? userInfo?.profilePhotoUrl : UsernameIcon}
-                  alt="user"
-                  className="w-14 h-14 sm:w-14 sm:h-14 rounded-full object-cover"
-              />
-              <div className="flex flex-col">
-                    <span className="text-sm sm:text-base font-semibold text-gray-800">
-                        {userInfo?.firstname && userInfo?.lastname
-                        ? `${userInfo?.firstname} ${userInfo?.lastname}`
-                         : "کاربر کالج گرام"}
-                     </span>
-                  <span className="text-xs sm:text-sm text-gray-500">@{userInfo?.username}</span>
-              </div>
+        <div className="flex items-center gap-3 p-2 rounded-xl md:hidden">
+          <img
+            src={
+              userInfo?.profilePhotoUrl
+                ? userInfo?.profilePhotoUrl
+                : UsernameIcon
+            }
+            alt="user"
+            className="w-14 h-14 sm:w-14 sm:h-14 rounded-full object-cover"
+          />
+          <div className="flex flex-col">
+            <span className="text-sm sm:text-base font-semibold text-gray-800">
+              {userInfo?.firstname && userInfo?.lastname
+                ? `${userInfo?.firstname} ${userInfo?.lastname}`
+                : "کاربر کالج گرام"}
+            </span>
+            <span className="text-xs sm:text-sm text-gray-500">
+              @{userInfo?.username}
+            </span>
           </div>
+        </div>
 
         <div className=" flex-col lg:flex-row lg:items-center lg:gap-6 hidden md:flex">
           <div className="flex flex-row items-center gap-2 mb-3 justify-center lg:justify-start">

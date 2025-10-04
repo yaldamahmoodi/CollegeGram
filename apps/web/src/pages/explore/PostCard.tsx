@@ -88,7 +88,9 @@ const PostCard = (props: PostCardProps) => {
       </div>
 
       <div className="flex flex-col p-4 gap-3">
-        <div className="flex items-center gap-2">
+        <div
+          className="flex items-center gap-2"
+          onClick={() => navigate(`user/${post?.username}`)}>
           <img
             src={post?.profilePhotoUrl || DefaultAvatar}
             alt={post?.firstname}

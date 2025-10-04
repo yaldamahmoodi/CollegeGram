@@ -95,11 +95,11 @@ export class UserService {
     return result;
   }
 
-  async unfollowUser(userId: string, unfollowedUserId: string) {
-    if (await this.blockRepository.blockedBefore(userId, unfollowedUserId)) {
+  async unfollowUser(userId: string, followerUserId: string) {
+    if (await this.blockRepository.blockedBefore(userId, followerUserId)) {
       throw new NotFoundError("YOU_CANNOT_UNFOLLOW_BLOCKEDUSER");
     }
-    return await this.followRepository.unfollowUser(userId, unfollowedUserId);
+    return await this.followRepository.unfollowUser(userId, followerUserId);
   }
 
   async getFollowings(userId: string) {
