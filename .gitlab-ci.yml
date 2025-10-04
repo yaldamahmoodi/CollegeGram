@@ -54,8 +54,6 @@ deploy:
     - job: build
       artifacts: true
   script:
-    - echo "📝 Ensuring nginx.conf is updated..."
-    - ls -la nginx.conf
     - echo "🚀 Deploying..."
     - docker compose --profile production down
     - docker compose --profile production up -d --remove-orphans
