@@ -25,21 +25,36 @@ export class PostRepository {
       console.error(`Failed to index post ${post._id} in ES:`, err);
     }
   }
+async findUserPosts(userId: string, page: number, pageSize: number) {
+  const totalCount = await postModel.countDocuments({ user_id: userId });
+  const data = await postModel
+    .find({ user_id: userId })
+    .sort({ createdAt: -1 })
+    .skip((page - 1) * pageSize)
+    .limit(pageSize)
+    .lean();
 
-  async findUserPosts(userId: string, page: number, pageSize: number) {
-    const totalCount = await postModel.countDocuments({ user_id: userId });
-    const data = await postModel
-      .find({ user_id: userId })
-      .sort({ createdAt: -1 })
-      .skip((page - 1) * pageSize)
-      .limit(pageSize)
-      .lean();
+  // برای هر پست isLiked و isSaved رو اضافه می‌کنیم
+  for (const post of data) {
+    const like = await LikeModel.findOne({
+      post_id: post._id,
+      user_id: userId,
+    });
 
-    return {
-      totalCount,
-      data,
-    };
+    const save = await SaveModel.findOne({
+      post_id: post._id,
+      user_id: userId,
+    });
+
+    (post as any).isLiked = !!like;
+    (post as any).isSaved = !!save;
   }
+  return {
+    totalCount,
+    data,
+  };
+}
+
 
   async incrementCommentCount(postId: string) {
     await postModel.findByIdAndUpdate(postId, { $inc: { comment_count: 1 } });
