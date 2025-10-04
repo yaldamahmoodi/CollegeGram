@@ -84,6 +84,7 @@ services:
     depends_on:
       - api
       - web
+      - doc
     ports:
       - "80:80"
       - "443:443"
