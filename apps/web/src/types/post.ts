@@ -97,6 +97,18 @@ export type SavedPostItem = {
   photoCount?: number;
 };
 
+export type TaggedPostItem = {
+    _id: string;
+    postId: string;
+    urls?: string | string[];
+    like_count?: number;
+    save_count?: number;
+    photo_length?: number;
+    createdAt?: string;
+    photoCount?: number;
+};
+
+
 export interface Comment {
   _id: string;
   post_id: string;

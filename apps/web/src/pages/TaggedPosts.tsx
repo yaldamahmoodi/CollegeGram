@@ -1,7 +1,7 @@
 import { useTaggedPostList } from "@/hooks/post.hook";
 import { useNavigate, generatePath } from "react-router-dom";
 import { ROUTES } from "@/routes/routes";
-import type { SavedPostItem } from "@/types/post.ts";
+import type { TaggedPostItem } from "@/types/post.ts";
 import { MESSAGES } from "@/const/message.ts";
 import ImageGroup from "@components/ImageGroup.tsx";
 
@@ -9,7 +9,7 @@ const TaggedPosts = () => {
     const { data, isLoading } = useTaggedPostList();
     const navigate = useNavigate();
 
-    const posts: SavedPostItem[] = (data as any)?.savedPosts ?? [];
+    const posts: TaggedPostItem[] = (data as any)?.data ?? [];
 
     const gotoDetails = (id: string) => {
         const path = generatePath(ROUTES.POST_DETAIL, { id });
@@ -31,9 +31,11 @@ const TaggedPosts = () => {
                 <div className="w-full h-full flex justify-center items-center">
                     <div className="flex flex-col justify-center items-center gap-2">
                         <div className="font-semibold mb-2 text-4xl">
-                       {MESSAGES.taggedPageHeading}
+                            {MESSAGES.taggedPageHeading}
                         </div>
-                        <p className="max-w-md text-2xl text-center">{MESSAGES.taggedPageParagraph}</p>
+                        <p className="max-w-md text-2xl text-center">
+                            {MESSAGES.taggedPageParagraph}
+                        </p>
                     </div>
                 </div>
             ) : (
@@ -46,12 +48,11 @@ const TaggedPosts = () => {
                                 className="col-span-6 sm:col-span-6 md:col-span-4 lg:col-span-4"
                             >
                                 <ImageGroup
-                                    urls={item.firstUrl ?? ""}
+                                    urls={item.urls ?? []}
                                     photoCount={item.photo_length}
                                     onClick={() => gotoDetails(item._id)}
                                 />
                             </div>
-
                         ))}
                     </div>
                 </div>
