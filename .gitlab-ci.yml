@@ -34,6 +34,7 @@ build:
     - echo "ELASTIC_URL=$ELASTIC_URL" >> apps/api/.env
     - echo "COOKIE_SECRET=$COOKIE_SECRET" >> apps/api/.env
 
+    - rm -f apps/web/.env
     - mkdir -p apps/web
     - touch apps/web/.env
     - echo "VITE_BASE_URL=$VITE_BASE_URL" >> apps/web/.env
