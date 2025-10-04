@@ -30,7 +30,7 @@ import {
   ToggleGroupItem,
 } from "@/components/ui/toggle-group"
 
-// Generate fallback data with 6-hour intervals for the last 7 days
+// Generate fallback data with 30-minute intervals for the last 7 days
 const generateFallbackData = (): Array<{
   date: string;
   dateLabel: string;
@@ -49,32 +49,29 @@ const generateFallbackData = (): Array<{
   }> = []
   const now = new Date()
   
-  // Generate data for the last 7 days, 4 intervals per day (6-hour intervals)
+  // Generate data for the last 7 days, 48 intervals per day (30-minute intervals)
   for (let day = 6; day >= 0; day--) {
     const currentDay = new Date(now)
     currentDay.setDate(now.getDate() - day)
     
-    // 4 intervals per day: 00:00, 06:00, 12:00, 18:00
-    const intervals = [
-      { hour: 0, label: "00:00" },
-      { hour: 6, label: "06:00" },
-      { hour: 12, label: "12:00" },
-      { hour: 18, label: "18:00" }
-    ]
-    
-    intervals.forEach(interval => {
-      const dateTime = new Date(currentDay)
-      dateTime.setHours(interval.hour, 0, 0, 0)
-      
-      data.push({
-        date: dateTime.toISOString(),
-        dateLabel: dateTime.toLocaleDateString('en-US', { month: 'short', day: 'numeric' }),
-        timeLabel: interval.label,
-        displayLabel: `${dateTime.toLocaleDateString('en-US', { month: 'short', day: 'numeric' })} ${interval.label}`,
-        successful: Math.floor(Math.random() * 200) + 50,
-        failed: Math.floor(Math.random() * 20) + 2
-      })
-    })
+    // 48 intervals per day (30-minute intervals)
+    for (let hour = 0; hour < 24; hour++) {
+      for (let minute = 0; minute < 60; minute += 30) {
+        const dateTime = new Date(currentDay)
+        dateTime.setHours(hour, minute, 0, 0)
+        
+        const timeLabel = `${hour.toString().padStart(2, '0')}:${minute.toString().padStart(2, '0')}`
+        
+        data.push({
+          date: dateTime.toISOString(),
+          dateLabel: dateTime.toLocaleDateString('en-US', { month: 'short', day: 'numeric' }),
+          timeLabel: timeLabel,
+          displayLabel: `${dateTime.toLocaleDateString('en-US', { month: 'short', day: 'numeric' })} ${timeLabel}`,
+          successful: Math.floor(Math.random() * 50) + 10,
+          failed: Math.floor(Math.random() * 5) + 1
+        })
+      }
+    }
   }
   
   return data
@@ -107,10 +104,10 @@ export function ChartAreaInteractive() {
     }
   }, [isMobile])
 
-  // Generate chart data with 6-hour intervals
+  // Generate chart data with 30-minute intervals
   const generateChartData = React.useMemo(() => {
     const days = timeRange === "7d" ? 7 : timeRange === "30d" ? 30 : 90
-    const intervalsPerDay = 4 // 6-hour intervals
+    const intervalsPerDay = 48 // 30-minute intervals (24 hours * 2)
     const totalIntervals = days * intervalsPerDay
     
     // Priority 1: Use historical data from database if available
@@ -120,7 +117,7 @@ export function ChartAreaInteractive() {
       // Sort data by date to ensure chronological order
       const sortedData = [...historicalData].sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime())
       
-      // Convert daily data to 6-hour intervals
+      // Convert daily data to 30-minute intervals
       const intervalData: Array<{
         date: string;
         dateLabel: string;
@@ -131,26 +128,25 @@ export function ChartAreaInteractive() {
       }> = []
       sortedData.forEach(dailyItem => {
         const dayDate = new Date(dailyItem.date)
-        const intervals = [
-          { hour: 0, label: "00:00" },
-          { hour: 6, label: "06:00" },
-          { hour: 12, label: "12:00" },
-          { hour: 18, label: "18:00" }
-        ]
         
-        intervals.forEach(interval => {
-          const dateTime = new Date(dayDate)
-          dateTime.setHours(interval.hour, 0, 0, 0)
-          
-          intervalData.push({
-            date: dateTime.toISOString(),
-            dateLabel: dateTime.toLocaleDateString('en-US', { month: 'short', day: 'numeric' }),
-            timeLabel: interval.label,
-            displayLabel: `${dateTime.toLocaleDateString('en-US', { month: 'short', day: 'numeric' })} ${interval.label}`,
-            successful: Math.floor(dailyItem.successful / intervals.length),
-            failed: Math.floor(dailyItem.failed / intervals.length)
-          })
-        })
+        // Generate 48 intervals per day (30-minute intervals)
+        for (let hour = 0; hour < 24; hour++) {
+          for (let minute = 0; minute < 60; minute += 30) {
+            const dateTime = new Date(dayDate)
+            dateTime.setHours(hour, minute, 0, 0)
+            
+            const timeLabel = `${hour.toString().padStart(2, '0')}:${minute.toString().padStart(2, '0')}`
+            
+            intervalData.push({
+              date: dateTime.toISOString(),
+              dateLabel: dateTime.toLocaleDateString('en-US', { month: 'short', day: 'numeric' }),
+              timeLabel: timeLabel,
+              displayLabel: `${dateTime.toLocaleDateString('en-US', { month: 'short', day: 'numeric' })} ${timeLabel}`,
+              successful: Math.floor(dailyItem.successful / 48),
+              failed: Math.floor(dailyItem.failed / 48)
+            })
+          }
+        }
       })
       
       // Return the last N intervals based on time range
@@ -160,22 +156,26 @@ export function ChartAreaInteractive() {
     // Priority 2: Use session metrics to create current interval data
     if (apiMetrics?.sessionMetrics) {
       const now = new Date()
-      const currentInterval = Math.floor(now.getHours() / 6) * 6 // Round to nearest 6-hour interval
+      const currentMinute = now.getMinutes()
+      const currentHour = now.getHours()
+      
+      // Round to nearest 30-minute interval
+      const roundedMinute = currentMinute < 30 ? 0 : 30
       
       const dateTime = new Date(now)
-      dateTime.setHours(currentInterval, 0, 0, 0)
+      dateTime.setMinutes(roundedMinute, 0, 0)
       
       return [{
         date: dateTime.toISOString(),
         dateLabel: dateTime.toLocaleDateString('en-US', { month: 'short', day: 'numeric' }),
-        timeLabel: `${currentInterval.toString().padStart(2, '0')}:00`,
-        displayLabel: `${dateTime.toLocaleDateString('en-US', { month: 'short', day: 'numeric' })} ${currentInterval.toString().padStart(2, '0')}:00`,
+        timeLabel: `${currentHour.toString().padStart(2, '0')}:${roundedMinute.toString().padStart(2, '0')}`,
+        displayLabel: `${dateTime.toLocaleDateString('en-US', { month: 'short', day: 'numeric' })} ${currentHour.toString().padStart(2, '0')}:${roundedMinute.toString().padStart(2, '0')}`,
         successful: apiMetrics.sessionMetrics.successfulRequests,
         failed: apiMetrics.sessionMetrics.failedRequests
       }]
     }
     
-    // Priority 3: Use fallback data with 6-hour intervals
+    // Priority 3: Use fallback data with 30-minute intervals
     return fallbackChartData.slice(-totalIntervals)
   }, [timeRange, apiMetrics])
 
@@ -200,7 +200,7 @@ export function ChartAreaInteractive() {
   return (
     <Card className="@container/card">
       <CardHeader className="relative">
-        <CardTitle>API Calls (6-Hour Intervals) {
+        <CardTitle>API Calls (30-Minute Intervals) {
           (apiMetrics?.historicalMetrics?.dailyData?.length ?? 0) > 0 ? "(Real Historical Data)" : 
           apiMetrics?.sessionMetrics ? "(Real Live Data)" : 
           "(Demo Data)"
@@ -209,10 +209,10 @@ export function ChartAreaInteractive() {
           <span className="@[540px]/card:block hidden">
             {error ? "API metrics unavailable - showing demo data" : 
              (apiMetrics?.historicalMetrics?.dailyData?.length ?? 0) > 0 ? 
-             `Real database data: ${apiMetrics?.historicalMetrics?.totalRequests ?? 0} total requests from ${apiMetrics?.historicalMetrics?.dailyData?.length ?? 0} days (4 intervals per day)` :
+             `Real database data: ${apiMetrics?.historicalMetrics?.totalRequests ?? 0} total requests from ${apiMetrics?.historicalMetrics?.dailyData?.length ?? 0} days (48 intervals per day)` :
              apiMetrics?.sessionMetrics ?
              `Live session data: ${apiMetrics.sessionMetrics.totalRequests} requests (${apiMetrics.sessionMetrics.successfulRequests} successful, ${apiMetrics.sessionMetrics.failedRequests} failed)` :
-             "Demo data - API not connected (6-hour intervals: 00:00, 06:00, 12:00, 18:00)"}
+             "Demo data - API not connected (30-minute intervals throughout the day)"}
           </span>
           <span className="@[540px]/card:hidden">
             {error ? "Demo" : 
@@ -302,7 +302,7 @@ export function ChartAreaInteractive() {
               textAnchor="end"
               height={60}
               tickFormatter={(value) => {
-                // Show only every 4th tick to avoid overcrowding (once per day)
+                // Show only every 96th tick to avoid overcrowding (every 24 hours for 30-min intervals)
                 const parts = value.split(' ')
                 return parts.length >= 2 ? `${parts[0]} ${parts[1]}` : value
               }}

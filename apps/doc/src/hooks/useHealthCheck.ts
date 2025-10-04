@@ -29,7 +29,7 @@ interface ApiMetrics {
 
 // Try multiple API endpoints
 const API_ENDPOINTS = [
-  'http://82.115.13.86/api/health',  // Production
+  'http://devsync.rahnemacollege.ir/api/health',  // Production
   'http://localhost:3001/api/health', // Local API
 ];
 
