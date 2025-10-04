@@ -19,7 +19,7 @@ export interface Mention {
 
 const CreatePostModal = (props: CreatePostModalProps) => {
   const { isOpen = false, onClose } = props;
-  const { mutate: createPostMutation, isSuccess } = useCreatePost();
+  const { mutate: createPostMutation } = useCreatePost();
   const [photos, setPhotos] = useState<File[]>([]);
   const [caption, setCaption] = useState<string>("");
   const [mentions, setMentions] = useState<MentionsType[]>([]);

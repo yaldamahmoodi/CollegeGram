@@ -18,7 +18,6 @@ import {
   useUnSavePost,
 } from "@hooks/post.hook.ts";
 import type { PostInfo, PostActionPayloadType } from "@/types/post";
-import type { OtherUserType } from "@/types/user";
 import { formatRelativeTime } from "@/utils/formatRelativeTime";
 
 interface PostDetailsModalProps {
@@ -92,7 +91,7 @@ const PostDetailsModal = ({ isOpen, close, data }: PostDetailsModalProps) => {
   const navigate = useNavigate();
   const handleCommentClick = () => navigate(`/postDetail/${data?._id}`);
 
-  const { data: user } = useUserInfo<OtherUserType>();
+  const { data: user } = useUserInfo();
 
   if (!isOpen) return null;
 
@@ -159,7 +158,7 @@ const PostDetailsModal = ({ isOpen, close, data }: PostDetailsModalProps) => {
                 type="button"
                 onClick={handleCommentClick}
                 icon={<img src={comment} />}
-                label={data?.comment_count?.toString() || "0"}
+                label="0"
                 className="flex flex-col items-center bg-transparent hover:bg-transparent !text-[#EA5A69]"
                 style={{
                   minWidth: "auto",

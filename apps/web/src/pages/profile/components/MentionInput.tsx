@@ -62,8 +62,8 @@ const MentionInput = ({
 
             {isMentioning && (
                 <ul className="absolute bg-white border rounded-md shadow-lg w-full mt-1 max-h-40 overflow-auto z-10">
-                    {searchData && searchData.users.length > 0 ? (
-                        searchData.users.map((user) => (
+                    {searchData && searchData.users && searchData.users.length > 0 ? (
+                        searchData.users.map((user: any) => (
                             <li
                                 key={user.id}
                                 onClick={() =>

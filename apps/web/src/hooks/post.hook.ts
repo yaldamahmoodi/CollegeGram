@@ -113,11 +113,6 @@ export const useSavedPostList = () => {
   return useQuery({
     queryKey: ["savedPosts"],
     queryFn: getSavedPosts,
-    onError: (error: unknown) => {
-      const message = getErrorMessageByCode(error);
-      toast.error(message);
-      console.error(error);
-    },
   });
 };
 
@@ -126,22 +121,12 @@ export const useExplorePosts = (page = 1, pageSize = 10) => {
     queryKey: ["explorePosts", page, pageSize],
     queryFn: () => getExplorePosts(page, pageSize),
     select: (response) => response.data,
-    onError: (error: unknown) => {
-      const message = getErrorMessageByCode(error);
-      toast.error(message);
-      console.error(error);
-    },
   });
 };
 export const useTaggedPostList = () => {
   return useQuery({
     queryKey: ["taggedPosts"],
     queryFn: getTaggedPosts,
-    onError: (error: unknown) => {
-      const message = getErrorMessageByCode(error);
-      toast.error(message);
-      console.error(error);
-    },
   });
 };
 

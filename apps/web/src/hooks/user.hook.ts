@@ -343,10 +343,6 @@ export const useSearchUsers = (query: string, page: number = 1) => {
     queryKey: ["searchUsers", query, page],
     queryFn: () => searchUsers(query, page),
     enabled: !!query,
-    onError: (error: unknown) => {
-      const message = getErrorMessageByCode(error);
-      toast.error(message);
-    },
   });
 };
 
@@ -355,9 +351,5 @@ export const usePostSearch = (query: string, page: number = 1) => {
     queryKey: ["searchPosts", query, page],
     queryFn: () => searchPosts(query, page),
     enabled: !!query,
-    onError: (error: unknown) => {
-      const message = getErrorMessageByCode(error);
-      toast.error(message);
-    },
   });
 };

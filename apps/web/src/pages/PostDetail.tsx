@@ -118,8 +118,8 @@ const PostDetail = () => {
   const user = queryClient.getQueryData(["userInfo"]);
 
   const { id } = useParams<{ id: string }>();
-  const { data: post } = useGetPostById(id);
-  const { data: comments } = usePostComments(post?._id);
+  const { data: post } = useGetPostById(id!);
+  const { data: comments } = usePostComments(post?._id!);
 
   const addCommentMutation = useCreateComment();
   const likeCommentMutation = useLikeComment();
@@ -191,13 +191,13 @@ const PostDetail = () => {
             />
             <div>
               <p className="font-semibold text-orange-500">
-                {user?.data?.username}
+                {(user as any)?.data?.username}
               </p>
             </div>
           </div>
 
           <p className="text-xs text-gray-500">
-            {formatRelativeTime(user?.data?.createdAt)}
+            {formatRelativeTime((user as any)?.data?.createdAt)}
           </p>
 
           <p className="text-sm md:text-base leading-6 text-gray-700">
@@ -205,11 +205,11 @@ const PostDetail = () => {
           </p>
 
           <div className="flex flex-wrap gap-2 mb-6 mt-3">
-            {post?.mentions.map((mention, i) => (
+            {post?.mentions?.map((mention: any, i: number) => (
               <span
                 key={i}
                 className="px-2 py-1 text-xs md:text-sm text-white rounded-md cursor-pointer bg-orange-500 hover:bg-orange-600">
-                {mention}
+                {typeof mention === 'string' ? mention : mention.username}
               </span>
             ))}
           </div>

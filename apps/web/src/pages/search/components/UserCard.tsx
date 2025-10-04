@@ -22,7 +22,7 @@ const UserCard = ({ user }: UserCardProps) => {
     if (isFollowing) {
       unFollow({ followerUserId: id });
     } else {
-      follow({ followerUserId: id });
+      follow({ followedUserId: id });
     }
   };
 

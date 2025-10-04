@@ -6,7 +6,7 @@ import savedIcon from "@assets/icons/saved.svg";
 import likedIcon from "@assets/icons/liked.svg";
 import commentIcon from "@assets/icons/comment-black.svg";
 import { useNavigate } from "react-router-dom";
-import { ROUTES } from "@/routes/routes";
+// import { ROUTES } from "@/routes/routes";
 import type { ExplorePostType, PostActionPayloadType } from "@/types/post";
 import {
   useLikePost,
@@ -44,7 +44,7 @@ const PostCard = (props: PostCardProps) => {
   return (
     <div className="flex flex-col border rounded-3xl overflow-hidden bg-white border-gray-300">
       <div
-        onClick={() => navigate(`/postDetail/${post?._id}`)}
+        onClick={() => navigate(`/postDetail/${post?.post_id}`)}
         className="w-full cursor-pointer group relative"
         role="button"
         aria-label="open post">
@@ -59,7 +59,7 @@ const PostCard = (props: PostCardProps) => {
       <div className="flex items-center gap-6 pt-1 border-t border-gray-200 px-3">
         <Button
           type="button"
-          onClick={() => navigate(`/postDetail/${post?._id}`)}
+          onClick={() => navigate(`/postDetail/${post?.post_id}`)}
           icon={<img src={commentIcon} />}
           label={String(post.comment_count || "0")}
           className="flex flex-row gap-2  items-center bg-transparent hover:bg-transparent !text-black"

@@ -171,10 +171,10 @@ export const searchUsers = async (
       ? data.users.map((u) => ({
           id: u.id,
           username: u.username,
-          firstName: u.firstname ?? "",
-          lastName: u.lastname ?? "",
-          profilePhoto: u.profilePhotoPath ?? "",
-          followersCount: u.follower_count ?? 0,
+          firstname: u.firstname ?? "",
+          lastname: u.lastname ?? "",
+          profilePhotoPath: u.profilePhotoPath ?? "",
+          follower_count: u.follower_count ?? 0,
         }))
       : []
      

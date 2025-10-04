@@ -28,7 +28,7 @@ const BlockedFriends = () => {
                     icon: <img src={removeUserIcon} />,
                     onClick: () => {
                       addUserBlockListMutation.mutate({
-                        friendId: blocked.friend_info?._id,
+                        blockUserId: blocked.friend_info?._id,
                       });
                     },
                   },
@@ -37,7 +37,7 @@ const BlockedFriends = () => {
                     icon: <img src={blockUserIcon} />,
                     onClick: () => {
                       removeUserBlockListMutation.mutate({
-                        friendId: blocked.friend_info?._id,
+                        blockUserId: blocked.friend_info?._id,
                       });
                     },
                   },

@@ -69,6 +69,8 @@ export interface actionFollowType {
   followedUserId: string;
 }
 
+export type followType = actionFollowType;
+
 export interface unfollowType {
   followerUserId: string;
 }

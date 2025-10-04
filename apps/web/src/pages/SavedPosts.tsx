@@ -9,7 +9,7 @@ const SavedPosts = () => {
     const { data, isLoading } = useSavedPostList();
     const navigate = useNavigate();
 
-    const posts: SavedPostItem[] = data?.savedPosts ?? [];
+    const posts: SavedPostItem[] = (data as any)?.savedPosts ?? [];
 
     const gotoDetails = (id: string) => {
         const path = generatePath(ROUTES.POST_DETAIL, { id });

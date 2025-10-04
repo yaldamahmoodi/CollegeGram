@@ -12,7 +12,7 @@ const SearchUser = ({ search }: { search: string }) => {
     <>
       {usersResult ? (
         <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 gap-5">
-          {usersResult?.users.map((user) => (
+          {usersResult?.users.map((user: any) => (
             <UserCard key={user.id} user={user} />
           ))}
         </div>
@@ -32,7 +32,7 @@ const SearchPost = ({ search }: { search: string }) => {
     <>
       {postsResult ? (
         <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 gap-5">
-          {postsResult?.posts.map((post) => (
+          {postsResult?.posts.map((post: any) => (
             <PostCard key={post.id} image={post.urls[0]} />
           ))}
         </div>

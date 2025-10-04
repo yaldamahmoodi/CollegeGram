@@ -6,3 +6,4 @@ node_modules
 **/uploads
 apps/.DS_Store
 .DS_Store
+.turbo
