@@ -5,7 +5,7 @@ import type { SavedPostItem } from "@/types/post.ts";
 import { MESSAGES } from "@/const/message.ts";
 import ImageGroup from "@components/ImageGroup.tsx";
 
-const SavedPosts = () => {
+const TaggedPosts = () => {
     const { data, isLoading } = useTaggedPostList();
     const navigate = useNavigate();
 
@@ -60,4 +60,4 @@ const SavedPosts = () => {
     );
 };
 
-export default SavedPosts;
+export default TaggedPosts;

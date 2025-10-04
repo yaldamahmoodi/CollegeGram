@@ -20,11 +20,11 @@ const ImageSlider = ({ images }: ImageSliderProps) => {
 
   return (
     <div className="w-full">
-      <div className="relative w-full overflow-hidden rounded-2xl shadow-md">
+      <div className="relative w-full overflow-hidden px-5">
         <img
           src={images[currentIndex]}
           alt={`Slide ${currentIndex + 1}`}
-          className="w-full h-full max-h-[300px] object-contain transition-all duration-500 ease-in-out"
+          className="w-full h-full max-h-[400px] rounded-4xl object-cover"
         />
 
         {images.length > 1 && (

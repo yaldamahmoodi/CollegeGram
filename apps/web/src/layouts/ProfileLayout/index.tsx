@@ -13,6 +13,8 @@ import BottomSheet from "@components/BottomSheet";
 import MobileSidebarMenu from "@/layouts/ProfileLayout/components/sidebar/MobileSidebarMenu.tsx";
 import { useWebSocket } from "@/hooks/useWebSocket.hook";
 import NotificationToast from "@/components/NotificationToast";
+import { useNavigate } from "react-router-dom";
+import {ROUTES} from "@/routes/routes.ts";
 
 interface ProfileLayoutProps {
     children: ReactNode;
@@ -26,6 +28,7 @@ const ProfileLayout = ({ children }: ProfileLayoutProps) => {
   const token = localStorage.getItem("token");
   useWebSocket(token || undefined);
     const { data: user } = useUserInfo();
+    const navigate = useNavigate();
 
     return (
         <div className="profile-container min-h-screen h-full w-full bg-[#f5f5f5] flex flex-col lg:p-10"  onClick={() => setIsSidebarOpen(false)}>
@@ -70,19 +73,22 @@ const ProfileLayout = ({ children }: ProfileLayoutProps) => {
             </div>
 
             <div className="lg:hidden fixed bottom-0 left-0 w-full h-[60px] bg-white border-t border-gray-300 flex justify-around items-center z-30">
-                <button className="flex flex-col items-center">
-                    <img src={searchIcon} className="h-5" />
-                </button>
-                <button
+                <Button
+                    className="flex flex-col items-center bg-transparent hover:bg-transparent"
+                    onClick={() => navigate(ROUTES.SEARCH)}
+                    icon={<img src={searchIcon} className="h-5" />}
+                />
+                <Button
+                    className="!p-0 !min-w-10 w-10 h-10 rounded-full flex !items-center !justify-center bg-red-500 text-white"
                     onClick={() => setIsModalOpen(true)}
-                    className="flex flex-col text-xs items-center justify-center border bg-red-500 w-10 h-10 rounded-full text-white"
+                    icon={<span className="text-lg">＋</span>}
                     aria-label="new post"
-                >
-                    ＋
-                </button>
-                <button className="flex flex-col items-center">
-                    <img src={gridMenuIcon} className="h-5" />
-                </button>
+                />
+                <Button
+                    className="flex flex-col items-center bg-transparent hover:bg-transparent"
+                    onClick={() => navigate(ROUTES.EXPLORE)}
+                    icon={<img src={gridMenuIcon} className="h-5" />}
+                />
             </div>
 
             <BottomSheet

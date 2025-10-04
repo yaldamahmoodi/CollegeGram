@@ -38,13 +38,13 @@ const UserCard = ({ user }: UserCardProps) => {
         />
         <div className="flex flex-col text-right pr-2">
           <span className="font-semibold text-md">{username}</span>
-          <span className="text-sm text-gray-700 pt-3">
+          <span className="text-xs sm:text-sm text-gray-700 pt-2">
             {follower_count} دنبال‌کننده‌ها
           </span>
         </div>
       </div>
       <button
-        className={`w-full py-3 rounded-3xl font-medium ${
+        className={`w-full py-3 rounded-3xl font-medium  w-full py-2 sm:py-3 bg-red-500 text-white rounded-3xl text-sm sm:text-base font-medium hover:bg-red-600 transition-colors${
           isFollowing
             ? "bg-gray-300 text-black hover:bg-gray-400"
             : "bg-red-500 text-white hover:bg-red-600"

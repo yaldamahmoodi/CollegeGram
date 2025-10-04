@@ -64,7 +64,7 @@ const Search = () => {
         </span>
       </div>
 
-      <div className="flex mb-12 text-xl flex flex-row items-center">
+      <div className="flex mb-12 text-xl flex-row items-center justify-center md:justify-start">
         <button
           className={`pl-8 py-2 ${
             activeTab === "users" ? "font-bold" : "text-gray-400"

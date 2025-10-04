@@ -10,8 +10,7 @@ import savedIcon from "@assets/icons/saved.svg";
 import likedIcon from "@assets/icons/liked.svg";
 import Button from "@/components/Button";
 import { useParams } from "react-router-dom";
-import { useUserInfo } from "@/hooks/user.hook";
-import type { MentionsType } from "@/types/post";
+import { useQueryClient } from "@tanstack/react-query";
 import type { PostActionPayloadType } from "@app-types/post";
 import { formatRelativeTime } from "@/utils/formatRelativeTime";
 
@@ -41,7 +40,7 @@ const CommentItem = ({
     <div className="pb-3 mb-2 last:border-none">
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between w-full mb-2">
         <div className="flex items-center gap-2">
-          <p className="font-medium">{comment?.user_info?.username}</p>
+          <p className="text-lg">{comment?.user_info?.username}</p>
           <span className="text-xs text-gray-500">
             {formatRelativeTime(comment?.updatedAt || comment?.createdAt)}
           </span>
@@ -65,7 +64,7 @@ const CommentItem = ({
         </div>
       </div>
 
-      <p className="text-gray-700 mt-1">{comment.content}</p>
+      <p className="text-gray-700  text-lg mt-1">{comment.content}</p>
 
       {replyingTo === comment._id && (
         <div className="flex items-center gap-2 mt-2 ml-6">
@@ -114,11 +113,13 @@ const PostDetail = () => {
   const [newComment, setNewComment] = useState("");
   const [replyContent, setReplyContent] = useState("");
   const [replyingTo, setReplyingTo] = useState<string | null>(null);
-  const { data: currentUser } = useUserInfo();
 
-  const { id } = useParams();
-  const { data: post } = useGetPostById(id as string | undefined);
-  const { data: comments } = usePostComments(post?._id ?? "", 1, 10);
+  const queryClient = useQueryClient();
+  const user = queryClient.getQueryData(["userInfo"]);
+
+  const { id } = useParams<{ id: string }>();
+  const { data: post } = useGetPostById(id);
+  const { data: comments } = usePostComments(post?._id);
 
   const addCommentMutation = useCreateComment();
   const likeCommentMutation = useLikeComment();
@@ -149,13 +150,13 @@ const PostDetail = () => {
   };
 
   const handleLikeToggle = () => {
-    const payload: PostActionPayloadType = { postId: post?._id ?? "" };
+    const payload: PostActionPayloadType = { postId: post?._id! };
     if (post?.isLiked) unLikePostMutation.mutate(payload);
     else likePostMutation.mutate(payload);
   };
 
   const handleSaveToggle = () => {
-    const payload: PostActionPayloadType = { postId: post?._id ?? "" };
+    const payload: PostActionPayloadType = { postId: post?._id! };
     if (post?.isSaved) unSavePostMutation.mutate(payload);
     else savePostMutation.mutate(payload);
   };
@@ -175,8 +176,8 @@ const PostDetail = () => {
     }, {} as Record<string, (typeof comments)[0][]>) || {};
 
   return (
-    <div className="max-w-5xl mx-auto p-2 sm:p-4">
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6">
+    <div className="max-w-7xl p-2 sm:p-4">
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-6 md:gap-6">
         <div className="w-full">
           <ImageSlider images={post?.urls || []} />
         </div>
@@ -190,23 +191,25 @@ const PostDetail = () => {
             />
             <div>
               <p className="font-semibold text-orange-500">
-                {currentUser?.username ?? ""}
+                {user?.data?.username}
               </p>
             </div>
           </div>
 
-              {/* createdAt not available here reliably; hide or compute from post later */}
+          <p className="text-xs text-gray-500">
+            {formatRelativeTime(user?.data?.createdAt)}
+          </p>
 
           <p className="text-sm md:text-base leading-6 text-gray-700">
             {post?.caption}
           </p>
 
           <div className="flex flex-wrap gap-2 mb-6 mt-3">
-            {post?.mentions?.map((mention: MentionsType, i: number) => (
+            {post?.mentions.map((mention, i) => (
               <span
                 key={i}
                 className="px-2 py-1 text-xs md:text-sm text-white rounded-md cursor-pointer bg-orange-500 hover:bg-orange-600">
-                @{mention.username}
+                {mention}
               </span>
             ))}
           </div>
@@ -260,129 +263,19 @@ const PostDetail = () => {
           </div>
 
           <div className="space-y-4 pt-2 text-sm max-h-80 overflow-y-auto pr-2">
-            {mainComments.length
+            {mainComments?.length
               ? mainComments.map((comment) => (
-                  <div key={comment._id} className="pb-3 mb-2 last:border-none">
-                    <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between w-full mb-2">
-                        <div className="flex items-center gap-2">
-                          <p className="font-medium">{(comment as any).username ?? ""}</p>
-                        <span className="text-xs text-gray-500">
-                          {formatRelativeTime(
-                            comment.updatedAt || comment.createdAt
-                          )}
-                        </span>
-                      </div>
-
-                      <div className="flex gap-4 mt-2 sm:mt-0 text-red-500 items-center">
-                        <button
-                          className="flex gap-1 hover:opacity-80"
-                          onClick={() => handleToggleLikeComment(comment._id)}>
-                          <span>{comment.like_count}</span>
-                          <img src={LikeIcon} className="w-4 h-4" />
-                        </button>
-                        <button
-                          className="flex gap-1 hover:opacity-80 text-gray-500"
-                          onClick={() =>
-                            setReplyingTo(
-                              replyingTo === comment._id ? null : comment._id
-                            )
-                          }>
-                          <img src={replayComment} className="w-4 h-4" />
-                          <span className="text-red-500">پاسخ</span>
-                        </button>
-                      </div>
-                    </div>
-
-                    <p className="text-gray-700 mt-1">{comment.content}</p>
-
-                    {replyingTo === comment._id && (
-                      <div className="flex items-center gap-2 mt-2 ml-6">
-                        <img
-                          src={noAvatarIcon}
-                          alt="me"
-                          className="w-6 h-6 rounded-full object-cover"
-                        />
-                        <input
-                          type="text"
-                          placeholder="پاسخ خود را بنویسید..."
-                          className="flex-1 border border-gray-300 bg-white rounded-full px-3 py-1 text-xs focus:outline-none focus:ring-1 focus:ring-orange-400"
-                          value={replyContent}
-                          onChange={(e) => setReplyContent(e.target.value)}
-                          onKeyDown={(e) =>
-                            e.key === "Enter" && handleReplyComment(comment._id)
-                          }
-                        />
-                        <button
-                          onClick={() => handleReplyComment(comment._id)}
-                          className="text-orange-500 hover:text-orange-600">
-                          <img src={sendIcon} className="w-4 h-4" />
-                        </button>
-                      </div>
-                    )}
-
-                    {repliesMap[comment._id]?.map((reply) => (
-                      <div key={reply._id} className="ml-6 mt-2 pr-5">
-                        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between w-full mb-2">
-                        <div className="flex items-center gap-2">
-                          <p className="font-medium">{(reply as any).username ?? ""}</p>
-                            <span className="text-xs text-gray-500">
-                              {formatRelativeTime(
-                                reply.updatedAt || reply.createdAt
-                              )}
-                            </span>
-                          </div>
-
-                          <div className="flex gap-4 mt-2 sm:mt-0 text-red-500 items-center">
-                            <button
-                              className="flex gap-1 hover:opacity-80"
-                              onClick={() =>
-                                handleToggleLikeComment(reply._id)
-                              }>
-                              <span>{reply.like_count}</span>
-                              <img src={LikeIcon} className="w-4 h-4" />
-                            </button>
-                            <button
-                              className="flex gap-1 hover:opacity-80 text-gray-500"
-                              onClick={() =>
-                                setReplyingTo(
-                                  replyingTo === reply._id ? null : reply._id
-                                )
-                              }>
-                              <img src={replayComment} className="w-4 h-4" />
-                              <span className="text-red-500">پاسخ</span>
-                            </button>
-                          </div>
-                        </div>
-                        <p className="text-gray-700 mt-1">{reply.content}</p>
-
-                        {replyingTo === reply._id && (
-                          <div className="flex items-center gap-2 mt-2 ml-6">
-                            <img
-                              src={noAvatarIcon}
-                              alt="me"
-                              className="w-6 h-6 rounded-full object-cover"
-                            />
-                            <input
-                              type="text"
-                              placeholder="پاسخ خود را بنویسید..."
-                              className="flex-1 border border-gray-300 bg-white rounded-full px-3 py-1 text-xs focus:outline-none focus:ring-1 focus:ring-orange-400"
-                              value={replyContent}
-                              onChange={(e) => setReplyContent(e.target.value)}
-                              onKeyDown={(e) =>
-                                e.key === "Enter" &&
-                                handleReplyComment(reply._id)
-                              }
-                            />
-                            <button
-                              onClick={() => handleReplyComment(reply._id)}
-                              className="text-orange-500 hover:text-orange-600">
-                              <img src={sendIcon} className="w-4 h-4" />
-                            </button>
-                          </div>
-                        )}
-                      </div>
-                    ))}
-                  </div>
+                  <CommentItem
+                    key={comment._id}
+                    comment={comment}
+                    repliesMap={repliesMap}
+                    replyingTo={replyingTo}
+                    setReplyingTo={setReplyingTo}
+                    replyContent={replyContent}
+                    setReplyContent={setReplyContent}
+                    handleReplyComment={handleReplyComment}
+                    handleToggleLikeComment={handleToggleLikeComment}
+                  />
                 ))
               : "برای این پست هنوز نظری ثبت نشده"}
           </div>
