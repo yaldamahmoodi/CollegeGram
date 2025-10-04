@@ -102,7 +102,7 @@ const data = {
 
 export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
   return (
-    <Sidebar collapsible="icon" {...props} >
+    <Sidebar collapsible="icon" {...props}>
       <SidebarHeader>
         <SidebarMenu>
           <SidebarMenuItem>
@@ -110,7 +110,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
               asChild
               className="data-[slot=sidebar-menu-button]:!p-1.5"
             >
-              <Link to="/analytics">
+              <Link to="/">
                 <ArrowUpCircleIcon className="h-5 w-5" />
                 <span className="text-base font-semibold">devsync</span>
               </Link>
@@ -124,7 +124,9 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
         <NavReadMore items={data.readMore} />
       </SidebarContent>
       <SidebarFooter>
-        
+        <div className="text-xs text-gray-500 p-2">
+          Documentation v1.0
+        </div>
       </SidebarFooter>
     </Sidebar>
   )
