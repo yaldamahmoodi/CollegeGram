@@ -5,37 +5,37 @@
   :root {
     --background: 0 0% 100%;
     --foreground: 224 71.4% 4.1%;
-    --card: 0 0% 100%;
+    --card: 0 0% 0% / 0;
     --card-foreground: 224 71.4% 4.1%;
     --popover: 0 0% 100%;
     --popover-foreground: 224 71.4% 4.1%;
-    --primary: 220.9 39.3% 11%;
-    --primary-foreground: 210 20% 98%;
-    --secondary: 220 14.3% 95.9%;
-    --secondary-foreground: 220.9 39.3% 11%;
-    --muted: 220 14.3% 95.9%;
-    --muted-foreground: 220 8.9% 46.1%;
-    --accent: 220 14.3% 95.9%;
-    --accent-foreground: 220.9 39.3% 11%;
+    --primary: 221.2 83.2% 53.3%;
+    --primary-foreground: 210 40% 98%;
+    --secondary: 210 40% 96%;
+    --secondary-foreground: 222.2 84% 4.9%;
+    --muted: 210 40% 96%;
+    --muted-foreground: 215.4 16.3% 46.9%;
+    --accent: 210 40% 96%;
+    --accent-foreground: 222.2 84% 4.9%;
     --destructive: 0 84.2% 60.2%;
-    --destructive-foreground: 210 20% 98%;
-    --border: 220 13% 91%;
-    --input: 220 13% 91%;
-    --ring: 224 71.4% 4.1%;
-    --chart-1: 12 76% 61%;
-    --chart-2: 173 58% 39%;
-    --chart-3: 197 37% 24%;
-    --chart-4: 43 74% 66%;
-    --chart-5: 27 87% 67%;
+    --destructive-foreground: 210 40% 98%;
+    --border: 214.3 31.8% 91.4%;
+    --input: 214.3 31.8% 91.4%;
+    --ring: 221.2 83.2% 53.3%;
+    --chart-1: 0 72.2% 50.6%;
+    --chart-2: 142.1 76.2% 36.3%;
+    --chart-3: 221.2 83.2% 53.3%;
+    --chart-4: 47.9 95.8% 53.1%;
+    --chart-5: 262.1 83.3% 57.8%;
     --radius: 0.5rem;
     --sidebar-background: 0 0% 98%;
     --sidebar-foreground: 240 5.3% 26.1%;
-    --sidebar-primary: 240 5.9% 10%;
-    --sidebar-primary-foreground: 0 0% 98%;
-    --sidebar-accent: 240 4.8% 95.9%;
-    --sidebar-accent-foreground: 240 5.9% 10%;
-    --sidebar-border: 220 13% 91%;
-    --sidebar-ring: 217.2 91.2% 59.8%;
+    --sidebar-primary: 221.2 83.2% 53.3%;
+    --sidebar-primary-foreground: 210 40% 98%;
+    --sidebar-accent: 210 40% 96%;
+    --sidebar-accent-foreground: 222.2 84% 4.9%;
+    --sidebar-border: 214.3 31.8% 91.4%;
+    --sidebar-ring: 221.2 83.2% 53.3%;
     --sidebar-width: 16rem;
     --sidebar-width-mobile: 18rem;
     --sidebar-width-icon: 3rem;
@@ -88,5 +88,90 @@
   body {
     background-color: hsl(var(--background));
     color: hsl(var(--foreground));
+    font-feature-settings: "rlig" 1, "calt" 1;
+  }
+}
+
+@layer components {
+  /* Transparent card styling */
+  .card {
+    background-color: transparent !important;
+    box-shadow: none;
+    border: none;
+    transition: all 0.2s ease-in-out;
+  }
+  
+  .card:hover {
+    box-shadow: none;
+    border: none;
+  }
+  
+  /* Enhanced button styles with better contrast */
+  .btn {
+    font-weight: 600;
+    letter-spacing: 0.025em;
+    transition: all 0.2s ease-in-out;
+    border: 1px solid transparent;
+  }
+  
+  .btn:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.12);
+  }
+  
+  /* Professional sidebar styling */
+  .sidebar {
+    background-color: hsl(var(--sidebar-background));
+    border-right: 1px solid hsl(var(--sidebar-border));
+    backdrop-filter: blur(12px);
+  }
+  
+  /* Enhanced focus states for accessibility */
+  .focus-ring {
+    outline: 2px solid hsl(var(--ring));
+    outline-offset: 2px;
+    border-radius: 4px;
+  }
+  
+  /* Better text contrast */
+  .text-muted {
+    color: hsl(var(--muted-foreground));
+  }
+  
+  .text-primary {
+    color: hsl(var(--primary));
+  }
+  
+  /* Enhanced form elements */
+  .input {
+    border: 1px solid hsl(var(--border));
+    background-color: hsl(var(--background));
+    transition: all 0.2s ease-in-out;
+  }
+  
+  .input:focus {
+    border-color: hsl(var(--ring));
+    box-shadow: 0 0 0 3px hsla(var(--ring), 0.1);
+  }
+  
+  /* Better table styling */
+  .table {
+    border-collapse: separate;
+    border-spacing: 0;
+  }
+  
+  .table th {
+    background-color: hsl(var(--muted));
+    color: hsl(var(--muted-foreground));
+    font-weight: 600;
+    border-bottom: 2px solid hsl(var(--border));
+  }
+  
+  .table td {
+    border-bottom: 1px solid hsl(var(--border));
+  }
+  
+  .table tr:hover {
+    background-color: hsl(var(--muted) / 0.5);
   }
 }

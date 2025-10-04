@@ -239,7 +239,7 @@ export function TeamGrid() {
       email: "amirnsamimi@gmail.com",
       linkedin: "https://linkedin.com/in/amirnsamimi",
       github: "https://github.com/amirnsamimi",
-      resumePdf: "/AmirSamimi.pdf",
+      // resumePdf: "/AmirSamimi.pdf",
     },
     {
       name: "Yalda Mahmoodi",
@@ -256,6 +256,7 @@ export function TeamGrid() {
         "PostgreSQL",
         "Redis",
       ],
+      linkedin: "https://www.linkedin.com/in/yalda-mahmoodi-283716387/",
     },
     {
       name: "Mohammad Asghari",
@@ -278,7 +279,8 @@ export function TeamGrid() {
       ],
       linkedin: "https://www.linkedin.com/in/mohammad-asghari-4b3091200/",
       email: "mohammad.asghari1955@gmail.com",
-      resumePdf: "/MAsghari.pdf",
+      // resumePdf: "/MAsghari.pdf",
+
     },
     {
       name: "Nima Elahi Manesh",
@@ -322,7 +324,7 @@ export function TeamGrid() {
       email: "aabolfazlabdollahi@gmail.com",
       linkedin: "https://www.linkedin.com/in/abolfazl-abdollah-i",
       github: "https://github.com/abolfazlabdollahii/",
-      resumePdf: "/AbolfazlAbdollahi.pdf",
+      // resumePdf: "/AbolfazlAbdollahi.pdf",
     },
   ];
 

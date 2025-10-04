@@ -30,7 +30,7 @@ function IndexPage() {
           <h2 className="text-xl font-semibold text-center">Documentation</h2>
           <div className="bg-white p-4 rounded-lg shadow-lg">
             <QRCodeSVG
-              value="https://devsync.rahnemacollege.ir/doc"
+              value="https://devsync.rahnemacollege.ir/doc/analytics"
               size={200}
               bgColor="#ffffff"
               fgColor="#000000"
@@ -39,7 +39,7 @@ function IndexPage() {
             />
           </div>
           <p className="text-sm text-gray-600 text-center break-all">
-            https://devsync.rahnemacollege.ir/doc
+            https://devsync.rahnemacollege.ir/doc/analytics
           </p>
         </div>
       </div>

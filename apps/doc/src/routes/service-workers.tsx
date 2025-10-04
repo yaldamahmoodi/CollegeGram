@@ -39,7 +39,7 @@ function ServiceWorkers() {
           <CardContent>
             <div className="space-y-6">
               <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
-                <div className="p-4 border rounded-lg bg-blue-50/50 dark:bg-blue-950/20">
+                <div className="p-4 border rounded-lg ">
                   <div className="flex items-center gap-2 mb-3">
                     <BellIcon className="w-5 h-5 text-blue-600" />
                     <h3 className="font-bold text-blue-700 dark:text-blue-300">Push Notifications</h3>
@@ -130,7 +130,7 @@ function ServiceWorkers() {
           </CardHeader>
           <CardContent>
             <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
-              <div className="p-4 border rounded-lg bg-blue-50/50 dark:bg-blue-950/20">
+              <div className="p-4 border rounded-lg ">
                 <h4 className="font-medium text-sm text-blue-700 dark:text-blue-300 mb-2">Registration</h4>
                 <div className="text-xs text-muted-foreground space-y-1">
                   <p>• Check service worker support</p>
@@ -175,7 +175,7 @@ function ServiceWorkers() {
           </CardHeader>
           <CardContent>
             <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
-              <div className="p-4 border rounded-lg bg-blue-50/50 dark:bg-blue-950/20">
+              <div className="p-4 border rounded-lg ">
                 <h4 className="font-medium text-sm text-blue-700 dark:text-blue-300 mb-2">Web Push Setup</h4>
                 <div className="text-xs text-muted-foreground space-y-1">
                   <p>• Install web-push package</p>
@@ -220,7 +220,7 @@ function ServiceWorkers() {
           </CardHeader>
           <CardContent>
             <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
-              <div className="p-4 border rounded-lg bg-blue-50/50 dark:bg-blue-950/20">
+              <div className="p-4 border rounded-lg ">
                 <h4 className="font-medium text-sm text-blue-700 dark:text-blue-300 mb-2">VAPID Security</h4>
                 <div className="text-xs text-muted-foreground space-y-1">
                   <p>• Unique VAPID keys per environment</p>
