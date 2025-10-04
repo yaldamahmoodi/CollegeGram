@@ -23,7 +23,7 @@
     COPY apps/ ./apps/
     
     # Build all apps
-    RUN pnpm turbo run build
+    RUN npx turbo run build
     
     # Verify builds
     RUN ls -la /app/apps/api/dist/ && ls -la /app/apps/web/dist/ && ls -la /app/apps/doc/dist/
@@ -44,7 +44,7 @@
     FROM base AS web
     WORKDIR /app/apps/web
     EXPOSE 3000
-    CMD ["pnpm", "turbo", "run", "start","--filter=web"]
+    CMD ["npx", "turbo", "run", "preview", "--filter", "web"]
     
     
     # -----------------------------
@@ -53,4 +53,4 @@
     FROM base AS doc
     WORKDIR /app/apps/doc
     EXPOSE 3002
-    CMD ["pnpm", "turbo", "run", "start","--filter=doc"]
+    CMD ["npx", "turbo", "run", "preview", "--filter", "doc"]

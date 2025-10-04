@@ -18,7 +18,7 @@ export default defineConfig({
     },
   },
   preview: {
-    host: "0.0.0.0",
+    host: true,
     port: 3002,
     strictPort: true,
     allowedHosts: [
@@ -45,10 +45,10 @@ export default defineConfig({
     ],
     hmr: {
       host: "188.121.102.156",
-      protocol: "wss", // if using HTTPS in Nginx
+      protocol: "wss", 
     },
     fs: {
-      strict: false, // allow monorepo access
+      strict: false, 
     },
   },
 })
