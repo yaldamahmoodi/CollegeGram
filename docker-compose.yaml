@@ -1,0 +1,99 @@
+services:
+  mongo:
+    image: mongo:4.4
+    container_name: collagegram-mongo
+    restart: unless-stopped
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: ${MONGO_INITDB_ROOT_USERNAME:-admin}
+      MONGO_INITDB_ROOT_PASSWORD: ${MONGO_INITDB_ROOT_PASSWORD:-admin}
+      MONGO_INITDB_DATABASE: ${MONGO_INITDB_DATABASE:-collagegram}
+    volumes:
+      - mongo_data:/data/db
+
+  elasticsearch:
+    image: elasticsearch:8.19.3
+    container_name: collagegram-elasticsearch
+    environment:
+      - discovery.type=single-node
+      - ES_JAVA_OPTS=${ES_JAVA_OPTS:--Xms512m -Xmx512m}
+      - xpack.security.enabled=false
+    volumes:
+      - esdata:/usr/share/elasticsearch/data
+
+  mailpit:
+    image: axllent/mailpit:latest
+    container_name: collagegram-mailpit
+    restart: unless-stopped
+    ports:
+      - "8025:8025"
+    environment:
+      - MP_SMTP_AUTH_ACCEPT_ANY=1
+      - MP_SMTP_AUTH_ALLOW_INSECURE=1
+
+  redis:
+    image: redis:latest
+    container_name: collagegram-redis
+    restart: unless-stopped
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data:/data
+
+  api:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      target: api
+    container_name: monorepo-api
+    restart: unless-stopped
+    depends_on:
+      - mongo
+      - elasticsearch
+    env_file:
+      - ./apps/api/.env
+    volumes:
+      - uploads_data:/app/src/middlewares/uploads
+    profiles:
+      - production
+
+  web:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      target: web
+    container_name: monorepo-web
+    restart: unless-stopped
+    depends_on:
+      - api
+    env_file:
+      - ./apps/web/.env
+
+  doc:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      target: doc
+    container_name: monorepo-doc
+    restart: unless-stopped
+
+  nginx:
+    image: nginx:1.25-alpine
+    container_name: monorepo-nginx
+    depends_on:
+      - api
+      - web
+      - doc
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./nginx.conf:/etc/nginx/nginx.conf:ro
+      - /home/sudouser/.acme.sh/devsyncc.ir_ecc:/etc/letsencrypt/live/devsyncc.ir:ro
+      - uploads_data:/var/www/uploads
+
+volumes:
+  mongo_data:
+  esdata:
+  uploads_data:
+  redis_data:
+

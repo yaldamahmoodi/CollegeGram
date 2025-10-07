@@ -1,0 +1,9 @@
+@font-face {
+  font-family: "Peyda";
+  src: url("../fonts/Peyda/PeydaWebFaNum-Regular.woff2") format("woff2"),
+       url("../fonts/Peyda/PeydaWebFaNum-Regular.woff") format("woff"),
+       url("../fonts/Peyda/PeydaFaNum-Regular.ttf") format("truetype");
+  font-weight: normal;
+  font-style: normal;
+  font-display: swap;
+}
